@@ -1,4 +1,4 @@
-# JavaScript Example
+# Home Appetit Hydrogen
 
 Hydrogen is a React framework and SDK that you can use to build fast and dynamic Shopify custom storefronts.
 
@@ -15,8 +15,17 @@ Hydrogen is a React framework and SDK that you can use to build fast and dynamic
 - Node.js version 16.14.0 or higher
 - Yarn
 
+Install dependencies with
+
+
+```
+npm i
+```
+
+Then run locally with
+
 ```bash
-npm init @shopify/hydrogen@latest --template hello-world-ts
+npm run dev
 ```
 
 Remember to update `hydrogen.config.js` with your shop's domain and Storefront API token!
