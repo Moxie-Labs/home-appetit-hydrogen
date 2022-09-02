@@ -1,0 +1,9 @@
+.checkout-subsection .order-no {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 38px;
+}
+
+.checkout-subsection {
+    margin-bottom: 50px;
+}

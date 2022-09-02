@@ -1,0 +1,86 @@
+.password-incorrect {
+    color: red;
+    text-align: left;;
+}
+
+/* Sign In */
+.modal--signin-inner {
+    padding: 50px 30px 30px 30px;
+}
+
+.modal--signin-lower {
+    background-color: #F2F2F2;        ;
+    padding: 45px 80px;
+    height: 200px;
+    width: 100%;
+    padding-top: 20px;
+}
+
+/* Create Account */
+.modal--create-inner {
+    padding: 50px 30px 30px 30px;
+}
+
+/* Guest Signup */
+
+.modal--guest-signup {
+    height: 50vh;
+    max-width: 40vh;
+}
+
+    .modal--guest-signup-inner {
+        padding: 45px;
+        height: 500px;
+        width: 590px;
+        padding-top: 70px;
+    }
+
+        .modal--guest-signup-inner > * {
+            margin-top: 15px;
+        }
+
+.modal-heading {
+    font-size: 1.4em;
+    font-weight: 700;
+}
+
+.modal-subheading {
+    font-size: 1.2em;
+    font-weight: 500;
+    padding: 10px 0;
+}
+
+.modal-text {
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.modal--left-inner {
+    align-items: center;
+    display: flex;
+    height: 350px; 
+    justify-self: center;
+    padding-right: 15px;
+}
+
+.modal--right {
+    align-items: center;
+    display: flex;
+    height: 350px;
+    justify-self: center;
+    padding-left: 15px;
+}
+
+.modal--right > img {
+    width: 100%;
+    height: unset;
+}
+
+.modal--left-inner-content {
+
+}
+
+.btn-modal {
+    margin-top: 3vh;
+    width: 100%;
+}

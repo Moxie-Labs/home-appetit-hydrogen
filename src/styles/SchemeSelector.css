@@ -1,0 +1,27 @@
+.schemeType {
+    cursor: pointer;
+    font-size: 28px;
+    margin-right: 25px;
+    text-transform: uppercase;
+    font-family: "ITCAvantGardeProDemi";
+}
+
+.schemeType.active, .schemeType:hover {
+    font-weight: bold;
+    border-bottom: 3px solid #464442;
+}
+
+section#SchemeSelector {
+    margin: 40px 0 30px;
+    position: relative;
+}
+
+section#SchemeSelector img.badge {
+    position: absolute;
+    top: -35px;
+    left: 465px;
+}
+
+.ss-no-underline{
+    border-bottom: none !important;
+}

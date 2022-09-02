@@ -1,0 +1,188 @@
+.order_payment-method__dropdown {
+    border: 1px solid #47444275;
+    border-radius: 2px;
+    color: #474442;
+    cursor: pointer;
+    padding: 14px 25px;
+    width: 250px;
+    background: #fff;
+    border-radius: 10px;
+    font-family: AvenirLTProRoman;
+    background-repeat: no-repeat;
+    background-position: 370px center;
+    background-size: 12px;
+    height: 75px;
+    width: 513px;
+    font-size: 18px;
+}
+
+.payment-method-trigger {
+    border: 1px solid #385F83;
+    border-bottom: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    cursor: pointer;
+    padding: 25px 17px;
+    width: 512px;
+    background: #fff;
+}
+
+    .payment-method-trigger.triggered {
+       background-color: #385F83;
+       color: #fff;
+    }
+
+        .payment-method-trigger.triggered:hover {
+            background-color: #385F83;
+            color: #fff;
+            cursor: unset;
+        }
+
+        .payment-method-trigger.triggered p {
+            font-size: 18px;
+            color: #fff;
+            font-family: 'AvenirLTProHeavy';
+            margin-bottom: 28px;
+        }
+
+    .payment-method-trigger.top {
+        margin-top: 15px;
+    }
+
+    .payment-method-trigger.center {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+
+    .payment-method-trigger.bottom {
+        border-bottom: 1px solid #385F83;
+        border-radius: 0 0 6px 6px;
+    }
+
+    .payment-method-trigger:hover {
+        background-color: #ddefff;
+        /* box-shadow: 1px 0px 10px #000; */
+    }
+
+.payment-wrapper {
+    display: flex;
+    margin: 80px 0;
+}
+
+.payment-wrapper > .Polaris-Layout:first-child {
+    flex: 60%;
+}
+
+.payment-wrapper > .Polaris-Layout:last-child {
+    flex: 40%;
+}
+
+.btn-add-new {
+    margin: 25px 0;
+    text-transform: capitalize;
+    cursor: pointer;
+    font-family: 'AvenirLTProRoman';
+    font-size: 18px;
+}
+
+.payment-gc-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-gc-field .Polaris-TextField__Input {
+    width: 328px;
+    padding: 14px 25px;
+    border-radius: 10px;
+}
+
+.payment-gc-field button:hover {
+    background: #fff;
+    color: #474442;
+    border: 2px solid #474442;
+}
+
+.payment-gc-field button {
+    background: transparent;
+    padding: 9px 24px 4px;
+    text-transform: uppercase;
+    border: 2px solid #A6A3A0;
+    color: #A6A3A0;
+    border-radius: 24px;
+    width: 125px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: 'ITCAvantGardeProDemi';
+    height: 35px;
+}
+
+.gc-title-triggered {
+    text-transform: capitalize !important;
+    margin-bottom: 28px !important;
+    display: inline-block;
+    margin-top: 0;
+}
+
+.payment-gc-field .Polaris-TextField__Input::placeholder {
+    color: #9E9694;
+    font-family: 'AvenirLTProRoman';
+    font-size: 16px;
+}
+
+.payment-place-order-container {
+    margin-top: 50px;
+}
+
+.btn-place-order {
+    width: 295px;
+}
+
+.add-payment-modal-container {
+    padding: 40px 40px 60px;
+}
+
+.add-payment-modal-container .Polaris-TextField__Input {
+    border: 1px solid #474442;
+    border-radius: 2px;
+    padding: 14px 25px;
+    background: #FFFCF5;
+    border-radius: 10px;
+    font-family: AvenirLTProRoman;
+    font-size: 16px;
+    color: #474442;
+}
+
+.add-payment-modal-container .btn-primary-small {
+    width: 260px;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.payment-modal-field-col {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.add-payment-modal-container .Polaris-TextField {
+    margin-bottom: 20px;
+}
+
+.payment-modal-field-col > *{
+    width: 50%;
+}
+
+.payment-modal-field-col:last-child {
+    margin-top: 20px;
+    align-items: flex-start;
+}
+
+.add-payment-state-field select {
+    margin-top: 4px;
+    padding: 18px;
+}
+
+.modal--create-inner {
+    padding: 0 !important;
+}

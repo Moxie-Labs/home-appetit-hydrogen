@@ -1,0 +1,319 @@
+.dish-card {
+    cursor: pointer;
+    position: relative;
+    width: 385px;
+    transition: box-shadow 0.5s;
+    border: 3px solid transparent;
+}
+
+    .dish-card:hover {
+        /* box-shadow: 2px 1px 10px #aaa; */
+        border: 3px solid #385F83;
+        border-radius: 20px;
+    }
+
+    .dish-card.active, .dish-card.confirmed {
+        /* border: 4px solid #2F80ED; */
+        opacity: 1;
+    }
+
+    .dish-card.disabled {
+        cursor: unset;
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+.dish-image { 
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 20px 20px 0 0;
+}
+
+.card__quantity-img  {
+    width: 50px;
+}
+
+.card__info-section {
+    padding: 15px;
+    margin-top: -6px;
+    border-radius: 0 0 20px 20px;
+    min-height: 146px;
+}
+
+.card__quantity-section {
+    clear: both;
+    margin-bottom: 60px;
+    /* margin-top: 50px; */
+    text-align: center;
+    width: 225px;
+    margin: 0 auto 60px;
+}
+
+    .card__quantity-count {
+        color: #4F4F4F;
+        font-size: 42px;
+    }
+        .card__quantity-count.zero {
+            color: #4F4F4F;
+        }
+
+    .card__quantity-img.minus  {
+        float: left;
+        margin-top: -16px;
+    }
+
+    .card__quantity-img.plus  {
+        float: right;
+        margin-top: -16px;
+    }
+
+.card__info-section h2, .card__quantity-title {
+    font-size: 18px;
+    font-family: 'AvenirLTProBlack' !important;
+    line-height: 25px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.card__info-section h2 span{
+    font-family: 'AvenirLTProRoman' !important;
+    text-transform: lowercase;
+    font-weight: 100;
+}
+    
+
+.card__actions {
+    clear: both;
+    display: flex;
+    justify-content: center;
+    width: 345px;
+}
+
+.btn-card {
+    padding: 5px 25px;
+    float: left;
+}
+
+    .btn-customize {
+        background-color: unset;
+        border: none;
+        color:#2D9CDB;
+        text-decoration: underline;
+    }
+
+        .btn-customize:hover {
+            text-decoration: none;
+        }
+
+.card__quantity-badge {  
+    background: #385F83;
+    border-radius: 26px;
+    color: white;
+    font-size: 16px;
+    top: 4px;
+    right: 4px;
+    /* left: 250px; */
+    /* margin-top: -30px; */
+    padding: 9px 13px;
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    font-family: 'AvenirLTProRoman';
+    font-weight: bold;
+}
+
+.card__servings-disclaimer {
+    clear: both;
+    font-style: italic;
+    float: right;
+    font-weight: bold;
+    right: 2rem;
+}
+
+.card__info-section p {
+    display: inline;
+    color: #474442;
+    font-family: 'AvenirLTProRoman';
+    font-size: 16px;
+    position: absolute;
+    bottom: 20px;
+}
+
+.card__quantity-wrapper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #F8EFE0;
+    border-radius: 20px;
+    padding: 2em;
+}
+
+.card__info-top-info{
+    position: absolute;
+    top: 30px;
+}
+
+.card__quantity-inner-container h2 {
+    padding-bottom: 1em;
+    font-weight: bold;
+}
+
+.card__quantity-inner-container {
+    position: absolute;
+    top: 28px;
+    left: 28px;
+}
+
+.card__quantity-field-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, -60%);
+}
+
+.dish-card.active{
+    opacity: 1;
+}
+
+.dish-card.active .card__servings-disclaimer {
+    text-align: center !important;
+    float: none;
+    right: 50%;
+    transform: translateX(50%);
+    width: 100%;
+    bottom: 30px;
+}
+
+.dish-card.active .card__info-section p.card__code {
+    display: none !important;
+}
+
+.btn-counter-customize{
+    font-size: 18px !important;
+    line-height: 22px !important;
+    font-family: ITCAvantGardeProDemi !important;
+    text-transform: uppercase !important;
+    background: transparent !important;
+    padding-left: 20px !important;
+    text-decoration: underline !important;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-counter-confirm{
+    padding: 16px 40px 12px !important;
+}
+
+.Polaris-Modal-Dialog__Modal {
+    background: #FFFCF5;
+    padding: 0em;
+    position: relative;
+}
+
+.modal--customize-inner .card__quantity-section {
+    margin: 5em 0 0;
+}
+
+button.Polaris-Modal-CloseButton {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.modal--customize-options{
+    background-color: #F8EFE0 !important;
+    padding: 2em;
+    border-radius: 0 0 12px 12px;
+}
+
+section.modal--customize-inner {
+    padding: 2em 2em 0;
+}
+
+section.modal--customize-disclaimer span:first-child {
+    font-weight: bold;
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+section.modal--customize-disclaimer span {
+    font-style: italic;
+}
+
+.modal--card-quantity .card__servings-disclaimer {
+    text-align: center;
+    margin: 20px;
+    float: none;
+}
+
+section.modal--customize-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 2em 0 0;
+    align-items: center;
+}
+
+.modal--customize-cost {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+}
+
+.modal--customize-cost span{
+    font-weight: bold;
+}
+
+img.card__quantity-img {
+    cursor: pointer;
+}
+
+section.modal--customize-disclaimer {
+    font-size: 16px;
+}
+
+.modal--customize-option-placeholder > * {
+    flex: 50%;
+    padding: 10px 0;
+}
+
+.modal--customize-option-placeholder {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 10px;
+}
+
+span.Polaris-Checkbox__Backdrop {
+    background: #F8EFE0;
+    height: 30px;
+    width: 30px;
+    border: 2px solid #474442;
+}
+
+span.Polaris-Checkbox {
+    align-items: center;
+    display: flex;
+}
+
+.Polaris-Choice__Label{
+    font-size: 18px !important;
+}
+
+.Polaris-Choice__Control{
+    width: 30px;
+}
+
+section.modal--customize-inner .card__quantity-title {
+    padding-bottom: 1em;
+    font-weight: bold;
+}
+
+.inactive-blur {
+    opacity: 0.4;
+}
+
+

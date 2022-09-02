@@ -1,0 +1,201 @@
+.selectionCount {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.menu-section__actions {
+    margin: 10vh 0;
+    text-align: center;
+}
+
+.p-subheading-width{
+    width: 65%;
+}
+
+p.selectionCount {
+    margin-top: 1em;
+}
+
+.dish-card-wrapper .layout {
+    margin-left: 0;
+    margin-top: 2rem;
+    justify-content: left;
+    align-items: flex-start;
+    padding: 0;
+    gap: 20px;
+}
+
+.dish-card-wrapper {
+    position: relative;
+    padding: 2em 0;
+    border-bottom: 1px solid #474442;
+}
+
+.dish-card-wrapper:after {
+    content: "—";
+    position: absolute;
+    height: 48px;
+    width: 48px;
+    right: 0;
+    top: 60px;
+    background: #FFA877;
+    border-radius: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    padding-top: 2px;
+    padding-left: 2px;
+}
+
+.dish-card-wrapper:first-child::after {
+    content: none;
+}
+
+.dishcard--wrapper-inactive .Polaris-Frame {
+    min-height: auto !important;
+}
+
+.dishcard--wrapper-inactive .suborder--summary-container {
+    margin-top: 26px;
+}
+
+.dishcard--wrapper-inactive.dish-card-wrapper:after{ 
+    content: "+";
+    top: 45px;
+}
+
+.dish-card-wrapper:first-child section.step-section{
+    padding: 0 0 120px;
+    margin-bottom: -30px;
+}
+
+.dish-card-wrapper section.step-section{
+    padding: 0;
+}
+
+ul.step--order-summary{
+    padding: 0;
+}
+
+ul.step--order-summary li {
+    font-size: 24px;
+    font-family: "AvenirLTProBlack";
+    list-style: none;
+    padding: 0;
+    line-height: 38px;
+}
+
+ul.step--order-summary li span {
+    font-family: 'AvenirLTProRoman';
+    text-transform: lowercase;
+}
+
+.suborder--summary-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2em;
+}
+
+.suborder--summary-details, .suborder--summary-additional {
+    flex: 40%;
+}
+
+.suborder--summary-container img.icon-edit {
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.dish-card-wrapper.dishcard--wrapper-inactive h2 {
+    margin-top: 20px;
+}
+
+.small-plates {
+    height: 100%;
+    background: #385F83;
+    /* color: #fff !important; */
+    text-align: center;
+    border-radius: 20px;
+    padding: 2em 0.5em;
+    margin-right: 2em;
+}
+
+.small-plates h4 {
+    color: #FFFCF5 !important;
+    font-size: 24px;
+    text-align: center;
+    line-height: 38px;
+}
+
+.small-plates p {
+    color: #FFFCF5 !important;
+    font-size: 18px;
+    padding: 20px 10px 24px;
+    line-height: 25px;
+}
+
+.btn-small-plates {
+    background: #FFFCF5;
+    color: #385F83;
+    border-width: 0;
+    font-family: "ITCAvantGardeProDemi";
+    font-size: 14px;
+    font-style: inherit;
+    font-weight: 600;
+    line-height: inherit;
+    padding: 14px 24px 12px 24px;
+    cursor: pointer;
+    border-radius: 36px;
+    text-transform: uppercase;
+}
+
+button.btn-small-plates span img {
+    width: 12px;
+}
+
+.quantity-indicator{
+    margin: 20px 0 -25px !important;
+}
+
+.summary--additional-wrapper h4 {
+    text-transform: uppercase !important;
+}
+
+.progress-bar {
+    background: transparent;
+    height: 27px;
+    width: 407px;
+    position: absolute;
+    right: 0;
+    margin-top: -27px;
+    border: 2px solid #474442;
+    border-radius: 12.5px;
+    display: flex;
+}
+
+.progress-bar__order-item {
+    border-right: 2px solid #474442;
+    height: 25px;
+    width: 103.75px;
+}
+
+.progress-bar__order-item:last-child{
+    border-right: none !important;
+}
+
+.progress-bar__order-item.active{
+    background-color: rgba(56, 95, 131, 0.75);
+} 
+
+.progress-bar__order-item.active:first-child{ 
+    border-radius: 9px 0 0 12px;
+}
+
+.progress-bar__order-item.active:nth-child(4){
+    border-radius: 0 9px 12px 0;
+}
+ 
+
+

@@ -1,0 +1,74 @@
+.order_prop__dropdown {
+    border: 1px solid #47444275;
+    border-radius: 2px;
+    color: #9E9694;
+    /* margin-top: 15px; */
+    padding: 14px 25px;
+    width: 400px;
+    background: #FFFCF5;
+    border-radius: 10px;
+    font-family: AvenirLTProRoman;
+    background-repeat: no-repeat;
+    background-position: 370px center;
+    background-size: 12px;
+}
+
+select.order_prop__dropdown:focus-visible {
+    outline: none !important;
+}
+
+.order_prop__dropdown.disabled {
+    border: 2px solid #aaa;
+    color: #000;
+    opacity: 0.4;
+    background-color: #E1E1E0;
+}
+
+.illustration-placeholder {
+    height: 383px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F8EFE0;
+    margin: 3em 0 1em;
+    border-radius: 20px;
+}
+
+#OrderProperties label{
+    font-size: 14px;
+    display: block;
+}
+
+section#OrderProperties .step-column:first-child {
+    flex: 38%;
+}
+
+section#OrderProperties .step-column:nth-child(2){
+    flex: 28%;
+}
+
+section#OrderProperties .btn-app {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.default-padding{
+    padding: 2em 0 !important;
+}
+
+select {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.order--properties .Polaris-Layout__Section:nth-child(2) {
+    margin: 2em 0 0 !important;
+}
+
+.scheme-inactive-padding{
+    margin: 40px 0 -20px !important;
+}
+

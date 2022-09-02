@@ -1,0 +1,59 @@
+.textfield-zip {
+    clear: both;
+}
+
+.dropdown_state {
+    width: 100%;
+}
+
+.checkout--deliveryinfo-actions {
+    clear: both;
+}
+
+.contact-info{
+    margin: 20px 0;
+}
+
+.contact-info p {
+    font-size: 22px;
+    font-family: 'AvenirLTProHeavy';
+    line-height: 30px;
+    color: #333;
+}
+
+.contact-option {
+    margin-bottom: 10px;
+}
+
+.contact-option label {
+    font-size: 18px;
+    font-family: 'AvenirLTProRoman';
+}
+
+.contact-option > label {
+    margin-right: 70px;
+}
+
+.contact-option span.Polaris-Checkbox__Backdrop {
+    width: 24px;
+    height: 24px;
+    background: transparent;
+}
+
+.checkout--form-container {
+    display: flex;
+    gap: 20px;
+}
+
+.checkout--deliveryinfo-top .contact-option .Polaris-Choice__Label {
+    font-size: 16px !important;
+    font-weight: bold;
+}
+
+section.checkout--deliveryinfo-top .ha-h5 {
+    padding: 20px 0;
+}
+
+.contact-option.edit-state {
+    margin-bottom: 40px;
+}

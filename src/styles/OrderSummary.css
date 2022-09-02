@@ -1,0 +1,149 @@
+.order-summary {
+    bottom: 0;
+    position: fixed;
+    right: 40px;
+    width: 380px;
+    z-index: 99;
+}
+
+
+    .order-summary--inner {
+        background-color: #fff;
+        box-shadow: 1px 1px 10px #aaa;
+        cursor: pointer;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .order-summary--toast {
+        background-color: #385F83;
+        border-radius: 20px;
+        color: #fff;
+        font-weight: 500;
+        margin-bottom: 0;
+        opacity: 0;
+        transition: opacity .5s linear, margin .5s ease-in-out;
+        padding: 5px 15px;
+        text-align: center;
+    }
+
+    .order-summary--toast.visible {
+        opacity: 1;
+        margin-bottom: 10px;
+    }
+
+    .order-summary__heading {
+        background-color: #385F83;
+        font-weight: 700;
+        font-size: 18px;
+        padding: 24px 20px;
+        color: #FFFCF5;
+        font-family: 'AvenirLTProBlack' !important;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .order-summary--items {
+        border-bottom: 2px solid #474442;
+        margin: 5px 0 0 0;
+        padding: 15px 0 !important;
+        padding-inline-start: 20px;
+    }
+
+    .order-summary--items h4{
+        font-family: AvenirLTProRoman !important;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+        .order-summary--item {
+            color: #828282;
+            list-style-type: none;
+            padding-inline-start: 0;
+
+        }
+
+            .order-summary--item-value {
+                float: right;
+            }
+
+
+    .order-summary--total {
+        padding: 20px 0 !important;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+section.order-summary--enlarged-items {
+    padding: 20px;
+    background: #F8EFE0;
+}
+ 
+section.order-summary--items ul {
+    padding-left: 1em !important;
+}
+
+section.order-summary--items ul li {
+    color: #474442; 
+    font-style: italic;
+    padding: 3px;
+    font-size: 16px;
+}
+
+.order-summary__hidden {
+    background: #FFFCF5;
+    color: #474442;
+    border-radius: 10px 10px 0 0 !important;
+    transition: background-color .25s ease-in;
+}
+
+.order-summary__hidden.show-toast {
+    background-color: #385F83;
+    color: #fff;
+    font-size: 1.1em;
+    transition: background-color .25s ease-in;
+}
+
+.order-summary--items h4 span {
+    float: right;
+}
+
+span.price--extra-addon {
+    float: right;
+    font-size: 16px;
+    font-family: 'AvenirLTProBlack';
+    line-height: 22px;
+}
+
+.icon-plus-alt {
+    width: 15px;
+    /* margin-top: 2px; */
+    margin-left: 6px;
+    vertical-align: top;
+}
+
+.main--items-scheme ul li span {
+    font-size: 16px;
+    font-style: normal;
+}
+
+.payment-wrapper .order-summary {
+    bottom: 0;
+    position: relative;
+    right: 0;
+    width: 407px;
+    z-index: 99;
+    left: 100px;
+    cursor: default;
+}
+
+.payment-wrapper .order-summary--inner{
+    box-shadow: none;
+}
+
+.payment-wrapper h3.order-summary__heading.order-summary__hidden {
+    background: #385F83;
+    color: #FFFCF5;
+}
+
+.payment-wrapper section.order-summary--enlarged-items {
+    cursor: default;
+}

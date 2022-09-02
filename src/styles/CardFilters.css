@@ -1,0 +1,27 @@
+.filterButton {
+    background-color: transparent;
+    border: none;
+    border-radius: 20px;
+    color: #474442;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 2px solid #474442;
+    text-transform: uppercase;
+}
+
+.filterButton.active {
+    background-color: #4F4F4F;
+    color: #fff;
+}
+
+.filterButton.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.filterButton:hover {
+    background-color: #4F4F4F;
+    color: #fff;
+}
+

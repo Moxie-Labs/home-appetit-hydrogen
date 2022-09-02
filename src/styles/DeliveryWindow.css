@@ -1,0 +1,58 @@
+.order_delivery__dropdown {
+    border: 1px solid #474442;
+    border-radius: 2px;
+    color: #1B1B1E;
+    padding: 14px 25px;
+    width: 250px;
+    border-radius: 10px;
+    font-family: AvenirLTProRoman;
+    background-repeat: no-repeat;
+    background-position: 225px;
+    font-size: 16px;
+    background-size: 12px;
+    background-color: #FFFCF5 !important;
+}
+
+    .order_delivery__dropdown.left {
+        margin-right: 5px;
+    }
+
+    .order_delivery__dropdown.right {
+        background-color: #eee;
+        margin-left: 5px;
+    }
+
+.checkout--delivery-window-selectors {
+    margin-bottom: 30px;
+}
+
+.delivery-date_item{
+    font-size: 28px;
+    line-height: 34px;
+    color: #474442;
+    font-family: ITCAvantGardeProDemi !important;
+    text-transform: uppercase;
+}
+
+.delivery-date_item.active{
+    border-bottom: 3px solid;
+    font-family: ITCAvantGardeGothicDemiBold !important;
+}
+
+.delivery-date_container {
+    display: flex;
+    grid-gap: 30px;
+    gap: 30px;
+    margin: 3em 0 2em;
+}
+
+.delivery-window_label{
+    font-family: AvenirLTProRoman;
+    font-size: 14px;
+    color: #1B1B1E;
+}
+
+.delivery-window_disabled{
+    background-color: #E1E1E0 !important;
+    border: 2px solid #A6A3A0;
+}
