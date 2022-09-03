@@ -1,8 +1,8 @@
 import React from 'react';
 import quantityPlus from "../assets/quantity-plus.png";
 import quantityMinus from "../assets/quantity-minus.png";
-import { Modal } from './Modal.client';
 import { Checkbox } from './Checkbox.client';
+import Modal from 'react-modal/lib/components/Modal';
 
 export default class DishCard extends React.Component {
 
@@ -143,9 +143,9 @@ export default class DishCard extends React.Component {
 
                 <div className="card__quantity-field-wrapper">
                     <section className="card__quantity-section">
-                        <img className="card__quantity-img minus" src={quantityMinus.src} onClick={() => this.setQuantity(quantity-1)}/>
+                        <img className="card__quantity-img minus" src={`/src/assets/quantity-minus.png`} onClick={() => this.setQuantity(quantity-1)}/>
                         <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
-                        <img className="card__quantity-img plus" src={quantityPlus.src} onClick={() => this.setQuantity(quantity+1)}/>
+                        <img className="card__quantity-img plus" src={`/src/assets/quantity-plus.png`} onClick={() => this.setQuantity(quantity+1)}/>
                     </section>
 
                     <section className="card__actions">
@@ -171,7 +171,7 @@ export default class DishCard extends React.Component {
 
                         <div style={{backgroundColor: "blue"}}>
                             <Modal
-                                open={isModalShowing}
+                                isOpen={isModalShowing}
                                 onClose={this.toggleModal}
                             >
                                 <section className="modal--customize-inner">     

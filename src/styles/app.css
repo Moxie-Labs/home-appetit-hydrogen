@@ -158,6 +158,10 @@
 
 
 /* Polaris Port */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 .page {
     background: #FFFCF5 !important;
     max-width: 1260px !important;

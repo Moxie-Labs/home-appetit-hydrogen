@@ -1,0 +1,136 @@
+import React, {useCallback, useState} from 'react';
+import iconArrowDown from "../assets/arrow-down.png";
+import iconEdit from "../assets/icon-edit.png";
+
+export default function DeliveryWindow(props) {
+
+    const {
+        deliveryWindowStart, 
+        deliveryWindowEnd, 
+        deliveryWindowDay,
+        deliveryWindowSaturday,
+        deliveryWindowSunday,
+        availableDeliveryStarts, 
+        availableDeliveryEnds, 
+        handleChangeStart, 
+        handleChangeEnd, 
+        handleChangeDay,
+        handleContinue, 
+        handleCancel,
+        step,
+        currentStep
+    } = props;
+
+    const filteredEndOptions = availableDeliveryEnds.filter((option) => {
+        return (!(option <= deliveryWindowStart));
+    });
+
+    const startOptions = availableDeliveryStarts.map((option, i) => {
+        let endOption = option + 2;
+        let optionText = option;
+        if (option < 13) {
+            optionText += "am";
+        } else {
+            optionText = parseInt(option) - 12;
+            optionText += "pm";
+        }
+        if (endOption < 13) {
+            optionText += ` - ${endOption}am`;
+        } else {
+            optionText += ` - ${parseInt(endOption) - 12}pm`;
+        }
+        return <option key={i} value={option}>{optionText}</option>
+    });
+
+    const endOptions = filteredEndOptions.map((option) => {
+        let optionText = option;
+        if (option < 13) {
+            optionText += "am";
+        } else {
+            optionText = parseInt(option) - 12;
+            optionText += "pm";
+        }
+        return <option value={option}>{optionText}</option>
+    });
+
+    const getDisplayDate = date => {
+        let retval;
+        if (date.getDay() === 1) 
+            retval = `Monday `
+        else if (date.getDay() === 2)
+            retval = `Tuesday `
+        
+        retval += `${date.getMonth()+1}/${date.getDate()}`;
+        return retval;
+    }
+
+    return (
+        <div className="checkout-section checkout--delivery-window">
+            
+            <h2 className="order_delivery__window-title heading order_prop__heading ha-h3">Select Delivery Window  { currentStep !== step && <span>
+                            <img src={iconEdit.src} width={65} className="iconEdit"  onClick={handleCancel} /></span>}</h2>
+
+            { currentStep === step && 
+                <div>
+
+                    <div className="delivery-date_container">
+                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 6 ? ' active' : ''}`} onClick={() => handleChangeDay(6)}>{getDisplayDate(deliveryWindowSaturday)}</h3>
+                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 0 ? ' active' : ''}`} onClick={() => handleChangeDay(0)}>{getDisplayDate(deliveryWindowSunday)}</h3>
+                    </div>
+
+                    <label className="delivery-window_label">Delivery Window</label>
+                    <div className="checkout--delivery-window-selectors">
+                        <select className="order_delivery__dropdown left" style={{backgroundImage: `url(${iconArrowDown.src})`}} value={deliveryWindowStart} onChange={handleChangeStart}>
+                            {startOptions}
+                        </select> 
+                        {/* -
+                        // <select className="order_delivery__dropdown right" style={{backgroundImage: `url(${iconArrowDown.src})`}} disabled={true} value={deliveryWindowEnd} onChange={handleChangeEnd}>
+                        //     {endOptions}
+                        // </select>  */}
+                    </div>
+
+                    <div className="checkout--delivery-window-actions">
+                        <button className="btn btn-primary-small btn-confirm btn-app" onClick={handleContinue}>
+                            CONFIRM
+                        </button>
+                    </div> 
+                </div>
+            } 
+
+            { currentStep !== step &&
+                // <div className="step-disabled">
+                <div>
+                    <div className="delivery-date_container">
+                        <h3 className="subheading delivery-date_item active">{getDisplayDate(deliveryWindowDay === 1 ? deliveryWindowSaturday : deliveryWindowSunday)}</h3>     
+                    </div>
+
+                    <div className="checkout--delivery-window-selectors">
+                        <select className="order_delivery__dropdown left delivery-window_disabled" style={{backgroundImage: `url(${iconArrowDown.src})`}} disabled={true} value={deliveryWindowStart} onChange={handleChangeStart}>
+                            {startOptions}
+                        </select> 
+                        {/* - */}
+                        {/* <select className="order_delivery__dropdown right" style={{backgroundImage: `url(${iconArrowDown.src})`}} disabled={true} value={deliveryWindowEnd} onChange={handleChangeEnd}> */}
+                        {/* <select className="order_delivery__dropdown right delivery-window_disabled" style={{backgroundImage: `url(${iconArrowDown.src})`}} disabled={true} value={deliveryWindowEnd} onChange={handleChangeEnd}>
+                            {endOptions}
+                        </select>  */}
+                    </div>
+
+                    <div className="checkout--delivery-window-actions">
+                      { currentStep === step &&
+                        <button className="btn btn-primary-small btn-disabled btn-app " onClick={handleContinue}>
+                            Continue
+                        </button>
+                      }
+
+                        {/* <button className="btn btn-primary btn-app" onClick={handleCancel}>
+                            Cancel
+                        </button> */}
+                    </div>
+                </div>
+            }
+
+            <hr></hr>
+
+        </div>
+    );
+}

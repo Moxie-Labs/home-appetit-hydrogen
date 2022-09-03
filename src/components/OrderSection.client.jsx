@@ -5,13 +5,17 @@ import { LayoutSection } from "./LayoutSection.client";
 import MenuSection from "./MenuSection.client";
 import OrderProperties from "./OrderProperties.client";
 import OrderSummary from "./OrderSummary.client";
+import DeliveryWindow from "./DeliveryWindow.client";
 import { Page } from "./Page.client";
+import DeliveryInfo from "./DeliveryInfo.client";
+import PaymentInfo from "./PaymentInfo.client";
+import OrderConfirmation from "./OrderConfirmation.client";
 
 
 // base configurations
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 2;
+const FIRST_STEP = 1;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 8;
@@ -475,6 +479,198 @@ export function OrderSection(props) {
                         </LayoutSection>
                     </Layout>
                 }
+
+{ getPhase(currentStep) === "payment" && 
+                <div className="payment-wrapper">
+                    <Layout>
+                        <LayoutSection>
+
+                            <DeliveryWindow 
+                                availableDeliveryStarts={availableDeliveryStarts} 
+                                availableDeliveryEnds={availableDeliveryEnds}
+                                deliveryWindowStart={deliveryWindowStart}
+                                deliveryWindowEnd={deliveryWindowEnd}
+                                deliveryWindowDay={deliveryWindowDay}
+                                deliveryWindowSaturday={dayOfWeek("next", "monday")}
+                                deliveryWindowSunday={dayOfWeek("next", "tuesday")}
+                                handleChangeStart={(value) => setDeliveryStart(value)}
+                                handleChangeEnd={(value) => setDeliveryEnd(value)}
+                                handleChangeDay={value => setDeliveryWindowDay(value)}
+                                handleContinue={() => setCurrentStep(6)}
+                                handleCancel={() => {setCurrentStep(4)}}
+                                step={5}
+                                currentStep={currentStep}
+                            />
+
+                        </LayoutSection>
+
+                        <LayoutSection>
+
+                            <DeliveryInfo
+                                firstName={firstName}
+                                lastName={lastName}
+                                emailAddress={emailAddress}
+                                phoneNumber={phoneNumber}
+                                address={address}
+                                address2={address2}
+                                city={city}
+                                zipcode={zipcode}
+                                instructions={instructions}
+                                extraIce={extraIce}
+                                isGift={isGift}
+                                giftMessage={giftMessage}
+                                agreeToTerms={agreeToTerms}
+                                receiveTexts={receiveTexts}
+                                handleStateChange={(value) => handleStateChange(value)}
+                                handleFirstNameChange={(value) => setFirstName(value)}
+                                handleLastNameChange={(value) => setLastName(value)}
+                                handleEmailChange={(value) => setEmailAddress(value)}
+                                handlePhoneNumberChange={(value) => setPhoneNumber(value)}
+                                handleAddressChange={(value) => setAddress(value)}
+                                handleAddress2Change={(value) => setAddress2(value)}
+                                handleCityChange={(value) => setCity(value)}
+                                handleZipcodeChange={(value) => setZipcode(value)}
+                                handleInstructionChange={(value) => setInstructions(value)}
+                                handleExtraIce={(value) => addExtraIce(value)}
+                                handleIsGift={(value) => setIsGift(value)}
+                                handleGiftMessage={(value) => setGiftMessage(value)}
+                                handleAgreeToTerms={value => setAgreeToTerms(value)}
+                                handleReceiveTexts={value => setReceiveTexts(value)}
+                                handleContinue={() => setCurrentStep(7)}
+                                handleCancel={() => {setCurrentStep(5)}}
+                                step={6}
+                                currentStep={currentStep}
+                            />
+
+                        </LayoutSection>
+
+                        <LayoutSection>
+
+                            <PaymentInfo
+                                isGuest={isGuest}
+                                cardNumber={cardNumber}
+                                expiration={expiration} 
+                                securityCode={securityCode}
+                                zipcode={cardZipcode}
+                                firstName={billingFirstName}
+                                lastName={billingLastName}
+                                emailAddress={billingEmailAddress}
+                                phoneNumber={billingPhoneNumber}
+                                address={billingAddress}
+                                address2={billingAddress2}
+                                city={billingCity}
+                                billingZipcode={billingZipcode}
+                                sameAsBilling={sameAsBilling}
+                                creditCards={creditCards}
+                                giftCards={giftCards}
+                                giftCardTriggered={giftCardTriggered}
+                                promoTriggered={promoTriggered}
+                                referralTriggered={referralTriggered}
+                                handleCardNumberChange={(value) => setCardNumber(value)}
+                                handleExpirationChange={(value) => setExpiration(value)}
+                                handleSecurityCodeChange={(value) => setSecurityCode(value)}
+                                handleZipcodeChange={(value) => setCardZipcode(value)}
+                                handleSameAsBilling={(value) => setSameAsBilling(value)}
+                                handleStateChange={(value) => setBillingDeliveryState(value)}
+                                handleFirstNameChange={(value) => setBillingFirstName(value)}
+                                handleLastNameChange={(value) => setBillingLastName(value)}
+                                handleEmailChange={(value) => setBillingEmailAddress(value)}
+                                handlePhoneNumberChange={(value) => setBillingPhoneNumber(value)}
+                                handleAddressChange={(value) => setBillingAddress(value)}
+                                handleAddress2Change={(value) => setBillingAddress2(value)}
+                                handleCityChange={(value) => setBillingCity(value)}
+                                handleBillingZipcodeChange={(value) => setBillingZipcode(value)}
+                                handleGiftCardTrigger={() => setGiftCardTriggered(true)}
+                                handlePromoTrigger={() => setPromoTriggered(!promoTriggered)}
+                                handleReferralTrigger={() => setReferralTriggered(!referralTriggered)}
+                                handleCreditCardsChange={(value) => setCreditCards(value)}
+                                handleGiftCardsChange={(value) => setGiftCards(value)}
+                                handleContinue={() => attemptSubmitOrder()}
+                                handleCancel={() => {setCurrentStep(6)}}
+                                step={7}
+                                currentStep={currentStep}
+                            />
+
+                        </LayoutSection>
+                    </Layout>
+
+                    <Layout>
+                        <LayoutSection>
+                            <OrderSummary 
+                                activeScheme={activeScheme}
+                                servingCount={servingCount}
+                                pricingMultiplier={pricingMultiplier}
+                                orderTotal={getOrderTotal()}
+                                selectedMainItems={[...selectedMainItems]} 
+                                selectedSmallItems={[...selectedSmallItems]}
+                                selectedAddonItems={[...selectedAddonItems]}
+                                toastMessages={toastMessages}
+                                showToast={showToast}
+                                getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                getPhase={getPhase(currentStep)}
+                            />  
+                        </LayoutSection>
+                    </Layout>
+                </div>
+            }
+
+            { getPhase(currentStep) === "confirmation" && 
+                <div>
+                    <div className="payment-wrapper">
+                        <Layout>
+                            <LayoutSection>
+                                <OrderConfirmation
+                                    deliveryWindowStart={deliveryWindowStart}
+                                    deliveryWindowEnd={deliveryWindowEnd}
+                                    windowDay={deliveryWindowDay === 6 ? dayOfWeek("next", "saturday") : dayOfWeek("next", "sunday")}
+                                    // REPLACE
+                                    // cardNumber={cardNumber}
+                                    cardNumber={"4111111111111111"}
+                                    expiration={expiration} 
+                                    securityCode={securityCode}
+                                    zipcode={zipcode}
+                                    firstName={firstName}
+                                    lastName={lastName}
+                                    emailAddress={emailAddress}
+                                    phoneNumber={phoneNumber}
+                                    address={address}
+                                    address2={address2}
+                                    city={city}
+                                    orderNumber={"126YCC"}
+                                    handleChangeStart={(value) => setDeliveryStart(value)}
+                                    handleChangeEnd={(value) => setDeliveryEnd(value)}
+                                    handleContinue={() => setCurrentStep(6)}
+                                    handleCancel={() => {setCurrentStep(4)}}
+                                    step={5}
+                                    currentStep={currentStep}
+                                />
+
+                            </LayoutSection>
+                        </Layout>
+                        <Layout>
+                            <LayoutSection>
+                                <OrderSummary 
+                                    activeScheme={activeScheme}
+                                    servingCount={servingCount}
+                                    pricingMultiplier={pricingMultiplier}
+                                    orderTotal={getOrderTotal()}
+                                    selectedMainItems={[...selectedMainItems]} 
+                                    selectedSmallItems={[...selectedSmallItems]}
+                                    selectedAddonItems={[...selectedAddonItems]}
+                                    toastMessages={toastMessages}
+                                    showToast={showToast}
+                                    getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                    getPhase={getPhase(currentStep)}
+                                />  
+                            </LayoutSection>
+                        </Layout>
+                    </div>
+                
+                    {/* <CompleteSignUp />  */}
+            
+                </div>
+            }
+
             </Suspense>
         </Page>
     );

@@ -8,7 +8,7 @@ import {
   useLocalization,
   useShopQuery
 } from '@shopify/hydrogen';
-import { Layout } from '../components/Layout.server';
+import { Layout } from '../components/Layout.client';
 
 // import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 // import {getHeroPlaceholder} from '~/lib/placeholders';

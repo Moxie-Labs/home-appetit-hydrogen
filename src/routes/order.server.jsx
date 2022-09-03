@@ -8,7 +8,7 @@ import {
   useLocalization,
   useShopQuery
 } from '@shopify/hydrogen';
-import { Layout } from '../components/Layout.server';
+import { Layout } from '../components/Layout.client';
 import { OrderSection } from '../components/OrderSection.client';
 
 export default function Order() {
