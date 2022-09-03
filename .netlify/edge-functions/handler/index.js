@@ -105,7 +105,7 @@ ${u}`):f=new Error(`${h.status} ${h.statusText} (x-request-id: ${h.headers.get("
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hydrogen App</title>
     
-    <script type="module" crossorigin src="/assets/index.417fa866.js"><\/script>
+    <script type="module" crossorigin src="/assets/index.292e4258.js"><\/script>
     <link rel="stylesheet" href="/assets/index.4422c77b.css">
   </head>
   <body>
