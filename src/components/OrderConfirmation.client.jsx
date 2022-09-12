@@ -1,4 +1,4 @@
-import { CompleteSignUp } from "./CompleteSignup.client";
+
 
 export default function OrderConfirmation(props) {
 
@@ -88,8 +88,6 @@ export default function OrderConfirmation(props) {
             </div>
         
         </section>
-         
-         <CompleteSignUp/>
 
         </div>
     )

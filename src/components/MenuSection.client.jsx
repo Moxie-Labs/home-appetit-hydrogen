@@ -182,8 +182,8 @@ export default class MenuSection extends React.Component {
                         <LayoutSection>
                             <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
                             <p className="subheading order_prop__subheading p-subheading-width">{subheading}</p>
-                            { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
-                            { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
+                            { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit} className="icon-edit" width="65" /></span>}</h4>}
+                            { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit} className="icon-edit" width="65" /></span>}</h4>}
                             <br></br>
                             {this.progressBarStatus(getQuantityTotal(selected))}  
                             
@@ -216,7 +216,7 @@ export default class MenuSection extends React.Component {
                         { Object.keys(selected).length !== 0 && 
                         <div className="suborder--summary-container">
                             <div className="suborder--summary-details">
-                                <h4 className="ha-h4">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; <span><img onClick={handleEdit} src={iconEdit.src} className="icon-edit" width="65" /></span></h4>
+                                <h4 className="ha-h4">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; <span><img onClick={handleEdit} src={iconEdit} className="icon-edit" width="65" /></span></h4>
                                 {Object.keys(selected).map(function(key) {
                                     return ( 
                                         <ul key={key} className="step--order-summary">
@@ -229,7 +229,7 @@ export default class MenuSection extends React.Component {
                             { step === 2 && additionalEntrees >= 1 &&
                                 <div className="suborder--summary-additional">
                                     <div className="summary--additional-wrapper">
-                                        <h4 className="ha-h4">{additionalEntrees} Additional entrées &nbsp; <span><img src={iconEdit.src} className="icon-edit" width="65"/></span></h4>
+                                        <h4 className="ha-h4">{additionalEntrees} Additional entrées &nbsp; <span><img src={iconEdit} className="icon-edit" width="65"/></span></h4>
                                     </div>
                                 </div> 
                             } 
@@ -239,7 +239,7 @@ export default class MenuSection extends React.Component {
                                     <div className="summary--additional-wrapper small-plates-wrapper">
                                         <h4 className="ha-h4">Add Extra Entrées</h4>
                                         <p>Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id.</p>
-                                        <button className="btn-small-plates"><span><img src={iconPlus.src} className="icon-plus"/></span> Add Extra Entrées</button>
+                                        <button className="btn-small-plates"><span><img src={iconPlus} className="icon-plus"/></span> Add Extra Entrées</button>
                                     </div>
                                 </div> 
                             }
@@ -249,7 +249,7 @@ export default class MenuSection extends React.Component {
                                     <div className="summary--additional-wrapper small-plates-wrapper">
                                         <h4 className="ha-h4">Add Extra Small Plates</h4>
                                         <p>Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id.</p>
-                                        <button className="btn-small-plates"><span><img src={iconPlus.src} className="icon-plus"/></span> Add extra Small Plates</button>
+                                        <button className="btn-small-plates"><span><img src={iconPlus} className="icon-plus"/></span> Add extra Small Plates</button>
                                     </div>
                                 </div> 
                             } 

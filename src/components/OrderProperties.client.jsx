@@ -2,6 +2,7 @@ import React, {useState, useCallback} from 'react';
 import SchemeSelector from "./SchemeSelector.client";
 import iconEdit from "../assets/icon-edit.png";
 import iconArrowDown from "../assets/arrow-down.png";
+import illustration from "../assets/ha-infographic-hd.png";
 import { LayoutSection } from './LayoutSection.client';
 
 const servingOptions = [
@@ -78,7 +79,7 @@ export default class OrderProperties extends React.Component {
 
                     { currentStep !== step &&
                         <button className="btn btn-cancel" onClick={this.handleCancel}>
-                            <img src={iconEdit.src} width={65} />
+                            <img src={iconEdit} width={65} />
                         </button>
                     }
                     </LayoutSection>
@@ -87,7 +88,7 @@ export default class OrderProperties extends React.Component {
                 { currentStep === step &&
                 <div className="step-column">
                     <div className="illustration-placeholder">
-                         Illustration Placeholder
+                         <img src={illustration} width="100%" />
                     </div>
                 </div>
                 }

@@ -1,5 +1,5 @@
 .order_delivery__dropdown {
-    border: 1px solid #474442;
+    border: 2px solid #474442;
     border-radius: 2px;
     color: #1B1B1E;
     padding: 14px 25px;
@@ -7,10 +7,12 @@
     border-radius: 10px;
     font-family: AvenirLTProRoman;
     background-repeat: no-repeat;
-    background-position: 225px;
+    background-position: 480px;
     font-size: 16px;
     background-size: 12px;
     background-color: #FFFCF5 !important;
+    width: 514px;
+    font-weight: 900;
 }
 
     .order_delivery__dropdown.left {
@@ -23,7 +25,7 @@
     }
 
 .checkout--delivery-window-selectors {
-    margin-bottom: 30px;
+    margin-bottom: 35px;
 }
 
 .delivery-date_item{
@@ -43,7 +45,7 @@
     display: flex;
     grid-gap: 30px;
     gap: 30px;
-    margin: 3em 0 2em;
+    margin: 40px 0 30px;
 }
 
 .delivery-window_label{

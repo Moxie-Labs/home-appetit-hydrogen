@@ -23,7 +23,7 @@ class SchemeSelector extends React.Component {
                  <span className={`schemeType ${activeScheme === 'traditional' ? '' : 'active'}`} onClick={() => this.changeScheme('flexible')}>Flexible Plan</span>
                 }
                 { currentStep === step && 
-                 <span><img src={badgeNew.src} width={42} className="badge"/></span>
+                 <span><img src={badgeNew} width={42} className="badge"/></span>
                 }
             </section>
         );

@@ -48,21 +48,21 @@ export default class OrderSummary extends React.Component {
                 </section>
                 
                 <section className="order-summary--items main-items">
-                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} of 4 Entrées { Object.keys(mainItemList).length !== 0 && <span><img src={editIcon.src}/></span> }</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} of 4 Entrées { Object.keys(mainItemList).length !== 0 && <span><img src={editIcon}/></span> }</h4>
                     <ul>
                         {mainItemList} 
                     </ul>
                 </section>      
 
                 <section className="order-summary--items small-items">
-                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of 4 Small Plates { Object.keys(smallItemList).length !== 0 && <span><img src={editIcon.src}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of 4 Small Plates { Object.keys(smallItemList).length !== 0 && <span><img src={editIcon}/></span>}</h4>
                     <ul>
                         {smallItemList}
                     </ul>
                 </section>     
 
                 <section className="order-summary--items addon-items">
-                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && <span><img src={editIcon.src}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && <span><img src={editIcon}/></span>}</h4>
                     <ul>
                         {addonItemList}
                     </ul>
@@ -119,7 +119,7 @@ export default class OrderSummary extends React.Component {
         
         const toastCostSection = (activeScheme !== 'traditional' || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0].cost.toFixed(2)}</span> : null;
 
-        const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt.src} className="icon-plus-alt" /> }</span></h3>
+        const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt} className="icon-plus-alt" /> }</span></h3>
 
 
         return (

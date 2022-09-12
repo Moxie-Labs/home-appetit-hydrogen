@@ -10,6 +10,7 @@ import { Page } from "./Page.client";
 import DeliveryInfo from "./DeliveryInfo.client";
 import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
+import { CompleteSignUp } from "./CompleteSignup.client";
 
 
 // base configurations
@@ -29,7 +30,7 @@ export function OrderSection(props) {
     const [servingCount, setServingCount] = useState(1)
     const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState('traditional')
-    const [currentStep, setCurrentStep] = useState(FIRST_STEP)
+    const [currentStep, setCurrentStep] = useState(CONFIRMATION_STEP)
     const [isGuest, setIsGuest] = useState(false);
 
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -381,6 +382,7 @@ export function OrderSection(props) {
             <Suspense>
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
+                <div className="order-wrapper">
                     <Layout>
                         <LayoutSection>
                             <div className="dish-card-wrapper order--properties">
@@ -478,6 +480,7 @@ export function OrderSection(props) {
                             />  
                         </LayoutSection>
                     </Layout>
+                </div>
                 }
 
 { getPhase(currentStep) === "payment" && 
@@ -612,6 +615,7 @@ export function OrderSection(props) {
                         </LayoutSection>
                     </Layout>
                 </div>
+               
             }
 
             { getPhase(currentStep) === "confirmation" && 
@@ -666,7 +670,7 @@ export function OrderSection(props) {
                         </Layout>
                     </div>
                 
-                    {/* <CompleteSignUp />  */}
+                    <CompleteSignUp/>
             
                 </div>
             }

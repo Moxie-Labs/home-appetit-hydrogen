@@ -84,3 +84,32 @@
     margin-top: 3vh;
     width: 100%;
 }
+
+.modal-dishcard-customize {
+    max-width: 620px;
+    margin: 0 auto 0;
+    background: transparent;
+    padding: 0 !important;
+    max-height: 560px;
+    border-radius: 12px !important;
+    /* inset: 160px 0 !important; */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ReactModal__Overlay {
+    background: #47444294 !important;
+}
+
+section.modal--customize-inner {
+    background: #FFFCF5 !important;
+}
+
+.modal-new-payment {
+    width: 450px;
+    margin: auto;
+    border-radius: 12px !important;
+    inset: 60px 0;
+}

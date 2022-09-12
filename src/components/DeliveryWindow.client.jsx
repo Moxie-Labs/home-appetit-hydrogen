@@ -67,9 +67,12 @@ export default function DeliveryWindow(props) {
     return (
         <div className="checkout-section checkout--delivery-window">
             
-            <h2 className="order_delivery__window-title heading order_prop__heading ha-h3">Select Delivery Window  { currentStep !== step && <span>
-                            <img src={iconEdit.src} width={65} className="iconEdit"  onClick={handleCancel} /></span>}</h2>
-
+            <h2 className="order_delivery__window-title heading order_prop__heading ha-h3">Select Delivery Window  
+            { currentStep !== step && 
+                <span>
+                            <img src={iconEdit} width={65} className="iconEdit"  onClick={handleCancel} /></span>
+                            }</h2>
+                
             { currentStep === step && 
                 <div>
 
@@ -80,7 +83,7 @@ export default function DeliveryWindow(props) {
 
                     <label className="delivery-window_label">Delivery Window</label>
                     <div className="checkout--delivery-window-selectors">
-                        <select className="order_delivery__dropdown left" style={{backgroundImage: `url(${iconArrowDown.src})`}} value={deliveryWindowStart} onChange={handleChangeStart}>
+                        <select className="order_delivery__dropdown left" style={{backgroundImage: `url(${iconArrowDown})`}} value={deliveryWindowStart} onChange={handleChangeStart}>
                             {startOptions}
                         </select> 
                         {/* -
