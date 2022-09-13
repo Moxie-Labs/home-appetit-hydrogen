@@ -30,7 +30,7 @@ export function OrderSection(props) {
     const [servingCount, setServingCount] = useState(1)
     const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState('traditional')
-    const [currentStep, setCurrentStep] = useState(CONFIRMATION_STEP)
+    const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(false);
 
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
