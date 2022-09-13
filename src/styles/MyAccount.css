@@ -1,0 +1,29 @@
+.myaccount-page {
+
+}
+
+.account-panel-switches {
+    float: left;
+    margin-right: 30px;
+    width: 30%;
+}
+
+.account-panel-body {
+    float: right;
+    width: 64%;
+}
+
+.account-panel-switch {
+    border-bottom: 1px solid #000;
+    cursor: pointer;
+    font-size: 1.7em;
+    padding: 20px 5px;
+}
+
+    .account-panel-switch.active, .account-panel-switch:hover {
+        font-weight: 700;
+    }
+
+.order-table {
+    width: 100%;
+}
