@@ -15,14 +15,18 @@ export default class MenuSection extends React.Component {
         super(props);
     }  
 
-    getChoicesByFilters(filters) {
+    getChoicesByFilters(filters, choices) {
         const retval = [];
-        const {choices} = this.props;
+        
         for (let choice of choices) {
             for(let filter of filters) {
-                if (choice.attributes.includes(filter)) {
-                    retval.push(choice);
+                if (!choice.attributes.includes(filter)) {
                     break;
+                }
+                if (choice.attributes.includes(filter)) {
+                    if (filter === filters[filters.length-1]) {
+                        retval.push(choice);
+                    }
                 }
             }
         }
@@ -36,7 +40,7 @@ export default class MenuSection extends React.Component {
             retval = choices;
         }
         else {
-            retval = this.getChoicesByFilters(filters);
+            retval = this.getChoicesByFilters(filters, choices);
         }
         return retval;
     }
@@ -172,7 +176,7 @@ export default class MenuSection extends React.Component {
         const optionCounts = [];
         
         filterOptions.forEach(filter => {
-            optionCounts[filter.label] = this.getChoicesByFilters([filter.value]).length;
+            optionCounts[filter.label] = this.getChoicesByFilters([filter.value], filteredChoices).length;
         });
     
         return (
