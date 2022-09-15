@@ -34,10 +34,11 @@ export default class DishCard extends React.Component {
     }
 
     setQuantity(quantity) {
-        const {maxQuantity} = this.props;
-        console.log("maxQuantity", maxQuantity)
-        quantity = Math.max(0, quantity);
-        quantity = Math.min(quantity, maxQuantity)
+        const {maxQuantity, showingExtra} = this.props;
+        if (!showingExtra) {
+            quantity = Math.max(0, quantity);
+            quantity = Math.min(quantity, maxQuantity)                
+        }
 
         this.setState({
             quantity: quantity
@@ -101,7 +102,7 @@ export default class DishCard extends React.Component {
     }
 
     render() {
-        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity} = this.props;
+        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra} = this.props;
         const {selected, quantity, isCardActive, confirmed, isModalShowing, checkedOptions, optionCost} = this.state;
         const {title, description, price, attributes, imageURL, productOptions} = choice;
 
@@ -129,7 +130,7 @@ export default class DishCard extends React.Component {
         const optionCostText = optionCost > 0 ? `+${formatter.format(optionCost)} customizations` : null;
 
     return (
-        <div className={`dish-card${isCardActive ? ' active ' : ''}${confirmed ? ' confirmed' : ''} ${(maxQuantity < 1 && quantity < 1 && !isCardActive) ? ' disabled' : ''}`}>
+        <div className={`dish-card${isCardActive ? ' active ' : ''}${confirmed ? ' confirmed' : ''}`}>
             {!isCardActive && confirmed && 
                 <p className="card__quantity-badge">{quantity}</p>
             }
@@ -161,9 +162,8 @@ export default class DishCard extends React.Component {
         }
             
             <div>
-                {/* { (!isCardActive || confirmed) &&   */}
-                    <img className="dish-image" src={imageURL} onClick={() => this.setIsCardActive(true)}/>
-                {/* } */}
+                <img className="dish-image" src={imageURL} onClick={() => this.setIsCardActive(true)}/>
+                { showingExtra && <span className='dishcard-extra-cost'>$12.50</span> }
             </div>
 
             <section className="card__info-section ha-color-bg-cream-shadow">
