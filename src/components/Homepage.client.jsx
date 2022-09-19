@@ -21,7 +21,7 @@ export default function Homepage(props) {
                     <hr></hr>
                 </li>
                 <li>
-                    <Link to="/order?guest=true">Order (Guest)</Link>
+                    <Link to="/order/guest">Order (Guest)</Link>
                     <p>Status: Assumes Logged-In User</p>
                     <hr></hr>
                 </li>
