@@ -301,6 +301,7 @@ export default class MenuSection extends React.Component {
                 <Modal
                     isOpen={isSectionFilled && !modalDismissed}
                     onRequestClose={() => this.setState({showingModal: false})}
+                    className="modal-entree-complete"
                 >   
                     <h1 className='uppercase text-center'>{title} Selection Complete!</h1>
                     <h2 className='text-center'>Care to add extra {title}</h2>
