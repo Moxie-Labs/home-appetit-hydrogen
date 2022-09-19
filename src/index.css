@@ -13,6 +13,7 @@
 @import "./styles/PaymentInfo.css";
 @import "./styles/OrderConfirmation.css";
 @import "./styles/CompleteSignUp.css";
+@import "./styles/MyAccount.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
