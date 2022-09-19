@@ -373,3 +373,12 @@ h2.card__quantity-title {
     line-height: 25px;
 }
 
+.dishcard-extra-cost {
+    background: #474442;
+    border-radius: 6px;
+    color: white;
+    left: 0;
+    padding: 7px 10px 3px;
+    position: absolute;
+    top: 25px;
+}
