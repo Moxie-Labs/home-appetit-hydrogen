@@ -1,16 +1,30 @@
 .myaccount-page {
-
+    width: 1440px;
+    padding: 90px;
+    display: flex;
+    gap: 5%;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .account-panel-switches {
-    float: left;
-    margin-right: 30px;
     width: 30%;
 }
 
+section.account-panel-switches h2 {
+    font-family: 'ITCAvantGardeProDemi' !important;
+    text-transform: uppercase;
+    margin: 0 !important;
+    padding: 20px 0 10px;
+    font-size: 24px;
+}
+
 .account-panel-body {
-    float: right;
-    width: 64%;
+    width: 65%;
+    position: relative;
+    padding: 40px;
+    border-radius: 12px;
+    background: #F8EFE0;
 }
 
 .account-panel-switch {
@@ -21,9 +35,155 @@
 }
 
     .account-panel-switch.active, .account-panel-switch:hover {
-        font-weight: 700;
+        font-weight: 800;
+        border-bottom: 2px solid #000;
     }
 
 .order-table {
+    width: 100%;
+}
+
+.account-information h1 {
+    font-size: 18px;
+    font-family: 'ITCAvantGardeProDemi' !important;
+    text-transform: uppercase;
+    margin: 0 !important;
+}
+
+.account-information input {
+    padding: 14px 25px;
+    border-radius: 10px;
+    border: 2px solid #385F83 !important;
+    font-family: 'AvenirLTProRoman';
+    font-size: 16px;
+    color: #474442 !important;
+    display: block;
+}
+
+.myaccount-page button {
+    background: transparent !important;
+    border: 2px solid #474442 !important;
+    color: #474442 !important;
+    font-size: 18px;
+    font-family: 'ITCAvantGardeProDemi' !important;
+    border-radius: 24px;
+    padding: 9px 24px 4px !important;
+}
+
+button.btn.btn-default.btn-edit {
+    color: #474442 !important;
+    font-size: 18px;
+    border: none !important;
+    text-align: left !important;
+    padding: 0;
+    position: absolute;
+    top: 35px;
+    right: 40px;
+    text-decoration: underline;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+button.btn.btn-default.btn-edit img {
+    vertical-align: text-bottom;
+    margin-left: 10px;
+}
+
+.account-information h2 {
+    font-family: AvenirLTProRoman !important;
+    font-size: 24px;
+    margin: 0 !important;
+    font-weight: 800;
+}
+
+span.info-label, .info-label-field{
+    font-size: 14px;
+}
+
+.info-label-field{
+    font-family: 'AvenirLTProRoman' !important;
+    font-weight: 800 !important;
+}
+
+.personal-info-wrapper .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+}
+
+.personal-info-wrapper {
+    width: 85%;
+}
+
+.account-information hr {
+    border: 1px solid #474442;
+    margin: 40px 0;
+}
+
+.personal-info-wrapper .info-row:last-child h2:last-child {
+    flex: 40%;
+}
+
+.personal-info-wrapper .info-row:last-child h2:first-child {
+    flex: 60%;
+}
+.personal-info-wrapper .info-row:last-child {
+    display: flex;
+    justify-content: flex-start;
+}
+
+h1.address-title {
+    padding-bottom: 30px;
+}
+
+.default-address-label{
+    font-size: 14px !important;
+}
+
+.account-information article p {
+    font-size: 24px !important;
+    line-height: 32px;
+    font-family: 'AvenirLTProRoman' !important;
+    margin: 0 !important;
+}
+
+.address {
+    margin: 5px 0 20px;
+}
+
+.row-2 .info-label-field{
+    width: 100%;
+}
+
+.row-2 .info-label-field:first-child{
+    margin-right: 20px;
+}
+
+.info-label-field input.email-field {
+    width: 100%;
+}
+
+.info-label-field input.phone-field {
+    width: 100%;
+}
+
+.account-information .checkbox-temp {
+    font-size: 16px;
+    color: #474442;
+    font-weight: 800;
+}
+
+.account-information .btn-primary-small {
+    background-color: #FFA877 !important;
+    height: 35px !important;
+}
+
+.personal-info-wrapper.edit-wrapper button {
+    width: 174px !important;
+    height: 35px !important;
+    padding: 7px 24px 4px !important;
+}
+
+.personal-info-wrapper.edit-wrapper {
     width: 100%;
 }

@@ -108,8 +108,10 @@ export default function MyAccount(props) {
     }
 
     return (
+        <div>
+        <h1 className='heading text-center'>My Account</h1>
         <div className='myaccount-page'>
-            <h1 className='heading text-center'>My Account</h1>
+           
 
             <section className='account-panel-switches'>
                 <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
@@ -161,6 +163,7 @@ export default function MyAccount(props) {
                 }
             </section>
 
+        </div>
         </div>
     );
 }
