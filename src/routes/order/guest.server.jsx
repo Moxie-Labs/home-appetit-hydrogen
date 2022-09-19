@@ -8,8 +8,8 @@ import {
   useLocalization,
   useShopQuery
 } from '@shopify/hydrogen';
-import { Layout } from '../components/Layout.client';
-import { OrderSection } from '../components/OrderSection.client';
+import { Layout } from '../../components/Layout.client';
+import { OrderSection } from '../../components/OrderSection.client';
 
 export default function Order() {
     const {
@@ -26,6 +26,7 @@ export default function Order() {
             <Layout>
                 <OrderSection
                     collectionData={collectionData}
+                    isGuest={true}
                 />
             </Layout>
         </Suspense>
