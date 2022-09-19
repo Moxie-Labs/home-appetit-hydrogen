@@ -115,8 +115,8 @@ import { TextField } from "./TextField.client";
 
         {/* Create Account */}
         <Modal
-          open={activeCreate}
-          onClose={dismissModals}
+          isOpen={activeCreate}
+          onRequestClose={dismissModals}
         >
           <section className="modal--create-inner">            
             <div className="padding-20v">
