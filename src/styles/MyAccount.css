@@ -44,6 +44,18 @@ section.account-panel-switches h2 {
 
 .order-table {
     width: 100%;
+    font-size: 1.125rem;
+}
+
+hr.order-divider {
+    margin: 40px 0;
+    height: 1px;
+    border: none;
+    background: #000000;
+}
+
+.order-table tr td b {
+    font-family: 'AvenirLTProBlack';
 }
 
 .account-information h1 {
@@ -322,6 +334,7 @@ input.card-number-field {
 .modal-new-payment .modal-row button.btn.btn-default {
     background: transparent;
     border: 2px solid #474442;
+    padding: 7px 0 4px;
 }
 
 .modal-new-payment .modal-row button.btn.btn-primary-small:hover {
