@@ -1,10 +1,11 @@
 import { useState } from "react";
 import Modal from "react-modal/lib/components/Modal";
+import editIcon from "../../assets/icon-edit-alt.png";
 
 export default function Payment(props) {
 
     const { customer, handleAddCard, handleRemoveCard } = props;
-    const { payments } = customer;
+    const { payments, addresses } = customer;
     // const { payments } = props;
 
     const [showModal, setShowModal] = useState(false);
@@ -14,12 +15,14 @@ export default function Payment(props) {
 
     const paymentMethods = payments.map((payment, i) => {
         return (
-            <article className="payment-method-unit" key={i}>
-                <p>{ i === 0 ? 'Default Payment' : `Payment ${i+1}`}</p>
-                <b>{payment.brand} {payment.maskedNumber}</b>
-                <p>Exp: {payment.expiryMonth}/{payment.expiryYear}</p>
-                <button disabled>Edit</button>|<button onClick={() => handleRemoveCard(i)}>Remove</button>
-            </article>
+            <div>
+                <p className="payment-label">{ i === 0 ? 'Default Payment' : `Payment ${i+1}`}</p>
+                    <article className="payment-method-unit" key={i}>  
+                        <b>{payment.brand} {payment.maskedNumber}</b>
+                        <p>Exp: {payment.expiryMonth}/{payment.expiryYear}</p>                   
+                    </article>
+                    <button className="btn-payment-edit" disabled>Edit</button> <span> | </span> <button className="btn-payment-remove" onClick={() => handleRemoveCard(i)}>Remove</button>
+            </div>
         );
     });
 
@@ -30,30 +33,55 @@ export default function Payment(props) {
 
     return (
         <div>
-            <h1>Saved Payments</h1>
+        <h1 className="ha-h5">Saved Payments</h1>
+        <div className="payment-information">
 
-            {paymentMethods}
+            <div className="payment-method-wrapper">
+                {paymentMethods}
+            </div>
 
-            <button className="btn btn-default" onClick={() => setShowModal(!showModal)}>Add New Payment</button>
+            <button className="btn btn-default btn-new-payment" onClick={() => setShowModal(!showModal)}>Add New Payment</button>
 
             <Modal
                 isOpen={showModal}
                 onRequestClose={() => setShowModal(false)}
+                className="modal-new-payment"
             >
-                <h1>Payment {payments.length}</h1>
+                <h1 className="ha-h4">Default Payment</h1>
+
                 <label>Card Number:</label>
-                <input value={newCardNumber} onChange={e => setNewCardNumber(e.target.value)}/>
+                <input className="card-number-field" value={newCardNumber} onChange={e => setNewCardNumber(e.target.value)}/>
 
-                <label>Name on Card:</label>
-                <input value={newName} onChange={e => setNewName(e.target.value)}/>
+                <div className="modal-row">
+                    <label>Name on Card:
+                        <input value={newName} onChange={e => setNewName(e.target.value)}/>
+                    </label>
 
-                <label>Expiration Date:</label>
-                <input value={newExpiry} onChange={e => setNewExpiry(e.target.value)}/>
+                    <label>Expiration Date:
+                    <input value={newExpiry} onChange={e => setNewExpiry(e.target.value)}/>
+                    </label>
+                </div>
 
-                <button className="btn btn-confirm" onClick={(newCardNumber, newName, newExpiry) => onAddCard(newCardNumber, newName, newExpiry)}>Update</button>
-                <button className="btn btn-default" onClick={() => setShowModal(false)}>Cancel</button>
+                <div className="modal-billing-address">
+                    <h5 className="ha-h5 ha-color-primary-text">Billing Address:</h5>
+                    <button className="btn btn-default btn-edit btn-modal-edit">Edit <img src={editIcon} width="24"/></button>
+                    <article>
+                        <div className="address">
+                            <p>{addresses[0].address1}</p>
+                            {addresses[0].address2 !== "" && <p>{addresses[0].address2}</p>}
+                            <p>{addresses[0].city}, {addresses[0].state} {addresses[0].zip}</p>
+                        </div>
+                    </article>
+                </div>
+
+                <div className="modal-row btn-wrapper">
+                    <button className="btn btn-confirm btn-primary-small" onClick={(newCardNumber, newName, newExpiry) => onAddCard(newCardNumber, newName, newExpiry)}>Update</button>
+                    <button className="btn btn-default" onClick={() => setShowModal(false)}>Cancel</button>
+                </div>
+
+                
             </Modal>
-
+          </div>
         </div>
     );
 }
