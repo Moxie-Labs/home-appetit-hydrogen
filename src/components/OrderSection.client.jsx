@@ -1,4 +1,4 @@
-import { gql } from "@shopify/hydrogen";
+import { gql, fetchSync } from "@shopify/hydrogen";
 import { Suspense, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -10,6 +10,7 @@ import { Page } from "./Page.client";
 import DeliveryInfo from "./DeliveryInfo.client";
 import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
+import { GET_CHECKOUT_MUTATION } from "../helpers/queries";
 
 
 // base configurations
@@ -42,6 +43,14 @@ const DEFAULT_CARDS = [
         lastName: "Simonelli",
         maskedNumber: "****1112"
     }
+];
+
+const TRADITIONAL_PLAN_VARIANT_IDS = [
+    "gid://shopify/ProductVariant/43314850169048", // one person
+    "gid://shopify/ProductVariant/43314850201816", // two people, etc.
+    "gid://shopify/ProductVariant/43314850234584",
+    "gid://shopify/ProductVariant/43314850267352",
+    "gid://shopify/ProductVariant/43314850300120"
 ];
 
 export function OrderSection(props) {
@@ -138,6 +147,8 @@ export function OrderSection(props) {
 
     const addItemToCart = (choice, collection, collectionName) => {
 
+        console.log("addItemToCard::choice", choice);
+
         // if: item was already added, then: update quantity (or remove)
         if (doesCartHaveItem(choice, collection)) {
             console.log("addItemToCart::already exists", choice);
@@ -176,7 +187,7 @@ export function OrderSection(props) {
             }, TOAST_CLEAR_TIME);
 
             if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
-                setCurrentStep(currentStep+1);
+                // setCurrentStep(currentStep+1);
             }
         }
     }
@@ -269,12 +280,54 @@ export function OrderSection(props) {
 
 
     const attemptSubmitOrder = () => {
-        createCheckout({
-            variables: {
-                lineItems: [{ variantId: "gid://shopify/ProductVariant/42919798276312", quantity: 1 }]
+        const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
+
+        // create lineitem collection with plan cost
+        const lineItems = [
+            {
+                variantId: traditionalPlanVariantId,
+                quantity: 1
             }
-        })
-        // setCurrentStep(8);
+        ];
+
+        // add Entrées to checkout
+        selectedMainItems.map(item => {
+            console.log("attemptSubmitOrder::item", item)
+            lineItems.push({
+                // TODO: grab node based on whether extra or not
+                variantId: item.choice.productOptions[1].node.id,
+                quantity: item.quantity
+            });
+        });
+
+        // add Small Plates to checkout
+        selectedSmallItems.map(item => {
+            lineItems.push({
+                variantId: item.choice.productOptions[1].node.id,
+                quantity: item.quantity
+            });
+        });
+
+        // add Addons to checkout
+        selectedAddonItems.map(item => {
+            lineItems.push({
+                variantId: item.choice.productOptions[0].node.id,
+                quantity: item.quantity
+            });
+        });
+
+        console.log("attemptSubmitOrder::lineItems", lineItems);
+
+        // const {
+        //     data: checkoutResp,
+        // } = queryShop({
+        // query: GET_CHECKOUT_MUTATION(lineItems),
+        // cache: CacheLong(),
+        // preload: false
+        // });
+
+        // console.log("checkoutResp", checkoutResp);
+
     }
 
     /* END Helpers */
@@ -303,7 +356,7 @@ export function OrderSection(props) {
             price: parseFloat(entree.node.priceRange.maxVariantPrice.amount/100),
             description: entree.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: entree.node.variants.edges
         });
     });
 
@@ -317,7 +370,7 @@ export function OrderSection(props) {
             price: parseFloat(greens.node.priceRange.maxVariantPrice.amount/100),
             description: greens.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: greens.node.variants.edges
         });
     });
 
@@ -334,6 +387,9 @@ export function OrderSection(props) {
             productOptions: []
         });
     });
+
+    console.log("choicesEntree", choicesEntrees);
+    console.log("choicesGreens", choicesGreens);
 
     /* END GraphQL Values */
 
@@ -412,7 +468,8 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
-                                    handleConfirm={() => setCurrentStep(3)}
+                                    // handleConfirm={() => setCurrentStep(3)}
+                                    handleConfirm={() => attemptSubmitOrder()}
                                     handleEdit={() => setCurrentStep(2)}
                                     selected={selectedMainItems}
                                     filters={selectedMainFilters}    
