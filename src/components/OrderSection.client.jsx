@@ -21,16 +21,37 @@ const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 8;
 const FIRST_WINDOW_START = 8;
 const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
+const DEFAULT_CARDS = [
+    {
+        brand: "Visa",
+        expiryMonth: "11",
+        expiryYear: "26",
+        firstDigits: 4111,
+        firstName: "Jon Paul",
+        lastDigits: 1111,
+        lastName: "Simonelli",
+        maskedNumber: "****1111"
+    },
+    {
+        brand: "Visa",
+        expiryMonth: "10",
+        expiryYear: "27",
+        firstDigits: 4112,
+        firstName: "Jon Paul",
+        lastDigits: 1112,
+        lastName: "Simonelli",
+        maskedNumber: "****1112"
+    }
+];
 
 export function OrderSection(props) {
-
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
     const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState('traditional')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
-    const [isGuest, setIsGuest] = useState(false);
+    const [isGuest, setIsGuest] = useState(props.isGuest);
 
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
     const [selectedMainItems, setSelectedMainItems] = useState([])
@@ -46,15 +67,17 @@ export function OrderSection(props) {
     const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
     const [deliveryWindowDay, setDeliveryWindowDay] = useState(6);
-    const [firstName, setFirstName] = useState("Jon Paul");
-    const [lastName, setLastName] = useState("Simonelli");
-    const [emailAddress, setEmailAddress] = useState("jpsimonelli@moxielabs.co");
-    const [phoneNumber, setPhoneNumber] = useState("123 456 7890");
-    const [address, setAddress] = useState("121 Mayberry Road");
-    const [address2, setAddress2] = useState("");
-    const [deliveryState, setDeliveryState] = useState("Pennsylvania");
-    const [city, setCity] = useState("Catawissa");
-    const [zipcode, setZipcode] = useState("17820");
+
+    let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
+    let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
+    let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "123 456 7890");
+    let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
+    let [address2, setAddress2] = useState(isGuest ? null : "");
+    let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
+    let [city, setCity] = useState(isGuest ? null : "Catawissa");
+    let [zipcode, setZipcode] = useState(isGuest ? null : "17820");    
+
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
     const [isGift, setIsGift] = useState(false);
@@ -78,28 +101,7 @@ export function OrderSection(props) {
     const [billingCity, setBillingCity] = useState("");
     const [billingZipcode, setBillingZipcode] = useState("");
 
-    const [creditCards, setCreditCards] = useState([
-        {
-            brand: "Visa",
-            expiryMonth: "11",
-            expiryYear: "26",
-            firstDigits: 4111,
-            firstName: "Jon Paul",
-            lastDigits: 1111,
-            lastName: "Simonelli",
-            maskedNumber: "****1111"
-        },
-        {
-            brand: "Visa",
-            expiryMonth: "10",
-            expiryYear: "27",
-            firstDigits: 4112,
-            firstName: "Jon Paul",
-            lastDigits: 1112,
-            lastName: "Simonelli",
-            maskedNumber: "****1112"
-        }
-    ])
+    const [creditCards, setCreditCards] = useState(props.guest ? [] : DEFAULT_CARDS)
     const [giftCards, setGiftCards] = useState([]);
     const [giftCardTriggered, setGiftCardTriggered] = useState(false);
     const [promoTriggered, setPromoTriggered] = useState(false);
@@ -250,6 +252,7 @@ export function OrderSection(props) {
         return result < 0 ? (result *= -1, new Date((new Date).setDate((new Date).getDate() - result))) : new Date((new Date).setDate((new Date).getDate() + result))
     }
 
+    // TODO: grab GUID dynamically
     const addExtraIce = value => {
         const iceItem = ICE_ITEM;
         const iceChoice = {
@@ -540,6 +543,7 @@ export function OrderSection(props) {
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={6}
                                 currentStep={currentStep}
+                                isGuest={isGuest}
                             />
 
                         </LayoutSection>
