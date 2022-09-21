@@ -55,7 +55,7 @@ const TRADITIONAL_PLAN_VARIANT_IDS = [
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, lines: cartLines } = useCart();
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines } = useCart();
 
     // const { id: cartId, checkoutUrl } = useCart();
 
@@ -174,9 +174,9 @@ export function OrderSection(props) {
                 setSelectedAddonItems([...collection]);
 
 
-                linesRemove({lineIds: [
-                    choice.choice.productOptions[1].node.id
-                ]})
+                // linesRemove({lineIds: [
+                //     choice.choice.productOptions[1].node.id
+                // ]})
 
         }
 
@@ -292,7 +292,14 @@ export function OrderSection(props) {
             price: parseFloat(iceItem.priceRange.maxVariantPrice.amount/100),
             description: "",
             imageURL: "",
-            productOptions: []
+            productOptions: [{
+                node: {
+                    id: ICE_ITEM.id
+                },
+                node: {
+                    id: ICE_ITEM.id
+                }
+            }]
         }
         addItemToCart({choice: iceChoice, quantity: (value ? 1 : 0)}, selectedAddonItems, "addons");
         setExtraIce(value);
