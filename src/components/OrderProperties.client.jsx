@@ -22,6 +22,7 @@ export default class OrderProperties extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleContinue = this.handleContinue.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
+
     }
 
     handleChange(event) {
@@ -30,6 +31,8 @@ export default class OrderProperties extends React.Component {
     
     handleContinue(event) {
         this.props.handleContinue();
+        const step = document.querySelector(".step-active");
+        step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     handleCancel(event) {

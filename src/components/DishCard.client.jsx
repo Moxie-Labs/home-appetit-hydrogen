@@ -68,7 +68,9 @@ export default class DishCard extends React.Component {
         });
 
         handleSelected({choice: choice, quantity: quantity});
-        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+
+        const step = document.querySelector(".step-active");
+        step.scrollIntoView({behavior: "smooth", block: "start"});
         
     }
 
@@ -127,6 +129,8 @@ export default class DishCard extends React.Component {
         const disclaimerText =  isCardActive ? `*Each added dish serves ${servingCount} ${peoplePlural}` : `Serves ${servingCount} ${peoplePlural}`;
 
         const optionCostText = optionCost > 0 ? `+${formatter.format(optionCost)} customizations` : null;
+
+    
 
     return (
         <div className={`dish-card${isCardActive ? ' active ' : ''}${confirmed ? ' confirmed' : ''} ${(maxQuantity < 1 && quantity < 1 && !isCardActive) ? ' disabled' : ''}`}>

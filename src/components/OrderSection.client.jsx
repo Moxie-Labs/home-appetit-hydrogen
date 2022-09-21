@@ -398,7 +398,7 @@ export function OrderSection(props) {
 
                             {/* Menu Sections */}
                     
-                            <div className={`dish-card-wrapper ${currentStep === 2 ? "" : "dishcard--wrapper-inactive"}`}>
+                            <div className={`dish-card-wrapper ${currentStep === 2 ? "step-active" : "dishcard--wrapper-inactive"}`}>
                                 <MenuSection 
                                     step={2} 
                                     currentStep={currentStep}
@@ -419,7 +419,7 @@ export function OrderSection(props) {
                                 />
                             </div>
                             
-                            <div className={`dish-card-wrapper ${currentStep === 3 ? "" : "dishcard--wrapper-inactive"}`}>
+                            <div className={`dish-card-wrapper ${currentStep === 3 ? "step-active" : "dishcard--wrapper-inactive"}`}>
                                 <MenuSection 
                                     step={3} 
                                     currentStep={currentStep}
@@ -440,7 +440,7 @@ export function OrderSection(props) {
                                 />
                             </div>
 
-                            <div className={`dish-card-wrapper ${currentStep === 4 ? "" : "dishcard--wrapper-inactive"}`}>
+                            <div className={`dish-card-wrapper ${currentStep === 4 ? "step-active-final" : "dishcard--wrapper-inactive"}`}>
                                 <MenuSection 
                                     step={4} 
                                     currentStep={currentStep}
