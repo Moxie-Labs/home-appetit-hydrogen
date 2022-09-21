@@ -172,7 +172,7 @@ img {
 }
 
 .ha-color-bg-orange {
-    background-color: #FFA877;
+    background-color: #FFA877 !important;
 }
 
 .ha-color-bg-body{

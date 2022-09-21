@@ -54,7 +54,7 @@ export default function Orders(props) {
             
             }
 
-            <hr className="order-divider"></hr>
+            <div className="line-separator"></div>
 
             { pastOrders.length > 0 && 
             <section>

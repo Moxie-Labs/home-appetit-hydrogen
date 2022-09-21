@@ -98,7 +98,7 @@ export default function PersonalInfo(props) {
             }
         
 
-            <hr></hr>
+            <div className="line-separator"></div>
 
             <h1 className="address-title">Saved Addresses</h1>
 
@@ -125,7 +125,7 @@ export default function PersonalInfo(props) {
             }
        
 
-        <hr></hr>
+       <div className="line-separator"></div>
 
         <h1 className="address-title">Communication Preferences</h1>
 

@@ -1,6 +1,10 @@
+.myaccount-wrapper {
+    padding: 5rem;
+}
+
 .myaccount-page {
     width: 1440px;
-    padding: 90px;
+    padding: 0 5rem;
     display: flex;
     gap: 5%;
     flex-wrap: wrap;
@@ -37,7 +41,7 @@ section.account-panel-switches h2 {
 
     .account-panel-switch.active, .account-panel-switch:hover {
         font-family: ITC Avant Garde Gothic W03 Md !important;
-        border-bottom: 3px solid #000;
+        border-bottom: 3px solid #474442;
         font-weight: 600;
         padding: 20px 0 8px;
     }
@@ -60,12 +64,12 @@ hr.order-divider {
 
 .account-information h1 {
     font-size: 18px;
-    font-family: 'ITCAvantGardeProDemi' !important;
+    font-family: "ITC Avant Garde Gothic W03 Md" !important;
     text-transform: uppercase;
     margin: 0 !important;
 }
 
-.account-information input, .modal-new-payment input {
+.account-information input, .modal-new-payment input, .gift-card-information input {
     padding: 14px 25px;
     border-radius: 10px;
     border: 2px solid #385F83 !important;
@@ -79,14 +83,14 @@ hr.order-divider {
     outline: none !important;
 }
 
-.myaccount-page button {
-    background: transparent !important;
-    border: 2px solid #474442 !important;
-    color: #474442 !important;
+.myaccount-page .btn {
+    background: transparent;
+    border: 2px solid #474442;
+    color: #474442;
     font-size: 18px;
-    font-family: 'ITCAvantGardeProDemi' !important;
+    font-family: 'ITCAvantGardeProDemi';
     border-radius: 24px;
-    padding: 9px 24px 4px !important;
+    padding: 9px 24px 4px;
 }
 
 button.btn.btn-default.btn-edit {
@@ -117,8 +121,8 @@ button.btn.btn-default.btn-edit img {
     font-weight: 800;
 }
 
-span.info-label, .info-label-field{
-    font-size: 14px;
+span.info-label, .info-label-field, label.check-balance-label{
+    font-size: 0.875rem;
     font-family: 'AvenirLTProRoman';
 }
 
@@ -137,8 +141,8 @@ span.info-label, .info-label-field{
     width: 85%;
 }
 
-.account-information hr {
-    border: 1px solid #474442;
+.myaccount-page .line-separator {
+    border-bottom: 1px solid #474442;
     margin: 40px 0;
 }
 
@@ -225,12 +229,12 @@ h1.address-title {
     margin: 40px 0;
 }
 
-.payment-method-wrapper .btn-payment-edit, .payment-method-wrapper .btn-payment-remove {
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    text-transform: uppercase;
+button.btn-payment-remove.ha-a, .btn-payment-edit {
+    background: transparent;
+    border: none;
+    text-decoration: underline;
     cursor: pointer;
+    color: #474442;
 }
 
 .payment-method-separator{
@@ -257,13 +261,13 @@ article.payment-method-unit b {
 }
 
 p.payment-label {
-    padding: 0 !important;
-    margin: 0 0 5px !important;
+    padding: 0;
+    margin: 0 0 5px;
     font-size: 14px;
     font-family: 'AvenirLTProRoman';
 }
 
-section.account-panel-body h1.ha-h5 {
+section.account-panel-body h1.ha-h5, .gift-card-information h1 {
     text-transform: uppercase;
     font-family: "ITC Avant Garde Gothic W03 Md" !important;
 }
@@ -359,4 +363,58 @@ button.btn.btn-default.btn-edit.btn-modal-edit {
     right: 0;
     background: transparent;
     color: #474442;
+}
+
+.gift-card-information input {
+    display: inline;
+    margin-right: 1.25rem;
+    width: 45%;
+}
+
+.myaccount-page .account-panel-body .gift-card-information .btn-submit {
+    display: inline-block;
+    background: #FFA877 !important;
+}
+
+label.check-balance-label {
+    display: block;
+}
+
+.balance-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 65%;
+    margin: 1.875rem 0;
+}
+
+.balance-wrapper p, .gift-card-row p {
+    font-size: 1.125rem;
+}
+
+.gift-card-row {
+    display: flex;
+    width: 65%;
+    justify-content: space-between;
+    margin: 1.25rem 0;
+}
+
+.gift-card-row a{
+    color:#474442;
+}
+
+.gift-card-row h2 {
+    text-transform: uppercase;
+}
+
+.gift-card-row h2, .gift-card-row p {
+    margin: 0;
+    padding: 0;
+}
+
+.balance-wrapper p strong, .gift-card-row p strong, .gift-card-information p strong {
+    font-family: 'AvenirLTProHeavy';
+}
+
+.referral-program-wrapper {
+    margin: 1.875rem 0;
 }

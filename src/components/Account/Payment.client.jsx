@@ -21,7 +21,7 @@ export default function Payment(props) {
                         <b>{payment.brand} {payment.maskedNumber}</b>
                         <p>Exp: {payment.expiryMonth}/{payment.expiryYear}</p>                   
                     </article>
-                    <button className="btn-payment-edit" disabled>Edit</button> <span> | </span> <button className="btn-payment-remove" onClick={() => handleRemoveCard(i)}>Remove</button>
+                    <button className="btn-payment-edit ha-a" disabled>Edit</button> <span> | </span> <button className="btn-payment-remove ha-a" onClick={() => handleRemoveCard(i)}>Remove</button>
             </div>
         );
     });
@@ -64,7 +64,7 @@ export default function Payment(props) {
 
                 <div className="modal-billing-address">
                     <h5 className="ha-h5 ha-color-primary-text">Billing Address:</h5>
-                    <button className="btn btn-default btn-edit btn-modal-edit">Edit <img src={editIcon} width="24"/></button>
+                    <button className="btn btn-default btn-edit btn-modal-edit ha-a">Edit <img src={editIcon} width="24"/></button>
                     <article>
                         <div className="address">
                             <p>{addresses[0].address1}</p>

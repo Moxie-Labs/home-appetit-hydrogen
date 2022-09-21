@@ -108,8 +108,8 @@ export default function MyAccount(props) {
     }
 
     return (
-        <div>
-        <h1 className='heading text-center'>My Account</h1>
+        <div className='myaccount-wrapper'>
+        <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
         <div className='myaccount-page'>
            
 
