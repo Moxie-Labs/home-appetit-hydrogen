@@ -1,4 +1,4 @@
-import { gql, fetchSync } from "@shopify/hydrogen";
+import { gql, useCart } from "@shopify/hydrogen";
 import { Suspense, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -54,6 +54,11 @@ const TRADITIONAL_PLAN_VARIANT_IDS = [
 ];
 
 export function OrderSection(props) {
+
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, lines: cartLines } = useCart();
+
+    // const { id: cartId, checkoutUrl } = useCart();
+
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
@@ -168,11 +173,18 @@ export function OrderSection(props) {
             else 
                 setSelectedAddonItems([...collection]);
 
+
+                linesRemove({lineIds: [
+                    choice.choice.productOptions[1].node.id
+                ]})
+
         }
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);
+            const variantType = collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+
             if (collectionName === 'main') 
                 setSelectedMainItems([...collection, choice]);
             else if (collectionName === 'small')
@@ -189,6 +201,14 @@ export function OrderSection(props) {
             if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
                 // setCurrentStep(currentStep+1);
             }
+
+            console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
+            // update Shopify Cart
+            linesAdd({ 
+                merchandiseId: choice.choice.productOptions[variantType].node.id,
+                quantity: choice.quantity
+            });
+        
         }
     }
 
@@ -280,54 +300,18 @@ export function OrderSection(props) {
 
 
     const attemptSubmitOrder = () => {
+        window.location.href=`${checkoutUrl}`;
+    }
+
+    const confirmPersonsCount = () => {
         const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
 
-        // create lineitem collection with plan cost
-        const lineItems = [
-            {
-                variantId: traditionalPlanVariantId,
-                quantity: 1
-            }
-        ];
-
-        // add Entrées to checkout
-        selectedMainItems.map(item => {
-            console.log("attemptSubmitOrder::item", item)
-            lineItems.push({
-                // TODO: grab node based on whether extra or not
-                variantId: item.choice.productOptions[1].node.id,
-                quantity: item.quantity
-            });
+        linesAdd({
+            merchandiseId: traditionalPlanVariantId,
+            quantity: 1
         });
 
-        // add Small Plates to checkout
-        selectedSmallItems.map(item => {
-            lineItems.push({
-                variantId: item.choice.productOptions[1].node.id,
-                quantity: item.quantity
-            });
-        });
-
-        // add Addons to checkout
-        selectedAddonItems.map(item => {
-            lineItems.push({
-                variantId: item.choice.productOptions[0].node.id,
-                quantity: item.quantity
-            });
-        });
-
-        console.log("attemptSubmitOrder::lineItems", lineItems);
-
-        // const {
-        //     data: checkoutResp,
-        // } = queryShop({
-        // query: GET_CHECKOUT_MUTATION(lineItems),
-        // cache: CacheLong(),
-        // preload: false
-        // });
-
-        // console.log("checkoutResp", checkoutResp);
-
+        setCurrentStep(2);
     }
 
     /* END Helpers */
@@ -384,12 +368,9 @@ export function OrderSection(props) {
             price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
             description: addons.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: addons.node.variants.edges
         });
     });
-
-    console.log("choicesEntree", choicesEntrees);
-    console.log("choicesGreens", choicesGreens);
 
     /* END GraphQL Values */
 
@@ -446,7 +427,7 @@ export function OrderSection(props) {
                                 <OrderProperties
                                     activeScheme={activeScheme}
                                     handleChange={(value) => setServingCount(value)}
-                                    handleContinue={() => setCurrentStep(2)}
+                                    handleContinue={() => confirmPersonsCount()}
                                     handleCancel={() => console.log("Cancel clicked")}
                                     step={1}
                                     currentStep={currentStep}
@@ -468,8 +449,7 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
-                                    // handleConfirm={() => setCurrentStep(3)}
-                                    handleConfirm={() => attemptSubmitOrder()}
+                                    handleConfirm={() => setCurrentStep(3)}
                                     handleEdit={() => setCurrentStep(2)}
                                     selected={selectedMainItems}
                                     filters={selectedMainFilters}    
@@ -540,7 +520,7 @@ export function OrderSection(props) {
                     </Layout>
                 }
 
-{ getPhase(currentStep) === "payment" && 
+            { getPhase(currentStep) === "payment" && 
                 <div className="payment-wrapper">
                     <Layout>
                         <LayoutSection>
