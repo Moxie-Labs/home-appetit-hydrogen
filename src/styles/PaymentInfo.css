@@ -223,6 +223,6 @@
 .payment-wrapper main:last-child {
     position: sticky !important;
     /* align-self: flex-start; */
-    top: 60px;
+    top: 40px;
     align-self: flex-start;
 }

@@ -11,6 +11,7 @@ import DeliveryInfo from "./DeliveryInfo.client";
 import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
 import { CompleteSignUp } from "./CompleteSignup.client";
+import {Header} from "./Header.client";
 
 
 // base configurations
@@ -380,6 +381,7 @@ export function OrderSection(props) {
     return (
         <Page>
             <Suspense>
+            <Header />
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
