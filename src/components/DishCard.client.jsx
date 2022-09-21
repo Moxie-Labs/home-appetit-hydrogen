@@ -48,6 +48,23 @@ export default class DishCard extends React.Component {
         return formatter.format(Math.max(0, (quantity  - freeQuantityLimit)) * price);
     }
 
+    dishCardBlur(className) {
+        var elems = document.querySelectorAll(className);
+        var index = 0, length = elems.length;
+        for ( ; index < length; index++) {
+            elems[index].style.transition = "opacity 0.1s linear 0s";
+            elems[index].style.opacity = 0.5;
+        }
+    }
+
+    dishCardClear(className) {
+        var elems = document.querySelectorAll(className);
+        var index = 0, length = elems.length;
+        for ( ; index < length; index++) {
+            elems[index].style.opacity = 1;
+        }
+    }
+
     setIsCardActive(isCardActive) {
         console.log("activating");
         if (!this.isCardActive) {
@@ -56,6 +73,10 @@ export default class DishCard extends React.Component {
                 confirmed: false
             });
         }
+
+        this.dishCardBlur('.dish-card-blur');
+        this.dishCardBlur('.order_prop__subheading');
+        this.dishCardBlur('.order_prop__heading');
     }
 
     handleConfirm() {
@@ -71,6 +92,10 @@ export default class DishCard extends React.Component {
 
         const step = document.querySelector(".step-active");
         step.scrollIntoView({behavior: "smooth", block: "start"});
+
+        this.dishCardClear('.dish-card-blur');
+        this.dishCardClear('.step-active .order_prop__subheading');
+        this.dishCardClear('.step-active .order_prop__heading');
         
     }
 
@@ -133,7 +158,7 @@ export default class DishCard extends React.Component {
     
 
     return (
-        <div className={`dish-card${isCardActive ? ' active ' : ''}${confirmed ? ' confirmed' : ''} ${(maxQuantity < 1 && quantity < 1 && !isCardActive) ? ' disabled' : ''}`}>
+        <div className={`dish-card${isCardActive ? ' active ' : ' dish-card-blur'}${confirmed ? ' confirmed' : ''} ${(maxQuantity < 1 && quantity < 1 && !isCardActive) ? ' disabled' : ''}`}>
             {!isCardActive && confirmed && 
                 <p className="card__quantity-badge">{quantity}</p>
             }
