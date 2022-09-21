@@ -1,4 +1,4 @@
-import { gql } from "@shopify/hydrogen";
+import { gql, useCart } from "@shopify/hydrogen";
 import { Suspense, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -10,6 +10,7 @@ import { Page } from "./Page.client";
 import DeliveryInfo from "./DeliveryInfo.client";
 import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
+import { GET_CHECKOUT_MUTATION } from "../helpers/queries";
 
 
 // base configurations
@@ -44,7 +45,20 @@ const DEFAULT_CARDS = [
     }
 ];
 
+const TRADITIONAL_PLAN_VARIANT_IDS = [
+    "gid://shopify/ProductVariant/43314850169048", // one person
+    "gid://shopify/ProductVariant/43314850201816", // two people, etc.
+    "gid://shopify/ProductVariant/43314850234584",
+    "gid://shopify/ProductVariant/43314850267352",
+    "gid://shopify/ProductVariant/43314850300120"
+];
+
 export function OrderSection(props) {
+
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, lines: cartLines } = useCart();
+
+    // const { id: cartId, checkoutUrl } = useCart();
+
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
@@ -138,6 +152,8 @@ export function OrderSection(props) {
 
     const addItemToCart = (choice, collection, collectionName) => {
 
+        console.log("addItemToCard::choice", choice);
+
         // if: item was already added, then: update quantity (or remove)
         if (doesCartHaveItem(choice, collection)) {
             console.log("addItemToCart::already exists", choice);
@@ -157,11 +173,18 @@ export function OrderSection(props) {
             else 
                 setSelectedAddonItems([...collection]);
 
+
+                linesRemove({lineIds: [
+                    choice.choice.productOptions[1].node.id
+                ]})
+
         }
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);
+            const variantType = collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+
             if (collectionName === 'main') 
                 setSelectedMainItems([...collection, choice]);
             else if (collectionName === 'small')
@@ -176,8 +199,16 @@ export function OrderSection(props) {
             }, TOAST_CLEAR_TIME);
 
             if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
-                setCurrentStep(currentStep+1);
+                // setCurrentStep(currentStep+1);
             }
+
+            console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
+            // update Shopify Cart
+            linesAdd({ 
+                merchandiseId: choice.choice.productOptions[variantType].node.id,
+                quantity: choice.quantity
+            });
+        
         }
     }
 
@@ -269,12 +300,18 @@ export function OrderSection(props) {
 
 
     const attemptSubmitOrder = () => {
-        createCheckout({
-            variables: {
-                lineItems: [{ variantId: "gid://shopify/ProductVariant/42919798276312", quantity: 1 }]
-            }
-        })
-        // setCurrentStep(8);
+        window.location.href=`${checkoutUrl}`;
+    }
+
+    const confirmPersonsCount = () => {
+        const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
+
+        linesAdd({
+            merchandiseId: traditionalPlanVariantId,
+            quantity: 1
+        });
+
+        setCurrentStep(2);
     }
 
     /* END Helpers */
@@ -303,7 +340,7 @@ export function OrderSection(props) {
             price: parseFloat(entree.node.priceRange.maxVariantPrice.amount/100),
             description: entree.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: entree.node.variants.edges
         });
     });
 
@@ -317,7 +354,7 @@ export function OrderSection(props) {
             price: parseFloat(greens.node.priceRange.maxVariantPrice.amount/100),
             description: greens.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: greens.node.variants.edges
         });
     });
 
@@ -331,7 +368,7 @@ export function OrderSection(props) {
             price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
             description: addons.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: addons.node.variants.edges
         });
     });
 
@@ -390,7 +427,7 @@ export function OrderSection(props) {
                                 <OrderProperties
                                     activeScheme={activeScheme}
                                     handleChange={(value) => setServingCount(value)}
-                                    handleContinue={() => setCurrentStep(2)}
+                                    handleContinue={() => confirmPersonsCount()}
                                     handleCancel={() => console.log("Cancel clicked")}
                                     step={1}
                                     currentStep={currentStep}
@@ -483,7 +520,7 @@ export function OrderSection(props) {
                     </Layout>
                 }
 
-{ getPhase(currentStep) === "payment" && 
+            { getPhase(currentStep) === "payment" && 
                 <div className="payment-wrapper">
                     <Layout>
                         <LayoutSection>

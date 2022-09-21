@@ -10,6 +10,7 @@ import {
 } from '@shopify/hydrogen';
 import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';
+import { GET_CATEGORIES_QUERY } from '../../helpers/queries';
 
 export default function Order() {
     const {
@@ -26,109 +27,9 @@ export default function Order() {
             <Layout>
                 <OrderSection
                     collectionData={collectionData}
-                    isGuest={true}
                 />
             </Layout>
         </Suspense>
         </>
     );
 }
-
- /* GraphQL Values */
- const GET_CATEGORIES_QUERY = gql`
- {
-     collections(first: 7) {
-         edges {
-             node {
-                 id
-                 title
-                 handle
-                 products(first: 20) {
-                     edges {
-                         node {
-                             id
-                             title
-                             description
-                             # handle
-                             tags
-                             images(first: 1) {
-                                 edges {
-                                     node {
-                                         # id
-                                         altText
-                                         # width
-                                         # height
-                                         src
-                                     }
-                                 }
-                             }
-                             priceRange {
-                                 minVariantPrice {
-                                     amount
-                                 }
-                                 maxVariantPrice {
-                                     amount
-                                 }
-                             }
-                             # options(first: 100) {
-                             #     id
-                             #     name
-                             #     values
-                             # }
-                         }
-                     }
-                 }
-             }
-         }
-     }
- }
-`;
-
-const TEST_CONTENT_QUERY = gql`
-  {
-        collections(first: 7) {
-            edges {
-                node {
-                    id
-                    title
-                    handle
-                    products(first: 20) {
-                        edges {
-                            node {
-                                id
-                                title
-                                description
-                                # handle
-                                tags
-                                images(first: 1) {
-                                    edges {
-                                        node {
-                                            # id
-                                            altText
-                                            # width
-                                            # height
-                                            src
-                                        }
-                                    }
-                                }
-                                priceRange {
-                                    minVariantPrice {
-                                        amount
-                                    }
-                                    maxVariantPrice {
-                                        amount
-                                    }
-                                }
-                                # options(first: 100) {
-                                #     id
-                                #     name
-                                #     values
-                                # }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-`;
