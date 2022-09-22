@@ -203,7 +203,7 @@ export default class DishCard extends React.Component {
                     <p className="card__servings-disclaimer">{disclaimerText}</p>
                 </div>
 
-                        <div style={{backgroundColor: "blue"}}>
+                        {/* <div>
                             <Modal
                                 isOpen={isModalShowing}
                                 onClose={this.toggleModal}
@@ -215,10 +215,8 @@ export default class DishCard extends React.Component {
                                         <p className="card__description">{description}</p>
                                         
                                         <div className="modal--card__info">
-                                            {/* start placeholder */}
                                             <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
                                             <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
-                                            {/* end placeholder */}
                                             <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
                                         </div>
                                     </div>
@@ -237,10 +235,6 @@ export default class DishCard extends React.Component {
                                         <span># Max Customizations</span>
                                         <span>*Explanation copy non provident, similique sunt in culpa qui officia deserunt Flexible Plan</span>
                                     </section>
-                                    
-                                    {/* {optionsSection.length !== 0 &&
-                                       {optionsSection} 
-                                    }  */}
                                     
                                     {optionsSection.length === 0 &&
                                         <div className="modal--customize-option-placeholder">
@@ -268,13 +262,24 @@ export default class DishCard extends React.Component {
 
                                     </section>
                                 </section>
-
-                                
-                    
-                                
-                                
                             </Modal>
-                        </div>
+                        </div> */}
+                            
+                            <Modal
+                              isOpen={isModalShowing}
+                              onClose={this.toggleModal}
+                              className="modal--flexible-confirmaton"
+                            >
+                                <div className='modal--flexible-inner'>
+                                    <h2 className='ha-h4'>Change order type?</h2>
+                                    <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
+                                    <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
+                                    <section className="card__actions">
+                                        <button className="btn btn-primary-small btn-counter-confirm">Switch to flex plan</button>
+                                        <button className="btn ha-a btn-modal-cancel">Cancel</button>
+                                    </section>   
+                                </div>
+                            </Modal>
                 
             </section>
 

@@ -377,3 +377,49 @@ h2.card__quantity-title {
     opacity: 1;
 }
 
+.modal--flexible-confirmaton {
+    width: 620px;
+    padding: 2.5rem;
+    background: #FFFCF5;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.modal--flexible-confirmaton .card__actions{
+    margin: auto;
+    width: 100%;
+}
+
+.btn-counter-customize{
+    color: #474442;
+}
+
+.modal--flexible-inner .card__actions .btn-modal-cancel {
+    flex: 50%;
+    background: transparent;
+    border-radius: 36px;
+    border: 2px solid #474442;
+}
+
+.modal--flexible-inner .card__actions .btn{
+    font-size: 14px;
+    flex: 1;
+}
+
+.modal--flexible-inner .subheading {
+    font-size: 24px;
+    color: #474442;
+    line-height: 38px;
+    font-family: 'AvenirLTProRoman' !important;
+    margin: 0.65rem 0;
+    padding: 0;
+}
+
+.modal--flexible-inner .ha-body {
+    padding: 0;
+    margin-bottom: 1.875rem;
+}
