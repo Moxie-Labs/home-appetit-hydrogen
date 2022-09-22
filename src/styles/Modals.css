@@ -92,7 +92,6 @@
     padding: 0 !important;
     max-height: 560px;
     border-radius: 12px !important;
-    /* inset: 160px 0 !important; */
     position: absolute;
     left: 50%;
     top: 50%;
@@ -112,4 +111,65 @@ section.modal--customize-inner {
     margin: auto;
     border-radius: 12px !important;
     inset: 60px 0;
+}
+
+.modal--gift-card {
+    width: 620px;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: #FFFCF5;
+    border-radius: 12px;
+    padding: 2.5rem;
+}
+
+.modal--gift-card input::placeholder {
+    color: #9E9694;
+    font-family: 'AvenirLTProRoman';
+}
+
+.modal--gift-card input {
+    width: 100%;
+    padding: 0.875rem 1.56rem;
+    border-radius: 10px;
+    border: 1px solid #474442;
+    color: #9E9694;
+}
+
+.modal--gift-card .calculator-wrapper {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.modal--gift-card .gift-card-calculator--amount {
+    font-size: 1.5rem;
+    color: #474442;
+    opacity: 0.5;
+    font-style: italic;
+    margin: 1.875rem;
+}
+
+.modal--gift-card .btn.btn-primary-small-disable {
+    opacity: 0.5;
+}
+
+.modal--gift-card .gift-card-control {
+    display: flex;
+}
+
+.modal--gift-card .gift-card-control .btn {
+    height: 35px;
+    padding: 0.462rem;
+    font-size: 1.125rem;
+}
+
+.calculator-field label {
+    color: #474442;
+}
+
+.modal--gift-card .gift-card-control button.btn.btn-secondary.btn-modal {
+    background: transparent;
+    border: 2px solid #474442;
+    color: #474442;
 }
