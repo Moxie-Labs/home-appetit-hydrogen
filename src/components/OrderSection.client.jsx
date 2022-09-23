@@ -12,6 +12,7 @@ import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
 import { CompleteSignUp } from "./CompleteSignup.client";
 import {Header} from "./Header.client";
+import {Footer} from "./Footer.client";
 
 
 // base configurations
@@ -678,6 +679,7 @@ export function OrderSection(props) {
             }
 
             </Suspense>
+            <Footer />
         </Page>
     );
 }
