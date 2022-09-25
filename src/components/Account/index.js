@@ -6,6 +6,6 @@ export {AccountCreateForm} from './AccountCreateForm.client';
 // export {AccountDetails} from './AccountDetails.client';
 // export {AccountDetailsEdit} from './AccountDetailsEdit.client';
 export {AccountLoginForm} from './AccountLoginForm.client';
-// export {AccountOrderHistory} from './AccountOrderHistory.client';
+export {AccountOrderHistory} from './AccountOrderHistory.client';
 // export {AccountPasswordResetForm} from './AccountPasswordResetForm.client';
 // export {AccountRecoverForm} from './AccountRecoverForm.client';

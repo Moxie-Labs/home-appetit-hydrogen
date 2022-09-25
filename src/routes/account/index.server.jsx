@@ -11,16 +11,17 @@ import {
 
 import {PRODUCT_CARD_FRAGMENT} from '../../lib/fragments';
 import {getApiErrorMessage} from '../../lib/utils';
-// import {
+import {
 //   AccountAddressBook,
 //   AccountDetails,
-//   AccountOrderHistory,
+  AccountOrderHistory,
 //   FeaturedCollections,
 //   LogoutButton,
 //   PageHeader,
-// } from '../../components/Account';
+} from '~/components/Account';
 // import {Layout, ProductSwimlane} from '../../components/Account/index.js';
 import { Layout } from '../../components/Layout.client';
+// import { AccountOrderHistory } from '../../components/Account/AccountOrderHistory.client';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -60,13 +61,13 @@ export default function Account({response}) {
 
   return (
     <Layout>
-      {/* <AuthenticatedAccount
+      <AuthenticatedAccount
         customer={customer}
         addresses={addresses}
         defaultAddress={defaultAddress}
         featuredCollections={flattenConnection(featuredCollections)}
         featuredProducts={flattenConnection(featuredProducts)}
-      /> */}
+      />
     </Layout>
   );
 }
@@ -86,16 +87,23 @@ function AuthenticatedAccount({
       : `Welcome to your account.`
     : 'Account Details';
 
+    console.log('orders', orders)
+
   return (
-    <>
-      {/* <Suspense>
+    <Layout>
+      <h1>Account Info</h1>
+      <Suspense>
         <Seo type="noindex" data={{title: 'Account details'}} />
       </Suspense>
-      <PageHeader heading={heading}>
+
+      {orders && <h2>Order Count: {orders.length}</h2>}
+
+      {/* <PageHeader heading={heading}>
         <LogoutButton>Sign out</LogoutButton>
-      </PageHeader>
+      </PageHeader> */}
+
       {orders && <AccountOrderHistory orders={orders} />}
-      <AccountDetails
+      {/* <AccountDetails
         firstName={customer.firstName}
         lastName={customer.lastName}
         phone={customer.phone}
@@ -112,9 +120,9 @@ function AuthenticatedAccount({
             data={featuredCollections}
           />
           <ProductSwimlane data={featuredProducts} />
-        </>
-      )} */}
-    </>
+        </> 
+      )}*/}
+    </Layout>
   );
 }
 

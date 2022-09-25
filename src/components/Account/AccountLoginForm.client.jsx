@@ -46,6 +46,7 @@ export function AccountLoginForm({shopName}) {
         setHasSubmitError(true);
         resetForm();
       } else {
+        console.log('checkPassword::response', response)
         navigate('/account');
       }
     } else {
@@ -112,6 +113,7 @@ export async function callLoginApi({email, password}) {
       },
       body: JSON.stringify({email, password}),
     });
+    console.log('callLoginApi', res)
     if (res.ok) {
       return {};
     } else {
