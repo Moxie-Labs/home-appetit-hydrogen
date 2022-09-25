@@ -1,7 +1,9 @@
+import Homepage from "../components/Homepage.client";
+
 export default function Index() {
   return (
     <div>
-      <h1>Hello, World!</h1>
+      <Homepage/>
     </div>
   );
 }
