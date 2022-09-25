@@ -1,5 +1,3 @@
-// import {Button, Text, OrderCard} from '~/components';
-
 export function AccountOrderHistory({orders}) {
   return (
     <div className="mt-6">
@@ -32,7 +30,6 @@ function Orders({orders}) {
       {orders.map((order) => (
 
         <p>{Object.keys(order).join(",")}</p>
-        // <OrderCard order={order} key={order.id} />
       ))}
     </ul>
   );

@@ -21,6 +21,7 @@ import {
 } from '~/components/Account';
 // import {Layout, ProductSwimlane} from '../../components/Account/index.js';
 import { Layout } from '../../components/Layout.client';
+import MyAccount from '../../components/MyAccount.client';
 // import { AccountOrderHistory } from '../../components/Account/AccountOrderHistory.client';
 
 export default function Account({response}) {
@@ -96,32 +97,8 @@ function AuthenticatedAccount({
         <Seo type="noindex" data={{title: 'Account details'}} />
       </Suspense>
 
-      {orders && <h2>Order Count: {orders.length}</h2>}
+      <MyAccount orders={orders}/>
 
-      {/* <PageHeader heading={heading}>
-        <LogoutButton>Sign out</LogoutButton>
-      </PageHeader> */}
-
-      {orders && <AccountOrderHistory orders={orders} />}
-      {/* <AccountDetails
-        firstName={customer.firstName}
-        lastName={customer.lastName}
-        phone={customer.phone}
-        email={customer.email}
-      />
-      <AccountAddressBook
-        defaultAddress={defaultAddress}
-        addresses={addresses}
-      />
-      {!orders && (
-        <>
-          <FeaturedCollections
-            title="Popular Collections"
-            data={featuredCollections}
-          />
-          <ProductSwimlane data={featuredProducts} />
-        </> 
-      )}*/}
     </Layout>
   );
 }
