@@ -11,6 +11,8 @@ export default function MyAccount(props) {
     const [agreeConsent, setAgreeConsent] = useState(false);
     const [receiveConsent, setReceiveConsent] = useState(false);
 
+    const {orders} = props;
+
     /* GraphQL Simulation */
     let customerData = {
         "customer": {
@@ -138,7 +140,7 @@ export default function MyAccount(props) {
 
                 { activeTab === 'orders' &&
                     <Orders
-                        customer={customer}
+                        customer={orders}
                     /> 
                 }
 
