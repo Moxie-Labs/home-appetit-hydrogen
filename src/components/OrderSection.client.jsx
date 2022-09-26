@@ -125,7 +125,7 @@ export function OrderSection(props) {
     });
 
     const doesCartHaveItem = (choice, collection) => {
-        const retval = false;
+        let retval = false;
         collection.map(item => {
             if (item.choice.title === choice.choice.title)
                 retval = true;
