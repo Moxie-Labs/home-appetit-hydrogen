@@ -11,18 +11,8 @@ import {
 
 import {PRODUCT_CARD_FRAGMENT} from '../../lib/fragments';
 import {getApiErrorMessage} from '../../lib/utils';
-import {
-//   AccountAddressBook,
-//   AccountDetails,
-  AccountOrderHistory,
-//   FeaturedCollections,
-//   LogoutButton,
-//   PageHeader,
-} from '~/components/Account';
-// import {Layout, ProductSwimlane} from '../../components/Account/index.js';
 import { Layout } from '../../components/Layout.client';
 import MyAccount from '../../components/MyAccount.client';
-// import { AccountOrderHistory } from '../../components/Account/AccountOrderHistory.client';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -45,50 +35,23 @@ export default function Account({response}) {
     cache: CacheNone(),
   });
 
-  const {customer, featuredCollections, featuredProducts} = data;
+  const {customer} = data;
 
   if (!customer) return response.redirect('/account/login');
-
-  const addresses = flattenConnection(customer.addresses).map((address) => ({
-    ...address,
-    id: address.id.substring(0, address.id.lastIndexOf('?')),
-    originalId: address.id,
-  }));
-
-  const defaultAddress = customer?.defaultAddress?.id?.substring(
-    0,
-    customer.defaultAddress.id.lastIndexOf('?'),
-  );
 
   return (
     <Layout>
       <AuthenticatedAccount
         customer={customer}
-        addresses={addresses}
-        defaultAddress={defaultAddress}
-        featuredCollections={flattenConnection(featuredCollections)}
-        featuredProducts={flattenConnection(featuredProducts)}
       />
     </Layout>
   );
 }
 
 function AuthenticatedAccount({
-  customer,
-  addresses,
-  defaultAddress,
-  featuredCollections,
-  featuredProducts,
+  customer
 }) {
   const orders = flattenConnection(customer?.orders) || [];
-
-  const heading = customer
-    ? customer.firstName
-      ? `Welcome, ${customer.firstName}.`
-      : `Welcome to your account.`
-    : 'Account Details';
-
-    console.log('orders', orders)
 
   return (
     <Layout>
@@ -97,7 +60,10 @@ function AuthenticatedAccount({
         <Seo type="noindex" data={{title: 'Account details'}} />
       </Suspense>
 
-      <MyAccount orders={orders}/>
+      <MyAccount 
+        customer={customer}
+        orders={orders}
+      />
 
     </Layout>
   );
