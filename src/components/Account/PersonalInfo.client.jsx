@@ -1,10 +1,11 @@
 import { useState } from "react";
+import Communication from "./Communication.client";
 
 export default function PersonalInfo(props) {
 
     const [editingPersonal, setEditingPersonal] = useState(false);
 
-    const { customer, handleUpdatePersonal } = props;
+    const { customer, handleUpdatePersonal, handleUpdateCommunication } = props;
     const {
         firstName,
         lastName,
@@ -12,7 +13,8 @@ export default function PersonalInfo(props) {
         email,
         phone,
         id,
-        addresses
+        addresses,
+        receiveConsent
     } = customer;
 
     const [firstNameState, setFirstNameState] = useState(firstName);
@@ -70,9 +72,15 @@ export default function PersonalInfo(props) {
 
             <hr></hr>
 
+            <Communication 
+                acceptsMarketing={acceptsMarketing}
+                receiveConsent={receiveConsent}
+                handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
+            /> 
+
             <h1>Saved Addresses</h1>
 
-            <article>
+            {/* <article>
                 <h2>Default Address</h2>
                 <p>{addresses[0].address1}</p>
                 {addresses[0].address2 !== "" && <p>{addresses[0].address2}</p>}
@@ -88,7 +96,7 @@ export default function PersonalInfo(props) {
                     {addresses[1].address2 !== "" && <p>{addresses[1].address2}</p>}
                     <p>{addresses[1].city}, {addresses[1].state} {addresses[1].zip}</p>
                 </article> 
-            }
+            } */}
         </div>
     );
 }

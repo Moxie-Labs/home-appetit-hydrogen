@@ -53,6 +53,8 @@ function AuthenticatedAccount({
 }) {
   const orders = flattenConnection(customer?.orders) || [];
 
+  const { customerAccessToken } = useSession();
+
   return (
     <Layout>
       <h1>Account Info</h1>
@@ -89,7 +91,7 @@ export async function api(request, {session, queryShop}) {
 
   if (!customerAccessToken) return new Response(null, {status: 401});
 
-  const {email, phone, firstName, lastName, newPassword} = await request.json();
+  const {email, phone, firstName, lastName, newPassword, acceptsMarketing} = await request.json();
 
   const customer = {};
 
@@ -98,6 +100,7 @@ export async function api(request, {session, queryShop}) {
   if (firstName) customer.firstName = firstName;
   if (lastName) customer.lastName = lastName;
   if (newPassword) customer.password = newPassword;
+  if (acceptsMarketing !== undefined) customer.acceptsMarketing = acceptsMarketing;
 
   const {data, errors} = await queryShop({
     query: CUSTOMER_UPDATE_MUTATION,
@@ -128,6 +131,7 @@ const CUSTOMER_QUERY = gql`
       lastName
       phone
       email
+      acceptsMarketing
       defaultAddress {
         id
         formatted

@@ -4,12 +4,30 @@ import Payment from '../components/Account/Payment.client';
 import Orders from '../components/Account/Orders.client';
 import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
+import { useRenderServerComponents } from '~/lib/utils';
 
 export default function MyAccount(props) {
+
+    const { customer } = props;
 
     const [activeTab, setActiveTab] = useState('info');
     const [agreeConsent, setAgreeConsent] = useState(false);
     const [receiveConsent, setReceiveConsent] = useState(false);
+
+    // Editable Fields
+    const [saving, setSaving] = useState(false);
+    const [firstName, setFirstName] = useState(customer.firstName);
+    const [lastName, setLastName] = useState(customer.lastName);
+    const [phone, setPhone] = useState(customer.phone);
+    const [email, setEmail] = useState(customer.email);
+    const [emailError, setEmailError] = useState(null);
+    const [currentPasswordError, setCurrentPasswordError] = useState(null);
+    const [acceptsMarketing, setAcceptsMarketing] = useState(customer.acceptsMarketing);
+    const [newPasswordError, setNewPasswordError] = useState(null);
+    const [newPassword2Error, setNewPassword2Error] = useState(null);
+    const [submitError, setSubmitError] = useState(null);
+
+    const renderServerComponents = useRenderServerComponents();
 
     /* GraphQL Simulation */
     let customerData = {
@@ -67,7 +85,7 @@ export default function MyAccount(props) {
         }
     };
 
-    const [customer, setCustomer] = useState(customerData.customer);
+    // const [customer, setCustomer] = useState(customerData.customer);
 
      // temp
      const [payments, setPayments] = useState(customer.payments);
@@ -107,6 +125,17 @@ export default function MyAccount(props) {
         setCustomer(newCustomer);
     }
 
+    async function updateCommunicationPreferences(newPreferences) {
+        renderServerComponents();
+        await callAccountUpdateApi({
+            acceptsMarketing: newPreferences.acceptsMarketing
+        });
+
+        setAcceptsMarketing(newPreferences.acceptsMarketing)
+    }
+
+    
+
     return (
         <div className='myaccount-page'>
             <h1 className='heading text-center'>My Account</h1>
@@ -116,14 +145,16 @@ export default function MyAccount(props) {
                 <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} onClick={() => setActiveTab('payment')}>Payment</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'comm' ? ' active' : '' }`} onClick={() => setActiveTab('comm')}>Communication Preferences</h2>
+                {/* <h2 className={`account-panel-switch${ activeTab === 'comm' ? ' active' : '' }`} onClick={() => setActiveTab('comm')}>Communication Preferences</h2> */}
             </section>
 
             <section className='account-panel-body'>
                 { activeTab === 'info' &&
                     <PersonalInfo
                         customer={customer}
+                        acceptsMarketing={acceptsMarketing}
                         handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
+                        handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}
                     /> 
                 }
 
@@ -149,18 +180,46 @@ export default function MyAccount(props) {
                         referralCredit={rewards.referralBalance}
                     /> 
                 }
-
-                { activeTab === 'comm' &&
-                    <Communication
-                        customer={customer}        
-                        agreeConsent={agreeConsent}
-                        receiveConsent={receiveConsent}
-                        handleAgreeUpdate={(value) => setAgreeConsent(value)}      
-                        handleReceiveUpdate={(value) => setReceiveConsent(value)}            
-                    /> 
-                }
             </section>
 
         </div>
     );
 }
+
+export async function callAccountUpdateApi({
+    email,
+    phone,
+    firstName,
+    lastName,
+    currentPassword,
+    newPassword,
+    acceptsMarketing
+  }) {
+    try {
+      const res = await fetch(`/account`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          phone,
+          firstName,
+          lastName,
+          currentPassword,
+          newPassword,
+          acceptsMarketing
+        }),
+      });
+      if (res.ok) {
+        return {};
+      } else {
+        return res.json();
+      }
+    } catch (_e) {
+      return {
+        error: 'Error saving account. Please try again.',
+      };
+    }
+  }
