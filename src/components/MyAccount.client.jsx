@@ -142,7 +142,7 @@ export default function MyAccount(props) {
 
                 { activeTab === 'orders' &&
                     <Orders
-                        customer={orders}
+                        orders={orders}
                     /> 
                 }
 

@@ -1,13 +1,10 @@
 export default function Orders(props) {
 
-    const { customer } = props;
-    const { orders } = customer;
+    const { orders } = props;
     const currentOrders = [];
     const pastOrders = [];
 
-    console.log(customer);
-
-    customer.forEach(order => {
+    orders.forEach(order => {
         if (order.fulfillmentStatus === "UNFULFILLED")
             currentOrders.push(order);
         else if (order.fulfillmentStatus === "FULFILLED")
@@ -34,7 +31,6 @@ export default function Orders(props) {
     }
 
     const currentOrderList = currentOrders.map((order, i) => {
-        console.log(order.currentTotalPrice.amount);
         return (<tr key={i}>
             <td><a>#{order.orderNumber}</a></td>
             <td>Ordered: {`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
