@@ -13,6 +13,7 @@ export default function PersonalInfo(props) {
         handleUpdateCommunication, 
         handleUpdateAddress,
         handleRemoveAddress,
+        handleNewAddress,
         // handleUpdateDefault
     } = props;
     const {
@@ -41,6 +42,10 @@ export default function PersonalInfo(props) {
     const [modalCity, setModalCity] = useState("");
     const [modalProvince, setModalProvince] = useState("");
     const [modalZip, setModalZip] = useState("");
+    const [modalPhone, setModalPhone] = useState("");
+
+    // Modal will submit new address instead of sending an update request
+    const [newAddressModal, setNewAddressModal] = useState(false);
 
     const formattedPhoneNumber = number => {
         let cleaned = ('' + number).replace(/\D/g, '');
@@ -72,6 +77,7 @@ export default function PersonalInfo(props) {
         setModalCity(address.city);
         setModalProvince(address.province);
         setModalZip(address.zip);
+        setModalPhone(address.phone);
         setShowingAddressModal(true)
     }
 
@@ -90,7 +96,25 @@ export default function PersonalInfo(props) {
             city: modalCity,
             zip: modalZip,
             country: modalAddress.country,
-            phone: modalAddress.phone,
+            phone: modalPhone,
+            isDefaultAddress: modalAddressDefault,
+        });
+
+        setShowingAddressModal(false);
+        clearModalValues();
+    }
+
+    const submitNewAddress = () => {
+        handleNewAddress({
+            firstName: modalFirstName,
+            lastName: modalLastName,
+            address1: modalAddress1,
+            address2: modalAddress2,
+            province: modalProvince,
+            city: modalCity,
+            zip: modalZip,
+            country: "United States",
+            phone: modalPhone,
             isDefaultAddress: modalAddressDefault,
         });
 
@@ -108,6 +132,19 @@ export default function PersonalInfo(props) {
         setModalCity("");
         setModalProvince("");
         setModalZip("");
+        setModalPhone("");
+        setNewAddressModal(false);
+    }
+
+    const prepareNewAddress = () => {
+        clearModalValues();
+        setNewAddressModal(true);
+        setShowingAddressModal(true);
+    }
+
+    const closeAddressModal = () => {
+        setShowingAddressModal(false);
+        clearModalValues();
     }
 
     const addresses = flattenConnection(customer?.addresses) || [];
@@ -181,11 +218,11 @@ export default function PersonalInfo(props) {
                 }
             })}
 
-            <button className="btn btn-default">Add New Address</button>
+            <button className="btn btn-default" onClick={() => prepareNewAddress()}>Add New Address</button>
 
             <Modal
                 isOpen={showingAddressModal}
-                onRequestClose={() => setShowingAddressModal(false)}
+                onRequestClose={() => closeAddressModal()}
             >
                 <label>First Name:</label>
                 <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
@@ -208,7 +245,11 @@ export default function PersonalInfo(props) {
                 <label>ZIP:</label>
                 <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
 
-                <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button>
+                <label>Phone:</label>
+                <input value={modalPhone} onChange={e => setModalPhone(e.target.value)}/>
+
+                { !newAddressModal && <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
+                { newAddressModal && <button onClick={() => submitNewAddress()}>Submit</button> }
                 <button onClick={() => setShowingAddressModal(false)}>Cancel</button>
             </Modal>
 
