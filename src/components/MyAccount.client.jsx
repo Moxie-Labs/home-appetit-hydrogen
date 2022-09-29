@@ -4,7 +4,7 @@ import Payment from '../components/Account/Payment.client';
 import Orders from '../components/Account/Orders.client';
 import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
-import { useRenderServerComponents } from '~/lib/utils';
+import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
 
 export default function MyAccount(props) {
 
@@ -116,13 +116,22 @@ export default function MyAccount(props) {
         console.log("newCustomer", newCustomer)
     }
 
-    const updateCustomerInfo = (firstName, lastName, email, phone) => {
+    const updateCustomerInfo = async (firstName, lastName, email, phone) => {
+
+        renderServerComponents();
+        await callAccountUpdateApi({
+            firstName,
+            lastName,
+            email,
+            phone: `+${removePhoneNumberFormatting(phone)}`
+        });
+
         let newCustomer = {...customer};
         newCustomer.firstName = firstName;
         newCustomer.lastName = lastName;
         newCustomer.email = email;
         newCustomer.phone = phone;
-        setCustomer(newCustomer);
+        // setCustomer(newCustomer);
     }
 
     async function updateCommunicationPreferences(newPreferences) {

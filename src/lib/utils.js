@@ -243,3 +243,7 @@ export function passwordValidation(password) {
 
   return 'Password must be at least 6 characters';
 }
+
+export function removePhoneNumberFormatting(string) {
+  return parseInt(string.replace(/[^0-9]/g, ''), 10);
+}
