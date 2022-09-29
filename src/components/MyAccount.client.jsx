@@ -119,8 +119,6 @@ export default function MyAccount(props) {
     }
 
     const updateCustomerInfo = async (firstName, lastName, email, phone) => {
-
-        renderServerComponents();
         await callAccountUpdateApi({
             firstName,
             lastName,
@@ -128,11 +126,7 @@ export default function MyAccount(props) {
             phone: `+${removePhoneNumberFormatting(phone)}`
         });
 
-        let newCustomer = {...customer};
-        newCustomer.firstName = firstName;
-        newCustomer.lastName = lastName;
-        newCustomer.email = email;
-        newCustomer.phone = phone;
+        renderServerComponents();
     }
 
 
@@ -143,6 +137,8 @@ export default function MyAccount(props) {
         });
 
         setAcceptsMarketing(newPreferences.acceptsMarketing)
+
+        renderServerComponents();
     }
 
     async function updateAddress(newAddress) {
