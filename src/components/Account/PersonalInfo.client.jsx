@@ -7,7 +7,14 @@ export default function PersonalInfo(props) {
 
     const [editingPersonal, setEditingPersonal] = useState(false);
 
-    const { customer, handleUpdatePersonal, handleUpdateCommunication, handleUpdateAddress } = props;
+    const { 
+        customer, 
+        handleUpdatePersonal, 
+        handleUpdateCommunication, 
+        handleUpdateAddress,
+        handleRemoveAddress,
+        // handleUpdateDefault
+    } = props;
     const {
         firstName,
         lastName,
@@ -69,7 +76,7 @@ export default function PersonalInfo(props) {
     }
 
     const removeAddress = addressId => {
-        // TODO: remove address call
+        handleRemoveAddress(addressId);
     }
 
     const submitUpdateAddress = () => {
@@ -87,6 +94,7 @@ export default function PersonalInfo(props) {
             isDefaultAddress: modalAddressDefault,
         });
 
+        setShowingAddressModal(false);
         clearModalValues();
     }
 
@@ -156,7 +164,7 @@ export default function PersonalInfo(props) {
                 {defaultAddr.address2 !== "" && <p>{defaultAddr.address2}</p>}
                 {defaultAddr.company !== "" && <p>{defaultAddr.company}</p>}
                 <p>{defaultAddr.city}, {defaultAddr.provinceCode} {defaultAddr.zip}</p>
-                <p><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
+                <p><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
             </article>
 
             {addresses.map((addr, index) => {
@@ -168,7 +176,7 @@ export default function PersonalInfo(props) {
                     {addr.address2 !== "" && <p>{addr.address2}</p>}
                     {addr.company !== "" && <p>{addr.company}</p>}
                     <p>{addr.city}, {addr.provinceCode} {addr.zip}</p>
-                    <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
+                    <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a></p>
                 </article> 
                 }
             })}
@@ -200,7 +208,7 @@ export default function PersonalInfo(props) {
                 <label>ZIP:</label>
                 <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
 
-                <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Submit</button>
+                <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button>
                 <button onClick={() => setShowingAddressModal(false)}>Cancel</button>
             </Modal>
 

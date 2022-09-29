@@ -1,10 +1,12 @@
 import React, {useCallback, useState} from 'react';
+import { gql } from '@shopify/hydrogen';
 import PersonalInfo from '../components/Account/PersonalInfo.client';
 import Payment from '../components/Account/Payment.client';
 import Orders from '../components/Account/Orders.client';
 import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
 import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
+import { render } from 'react-dom';
 
 export default function MyAccount(props) {
 
@@ -177,6 +179,11 @@ export default function MyAccount(props) {
         renderServerComponents();
     }
 
+    async function removeAddress(addressId) {
+        callDeleteAddressApi(addressId);
+        renderServerComponents();
+    }
+
     
 
     return (
@@ -198,6 +205,8 @@ export default function MyAccount(props) {
                         handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
                         handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}
                         handleUpdateAddress={(newAddress) => updateAddress(newAddress)}
+                        handleRemoveAddress={(addressId) => removeAddress(addressId)}
+                        // handleUpdateDefault={(addressId) => updateDefaultAddress(addressId)}
                     /> 
                 }
 
@@ -313,6 +322,26 @@ export async function callAccountUpdateApi({
     } catch (_e) {
       return {
         error: 'Error saving address. Please try again.',
+      };
+    }
+  }
+
+  async function callDeleteAddressApi(id) {
+    try {
+      const res = await fetch(`/account/address/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      if (res.ok) {
+        return {};
+      } else {
+        return res.json();
+      }
+    } catch (_e) {
+      return {
+        error: 'Error removing address. Please try again.',
       };
     }
   }
