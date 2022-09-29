@@ -131,8 +131,8 @@ export default function MyAccount(props) {
         newCustomer.lastName = lastName;
         newCustomer.email = email;
         newCustomer.phone = phone;
-        // setCustomer(newCustomer);
     }
+
 
     async function updateCommunicationPreferences(newPreferences) {
         renderServerComponents();
@@ -141,6 +141,40 @@ export default function MyAccount(props) {
         });
 
         setAcceptsMarketing(newPreferences.acceptsMarketing)
+    }
+
+    async function updateAddress(newAddress) {
+        const {
+            id,
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        } = newAddress;
+
+        await callUpdateAddressApi({
+            id,
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        });
+
+        renderServerComponents();
     }
 
     
@@ -154,7 +188,6 @@ export default function MyAccount(props) {
                 <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} onClick={() => setActiveTab('payment')}>Payment</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
-                {/* <h2 className={`account-panel-switch${ activeTab === 'comm' ? ' active' : '' }`} onClick={() => setActiveTab('comm')}>Communication Preferences</h2> */}
             </section>
 
             <section className='account-panel-body'>
@@ -164,6 +197,7 @@ export default function MyAccount(props) {
                         acceptsMarketing={acceptsMarketing}
                         handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
                         handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}
+                        handleUpdateAddress={(newAddress) => updateAddress(newAddress)}
                     /> 
                 }
 
@@ -229,6 +263,56 @@ export async function callAccountUpdateApi({
     } catch (_e) {
       return {
         error: 'Error saving account. Please try again.',
+      };
+    }
+  }
+
+  export async function callUpdateAddressApi({
+    id,
+    firstName,
+    lastName,
+    company,
+    address1,
+    address2,
+    country,
+    province,
+    city,
+    phone,
+    zip,
+    isDefaultAddress,
+  }) {
+    try {
+      const res = await fetch(
+        id ? `/account/address/${encodeURIComponent(id)}` : '/account/address',
+        {
+          method: id ? 'PATCH' : 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+          }),
+        },
+      );
+      if (res.ok) {
+        return {};
+      } else {
+        return res.json();
+      }
+    } catch (_e) {
+      return {
+        error: 'Error saving address. Please try again.',
       };
     }
   }

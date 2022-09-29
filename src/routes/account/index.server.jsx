@@ -53,8 +53,6 @@ function AuthenticatedAccount({
 }) {
   const orders = flattenConnection(customer?.orders) || [];
 
-  const { customerAccessToken } = useSession();
-
   return (
     <Layout>
       <h1>Account Info</h1>
@@ -134,13 +132,12 @@ const CUSTOMER_QUERY = gql`
       acceptsMarketing
       defaultAddress {
         id
-        formatted
       }
-      addresses(first: 6) {
+      addresses(first: 3) {
         edges {
           node {
             id
-            formatted
+            name
             firstName
             lastName
             company
@@ -148,13 +145,14 @@ const CUSTOMER_QUERY = gql`
             address2
             country
             province
+            provinceCode
             city
             zip
             phone
           }
         }
       }
-      orders(first: 250, sortKey: PROCESSED_AT, reverse: true) {
+      orders(first: 100, sortKey: PROCESSED_AT, reverse: true) {
         edges {
           node {
             id
