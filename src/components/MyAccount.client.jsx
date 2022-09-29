@@ -216,6 +216,40 @@ export default function MyAccount(props) {
         renderServerComponents();
     }
 
+    async function defaultAddress(defaultAddress) {
+        const {
+            id,
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        } = defaultAddress;
+
+        await callUpdateAddressApi({
+            id,
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        });
+
+        renderServerComponents();
+    }
+
     
 
     return (
@@ -239,7 +273,7 @@ export default function MyAccount(props) {
                         handleUpdateAddress={(newAddress) => updateAddress(newAddress)}
                         handleRemoveAddress={(addressId) => removeAddress(addressId)}
                         handleNewAddress={(newAddress) => addAddress(newAddress)}
-                        // handleUpdateDefault={(addressId) => updateDefaultAddress(addressId)}
+                        handleUpdateDefault={(address) => defaultAddress(address)}
                     /> 
                 }
 

@@ -14,7 +14,7 @@ export default function PersonalInfo(props) {
         handleUpdateAddress,
         handleRemoveAddress,
         handleNewAddress,
-        // handleUpdateDefault
+        handleUpdateDefault
     } = props;
     const {
         firstName,
@@ -83,6 +83,11 @@ export default function PersonalInfo(props) {
 
     const removeAddress = addressId => {
         handleRemoveAddress(addressId);
+    }
+
+    const makeAddressDefault = address => {
+        address.isDefaultAddress = true;
+        handleUpdateDefault(address);
     }
 
     const submitUpdateAddress = () => {
@@ -213,7 +218,7 @@ export default function PersonalInfo(props) {
                     {addr.address2 !== "" && <p>{addr.address2}</p>}
                     {addr.company !== "" && <p>{addr.company}</p>}
                     <p>{addr.city}, {addr.provinceCode} {addr.zip}</p>
-                    <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a></p>
+                    <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
                 </article> 
                 }
             })}
