@@ -17,7 +17,14 @@ export default function Homepage(props) {
                 </li>
                 <li>
                     <Link to="/order">Order (Logged In)</Link>
-                    <p>Status: Cannot Generate Checkout from Cart</p>
+                    <p>Status: Known Bugs</p>
+                    <ul>
+                        <li>[Generated Checkout] Ignores Delivery/Payment Information</li>
+                        <li>[Generated Checkout] Persists Until Browser Cache is Cleared</li>
+                        <li>[Generated Checkout] Ice Cannot Be Added</li>
+                        <li>[Generated Checkout] Items Cannot Have Their Quantities Updated</li>
+                        <li>[Order Page] Extra Modal is Temporarily Disabled</li>
+                    </ul>
                     <hr></hr>
                 </li>
                 <li>
