@@ -1,12 +1,11 @@
-import React, {useCallback, useState} from 'react';
-import { gql } from '@shopify/hydrogen';
+import React, {useState} from 'react';
 import PersonalInfo from '../components/Account/PersonalInfo.client';
 import Payment from '../components/Account/Payment.client';
 import Orders from '../components/Account/Orders.client';
 import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
 import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
-import { render } from 'react-dom';
+import { LogoutButton } from './LogoutButton.client';
 
 export default function MyAccount(props) {
 
@@ -30,6 +29,7 @@ export default function MyAccount(props) {
     const [submitError, setSubmitError] = useState(null);
 
     const renderServerComponents = useRenderServerComponents();
+    const {orders} = props;
 
     /* GraphQL Simulation */
     let customerData = {
@@ -256,9 +256,10 @@ export default function MyAccount(props) {
 
             <section className='account-panel-switches'>
                 <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} onClick={() => setActiveTab('payment')}>Payment</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} onClick={() => {;}}>Payment</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
+                <LogoutButton />
             </section>
 
             <section className='account-panel-body'>
@@ -286,7 +287,7 @@ export default function MyAccount(props) {
 
                 { activeTab === 'orders' &&
                     <Orders
-                        customer={customer}
+                        orders={orders}
                     /> 
                 }
 

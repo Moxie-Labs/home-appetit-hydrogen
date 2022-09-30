@@ -229,7 +229,7 @@ export default function PersonalInfo(props) {
 
             <h1>Saved Addresses</h1>
 
-            <article>
+            <article style={{paddingTop: 25}}>
                 <p><b>Default Address</b></p>
                 <p>{defaultAddr.name}</p>
                 <p>{defaultAddr.address1}</p>
@@ -241,8 +241,8 @@ export default function PersonalInfo(props) {
 
             {addresses.map((addr, index) => {
                 if (addr.id !== defaultAddr.id) {
-                    return <article>
-                    <p><b>Address {index+1}</b></p>
+                    return <article style={{paddingTop: 25, paddingBottom: 25}}>
+                    <p><b>Address {index+2}</b></p>
                     <p>{addr.name}</p>
                     <p>{addr.address1}</p>
                     {addr.address2 !== "" && <p>{addr.address2}</p>}
@@ -250,6 +250,8 @@ export default function PersonalInfo(props) {
                     <p>{addr.city}, {addr.provinceCode} {addr.zip}</p>
                     <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
                 </article> 
+                } else {
+                    index-=1;
                 }
             })}
 
