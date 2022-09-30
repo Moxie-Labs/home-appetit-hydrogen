@@ -40,10 +40,11 @@ export default function DeliveryInfo(props) {
         handleContinue,
         handleCancel,
         step,
-        currentStep
+        currentStep,
+        isGuest
     } = props;
 
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(isGuest);
 
     const [validationErrors, setValidationErrors] = useState({});
 

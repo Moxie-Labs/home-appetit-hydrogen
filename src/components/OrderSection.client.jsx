@@ -1,4 +1,4 @@
-import { gql } from "@shopify/hydrogen";
+import { gql, useCart } from "@shopify/hydrogen";
 import { Suspense, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -10,6 +10,7 @@ import { Page } from "./Page.client";
 import DeliveryInfo from "./DeliveryInfo.client";
 import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
+import { GET_CHECKOUT_MUTATION } from "../helpers/queries";
 
 
 // base configurations
@@ -21,8 +22,42 @@ const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 8;
 const FIRST_WINDOW_START = 8;
 const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
+const DEFAULT_CARDS = [
+    {
+        brand: "Visa",
+        expiryMonth: "11",
+        expiryYear: "26",
+        firstDigits: 4111,
+        firstName: "Jon Paul",
+        lastDigits: 1111,
+        lastName: "Simonelli",
+        maskedNumber: "****1111"
+    },
+    {
+        brand: "Visa",
+        expiryMonth: "10",
+        expiryYear: "27",
+        firstDigits: 4112,
+        firstName: "Jon Paul",
+        lastDigits: 1112,
+        lastName: "Simonelli",
+        maskedNumber: "****1112"
+    }
+];
+
+const TRADITIONAL_PLAN_VARIANT_IDS = [
+    "gid://shopify/ProductVariant/43314850169048", // one person
+    "gid://shopify/ProductVariant/43314850201816", // two people, etc.
+    "gid://shopify/ProductVariant/43314850234584",
+    "gid://shopify/ProductVariant/43314850267352",
+    "gid://shopify/ProductVariant/43314850300120"
+];
 
 export function OrderSection(props) {
+
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines } = useCart();
+
+    // const { id: cartId, checkoutUrl } = useCart();
 
 
     const [totalPrice, setTotalPrice] = useState(100.0)
@@ -30,7 +65,7 @@ export function OrderSection(props) {
     const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState('traditional')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
-    const [isGuest, setIsGuest] = useState(false);
+    const [isGuest, setIsGuest] = useState(props.isGuest);
 
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
     const [selectedMainItems, setSelectedMainItems] = useState([])
@@ -39,22 +74,23 @@ export function OrderSection(props) {
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
     const [selectedAddonFilters, setSelectedAddonFilters] = useState([])
 
-
     const [toastMessages, setToastMessages] = useState([]);
     const [showToast, setShowToast] = useState(false);
 
     const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
     const [deliveryWindowDay, setDeliveryWindowDay] = useState(6);
-    const [firstName, setFirstName] = useState("Jon Paul");
-    const [lastName, setLastName] = useState("Simonelli");
-    const [emailAddress, setEmailAddress] = useState("jpsimonelli@moxielabs.co");
-    const [phoneNumber, setPhoneNumber] = useState("123 456 7890");
-    const [address, setAddress] = useState("121 Mayberry Road");
-    const [address2, setAddress2] = useState("");
-    const [deliveryState, setDeliveryState] = useState("Pennsylvania");
-    const [city, setCity] = useState("Catawissa");
-    const [zipcode, setZipcode] = useState("17820");
+
+    let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
+    let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
+    let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "123 456 7890");
+    let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
+    let [address2, setAddress2] = useState(isGuest ? null : "");
+    let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
+    let [city, setCity] = useState(isGuest ? null : "Catawissa");
+    let [zipcode, setZipcode] = useState(isGuest ? null : "17820");    
+
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
     const [isGift, setIsGift] = useState(false);
@@ -78,28 +114,7 @@ export function OrderSection(props) {
     const [billingCity, setBillingCity] = useState("");
     const [billingZipcode, setBillingZipcode] = useState("");
 
-    const [creditCards, setCreditCards] = useState([
-        {
-            brand: "Visa",
-            expiryMonth: "11",
-            expiryYear: "26",
-            firstDigits: 4111,
-            firstName: "Jon Paul",
-            lastDigits: 1111,
-            lastName: "Simonelli",
-            maskedNumber: "****1111"
-        },
-        {
-            brand: "Visa",
-            expiryMonth: "10",
-            expiryYear: "27",
-            firstDigits: 4112,
-            firstName: "Jon Paul",
-            lastDigits: 1112,
-            lastName: "Simonelli",
-            maskedNumber: "****1112"
-        }
-    ])
+    const [creditCards, setCreditCards] = useState(props.guest ? [] : DEFAULT_CARDS)
     const [giftCards, setGiftCards] = useState([]);
     const [giftCardTriggered, setGiftCardTriggered] = useState(false);
     const [promoTriggered, setPromoTriggered] = useState(false);
@@ -136,6 +151,8 @@ export function OrderSection(props) {
 
     const addItemToCart = (choice, collection, collectionName) => {
 
+        console.log("addItemToCard::choice", choice);
+
         // if: item was already added, then: update quantity (or remove)
         if (doesCartHaveItem(choice, collection)) {
             console.log("addItemToCart::already exists", choice);
@@ -155,11 +172,18 @@ export function OrderSection(props) {
             else 
                 setSelectedAddonItems([...collection]);
 
+
+                // linesRemove({lineIds: [
+                //     choice.choice.productOptions[1].node.id
+                // ]})
+
         }
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);
+            const variantType = collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+
             if (collectionName === 'main') 
                 setSelectedMainItems([...collection, choice]);
             else if (collectionName === 'small')
@@ -174,9 +198,21 @@ export function OrderSection(props) {
             }, TOAST_CLEAR_TIME);
 
             if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
-                setCurrentStep(currentStep+1);
+                // setCurrentStep(currentStep+1);
             }
+
+            console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
+            // update Shopify Cart
+            linesAdd({ 
+                merchandiseId: choice.choice.productOptions[variantType].node.id,
+                quantity: choice.quantity
+            });
+        
         }
+    }
+
+    const isSectionFilled = (collection) => {
+        return ((activeScheme === 'traditional') && getQuantityTotal(collection) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP)
     }
 
     const getOrderTotal = () => {
@@ -250,6 +286,7 @@ export function OrderSection(props) {
         return result < 0 ? (result *= -1, new Date((new Date).setDate((new Date).getDate() - result))) : new Date((new Date).setDate((new Date).getDate() + result))
     }
 
+    // TODO: grab GUID dynamically
     const addExtraIce = value => {
         const iceItem = ICE_ITEM;
         const iceChoice = {
@@ -258,7 +295,14 @@ export function OrderSection(props) {
             price: parseFloat(iceItem.priceRange.maxVariantPrice.amount/100),
             description: "",
             imageURL: "",
-            productOptions: []
+            productOptions: [{
+                node: {
+                    id: ICE_ITEM.id
+                },
+                node: {
+                    id: ICE_ITEM.id
+                }
+            }]
         }
         addItemToCart({choice: iceChoice, quantity: (value ? 1 : 0)}, selectedAddonItems, "addons");
         setExtraIce(value);
@@ -266,12 +310,18 @@ export function OrderSection(props) {
 
 
     const attemptSubmitOrder = () => {
-        createCheckout({
-            variables: {
-                lineItems: [{ variantId: "gid://shopify/ProductVariant/42919798276312", quantity: 1 }]
-            }
-        })
-        // setCurrentStep(8);
+        window.location.href=`${checkoutUrl}`;
+    }
+
+    const confirmPersonsCount = () => {
+        const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
+
+        linesAdd({
+            merchandiseId: traditionalPlanVariantId,
+            quantity: 1
+        });
+
+        setCurrentStep(2);
     }
 
     /* END Helpers */
@@ -300,7 +350,7 @@ export function OrderSection(props) {
             price: parseFloat(entree.node.priceRange.maxVariantPrice.amount/100),
             description: entree.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: entree.node.variants.edges
         });
     });
 
@@ -314,7 +364,7 @@ export function OrderSection(props) {
             price: parseFloat(greens.node.priceRange.maxVariantPrice.amount/100),
             description: greens.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: greens.node.variants.edges
         });
     });
 
@@ -328,7 +378,7 @@ export function OrderSection(props) {
             price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
             description: addons.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: addons.node.variants.edges
         });
     });
 
@@ -387,7 +437,7 @@ export function OrderSection(props) {
                                 <OrderProperties
                                     activeScheme={activeScheme}
                                     handleChange={(value) => setServingCount(value)}
-                                    handleContinue={() => setCurrentStep(2)}
+                                    handleContinue={() => confirmPersonsCount()}
                                     handleCancel={() => console.log("Cancel clicked")}
                                     step={1}
                                     currentStep={currentStep}
@@ -414,6 +464,7 @@ export function OrderSection(props) {
                                     selected={selectedMainItems}
                                     filters={selectedMainFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                    isSectionFilled={isSectionFilled(selectedMainItems)}
                                 />
                             </div>
                             
@@ -435,6 +486,7 @@ export function OrderSection(props) {
                                     selected={selectedSmallItems}
                                     filters={selectedSmallFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                    isSectionFilled={isSectionFilled(selectedSmallItems)}
                                 />
                             </div>
 
@@ -457,6 +509,7 @@ export function OrderSection(props) {
                                     filters={selectedAddonFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     noQuantityLimit={true}
+                                    isSectionFilled={isSectionFilled(selectedAddonItems)}
                                 />
                             </div>
 
@@ -480,7 +533,7 @@ export function OrderSection(props) {
                     </Layout>
                 }
 
-{ getPhase(currentStep) === "payment" && 
+            { getPhase(currentStep) === "payment" && 
                 <div className="payment-wrapper">
                     <Layout>
                         <LayoutSection>
@@ -540,6 +593,7 @@ export function OrderSection(props) {
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={6}
                                 currentStep={currentStep}
+                                isGuest={isGuest}
                             />
 
                         </LayoutSection>
