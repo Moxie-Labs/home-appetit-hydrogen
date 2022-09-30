@@ -4,12 +4,15 @@ import Payment from '../components/Account/Payment.client';
 import Orders from '../components/Account/Orders.client';
 import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
+import { LogoutButton } from './LogoutButton.client';
 
 export default function MyAccount(props) {
 
     const [activeTab, setActiveTab] = useState('info');
     const [agreeConsent, setAgreeConsent] = useState(false);
     const [receiveConsent, setReceiveConsent] = useState(false);
+
+    const {orders} = props;
 
     /* GraphQL Simulation */
     let customerData = {
@@ -119,6 +122,7 @@ export default function MyAccount(props) {
                 <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'comm' ? ' active' : '' }`} onClick={() => setActiveTab('comm')}>Communication Preferences</h2>
+                <LogoutButton />
             </section>
 
             <section className='account-panel-body'>
@@ -140,7 +144,7 @@ export default function MyAccount(props) {
 
                 { activeTab === 'orders' &&
                     <Orders
-                        customer={customer}
+                        orders={orders}
                     /> 
                 }
 

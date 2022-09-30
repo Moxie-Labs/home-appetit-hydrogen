@@ -1,7 +1,6 @@
 export default function Orders(props) {
 
-    const { customer } = props;
-    const { orders } = customer;
+    const { orders } = props;
     const currentOrders = [];
     const pastOrders = [];
 
@@ -23,21 +22,29 @@ export default function Orders(props) {
             return "On Hold";
     }
 
+    function convertMonth(date){
+        return new Date(date).getMonth();
+    }
+
+    function convertDate(date){
+        return new Date(date).getDate();
+    }
+
     const currentOrderList = currentOrders.map((order, i) => {
         return (<tr key={i}>
             <td><a>#{order.orderNumber}</a></td>
-            <td>Ordered: {`${order.processedAt.getMonth()+1}/${order.processedAt.getDate()}`}</td>
+            <td>Ordered: {`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
             <td>{getOrderStatus(order.fulfillmentStatus)}</td>
-            <td><b>${order.totalPriceV2.amount.toFixed(2)}</b></td>
+            <td><b>${parseFloat(order.currentTotalPrice.amount).toFixed(2)}</b></td>
         </tr>);
     });
 
     const pastOrderList = pastOrders.map((order, i) => {
         return (<tr key={i}>
             <td><a>#{order.orderNumber}</a></td>
-            <td>Ordered: {`${order.processedAt.getMonth()+1}/${order.processedAt.getDate()}`}</td>
+            <td>Ordered: {`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
             <td>{getOrderStatus(order.fulfillmentStatus)}</td>
-            <td><b>${order.totalPriceV2.amount.toFixed(2)}</b></td>
+            <td><b>${parseFloat(order.currentTotalPrice.amount).toFixed(2)}</b></td>
         </tr>);
     });
 
