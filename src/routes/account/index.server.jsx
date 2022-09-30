@@ -132,8 +132,9 @@ const CUSTOMER_QUERY = gql`
       acceptsMarketing
       defaultAddress {
         id
+        formatted
       }
-      addresses(first: 3) {
+      addresses(first: 10) {
         edges {
           node {
             id

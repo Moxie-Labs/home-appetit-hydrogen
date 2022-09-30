@@ -418,3 +418,19 @@ label.check-balance-label {
 .referral-program-wrapper {
     margin: 1.875rem 0;
 }
+
+.account__address {
+    float: left;
+    margin: 2vw 0;
+    width: 50%;
+}
+
+.account__address-title {
+    font-size: 1.1em;
+}
+
+
+.account__address-body {
+    font-size: 1.2em;
+    font-weight: bold;
+}

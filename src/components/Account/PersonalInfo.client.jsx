@@ -164,6 +164,8 @@ export default function PersonalInfo(props) {
         }
     });
 
+    let addressCount = 1;
+
     return (
         <div className="account-information">
             <h1>Account Information</h1>
@@ -176,7 +178,9 @@ export default function PersonalInfo(props) {
                             <h2><span className="info-label">First Name:</span><br /> {firstName}</h2>
                             <h2><span className="info-label">Last Name:</span><br />  {lastName}</h2>
                             {/* placeholder */}
-                            <h2><span className="info-label">Birthdate:</span><br />  12/21/1982</h2>
+                            <h2>
+                                {/* <span className="info-label">Birthdate:</span><br />  12/21/1982 */}
+                            </h2>
                             {/* end placeholder */}
                         </div>
                         <div className="info-row">
@@ -227,67 +231,72 @@ export default function PersonalInfo(props) {
                 handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
             /> 
 
-            <h1>Saved Addresses</h1>
+            <section className="account__address-info">
+                <h1>Saved Addresses</h1>
 
-            <article>
-                <p><b>Default Address</b></p>
-                <p>{defaultAddr.name}</p>
-                <p>{defaultAddr.address1}</p>
-                {defaultAddr.address2 !== "" && <p>{defaultAddr.address2}</p>}
-                {defaultAddr.company !== "" && <p>{defaultAddr.company}</p>}
-                <p>{defaultAddr.city}, {defaultAddr.provinceCode} {defaultAddr.zip}</p>
-                <p><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
-            </article>
+                { defaultAddr !== undefined && <article className="account__address account__address--default">
+                    <p className="account__address-title">Default Address</p>
+                    <p className="account__address-body">{defaultAddr.name}</p>
+                    <p className="account__address-body">{defaultAddr.address1}</p>
+                    {defaultAddr.address2 !== "" && <p>{defaultAddr.address2}</p>}
+                    {defaultAddr.company !== "" && <p>{defaultAddr.company}</p>}
+                    <p className="account__address-body">{defaultAddr.city}, {defaultAddr.provinceCode} {defaultAddr.zip}</p>
+                    <p><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
+                </article> }
 
-            {addresses.map((addr, index) => {
-                if (addr.id !== defaultAddr.id) {
-                    return <article>
-                    <p><b>Address {index+1}</b></p>
-                    <p>{addr.name}</p>
-                    <p>{addr.address1}</p>
-                    {addr.address2 !== "" && <p>{addr.address2}</p>}
-                    {addr.company !== "" && <p>{addr.company}</p>}
-                    <p>{addr.city}, {addr.provinceCode} {addr.zip}</p>
-                    <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
-                </article> 
-                }
-            })}
+
+                {addresses.map(addr => {
+                    if (addr.id !== defaultAddr.id) {
+                        return <article key={addr.id} className="account__address">
+                        <p><b>Address {++addressCount}</b></p>
+                        <p>{addr.name}</p>
+                        <p>{addr.address1}</p>
+                        {addr.address2 !== "" && <p>{addr.address2}</p>}
+                        {addr.company !== "" && <p>{addr.company}</p>}
+                        <p>{addr.city}, {addr.provinceCode} {addr.zip}</p>
+                        <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
+                    </article> 
+                    }
+                })}
+
+                <Modal
+                    isOpen={showingAddressModal}
+                    onRequestClose={() => closeAddressModal()}
+                >
+                    <label>First Name:</label>
+                    <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
+
+                    <label>Last Name:</label>
+                    <input value={modalLastName} onChange={e => setModalLastName(e.target.value)}/>
+
+                    <label>Address:</label>
+                    <input value={modalAddress1} onChange={e => setModalAddress1(e.target.value)}/>
+
+                    <label>Address 2:</label>
+                    <input value={modalAddress2} onChange={e => setModalAddress2(e.target.value)}/>
+
+                    <label>City:</label>
+                    <input value={modalCity} onChange={e => setModalCity(e.target.value)}/>
+
+                    <label>State:</label>
+                    <input value={modalProvince} onChange={e => setModalProvince(e.target.value)}/>
+
+                    <label>ZIP:</label>
+                    <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
+
+                    <label>Phone:</label>
+                    <input value={modalPhone} onChange={e => setModalPhone(e.target.value)}/>
+
+                    { !newAddressModal && <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
+                    { newAddressModal && <button onClick={() => submitNewAddress()}>Submit</button> }
+                    <button onClick={() => setShowingAddressModal(false)}>Cancel</button>
+                </Modal>
+
+            </section>
 
             <button className="btn btn-default" onClick={() => prepareNewAddress()}>Add New Address</button>
 
-            <Modal
-                isOpen={showingAddressModal}
-                onRequestClose={() => closeAddressModal()}
-            >
-                <label>First Name:</label>
-                <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
-
-                <label>Last Name:</label>
-                <input value={modalLastName} onChange={e => setModalLastName(e.target.value)}/>
-
-                <label>Address:</label>
-                <input value={modalAddress1} onChange={e => setModalAddress1(e.target.value)}/>
-
-                <label>Address 2:</label>
-                <input value={modalAddress2} onChange={e => setModalAddress2(e.target.value)}/>
-
-                <label>City:</label>
-                <input value={modalCity} onChange={e => setModalCity(e.target.value)}/>
-
-                <label>State:</label>
-                <input value={modalProvince} onChange={e => setModalProvince(e.target.value)}/>
-
-                <label>ZIP:</label>
-                <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
-
-                <label>Phone:</label>
-                <input value={modalPhone} onChange={e => setModalPhone(e.target.value)}/>
-
-                { !newAddressModal && <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
-                { newAddressModal && <button onClick={() => submitNewAddress()}>Submit</button> }
-                <button onClick={() => setShowingAddressModal(false)}>Cancel</button>
-            </Modal>
-
+            
         </div>
     );
 }
