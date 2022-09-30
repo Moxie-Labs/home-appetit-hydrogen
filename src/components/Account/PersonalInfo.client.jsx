@@ -2,6 +2,9 @@ import { useState } from "react";
 import Communication from "./Communication.client";
 import { flattenConnection } from '@shopify/hydrogen';
 import Modal from "react-modal/lib/components/Modal";
+import { Checkbox } from "../Checkbox.client";
+import editIcon from "../../assets/icon-edit-alt.png";
+
 
 export default function PersonalInfo(props) {
 
@@ -167,29 +170,56 @@ export default function PersonalInfo(props) {
 
             { !editingPersonal && 
                 <section>
-                    <button onClick={() => setEditingPersonal(true)}>Edit</button>
-                    <h2>First Name: {firstName}</h2>
-                    <h2>Last Name: {lastName}</h2>
-                    <h2>Email: {email}</h2>
-                    <h2>Phone Number: {formattedPhoneNumber(phone)}</h2>
+                    <button className="btn btn-default btn-edit" onClick={() => setEditingPersonal(true)}>Edit<img src={editIcon} width="24"/></button>
+                     <div className="personal-info-wrapper">
+                        <div className="info-row">
+                            <h2><span className="info-label">First Name:</span><br /> {firstName}</h2>
+                            <h2><span className="info-label">Last Name:</span><br />  {lastName}</h2>
+                            {/* placeholder */}
+                            <h2><span className="info-label">Birthdate:</span><br />  12/21/1982</h2>
+                            {/* end placeholder */}
+                        </div>
+                        <div className="info-row">
+                            <h2><span className="info-label">Email:</span><br />  {email}</h2>
+                            <h2><span className="info-label">Phone Number:</span> <br /> {formattedPhoneNumber(phone)}</h2>
+                        </div>
+                    </div>
                     <button className="btn btn-default">Reset Password</button>
                 </section>
             }
 
             { editingPersonal && 
                 <section>
-                    <input value={firstNameState} onChange={e => setFirstNameState(e.target.value)}/>
-                    <input value={lastNameState} onChange={e => setLastNameState(e.target.value)}/>
-                    <input value={emailState} onChange={e => setEmailState(e.target.value)}/>
-                    <input value={formattedPhoneNumber(phoneState)} onChange={e => setPhoneState(e.target.value)}/>
+                     <div className="personal-info-wrapper edit-wrapper">
+                        <div className="info-row">
+                            <label className="info-label-field">First Name:
+                              <input value={firstNameState} onChange={e => setFirstNameState(e.target.value)}/>
+                            </label>
+                            <label className="info-label-field">Last Name:
+                              <input value={lastNameState} onChange={e => setLastNameState(e.target.value)}/>
+                            </label>
+                            {/* placeholder */}
+                            <h2><span className="info-label">Birthdate:</span><br />  12/21/1982</h2>
+                            {/* end placeholder */}
+                        </div>
+                    <div className="info-row row-2">
+                        <label className="info-label-field email-label">Email:
+                           <input className="email-field" value={emailState} onChange={e => setEmailState(e.target.value)}/>
+                        </label>
 
-                    <button onClick={() => updateFields()}>Update</button>
-                    <button onClick={() => dismissModals()}>Cancel</button>
+                        <label className="info-label-field phone-label">Phone Number:
+                            <input className="phone-field" value={formattedPhoneNumber(phoneState)} onChange={e => setPhoneState(e.target.value)}/>
+                        </label>
+                    </div>
+
+                    <button className="btn btn-default btn-primary-small" onClick={() => updateFields()}>Update</button>
+                    <button className="btn btn-default" onClick={() => dismissModals()}>Cancel</button>
+                    </div>
                 </section>
             }
         
 
-            <hr></hr>
+            <div className="line-separator"></div>
 
             <Communication 
                 acceptsMarketing={acceptsMarketing}

@@ -46,7 +46,7 @@ export default function Orders(props) {
 
             { currentOrders.length > 0 && 
             <section>
-                <h1>Current Orders</h1>
+                <h1 className="ha-h5">Current Orders</h1>
                 <table className="order-table">
                     {currentOrderList}
                 </table>    
@@ -54,11 +54,11 @@ export default function Orders(props) {
             
             }
 
-            <hr></hr>
+            <div className="line-separator"></div>
 
             { pastOrders.length > 0 && 
             <section>
-                <h1>Past Orders</h1>
+                <h1 className="ha-h5">Past Orders</h1>
                 <table className="order-table">
                     {pastOrderList}
                 </table>
