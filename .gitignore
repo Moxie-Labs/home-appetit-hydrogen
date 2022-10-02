@@ -105,3 +105,6 @@ dist
 
 # Unused Reference Files
 src/unconverted
+
+# Netlify auto-generated files
+.netlify/edge-functions
