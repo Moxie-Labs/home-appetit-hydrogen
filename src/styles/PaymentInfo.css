@@ -14,6 +14,7 @@
     height: 75px;
     width: 513px;
     font-size: 18px;
+    margin-top: 30px;
 }
 
 .payment-method-trigger {
@@ -64,10 +65,20 @@
         /* box-shadow: 1px 0px 10px #000; */
     }
 
-.payment-wrapper {
-    display: flex;
-    margin: 80px 0;
-}
+    .payment-wrapper {
+        display: flex;
+        /* margin: 80px 0; */
+        width: 1260px;
+        /* justify-content: space-between; */
+        margin: auto;
+        padding: 0;
+        /* align-content: flex-start; */
+        gap: 40px;
+    }
+
+    .payment-wrapper main:first-child {
+        flex: 70%;
+    }
 
 .payment-wrapper > .Polaris-Layout:first-child {
     flex: 60%;
@@ -95,6 +106,7 @@
     width: 328px;
     padding: 14px 25px;
     border-radius: 10px;
+    border: none !important;
 }
 
 .payment-gc-field button:hover {
@@ -105,7 +117,7 @@
 
 .payment-gc-field button {
     background: transparent;
-    padding: 9px 24px 4px;
+    padding: 6px 24px 6px;
     text-transform: uppercase;
     border: 2px solid #A6A3A0;
     color: #A6A3A0;
@@ -138,8 +150,15 @@
     width: 295px;
 }
 
+.modal-new-payment .add-payment-modal-container {
+    background: #FFFCF5;
+    inset: 60px 0 !important;
+    max-width: 450px;
+}
+
 .add-payment-modal-container {
     padding: 40px 40px 60px;
+    border-radius: 12px;
 }
 
 .add-payment-modal-container .Polaris-TextField__Input {
@@ -151,6 +170,7 @@
     font-family: AvenirLTProRoman;
     font-size: 16px;
     color: #474442;
+    width: 100%;
 }
 
 .add-payment-modal-container .btn-primary-small {
@@ -178,11 +198,31 @@
     align-items: flex-start;
 }
 
-.add-payment-state-field select {
+/* .add-payment-state-field select {
     margin-top: 4px;
     padding: 18px;
-}
+} */
 
 .modal--create-inner {
     padding: 0 !important;
+}
+
+
+.payment-wrapper h1, 
+.payment-wrapper h2,
+.payment-wrapper h3,
+.checkout-subsection .ha-p {
+    margin: 0;
+    font-weight: 400;
+}
+
+.checkout-subsection .order-no{
+    margin: 10px 0 0;
+}
+
+.payment-wrapper main:last-child {
+    position: sticky !important;
+    /* align-self: flex-start; */
+    top: 40px;
+    align-self: flex-start;
 }

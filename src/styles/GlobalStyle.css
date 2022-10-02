@@ -6,19 +6,26 @@
 
 @font-face {
     font-family: "ITCAvantGardeProDemi";
-    src: local("ITCAvantGardeProDemi"),url("../font/ITCAvantGardeProDemi.woff2") format("woff2"),
+    src: local("ITCAvantGardeProDemi"), url("../font/ITCAvantGardeProDemi.woff2") format("woff2"),
     url("../font/ITCAvantGardeProDemi.woff") format("woff");
 }
 
 @font-face {
     font-family: "ITCAvantGardeGothicDemiBold";
-    src: url('../font/ITCAvantGardeGothicDemiBold.woff2') format('woff2'), url('../font/ITCAvantGardeGothicDemiBold.woff') format('woff');
+    src: local("ITCAvantGardeGothicDemiBold"), url("../font/ITCAvantGardeGothicDemiBold.woff2") format("woff2"),
+    url("../font/ITCAvantGardeGothicDemiBold.woff") format("woff");
 }
 
 @font-face {
     font-family: "ITCGaramondStdBkCond";  
     src: local("ITCGaramondStdBkCond"), url("../font/ITCGaramondStdBkCond.woff2") format("woff2"),
     url("../font/ITCGaramondStdBkCond.woff") format("woff");
+}
+
+@font-face {
+    font-family: "ITCGaramondBold";  
+    src: local("ITCGaramondBold"), url("../font/ITCGaramondBold.woff2") format("woff2"),
+    url("../font/ITCGaramondBold.woff") format("woff");
 }
 
 @font-face {
@@ -432,6 +439,7 @@ section.step-section {
 
     .step-inner-flex{
         display: flex;
+        gap: 30px;
     }
 
 .inactive-section {

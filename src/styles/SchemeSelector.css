@@ -9,6 +9,7 @@
 .schemeType.active, .schemeType:hover {
     font-weight: bold;
     border-bottom: 3px solid #464442;
+    font-family: "ITCAvantGardeGothicDemiBold";
 }
 
 section#SchemeSelector {
