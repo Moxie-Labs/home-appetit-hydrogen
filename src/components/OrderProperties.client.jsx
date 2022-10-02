@@ -19,13 +19,18 @@ export default class OrderProperties extends React.Component {
         super(props);    
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSchemeChange = this.handleSchemeChange.bind(this);
         this.handleContinue = this.handleContinue.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
     }
 
     handleChange(event) {
         this.props.handleChange(event.target.value);
-      }
+    }
+
+    handleSchemeChange(activeScheme) {
+        this.props.handleSchemeChange(activeScheme);
+    }
     
     handleContinue(event) {
         this.props.handleContinue();
@@ -46,7 +51,7 @@ export default class OrderProperties extends React.Component {
                     <h2 sectioned className="heading order_prop__heading ha-h3">Step 1: Order Type</h2>
                     <SchemeSelector
                         activeScheme={activeScheme}
-                        handleSchemeChange={(activeScheme) => setActiveScheme(activeScheme)}
+                        handleSchemeChange={(activeScheme) => this.handleSchemeChange(activeScheme)}
                         currentStep={currentStep}
                         step={1}
                     />

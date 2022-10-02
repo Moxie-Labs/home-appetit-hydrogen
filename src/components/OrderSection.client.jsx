@@ -183,7 +183,7 @@ export function OrderSection(props) {
         // else: add item with quantity
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);
-            const variantType = collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+            const variantType = getVariantType(collection);
 
             if (collectionName === 'main') 
                 setSelectedMainItems([...collection, choice]);
@@ -213,18 +213,20 @@ export function OrderSection(props) {
     }
 
     const getOrderTotal = () => {
-        let total = parseFloat(pricingMultiplier);
+        let total = parseFloat(planPricingMultiplier);
         selectedSmallItems.forEach((item, index) => {
-            if (index >= 4)
-                total += parseFloat(item.choice.price);
+            if (activeScheme === 'flexible' || index >= 4)
+                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedMainItems.forEach((item, index) => {
-            if (index >= 4)
-                total += parseFloat(item.choice.price);
+            if (activeScheme === 'flexible' || index >= 4)
+                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedAddonItems.forEach(item => {
-            total += parseFloat(item.choice.price);
+            total += parseFloat(item.choice.price * item.quantity);
         });
+
+        console.log("getOrderTotal::total", total)
 
         return total;
     }
@@ -304,14 +306,25 @@ export function OrderSection(props) {
     }
 
     const confirmPersonsCount = () => {
-        const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
 
-        linesAdd({
-            merchandiseId: traditionalPlanVariantId,
-            quantity: 1
-        });
+        if (activeScheme === 'traditional') {
+            const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
+
+            linesAdd({
+                merchandiseId: traditionalPlanVariantId,
+                quantity: 1
+            });
+        }
 
         setCurrentStep(2);
+    }
+
+    // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
+    const getVariantType = collection => {
+        if (activeScheme === 'traditional')
+            return collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+        else
+            return 0;
     }
 
     /* END Helpers */
@@ -337,7 +350,7 @@ export function OrderSection(props) {
         choicesEntrees.push({
             title: entree.node.title,
             attributes: attributes,
-            price: parseFloat(entree.node.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
             description: entree.node.description,
             imageURL: imgURL,
             productOptions: entree.node.variants.edges
@@ -351,7 +364,7 @@ export function OrderSection(props) {
         choicesGreens.push({
             title: greens.node.title,
             attributes: attributes,
-            price: parseFloat(greens.node.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
             description: greens.node.description,
             imageURL: imgURL,
             productOptions: greens.node.variants.edges
@@ -377,7 +390,7 @@ export function OrderSection(props) {
 
 
     /* Static Values */
-    const pricingMultiplier = activeScheme === 'traditional' ? `${50 * servingCount + 50}` : 'flex';
+    const planPricingMultiplier = activeScheme === 'traditional' ? `${50 * servingCount + 50}` : 0.0;
 
     const filterSmallOptions = [
         {label: 'All Options', value: 'ALL'},
@@ -396,7 +409,7 @@ export function OrderSection(props) {
     ];
 
     const ICE_ITEM = {
-        "id": "gid://shopify/Product/7704944312536",
+        "id": "gid://shopify/Product/7834911965400",
         "title": "Extra Ice",
         "description": "",
         "tags": [],
@@ -426,6 +439,7 @@ export function OrderSection(props) {
                             <div className="dish-card-wrapper order--properties">
                                 <OrderProperties
                                     activeScheme={activeScheme}
+                                    handleSchemeChange={(value) => setActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
                                     handleCancel={() => console.log("Cancel clicked")}
@@ -507,7 +521,7 @@ export function OrderSection(props) {
                                 currentStep={currentStep}
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={pricingMultiplier}
+                                pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedSmallItems={[...selectedSmallItems]}
@@ -640,7 +654,7 @@ export function OrderSection(props) {
                             <OrderSummary 
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={pricingMultiplier}
+                                pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedSmallItems={[...selectedSmallItems]}
@@ -693,7 +707,7 @@ export function OrderSection(props) {
                                 <OrderSummary 
                                     activeScheme={activeScheme}
                                     servingCount={servingCount}
-                                    pricingMultiplier={pricingMultiplier}
+                                    pricingMultiplier={planPricingMultiplier}
                                     orderTotal={getOrderTotal()}
                                     selectedMainItems={[...selectedMainItems]} 
                                     selectedSmallItems={[...selectedSmallItems]}

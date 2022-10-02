@@ -19,11 +19,9 @@ class SchemeSelector extends React.Component {
         return (
             <section id="SchemeSelector" className={`${currentStep !== step ? 'scheme-inactive-padding' : ''}`}>
                 <span className={`schemeType ${activeScheme === 'traditional' ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme('traditional')}>Traditional Plan</span>
-                { currentStep === step && activeScheme === 'traditional' &&
-                 <span className={`schemeType ${activeScheme === 'traditional' ? '' : 'active'}`} onClick={() => this.changeScheme('flexible')}>Flexible Plan</span>
-                }
+                <span className={`schemeType ${activeScheme === 'flexible' ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme('flexible')}>Flexible Plan</span>
                 { currentStep === step && 
-                 <span><img src={badgeNew.src} width={42} className="badge"/></span>
+                    <span><img src={badgeNew.src} width={42} className="badge"/></span>
                 }
             </section>
         );
