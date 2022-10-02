@@ -77,7 +77,6 @@ export function OrderSection(props) {
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
     const [selectedAddonFilters, setSelectedAddonFilters] = useState([])
 
-
     const [toastMessages, setToastMessages] = useState([]);
     const [showToast, setShowToast] = useState(false);
 
@@ -213,6 +212,10 @@ export function OrderSection(props) {
             });
         
         }
+    }
+
+    const isSectionFilled = (collection) => {
+        return ((activeScheme === 'traditional') && getQuantityTotal(collection) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP)
     }
 
     const getOrderTotal = () => {
@@ -473,6 +476,7 @@ export function OrderSection(props) {
                                     selected={selectedMainItems}
                                     filters={selectedMainFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                    isSectionFilled={isSectionFilled(selectedMainItems)}
                                 />
                             </div>
                             
@@ -494,6 +498,7 @@ export function OrderSection(props) {
                                     selected={selectedSmallItems}
                                     filters={selectedSmallFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                    isSectionFilled={isSectionFilled(selectedSmallItems)}
                                 />
                             </div>
 
@@ -516,6 +521,7 @@ export function OrderSection(props) {
                                     filters={selectedAddonFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     noQuantityLimit={true}
+                                    isSectionFilled={isSectionFilled(selectedAddonItems)}
                                 />
                             </div>
 

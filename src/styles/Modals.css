@@ -173,3 +173,43 @@ section.modal--customize-inner {
     border: 2px solid #474442;
     color: #474442;
 }
+
+.modal-entree-complete {
+    width: 620px;
+    margin: auto;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: #FFFCF5;
+    padding: 2em;
+    border-radius: 12px;
+}
+
+.modal-entree-complete p {
+    font-size: 18px;
+    line-height: 25px;
+    font-family: 'AvenirLTProRoman';
+    margin: 10px 0 30px;   
+}
+
+.modal-entree-complete h1 {
+    padding: 0 !important;
+    margin: 20px 0 0 !important;
+    font-family: 'ITCAvantGardeProDemi' !important;
+    text-transform: uppercase;
+}
+
+.modal-entree-complete h2 {
+    font-family: 'AvenirLTProRoman' !important;
+    margin: 20px 0 10px !important;
+    padding: 0 !important;
+}
+
+.modal-entree-complete .btn.btn-secondary-small{
+    padding: 13px 24px 12px !important;
+}
+
+.button-wrapper {
+    display: flex;
+}
