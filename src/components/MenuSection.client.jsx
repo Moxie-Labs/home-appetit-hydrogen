@@ -152,7 +152,7 @@ export default class MenuSection extends React.Component {
     }
 
     skipSectionExtras() {
-        this.props.handleConfirm;
+        this.props.handleConfirm();
         this.setState({modalDismissed: true})
     }
 
