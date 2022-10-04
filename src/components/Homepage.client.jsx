@@ -22,6 +22,7 @@ export default function Homepage(props) {
                 </li>
                 <li>
                     <Link to="/order">Order (Logged In)</Link>
+                    <p>Status:</p>
                     <ul>
                         <li>Checkout generated ignore address, delivery, and payment info</li>
                         <li>Issues when removing content added before extra Entrees and Sides</li>
