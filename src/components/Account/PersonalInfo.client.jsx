@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Communication from "./Communication.client";
+import { flattenConnection } from '@shopify/hydrogen';
+import Modal from "react-modal/lib/components/Modal";
 import { Checkbox } from "../Checkbox.client";
 import editIcon from "../../assets/icon-edit-alt.png";
 
@@ -7,21 +10,45 @@ export default function PersonalInfo(props) {
 
     const [editingPersonal, setEditingPersonal] = useState(false);
 
-    const { customer, handleUpdatePersonal } = props;
+    const { 
+        customer, 
+        handleUpdatePersonal, 
+        handleUpdateCommunication, 
+        handleUpdateAddress,
+        handleRemoveAddress,
+        handleNewAddress,
+        handleUpdateDefault
+    } = props;
     const {
         firstName,
         lastName,
         acceptsMarketing,
         email,
         phone,
-        id,
-        addresses
+        receiveConsent,
+        defaultAddress
     } = customer;
 
     const [firstNameState, setFirstNameState] = useState(firstName);
     const [lastNameState, setLastNameState] = useState(lastName);
     const [emailState, setEmailState] = useState(email);
     const [phoneState, setPhoneState] = useState(phone);
+
+    // values set when editing address
+    const [showingAddressModal, setShowingAddressModal] = useState(false);
+    const [modalAddress, setModalAddress] = useState(null);
+    const [modalAddressDefault, setModalAddressDefault] = useState(null);
+    const [modalFirstName, setModalFirstName] = useState("");
+    const [modalLastName, setModalLastName] = useState("");
+    const [modalAddress1, setModalAddress1] = useState("");
+    const [modalAddress2, setModalAddress2] = useState("");
+    const [modalCity, setModalCity] = useState("");
+    const [modalProvince, setModalProvince] = useState("");
+    const [modalZip, setModalZip] = useState("");
+    const [modalPhone, setModalPhone] = useState("");
+
+    // Modal will submit new address instead of sending an update request
+    const [newAddressModal, setNewAddressModal] = useState(false);
 
     const formattedPhoneNumber = number => {
         let cleaned = ('' + number).replace(/\D/g, '');
@@ -42,6 +69,100 @@ export default function PersonalInfo(props) {
         handleUpdatePersonal(firstNameState, lastNameState, emailState, phoneState);
         dismissModals();
     }
+
+    const openAddressModal = address => {
+        setModalAddress(address);
+        setModalAddressDefault(address.isDefaultAddress);
+        setModalFirstName(address.firstName);
+        setModalLastName(address.lastName);
+        setModalAddress1(address.address1);
+        setModalAddress2(address.address2);
+        setModalCity(address.city);
+        setModalProvince(address.province);
+        setModalZip(address.zip);
+        setModalPhone(address.phone);
+        setShowingAddressModal(true)
+    }
+
+    const removeAddress = addressId => {
+        handleRemoveAddress(addressId);
+    }
+
+    const makeAddressDefault = address => {
+        address.isDefaultAddress = true;
+        handleUpdateDefault(address);
+    }
+
+    const submitUpdateAddress = () => {
+        handleUpdateAddress({
+            id: modalAddress.id,
+            firstName: modalFirstName,
+            lastName: modalLastName,
+            address1: modalAddress1,
+            address2: modalAddress2,
+            province: modalProvince,
+            city: modalCity,
+            zip: modalZip,
+            country: modalAddress.country,
+            phone: modalPhone,
+            isDefaultAddress: modalAddressDefault,
+        });
+
+        setShowingAddressModal(false);
+        clearModalValues();
+    }
+
+    const submitNewAddress = () => {
+        handleNewAddress({
+            firstName: modalFirstName,
+            lastName: modalLastName,
+            address1: modalAddress1,
+            address2: modalAddress2,
+            province: modalProvince,
+            city: modalCity,
+            zip: modalZip,
+            country: "United States",
+            phone: modalPhone,
+            isDefaultAddress: modalAddressDefault,
+        });
+
+        setShowingAddressModal(false);
+        clearModalValues();
+    }
+
+    const clearModalValues = () => {
+        setModalAddress(null);
+        setModalAddressDefault(null);
+        setModalFirstName("");
+        setModalLastName("");
+        setModalAddress1("");
+        setModalAddress2("");
+        setModalCity("");
+        setModalProvince("");
+        setModalZip("");
+        setModalPhone("");
+        setNewAddressModal(false);
+    }
+
+    const prepareNewAddress = () => {
+        clearModalValues();
+        setNewAddressModal(true);
+        setShowingAddressModal(true);
+    }
+
+    const closeAddressModal = () => {
+        setShowingAddressModal(false);
+        clearModalValues();
+    }
+
+    const addresses = flattenConnection(customer?.addresses) || [];
+    let defaultAddr;
+
+    addresses.forEach(addr => {
+        if (defaultAddress.id === addr.id) {
+            defaultAddr = addr;
+        }
+    });
 
     return (
         <div className="account-information">
@@ -100,46 +221,72 @@ export default function PersonalInfo(props) {
 
             <div className="line-separator"></div>
 
-            <h1 className="address-title">Saved Addresses</h1>
+            <Communication 
+                acceptsMarketing={acceptsMarketing}
+                receiveConsent={receiveConsent}
+                handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
+            /> 
+
+            <h1>Saved Addresses</h1>
 
             <article>
-                <h2 className="default-address-label">Default Address</h2>
-                <div className="address">
-                    <p>{addresses[0].address1}</p>
-                    {addresses[0].address2 !== "" && <p>{addresses[0].address2}</p>}
-                    <p>{addresses[0].city}, {addresses[0].state} {addresses[0].zip}</p>
-                </div>
-
-                <button className="btn btn-default">Add New Address</button>
+                <p><b>Default Address</b></p>
+                <p>{defaultAddr.name}</p>
+                <p>{defaultAddr.address1}</p>
+                {defaultAddr.address2 !== "" && <p>{defaultAddr.address2}</p>}
+                {defaultAddr.company !== "" && <p>{defaultAddr.company}</p>}
+                <p>{defaultAddr.city}, {defaultAddr.provinceCode} {defaultAddr.zip}</p>
+                <p><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
             </article>
 
-            { addresses.length === 2 &&
-                <article>
-                    <h2>Address 2</h2>
-                    <div className="address">
-                        <p>{addresses[1].address1}</p>
-                        {addresses[1].address2 !== "" && <p>{addresses[1].address2}</p>}
-                        <p>{addresses[1].city}, {addresses[1].state} {addresses[1].zip}</p>
-                    </div>
+            {addresses.map((addr, index) => {
+                if (addr.id !== defaultAddr.id) {
+                    return <article>
+                    <p><b>Address {index+1}</b></p>
+                    <p>{addr.name}</p>
+                    <p>{addr.address1}</p>
+                    {addr.address2 !== "" && <p>{addr.address2}</p>}
+                    {addr.company !== "" && <p>{addr.company}</p>}
+                    <p>{addr.city}, {addr.provinceCode} {addr.zip}</p>
+                    <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
                 </article> 
-            }
-       
+                }
+            })}
 
-       <div className="line-separator"></div>
+            <button className="btn btn-default" onClick={() => prepareNewAddress()}>Add New Address</button>
 
-        <h1 className="address-title">Communication Preferences</h1>
+            <Modal
+                isOpen={showingAddressModal}
+                onRequestClose={() => closeAddressModal()}
+            >
+                <label>First Name:</label>
+                <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
 
-        <Checkbox
-            label="I agree to laoreet aliquet proin mattis quis ut nulla lac us vitae orci quis varius lacus."
-        />
+                <label>Last Name:</label>
+                <input value={modalLastName} onChange={e => setModalLastName(e.target.value)}/>
 
-        <Checkbox
-            label="Receive laoreet aliquet proin mattis quis ut nulla lac us vitae orci quis varius lacus."
-        />
+                <label>Address:</label>
+                <input value={modalAddress1} onChange={e => setModalAddress1(e.target.value)}/>
 
-        <Checkbox
-            label="Receive laoreet aliquet proin mattis quis ut nulla lac us vitae orci quis varius lacus."
-        />
+                <label>Address 2:</label>
+                <input value={modalAddress2} onChange={e => setModalAddress2(e.target.value)}/>
+
+                <label>City:</label>
+                <input value={modalCity} onChange={e => setModalCity(e.target.value)}/>
+
+                <label>State:</label>
+                <input value={modalProvince} onChange={e => setModalProvince(e.target.value)}/>
+
+                <label>ZIP:</label>
+                <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
+
+                <label>Phone:</label>
+                <input value={modalPhone} onChange={e => setModalPhone(e.target.value)}/>
+
+                { !newAddressModal && <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
+                { newAddressModal && <button onClick={() => submitNewAddress()}>Submit</button> }
+                <button onClick={() => setShowingAddressModal(false)}>Cancel</button>
+            </Modal>
 
         </div>
     );

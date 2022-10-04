@@ -7,7 +7,12 @@ export default function Homepage(props) {
             <ul>
                 <li>
                     <Link to="/account">My Account</Link>
-                    <p>Status: Needs Styling</p>
+                    <p>Status:</p>
+                    <ul>
+                        <li>Requires an activated account to login</li>
+                        <li>Activation still links to Liquid site on success</li>
+                        <li>Gift Card and Payment sections do not have significant API access to function</li>
+                    </ul>
                     <hr></hr>
                 </li>
                 <li>
@@ -17,7 +22,12 @@ export default function Homepage(props) {
                 </li>
                 <li>
                     <Link to="/order">Order (Logged In)</Link>
-                    <p>Status: Cannot Generate Checkout from Cart</p>
+                    <ul>
+                        <li>Checkout generated ignore address, delivery, and payment info</li>
+                        <li>Issues when removing content added before extra Entrees and Sides</li>
+                        <li>Occassional (temporary) crash on load</li>
+                        <li>Excessive re-renders</li>
+                    </ul>
                     <hr></hr>
                 </li>
                 <li>

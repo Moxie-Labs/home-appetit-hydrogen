@@ -1,17 +1,34 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import PersonalInfo from '../components/Account/PersonalInfo.client';
 import Payment from '../components/Account/Payment.client';
 import Orders from '../components/Account/Orders.client';
 import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
+import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
 import { LogoutButton } from './LogoutButton.client';
 
 export default function MyAccount(props) {
+
+    const { customer } = props;
 
     const [activeTab, setActiveTab] = useState('info');
     const [agreeConsent, setAgreeConsent] = useState(false);
     const [receiveConsent, setReceiveConsent] = useState(false);
 
+    // Editable Fields
+    const [saving, setSaving] = useState(false);
+    const [firstName, setFirstName] = useState(customer.firstName);
+    const [lastName, setLastName] = useState(customer.lastName);
+    const [phone, setPhone] = useState(customer.phone);
+    const [email, setEmail] = useState(customer.email);
+    const [emailError, setEmailError] = useState(null);
+    const [currentPasswordError, setCurrentPasswordError] = useState(null);
+    const [acceptsMarketing, setAcceptsMarketing] = useState(customer.acceptsMarketing);
+    const [newPasswordError, setNewPasswordError] = useState(null);
+    const [newPassword2Error, setNewPassword2Error] = useState(null);
+    const [submitError, setSubmitError] = useState(null);
+
+    const renderServerComponents = useRenderServerComponents();
     const {orders} = props;
 
     /* GraphQL Simulation */
@@ -70,7 +87,7 @@ export default function MyAccount(props) {
         }
     };
 
-    const [customer, setCustomer] = useState(customerData.customer);
+    // const [customer, setCustomer] = useState(customerData.customer);
 
      // temp
      const [payments, setPayments] = useState(customer.payments);
@@ -101,14 +118,135 @@ export default function MyAccount(props) {
         console.log("newCustomer", newCustomer)
     }
 
-    const updateCustomerInfo = (firstName, lastName, email, phone) => {
-        let newCustomer = {...customer};
-        newCustomer.firstName = firstName;
-        newCustomer.lastName = lastName;
-        newCustomer.email = email;
-        newCustomer.phone = phone;
-        setCustomer(newCustomer);
+    const updateCustomerInfo = async (firstName, lastName, email, phone) => {
+        await callAccountUpdateApi({
+            firstName,
+            lastName,
+            email,
+            phone: `+${removePhoneNumberFormatting(phone)}`
+        });
+
+        renderServerComponents();
     }
+
+
+    async function updateCommunicationPreferences(newPreferences) {
+        renderServerComponents();
+        await callAccountUpdateApi({
+            acceptsMarketing: newPreferences.acceptsMarketing
+        });
+
+        setAcceptsMarketing(newPreferences.acceptsMarketing)
+
+        renderServerComponents();
+    }
+
+    async function updateAddress(newAddress) {
+        const {
+            id,
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        } = newAddress;
+
+        await callUpdateAddressApi({
+            id,
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        });
+
+        renderServerComponents();
+    }
+
+    async function addAddress(newAddress) {
+        const {
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        } = newAddress;
+
+        await callUpdateAddressApi({
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        });
+
+        renderServerComponents();
+    }
+
+    async function removeAddress(addressId) {
+        await callDeleteAddressApi(addressId);
+        renderServerComponents();
+    }
+
+    async function defaultAddress(defaultAddress) {
+        const {
+            id,
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        } = defaultAddress;
+
+        await callUpdateAddressApi({
+            id,
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+        });
+
+        renderServerComponents();
+    }
+
+    
 
     return (
         <div className='myaccount-wrapper'>
@@ -118,10 +256,9 @@ export default function MyAccount(props) {
 
             <section className='account-panel-switches'>
                 <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} onClick={() => setActiveTab('payment')}>Payment</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => {;}}>Payment</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'comm' ? ' active' : '' }`} onClick={() => setActiveTab('comm')}>Communication Preferences</h2>
                 <LogoutButton />
             </section>
 
@@ -129,7 +266,13 @@ export default function MyAccount(props) {
                 { activeTab === 'info' &&
                     <PersonalInfo
                         customer={customer}
+                        acceptsMarketing={acceptsMarketing}
                         handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
+                        handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}
+                        handleUpdateAddress={(newAddress) => updateAddress(newAddress)}
+                        handleRemoveAddress={(addressId) => removeAddress(addressId)}
+                        handleNewAddress={(newAddress) => addAddress(newAddress)}
+                        handleUpdateDefault={(address) => defaultAddress(address)}
                     /> 
                 }
 
@@ -155,19 +298,117 @@ export default function MyAccount(props) {
                         referralCredit={rewards.referralBalance}
                     /> 
                 }
-
-                { activeTab === 'comm' &&
-                    <Communication
-                        customer={customer}        
-                        agreeConsent={agreeConsent}
-                        receiveConsent={receiveConsent}
-                        handleAgreeUpdate={(value) => setAgreeConsent(value)}      
-                        handleReceiveUpdate={(value) => setReceiveConsent(value)}            
-                    /> 
-                }
             </section>
 
         </div>
         </div>
     );
 }
+
+export async function callAccountUpdateApi({
+    email,
+    phone,
+    firstName,
+    lastName,
+    currentPassword,
+    newPassword,
+    acceptsMarketing
+  }) {
+    try {
+      const res = await fetch(`/account`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          phone,
+          firstName,
+          lastName,
+          currentPassword,
+          newPassword,
+          acceptsMarketing
+        }),
+      });
+      if (res.ok) {
+        return {};
+      } else {
+        return res.json();
+      }
+    } catch (_e) {
+      return {
+        error: 'Error saving account. Please try again.',
+      };
+    }
+  }
+
+  export async function callUpdateAddressApi({
+    id,
+    firstName,
+    lastName,
+    company,
+    address1,
+    address2,
+    country,
+    province,
+    city,
+    phone,
+    zip,
+    isDefaultAddress,
+  }) {
+    try {
+      const res = await fetch(
+        id ? `/account/address/${encodeURIComponent(id)}` : '/account/address',
+        {
+          method: id ? 'PATCH' : 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            company,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+            isDefaultAddress,
+          }),
+        },
+      );
+      if (res.ok) {
+        return {};
+      } else {
+        return res.json();
+      }
+    } catch (_e) {
+      return {
+        error: 'Error saving address. Please try again.',
+      };
+    }
+  }
+
+  async function callDeleteAddressApi(id) {
+    try {
+      const res = await fetch(`/account/address/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      if (res.ok) {
+        return {};
+      } else {
+        return res.json();
+      }
+    } catch (_e) {
+      return {
+        error: 'Error removing address. Please try again.',
+      };
+    }
+  }
