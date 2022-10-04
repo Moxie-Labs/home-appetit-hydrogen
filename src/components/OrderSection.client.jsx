@@ -10,7 +10,6 @@ import { Page } from "./Page.client";
 import DeliveryInfo from "./DeliveryInfo.client";
 import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
-import { GET_CHECKOUT_MUTATION } from "../helpers/queries";
 import { CompleteSignUp } from "./CompleteSignup.client";
 import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
@@ -48,17 +47,9 @@ const DEFAULT_CARDS = [
     }
 ];
 
-const TRADITIONAL_PLAN_VARIANT_IDS = [
-    "gid://shopify/ProductVariant/43314850169048", // one person
-    "gid://shopify/ProductVariant/43314850201816", // two people, etc.
-    "gid://shopify/ProductVariant/43314850234584",
-    "gid://shopify/ProductVariant/43314850267352",
-    "gid://shopify/ProductVariant/43314850300120"
-];
-
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, lines: cartLines } = useCart();
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines } = useCart();
 
     // const { id: cartId, checkoutUrl } = useCart();
 
@@ -137,10 +128,10 @@ export function OrderSection(props) {
         return newTags;
     }
 
-    let selectedMainItemsReadout = [];
-    selectedMainItems.forEach(item => {
-        selectedMainItemsReadout.push(item.title);
-    });
+    // let selectedMainItemsReadout = [];
+    // selectedMainItems.forEach(item => {
+    //     selectedMainItemsReadout.push(item.title);
+    // });
 
     const doesCartHaveItem = (choice, collection) => {
         let retval = false;
@@ -152,7 +143,7 @@ export function OrderSection(props) {
         return retval;
     }
 
-    const addItemToCart = (choice, collection, collectionName) => {
+    const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
 
         console.log("addItemToCard::choice", choice);
 
@@ -176,9 +167,7 @@ export function OrderSection(props) {
                 setSelectedAddonItems([...collection]);
 
 
-                linesRemove({lineIds: [
-                    choice.choice.productOptions[1].node.id
-                ]})
+            linesRemove([choice.choice.productOptions[1].node.id])
 
         }
 
@@ -204,13 +193,15 @@ export function OrderSection(props) {
                 // setCurrentStep(currentStep+1);
             }
 
-            console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
-            // update Shopify Cart
-            linesAdd({ 
-                merchandiseId: choice.choice.productOptions[variantType].node.id,
-                quantity: choice.quantity
-            });
-        
+            if (addToShopifyCart) {
+                console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
+                // update Shopify Cart
+                linesAdd({ 
+                    merchandiseId: choice.choice.productOptions[variantType].node.id,
+                    quantity: choice.quantity
+                });
+            }
+            
         }
     }
 
@@ -311,6 +302,18 @@ export function OrderSection(props) {
         window.location.href=`${checkoutUrl}`;
     }
 
+    const emptyCart = () => {
+        const linesToRemove = [];
+        cartLines.map(line => {
+            linesToRemove.push(line.id);
+        });
+        linesRemove(linesToRemove);
+
+        setSelectedMainItems([]);
+        setSelectedSmallItems([]);
+        setSelectedAddonItems([]);
+    }
+
     const confirmPersonsCount = () => {
 
         if (activeScheme === 'traditional') {
@@ -349,53 +352,110 @@ export function OrderSection(props) {
     const greensProducts = collections["greens-grains-small-plates"].products.edges;
     const addonsProducts = collections['add-ons'].products.edges;
 
+    const existingMainItems = [];
+    const existingSmallItems = [];
+    const existingAddonItems = [];
+
     const choicesEntrees = [];
     entreeProducts.map(entree => {
         const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
         const attributes = convertTags(entree.node.tags);
-        choicesEntrees.push({
+        const choice = {
             title: entree.node.title,
             attributes: attributes,
             price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
             description: entree.node.description,
             imageURL: imgURL,
             productOptions: entree.node.variants.edges
+        };
+        choicesEntrees.push(choice);
+
+        // map cart items to pre-selected choices        
+        cartLines.map(line => {
+            entree.node.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    console.log("Adding existing item", line.id)
+                    existingMainItems.push({choice: choice, quantity: line.quantity});
+                }
+            });
         });
     });
+
+    if (existingMainItems.length > 0 && selectedMainItems.length < 1) {
+        setSelectedMainItems(existingMainItems);
+    }
 
     const choicesGreens = [];
     greensProducts.map(greens => {
         const imgURL = greens.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : greens.node.images.edges[0].node.src;
         const attributes = convertTags(greens.node.tags);
-        choicesGreens.push({
+        const choice = {
             title: greens.node.title,
             attributes: attributes,
             price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
             description: greens.node.description,
             imageURL: imgURL,
             productOptions: greens.node.variants.edges
+        }
+
+        choicesGreens.push(choice);
+
+        // map cart items to pre-selected choices        
+        cartLines.map(line => {
+            greens.node.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    existingSmallItems.push({choice: choice, quantity: line.quantity});
+                }
+            });
         });
     });
+
+    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) {
+        setSelectedSmallItems(existingSmallItems);
+    }
 
     const choicesAddons = [];
     addonsProducts.map(addons => {
         const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
         const attributes = convertTags(addons.node.tags);
-        choicesAddons.push({
+        const choice = {
             title: addons.node.title,
             attributes: attributes,
             price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
             description: addons.node.description,
             imageURL: imgURL,
             productOptions: addons.node.variants.edges
+        };
+
+        choicesAddons.push(choice);
+
+        // map cart items to pre-selected choices        
+        cartLines.map(line => {
+            addons.node.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    existingAddonItems.push({choice: choice, quantity: line.quantity});
+                }
+            });
         });
     });
+
+    if (existingAddonItems.length > 0 && selectedAddonItems.length < 1) {
+        setSelectedAddonItems(existingAddonItems);
+    }
 
     /* END GraphQL Values */
 
 
 
     /* Static Values */
+    const TRADITIONAL_PLAN_VARIANT_IDS = [
+        "gid://shopify/ProductVariant/43314850169048", // one person
+        "gid://shopify/ProductVariant/43314850201816", // two people, etc.
+        "gid://shopify/ProductVariant/43314850234584",
+        "gid://shopify/ProductVariant/43314850267352",
+        "gid://shopify/ProductVariant/43314850300120"
+    ];
+
     const planPricingMultiplier = activeScheme === 'traditional' ? `${50 * servingCount + 50}` : 0.0;
 
     const filterSmallOptions = [
@@ -434,6 +494,10 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
+    /* Debug Values */
+
+    /* END Debug Values */
+
 
     return (
         <Page>
@@ -442,8 +506,12 @@ export function OrderSection(props) {
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
+
+                    <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+
                     <Layout>
                         <LayoutSection>
+
                             <div className="dish-card-wrapper order--properties">
                                 <OrderProperties
                                     activeScheme={activeScheme}
