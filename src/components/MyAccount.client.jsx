@@ -258,7 +258,7 @@ export default function MyAccount(props) {
 
             <section className='account-panel-switches'>
                 <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} onClick={() => setActiveTab('payment')}>Payment</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
                 <LogoutButton />
