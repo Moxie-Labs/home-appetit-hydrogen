@@ -137,7 +137,7 @@ import { TextField } from "./TextField.client";
                 </div>
                 </section>
                 <section className="modal--right">
-                    <img src={deliveryMap.src}/>
+                    <img src={deliveryMap}/>
                 </section>
           </section>
         </Modal>
@@ -172,7 +172,7 @@ import { TextField } from "./TextField.client";
                 </div>
                 </section>
                 <section className="modal--right">
-                    <img src={deliveryMap.src}/>
+                    <img src={deliveryMap}/>
                 </section>
           </section>
         </Modal>
@@ -197,7 +197,7 @@ import { TextField } from "./TextField.client";
                 </div>
                 </section>
                 <section className="modal--right">
-                    <img src={deliveryMap.src}/>
+                    <img src={deliveryMap}/>
                 </section>
           </section>
         </Modal>
