@@ -49,10 +49,7 @@ const DEFAULT_CARDS = [
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines } = useCart();
-
-    // const { id: cartId, checkoutUrl } = useCart();
-
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
@@ -78,7 +75,7 @@ export function OrderSection(props) {
     let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
     let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
     let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
-    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "123 456 7890");
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "+12345678901");
     let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
     let [address2, setAddress2] = useState(isGuest ? null : "");
     let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
@@ -282,6 +279,11 @@ export function OrderSection(props) {
         return result < 0 ? (result *= -1, new Date((new Date).setDate((new Date).getDate() - result))) : new Date((new Date).setDate((new Date).getDate() + result))
     }
 
+    const getDayOfWeekName = dayNumber => {
+        const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        return daysOfWeek[dayNumber];
+    }
+
     // TODO: grab GUID dynamically
     const addExtraIce = value => {
         const iceItem = ICE_ITEM;
@@ -299,6 +301,32 @@ export function OrderSection(props) {
 
 
     const attemptSubmitOrder = () => {
+
+        const buyerIdentityObj = {
+            email: emailAddress,
+            phone: phoneNumber,
+            deliveryAddressPreferences: [
+                {
+                    deliveryAddress: {
+                        address1: address,
+                        address2: address2,
+                        city: city,
+                        country: "United States",
+                        firstName: firstName,
+                        lastName: lastName,
+                        phone: phoneNumber,
+                        province: deliveryState,
+                        zip: zipcode
+                    }
+                    
+                }
+            ]
+        };
+        
+        if (typeof customerAccessToken !== 'undefined' && customerAccessToken !== null) { buyerIdentityObj.customerAccessToken = customerAccessToken; }
+
+        buyerIdentityUpdate(buyerIdentityObj);
+
         window.location.href=`${checkoutUrl}`;
     }
 
@@ -334,6 +362,29 @@ export function OrderSection(props) {
             return collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
         else
             return 0;
+    }
+
+
+    const confirmDeliveryInfo = () => {
+
+        const cartAttributesObj = [
+            {
+                key: 'Order Type',
+                value: activeScheme
+            },
+            {
+                key: 'Delivery Window',
+                value: `${deliveryWindowStart} - ${deliveryWindowEnd}`
+            },
+            {
+                key: 'Delivery Day',
+                value: getDayOfWeekName(deliveryWindowDay)
+            }
+        ];
+        
+        cartAttributesUpdate(cartAttributesObj);
+
+        setCurrentStep(7);
     }
 
     /* END Helpers */
@@ -670,7 +721,7 @@ export function OrderSection(props) {
                                 handleGiftMessage={(value) => setGiftMessage(value)}
                                 handleAgreeToTerms={value => setAgreeToTerms(value)}
                                 handleReceiveTexts={value => setReceiveTexts(value)}
-                                handleContinue={() => setCurrentStep(7)}
+                                handleContinue={() => confirmDeliveryInfo()}
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={6}
                                 currentStep={currentStep}

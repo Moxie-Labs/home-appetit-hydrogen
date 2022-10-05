@@ -40,11 +40,8 @@ export default function OrderConfirmation(props) {
     }
 
     const getDisplayDate = date => {
-        let retval;
-        if (date.getDay() === 6) 
-            retval = `Saturday `
-        else if (date.getDay() === 0)
-            retval = `Sunday `
+        const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        let retval = daysOfWeek[date];
         
         retval += `${date.getMonth()+1}/${date.getDate()}`;
         return retval;
