@@ -8,21 +8,30 @@ import { LayoutSection } from './LayoutSection.client';
 import { Layout } from './Layout.client';
 import CardFilters from './CardFilters.client';
 import DishCard from './DishCard.client';
+import Modal from 'react-modal/lib/components/Modal';
 
 export default class MenuSection extends React.Component {
 
     constructor(props) {  
         super(props);
+        this.state = {
+            showingExtra: false,
+            modalDismissed: false
+        }
     }  
 
-    getChoicesByFilters(filters) {
+    getChoicesByFilters(filters, choices) {
         const retval = [];
-        const {choices} = this.props;
+        
         for (let choice of choices) {
             for(let filter of filters) {
-                if (choice.attributes.includes(filter)) {
-                    retval.push(choice);
+                if (!choice.attributes.includes(filter)) {
                     break;
+                }
+                if (choice.attributes.includes(filter)) {
+                    if (filter === filters[filters.length-1]) {
+                        retval.push(choice);
+                    }
                 }
             }
         }
@@ -36,7 +45,7 @@ export default class MenuSection extends React.Component {
             retval = choices;
         }
         else {
-            retval = this.getChoicesByFilters(filters);
+            retval = this.getChoicesByFilters(filters, choices);
         }
         return retval;
     }
@@ -138,11 +147,48 @@ export default class MenuSection extends React.Component {
         return quantity;
     }
 
+    showSectionExtras() {
+        this.setState({showingExtra: true, modalDismissed: true});
+    }
+
+    skipSectionExtras() {
+        this.props.handleConfirm();
+        this.setState({modalDismissed: true})
+    }
+
+    getSplitSelections() {
+        const { selected, freeQuantityLimit } = this.props;
+        const mainSelections = [];
+        const extraSelections = [];
+        let totalQuantity = 0;
+        Object.keys(selected).map(key => {
+            if (totalQuantity < freeQuantityLimit) {
+                mainSelections.push(selected[key]);
+                totalQuantity += selected[key].quantity;
+            } else {
+                extraSelections.push(selected[key]);
+            }
+            
+        });
+        return {
+            mainSelections: mainSelections,
+            extraSelections: extraSelections
+        };
+    }
+
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit} = this.props;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled} = this.props;
+        const {modalDismissed, showingExtra} = this.state;
         const additionalEntrees = 0;
         const filteredChoices = this.filterChoices(selected);
+
+        const splitSelections = this.getSplitSelections();
+
+        const mainSelected = splitSelections.mainSelections;
+        const extraSelected = splitSelections.extraSelections;
+
+        console.log("mainSelected", mainSelected)
 
         let filteredChoicesSection;
         if (filteredChoices.length > 0) {
@@ -159,6 +205,7 @@ export default class MenuSection extends React.Component {
                             initialQuantity={this.getExistingQuantity(choice)}
                             confirmed={this.getExistingQuantity(choice) > 0}
                             maxQuantity={(freeQuantityLimit - getQuantityTotal(selected))}
+                            showingExtra={showingExtra}
                         />
                     </div>
                 )
@@ -172,91 +219,107 @@ export default class MenuSection extends React.Component {
         const optionCounts = [];
         
         filterOptions.forEach(filter => {
-            optionCounts[filter.label] = this.getChoicesByFilters([filter.value]).length;
+            optionCounts[filter.label] = this.getChoicesByFilters([filter.value], filteredChoices).length;
         });
+
+
+        // Render Sections
+        const overviewSection = <section>
+        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
+        { Object.keys(selected).length !== 0 && 
+        <div className="suborder--summary-container">
+            <div className="suborder--summary-details">
+                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; <span><img onClick={handleEdit} src={iconEdit.src} className="icon-edit" width="65" /></span></h4>
+                {Object.keys(mainSelected).map(function(key) {
+                    return ( 
+                        <ul key={key} className="step--order-summary">
+                            <li>({mainSelected[key].quantity}) {mainSelected[key].choice.title} <span>{mainSelected[key].choice.description}</span></li>
+                        </ul>
+                    )
+                })}
+            </div>
+            
+            { isSectionFilled &&
+                <div className="suborder--summary-additional">
+                    <div className="summary--additional-wrapper">
+                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; <span><img src={iconEdit.src} className="icon-edit" width="65"/></span></h4>
+                        {Object.keys(extraSelected).map(function(key) {
+                            return ( 
+                                <ul key={key} className="step--order-summary">
+                                    <li>({extraSelected[key].quantity}) {extraSelected[key].choice.title} <span>{extraSelected[key].choice.description}</span></li>
+                                </ul>
+                            )
+                        })}
+                    </div>
+                </div> 
+            } 
+
+        </div>
+        }
+    </section>;
+
+    const dishSection = <section className={`step-section ha-color-bg-body`}>   
+        <LayoutSection>
+            
+        
+            { !isSectionFilled && 
+                <div>
+                    <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
+                    <p className="subheading order_prop__subheading p-subheading-width">{subheading}</p>
+                    { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
+                    { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
+                </div>
+            }
+                        <br></br>
+            {this.progressBarStatus(getQuantityTotal(selected))}  
+            
+            <br></br>
+            
+            <CardFilters
+                filterOptions={filterOptions}
+                handleFiltersUpdate={handleFiltersUpdate}
+                selected={selected}
+                filters={filters}
+                optionCounts={optionCounts}
+                totalOptionCount={choices.length}
+            />
+        </LayoutSection>
+        <br></br>
+        <Layout>
+            {filteredChoicesSection}
+        </Layout>
+
+        <section className="menu-section__actions">
+            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm Selections</button>
+        </section>
+        
+    </section>;
     
         return (
             <Frame>
-                { currentStep === step && 
-                    <section className="step-section ha-color-bg-body">   
-                        <LayoutSection>
-                            <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
-                            <p className="subheading order_prop__subheading p-subheading-width">{subheading}</p>
-                            { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
-                            { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
-                            <br></br>
-                            {this.progressBarStatus(getQuantityTotal(selected))}  
-                            
-                            <br></br>
-                            
-                            <CardFilters
-                                filterOptions={filterOptions}
-                                handleFiltersUpdate={handleFiltersUpdate}
-                                selected={selected}
-                                filters={filters}
-                                optionCounts={optionCounts}
-                                totalOptionCount={choices.length}
-                            />
-                        </LayoutSection>
-                        <br></br>
-                        <Layout>
-                            {filteredChoicesSection}
-                        </Layout>
 
-                        <section className="menu-section__actions">
-                            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm Selections</button>
-                        </section>
-                        
-                    </section>
+                <Modal
+                    isOpen={isSectionFilled && !modalDismissed}
+                    onRequestClose={() => this.setState({showingModal: false})}
+                    className="modal-entree-complete"
+                >   
+                    <h1 className='uppercase text-center'>{title} Selection Complete!</h1>
+                    <h2 className='text-center'>Care to add extra {title}</h2>
+                    <p className='text-center'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. 
+                    Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam <b>$12.50</b> each.</p>
+                    <button className='btn btn-primary-small' onClick={() => this.showSectionExtras()}>+ Add Extra {title}</button>
+                    <button className='btn btn-secondary-small' onClick={() => this.skipSectionExtras()}>Continue to {title === 'Entrées' ? 'Small Plates' : 'Add-ons'}</button>
+
+                </Modal>
+
+                { currentStep === step && 
+                    <div>
+                        { isSectionFilled && overviewSection }
+                        { dishSection }
+                    </div>
                 }
                 
-                { currentStep !== step && 
-                    <section>
-                        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
-                        { Object.keys(selected).length !== 0 && 
-                        <div className="suborder--summary-container">
-                            <div className="suborder--summary-details">
-                                <h4 className="ha-h4">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; <span><img onClick={handleEdit} src={iconEdit.src} className="icon-edit" width="65" /></span></h4>
-                                {Object.keys(selected).map(function(key) {
-                                    return ( 
-                                        <ul key={key} className="step--order-summary">
-                                            <li>({selected[key].quantity}) {selected[key].choice.title} <span>{selected[key].choice.description}</span></li>
-                                        </ul>
-                                    )
-                                })}
-                            </div>
-                            
-                            { step === 2 && additionalEntrees >= 1 &&
-                                <div className="suborder--summary-additional">
-                                    <div className="summary--additional-wrapper">
-                                        <h4 className="ha-h4">{additionalEntrees} Additional entrées &nbsp; <span><img src={iconEdit.src} className="icon-edit" width="65"/></span></h4>
-                                    </div>
-                                </div> 
-                            } 
-
-                            {step === 2 && additionalEntrees === 0 &&
-                                <div className="suborder--summary-additional small-plates">
-                                    <div className="summary--additional-wrapper small-plates-wrapper">
-                                        <h4 className="ha-h4">Add Extra Entrées</h4>
-                                        <p>Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id.</p>
-                                        <button className="btn-small-plates"><span><img src={iconPlus.src} className="icon-plus"/></span> Add Extra Entrées</button>
-                                    </div>
-                                </div> 
-                            }
-
-                            {step === 3 &&
-                                <div className="suborder--summary-additional small-plates">
-                                    <div className="summary--additional-wrapper small-plates-wrapper">
-                                        <h4 className="ha-h4">Add Extra Small Plates</h4>
-                                        <p>Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id.</p>
-                                        <button className="btn-small-plates"><span><img src={iconPlus.src} className="icon-plus"/></span> Add extra Small Plates</button>
-                                    </div>
-                                </div> 
-                            } 
-                        </div>
-                        }
-                    </section>
-                }
+                { currentStep !== step && overviewSection }
             </Frame>
         )
     }}

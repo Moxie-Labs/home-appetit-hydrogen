@@ -44,7 +44,7 @@
     .order-summary--items {
         border-bottom: 2px solid #474442;
         margin: 5px 0 0 0;
-        padding: 15px 0 !important;
+        padding: 20px 0 !important;
         padding-inline-start: 20px;
     }
 
@@ -52,6 +52,11 @@
         font-family: AvenirLTProRoman !important;
         font-size: 18px;
         font-weight: bold;
+        margin: 0;
+    }
+
+    .order-summary--inner h3 {
+        margin: 0 !important;
     }
 
         .order-summary--item {
@@ -131,7 +136,7 @@ span.price--extra-addon {
     right: 0;
     width: 407px;
     z-index: 99;
-    left: 100px;
+    left: 0;
     cursor: default;
 }
 
@@ -146,4 +151,19 @@ span.price--extra-addon {
 
 .payment-wrapper section.order-summary--enlarged-items {
     cursor: default;
+}
+
+.payment-wrapper .layout {
+    flex-flow: column;
+    justify-content: flex-start;
+    margin: 0;
+}
+
+.payment-wrapper h2.order_delivery__window-title {
+    padding: 0;
+    margin: 0;
+}
+
+.payment-wrapper .layout-section {
+    width: 100%;
 }

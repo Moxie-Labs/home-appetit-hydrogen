@@ -2,6 +2,7 @@ import React, {useState, useCallback} from 'react';
 import SchemeSelector from "./SchemeSelector.client";
 import iconEdit from "../assets/icon-edit.png";
 import iconArrowDown from "../assets/arrow-down.png";
+import illustration from "../assets/ha-infographic-hd.png";
 import { LayoutSection } from './LayoutSection.client';
 
 const servingOptions = [
@@ -19,16 +20,24 @@ export default class OrderProperties extends React.Component {
         super(props);    
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSchemeChange = this.handleSchemeChange.bind(this);
         this.handleContinue = this.handleContinue.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
+
     }
 
     handleChange(event) {
         this.props.handleChange(event.target.value);
-      }
+    }
+
+    handleSchemeChange(activeScheme) {
+        this.props.handleSchemeChange(activeScheme);
+    }
     
     handleContinue(event) {
         this.props.handleContinue();
+        const step = document.querySelector(".step-active");
+        step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     handleCancel(event) {
@@ -46,7 +55,7 @@ export default class OrderProperties extends React.Component {
                     <h2 sectioned className="heading order_prop__heading ha-h3">Step 1: Order Type</h2>
                     <SchemeSelector
                         activeScheme={activeScheme}
-                        handleSchemeChange={(activeScheme) => setActiveScheme(activeScheme)}
+                        handleSchemeChange={(activeScheme) => this.handleSchemeChange(activeScheme)}
                         currentStep={currentStep}
                         step={1}
                     />
@@ -78,7 +87,7 @@ export default class OrderProperties extends React.Component {
 
                     { currentStep !== step &&
                         <button className="btn btn-cancel" onClick={this.handleCancel}>
-                            <img src={iconEdit.src} width={65} />
+                            <img src={iconEdit} width={65} />
                         </button>
                     }
                     </LayoutSection>
@@ -87,7 +96,7 @@ export default class OrderProperties extends React.Component {
                 { currentStep === step &&
                 <div className="step-column">
                     <div className="illustration-placeholder">
-                         Illustration Placeholder
+                         <img src={illustration} width="100%" />
                     </div>
                 </div>
                 }

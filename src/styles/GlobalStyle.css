@@ -1,41 +1,121 @@
+/**
+ * @license
+ * MyFonts Webfont Build ID 4809586, 2022-05-09T13:49:00-0400
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: ITCAvantGardePro-Demi by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/itc-avant-garde-gothic-inactive/avantgarde-demi/
+ * Copyright: Copyright © 2015 Monotype ITC Inc. All rights reserved.
+ * 
+ * Webfont: ITCGaramondStd-BkCond by ITC
+ * URL: https://www.myfonts.com/fonts/itc/garamond/std-book-condensed/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype ITC Inc. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-Light by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-35-light/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-LightOblique by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-35-light-oblique/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-Book by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-45-book/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-BookOblique by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-45-book-oblique/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-Roman by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-55-roman/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-Oblique by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-55-oblique/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-Medium by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-65-medium/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-MediumOblique by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-65-medium-oblique/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-Heavy by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-85-heavy/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-HeavyOblique by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-85-heavy-oblique/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-Black by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-95-black/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * Webfont: AvenirLTPro-BlackOblique by Linotype
+ * URL: https://www.myfonts.com/fonts/linotype/avenir/pro-95-black-oblique/
+ * Copyright: Copyright &amp;#x00A9; 2014 Monotype GmbH. All rights reserved.
+ * 
+ * 
+ * 
+ * © 2022 MyFonts Inc
+*/
+
+@import url("//hello.myfonts.net/count/496372");
+
 @font-face {
     font-family: "ITC Avant Garde Gothic W03 Md";
-    src: local("ITC Avant Garde Gothic W03 Md"), url("../font/03d52b20-0d03-49fe-818b-25b6bb19d206.woff2") format("woff2"),
+    src: url("../font/03d52b20-0d03-49fe-818b-25b6bb19d206.woff2") format("woff2"),
     url("../font/08704875-1f34-4b0c-88bf-04f54e3edb21.woff") format("woff");
 }
 
 @font-face {
     font-family: "ITCAvantGardeProDemi";
-    src: local("ITCAvantGardeProDemi"),url("../font/ITCAvantGardeProDemi.woff2") format("woff2"),
+    src: url("../font/ITCAvantGardeProDemi.woff2") format("woff2"),
     url("../font/ITCAvantGardeProDemi.woff") format("woff");
 }
 
 @font-face {
     font-family: "ITCAvantGardeGothicDemiBold";
-    src: url('../font/ITCAvantGardeGothicDemiBold.woff2') format('woff2'), url('../font/ITCAvantGardeGothicDemiBold.woff') format('woff');
+    src: url('../font/ITCAvantGardeGothicDemiBold.woff2') format('woff2'), 
+    url('../font/ITCAvantGardeGothicDemiBold.woff') format('woff');
 }
 
 @font-face {
     font-family: "ITCGaramondStdBkCond";  
-    src: local("ITCGaramondStdBkCond"), url("../font/ITCGaramondStdBkCond.woff2") format("woff2"),
+    src: url("../font/ITCGaramondStdBkCond.woff2") format("woff2"),
     url("../font/ITCGaramondStdBkCond.woff") format("woff");
 }
 
 @font-face {
+    font-family: "AvenirLTProLight";
+    src: url('../font/AvenirLTProLight.woff2') format('woff2'), 
+    url('../font/AvenirLTProLight.woff') format('woff');
+}
+
+@font-face {
     font-family: "AvenirLTProRoman";
-    src:local("AvenirLTProRoman"), url("../font/AvenirLTProRoman.woff2") format("woff2"),
-    url("../font/AvenirLTProRoman.woff") format("woff");
+    src: url('../font/AvenirLTProRoman.woff2') format('woff2'), 
+    url('../font/AvenirLTProRoman.woff') format('woff');
 }
 
 @font-face {
     font-family: "AvenirLTProHeavy";
-    src:local("AvenirLTProHeavy"), url("../font/AvenirLTProHeavy.woff2") format("woff2"),
+    src: url("../font/AvenirLTProHeavy.woff2") format("woff2"),
     url("../font/AvenirLTProHeavy.woff") format("woff");
 }
 
 @font-face {
     font-family: "AvenirLTProBlack";
-    src:local("AvenirLTProBlack"), url("../font/AvenirLTProBlack.woff2") format("woff2"),
+    src: url("../font/AvenirLTProBlack.woff2") format("woff2"),
     url("../font/AvenirLTProBlack.woff") format("woff");
 }
 
@@ -92,7 +172,7 @@ img {
 }
 
 .ha-color-bg-orange {
-    background-color: #FFA877;
+    background-color: #FFA877 !important;
 }
 
 .ha-color-bg-body{
@@ -432,6 +512,7 @@ section.step-section {
 
     .step-inner-flex{
         display: flex;
+        gap: 30px;
     }
 
 .inactive-section {
