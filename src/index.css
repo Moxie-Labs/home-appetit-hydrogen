@@ -15,6 +15,7 @@
 @import "./styles/CompleteSignUp.css";
 @import "./styles/Header.css";
 @import "./styles/Footer.css";
+@import "./styles/MyAccount.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

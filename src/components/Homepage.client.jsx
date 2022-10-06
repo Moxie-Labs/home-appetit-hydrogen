@@ -6,8 +6,8 @@ export default function Homepage(props) {
             <h1>Home Appetit Hydrogen</h1>
             <ul>
                 <li>
-                    <a style={{opacity: 0.6}}>My Account</a>
-                    <p>Status: Awaiting Code Merge</p>
+                    <Link to="/account">My Account</Link>
+                    <p>Status: Needs Styling</p>
                     <hr></hr>
                 </li>
                 <li>
