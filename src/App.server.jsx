@@ -12,7 +12,7 @@ import {
   CartProvider,
 } from '@shopify/hydrogen';
 import {EventsListener} from '~/components';
-import {DefaultSeo, NotFound} from '~/components/index.server';
+import {DefaultSeo} from '~/components/index.server';
 
 function App({request}) {
   const pathname = new URL(request.normalizedUrl).pathname;
@@ -33,7 +33,7 @@ function App({request}) {
             <FileRoutes
               basePath={countryCode ? `/${countryCode}/` : undefined}
             />
-            <Route path="*" page={<NotFound />} />
+            <Route path="*" />
           </Router>
         </CartProvider>
         <PerformanceMetrics />
