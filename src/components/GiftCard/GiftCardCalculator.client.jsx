@@ -1,4 +1,5 @@
 import React, {useCallback, useState, useRef } from 'react';
+import { useCart } from '@shopify/hydrogen';
 import Modal from 'react-modal/lib/components/Modal';
 
 const PREMIUM_ZIPCODES = [];
@@ -12,10 +13,10 @@ export function GiftCardCalculator(props) {
     const [numberOfWeeks, setNumberOfWeeks] = useState("");
     const [zipcode, setZipcode] = useState("");
 
-    const {handleAddGift} = props;
-
-
     const node = useRef(null);
+
+
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
 
     const handleFocus = useCallback(() => {
         if (node.current == null) {
@@ -51,15 +52,45 @@ export function GiftCardCalculator(props) {
     }
 
     const onAddGift = () => {
-        handleAddGift;
-        dismissModals();
+
+        console.log("On Add Gift")
+
+        let cardProductIndex;
+        if (calculateSuggestedAmount() < 125) {
+            cardProductIndex = 0;
+        } else if (calculateSuggestedAmount() < 224) {
+            cardProductIndex = 1;
+        } else if (calculateSuggestedAmount() < 324) {
+            cardProductIndex = 2;
+        } else if (calculateSuggestedAmount() < 424) {
+            cardProductIndex = 3;
+        } else {
+            cardProductIndex = 5;
+        }
+
+        const cardVariantIndex = (calculateSuggestedAmount() - 25 - (cardProductIndex * 100));
+
+        const cardProduct = giftCards[cardProductIndex];
+        const variant = cardProduct.variants.edges[cardVariantIndex].node;
+        
+        linesAdd({
+            merchandiseId: variant.id,
+            quantity: 1
+        });
+
+    }
+
+    const onCheckout = () => {
+        window.location.href = checkoutUrl;
     }
 
     const activator = <button onClick={toggleModal} value={'Open Calculator'}>Open Calculator</button>;
 
     const suggestedAmountText = isFormReady() ? `$${calculateSuggestedAmount()}` : "Enter fields for suggested amount";
 
-    const addButtonText = isFormReady() ? `Add $${calculateSuggestedAmount()}` : "Add";
+    const addButtonText = isFormReady() ? `Purchase $${calculateSuggestedAmount()}` : "Purchase";
+
+    const { giftCards } = props;
 
     return (
         <section>
@@ -90,7 +121,7 @@ export function GiftCardCalculator(props) {
                     <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
 
                     <div className="text-center gift-card-control">
-                        <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={isFormReady} onClick={onAddGift}>
+                        <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={!isFormReady} onClick={() => onAddGift()}>
                             {addButtonText} 
                         </button>
 
@@ -100,6 +131,11 @@ export function GiftCardCalculator(props) {
                     </div>
 
                 </Modal>
+
+                { cartLines.length > 0 && <button className={`btn btn-secondary btn-modal`} onClick={() => onCheckout()}>
+                    Checkout
+                </button>}
+
         </section>        
     );
 }
