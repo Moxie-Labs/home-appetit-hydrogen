@@ -78,6 +78,9 @@ export function GiftCardCalculator(props) {
             quantity: 1
         });
 
+
+        dismissModals();
+
     }
 
     const onCheckout = () => {
