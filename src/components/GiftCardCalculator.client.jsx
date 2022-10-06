@@ -68,22 +68,29 @@ export function GiftCardCalculator(props) {
                 activator={activator}
                 isOpen={activeCalculator}
                 onRequestClose={dismissModals}
+                className="modal--gift-card"
                 >
                     <h1 className='title'>Calculate Gift Amount</h1>
 
-                    <label># of People</label>
-                    <input type='number' placeholder='# of people' value={numberOfPeople} onChange={(e) => setNumberOfPeople(e.target.value)} min={1} max={5}/>
-
-                    <label># of Weeks</label>
-                    <input type='number' placeholder='# of weeks' value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} min={1} max={8}/>
-
-                    <label>ZIP Code</label>
-                    <input type='number' placeholder='ZIP Code' value={zipcode} onChange={(e) => setZipcode(e.target.value)} maxLength={5} min={0} max={99999}/>
+                    <div className='calculator-wrapper'>
+                        <div className='calculator-field'>
+                            <label># of People:</label>
+                            <input type='number' placeholder='Enter amount' value={numberOfPeople} onChange={(e) => setNumberOfPeople(e.target.value)} min={1} max={5}/>
+                        </div>
+                        <div className='calculator-field'>
+                            <label># of Weeks:</label>
+                            <input type='number' placeholder='Enter amount' value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} min={1} max={8}/>
+                        </div>
+                        <div className='calculator-field'>
+                            <label>ZIP Code:</label>
+                            <input type='number' placeholder='Enter ZIP' value={zipcode} onChange={(e) => setZipcode(e.target.value)} maxLength={5} min={0} max={99999}/>
+                        </div>
+                    </div>
 
                     <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
 
-                    <div className="text-center">
-                        <button className={`btn btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled'}`} primary disabled={isFormReady} onClick={onAddGift}>
+                    <div className="text-center gift-card-control">
+                        <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={isFormReady} onClick={onAddGift}>
                             {addButtonText} 
                         </button>
 

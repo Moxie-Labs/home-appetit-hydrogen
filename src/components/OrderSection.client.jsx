@@ -1,4 +1,4 @@
-import { gql } from "@shopify/hydrogen";
+import { gql, useCart } from "@shopify/hydrogen";
 import { Suspense, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -10,6 +10,9 @@ import { Page } from "./Page.client";
 import DeliveryInfo from "./DeliveryInfo.client";
 import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
+import { CompleteSignUp } from "./CompleteSignup.client";
+import {Header} from "./Header.client";
+import {Footer} from "./Footer.client";
 
 
 // base configurations
@@ -21,16 +24,39 @@ const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 8;
 const FIRST_WINDOW_START = 8;
 const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
+const DEFAULT_CARDS = [
+    {
+        brand: "Visa",
+        expiryMonth: "11",
+        expiryYear: "26",
+        firstDigits: 4111,
+        firstName: "Jon Paul",
+        lastDigits: 1111,
+        lastName: "Simonelli",
+        maskedNumber: "****1111"
+    },
+    {
+        brand: "Visa",
+        expiryMonth: "10",
+        expiryYear: "27",
+        firstDigits: 4112,
+        firstName: "Jon Paul",
+        lastDigits: 1112,
+        lastName: "Simonelli",
+        maskedNumber: "****1112"
+    }
+];
 
 export function OrderSection(props) {
 
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
     const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState('traditional')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
-    const [isGuest, setIsGuest] = useState(false);
+    const [isGuest, setIsGuest] = useState(props.isGuest);
 
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
     const [selectedMainItems, setSelectedMainItems] = useState([])
@@ -39,22 +65,23 @@ export function OrderSection(props) {
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
     const [selectedAddonFilters, setSelectedAddonFilters] = useState([])
 
-
     const [toastMessages, setToastMessages] = useState([]);
     const [showToast, setShowToast] = useState(false);
 
     const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
     const [deliveryWindowDay, setDeliveryWindowDay] = useState(6);
-    const [firstName, setFirstName] = useState("Jon Paul");
-    const [lastName, setLastName] = useState("Simonelli");
-    const [emailAddress, setEmailAddress] = useState("jpsimonelli@moxielabs.co");
-    const [phoneNumber, setPhoneNumber] = useState("123 456 7890");
-    const [address, setAddress] = useState("121 Mayberry Road");
-    const [address2, setAddress2] = useState("");
-    const [deliveryState, setDeliveryState] = useState("Pennsylvania");
-    const [city, setCity] = useState("Catawissa");
-    const [zipcode, setZipcode] = useState("17820");
+
+    let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
+    let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
+    let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "+12345678901");
+    let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
+    let [address2, setAddress2] = useState(isGuest ? null : "");
+    let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
+    let [city, setCity] = useState(isGuest ? null : "Catawissa");
+    let [zipcode, setZipcode] = useState(isGuest ? null : "17820");    
+
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
     const [isGift, setIsGift] = useState(false);
@@ -78,28 +105,7 @@ export function OrderSection(props) {
     const [billingCity, setBillingCity] = useState("");
     const [billingZipcode, setBillingZipcode] = useState("");
 
-    const [creditCards, setCreditCards] = useState([
-        {
-            brand: "Visa",
-            expiryMonth: "11",
-            expiryYear: "26",
-            firstDigits: 4111,
-            firstName: "Jon Paul",
-            lastDigits: 1111,
-            lastName: "Simonelli",
-            maskedNumber: "****1111"
-        },
-        {
-            brand: "Visa",
-            expiryMonth: "10",
-            expiryYear: "27",
-            firstDigits: 4112,
-            firstName: "Jon Paul",
-            lastDigits: 1112,
-            lastName: "Simonelli",
-            maskedNumber: "****1112"
-        }
-    ])
+    const [creditCards, setCreditCards] = useState(props.guest ? [] : DEFAULT_CARDS)
     const [giftCards, setGiftCards] = useState([]);
     const [giftCardTriggered, setGiftCardTriggered] = useState(false);
     const [promoTriggered, setPromoTriggered] = useState(false);
@@ -119,10 +125,10 @@ export function OrderSection(props) {
         return newTags;
     }
 
-    let selectedMainItemsReadout = [];
-    selectedMainItems.forEach(item => {
-        selectedMainItemsReadout.push(item.title);
-    });
+    // let selectedMainItemsReadout = [];
+    // selectedMainItems.forEach(item => {
+    //     selectedMainItemsReadout.push(item.title);
+    // });
 
     const doesCartHaveItem = (choice, collection) => {
         let retval = false;
@@ -134,7 +140,9 @@ export function OrderSection(props) {
         return retval;
     }
 
-    const addItemToCart = (choice, collection, collectionName) => {
+    const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
+
+        console.log("addItemToCard::choice", choice);
 
         // if: item was already added, then: update quantity (or remove)
         if (doesCartHaveItem(choice, collection)) {
@@ -155,11 +163,16 @@ export function OrderSection(props) {
             else 
                 setSelectedAddonItems([...collection]);
 
+
+            linesRemove([choice.choice.productOptions[1].node.id])
+
         }
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);
+            const variantType = getVariantType(collection);
+
             if (collectionName === 'main') 
                 setSelectedMainItems([...collection, choice]);
             else if (collectionName === 'small')
@@ -174,24 +187,40 @@ export function OrderSection(props) {
             }, TOAST_CLEAR_TIME);
 
             if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
-                setCurrentStep(currentStep+1);
+                // setCurrentStep(currentStep+1);
             }
+
+            if (addToShopifyCart) {
+                console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
+                // update Shopify Cart
+                linesAdd({ 
+                    merchandiseId: choice.choice.productOptions[variantType].node.id,
+                    quantity: choice.quantity
+                });
+            }
+            
         }
     }
 
+    const isSectionFilled = (collection) => {
+        return ((activeScheme === 'traditional') && getQuantityTotal(collection) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP)
+    }
+
     const getOrderTotal = () => {
-        let total = parseFloat(pricingMultiplier);
+        let total = parseFloat(planPricingMultiplier);
         selectedSmallItems.forEach((item, index) => {
-            if (index >= 4)
-                total += parseFloat(item.choice.price);
+            if (activeScheme === 'flexible' || index >= 4)
+                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedMainItems.forEach((item, index) => {
-            if (index >= 4)
-                total += parseFloat(item.choice.price);
+            if (activeScheme === 'flexible' || index >= 4)
+                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedAddonItems.forEach(item => {
-            total += parseFloat(item.choice.price);
+            total += parseFloat(item.choice.price * item.quantity);
         });
+
+        console.log("getOrderTotal::total", total)
 
         return total;
     }
@@ -250,6 +279,12 @@ export function OrderSection(props) {
         return result < 0 ? (result *= -1, new Date((new Date).setDate((new Date).getDate() - result))) : new Date((new Date).setDate((new Date).getDate() + result))
     }
 
+    const getDayOfWeekName = dayNumber => {
+        const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        return daysOfWeek[dayNumber];
+    }
+
+    // TODO: grab GUID dynamically
     const addExtraIce = value => {
         const iceItem = ICE_ITEM;
         const iceChoice = {
@@ -266,12 +301,90 @@ export function OrderSection(props) {
 
 
     const attemptSubmitOrder = () => {
-        createCheckout({
-            variables: {
-                lineItems: [{ variantId: "gid://shopify/ProductVariant/42919798276312", quantity: 1 }]
+
+        const buyerIdentityObj = {
+            email: emailAddress,
+            phone: phoneNumber,
+            deliveryAddressPreferences: [
+                {
+                    deliveryAddress: {
+                        address1: address,
+                        address2: address2,
+                        city: city,
+                        country: "United States",
+                        firstName: firstName,
+                        lastName: lastName,
+                        phone: phoneNumber,
+                        province: deliveryState,
+                        zip: zipcode
+                    }
+                    
+                }
+            ]
+        };
+        
+        if (typeof customerAccessToken !== 'undefined' && customerAccessToken !== null) { buyerIdentityObj.customerAccessToken = customerAccessToken; }
+
+        buyerIdentityUpdate(buyerIdentityObj);
+
+        window.location.href=`${checkoutUrl}`;
+    }
+
+    const emptyCart = () => {
+        const linesToRemove = [];
+        cartLines.map(line => {
+            linesToRemove.push(line.id);
+        });
+        linesRemove(linesToRemove);
+
+        setSelectedMainItems([]);
+        setSelectedSmallItems([]);
+        setSelectedAddonItems([]);
+    }
+
+    const confirmPersonsCount = () => {
+
+        if (activeScheme === 'traditional') {
+            const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
+
+            linesAdd({
+                merchandiseId: traditionalPlanVariantId,
+                quantity: 1
+            });
+        }
+
+        setCurrentStep(2);
+    }
+
+    // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
+    const getVariantType = collection => {
+        if (activeScheme === 'traditional')
+            return collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+        else
+            return 0;
+    }
+
+
+    const confirmDeliveryInfo = () => {
+
+        const cartAttributesObj = [
+            {
+                key: 'Order Type',
+                value: activeScheme
+            },
+            {
+                key: 'Delivery Window',
+                value: `${deliveryWindowStart} - ${deliveryWindowEnd}`
+            },
+            {
+                key: 'Delivery Day',
+                value: getDayOfWeekName(deliveryWindowDay)
             }
-        })
-        // setCurrentStep(8);
+        ];
+        
+        cartAttributesUpdate(cartAttributesObj);
+
+        setCurrentStep(7);
     }
 
     /* END Helpers */
@@ -290,54 +403,111 @@ export function OrderSection(props) {
     const greensProducts = collections["greens-grains-small-plates"].products.edges;
     const addonsProducts = collections['add-ons'].products.edges;
 
+    const existingMainItems = [];
+    const existingSmallItems = [];
+    const existingAddonItems = [];
+
     const choicesEntrees = [];
     entreeProducts.map(entree => {
         const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
         const attributes = convertTags(entree.node.tags);
-        choicesEntrees.push({
+        const choice = {
             title: entree.node.title,
             attributes: attributes,
-            price: parseFloat(entree.node.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
             description: entree.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: entree.node.variants.edges
+        };
+        choicesEntrees.push(choice);
+
+        // map cart items to pre-selected choices        
+        cartLines.map(line => {
+            entree.node.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    console.log("Adding existing item", line.id)
+                    existingMainItems.push({choice: choice, quantity: line.quantity});
+                }
+            });
         });
     });
+
+    if (existingMainItems.length > 0 && selectedMainItems.length < 1) {
+        setSelectedMainItems(existingMainItems);
+    }
 
     const choicesGreens = [];
     greensProducts.map(greens => {
         const imgURL = greens.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : greens.node.images.edges[0].node.src;
         const attributes = convertTags(greens.node.tags);
-        choicesGreens.push({
+        const choice = {
             title: greens.node.title,
             attributes: attributes,
-            price: parseFloat(greens.node.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
             description: greens.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: greens.node.variants.edges
+        }
+
+        choicesGreens.push(choice);
+
+        // map cart items to pre-selected choices        
+        cartLines.map(line => {
+            greens.node.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    existingSmallItems.push({choice: choice, quantity: line.quantity});
+                }
+            });
         });
     });
+
+    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) {
+        setSelectedSmallItems(existingSmallItems);
+    }
 
     const choicesAddons = [];
     addonsProducts.map(addons => {
         const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
         const attributes = convertTags(addons.node.tags);
-        choicesAddons.push({
+        const choice = {
             title: addons.node.title,
             attributes: attributes,
             price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
             description: addons.node.description,
             imageURL: imgURL,
-            productOptions: []
+            productOptions: addons.node.variants.edges
+        };
+
+        choicesAddons.push(choice);
+
+        // map cart items to pre-selected choices        
+        cartLines.map(line => {
+            addons.node.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    existingAddonItems.push({choice: choice, quantity: line.quantity});
+                }
+            });
         });
     });
+
+    if (existingAddonItems.length > 0 && selectedAddonItems.length < 1) {
+        setSelectedAddonItems(existingAddonItems);
+    }
 
     /* END GraphQL Values */
 
 
 
     /* Static Values */
-    const pricingMultiplier = activeScheme === 'traditional' ? `${50 * servingCount + 50}` : 'flex';
+    const TRADITIONAL_PLAN_VARIANT_IDS = [
+        "gid://shopify/ProductVariant/43314850169048", // one person
+        "gid://shopify/ProductVariant/43314850201816", // two people, etc.
+        "gid://shopify/ProductVariant/43314850234584",
+        "gid://shopify/ProductVariant/43314850267352",
+        "gid://shopify/ProductVariant/43314850300120"
+    ];
+
+    const planPricingMultiplier = activeScheme === 'traditional' ? `${50 * servingCount + 50}` : 0.0;
 
     const filterSmallOptions = [
         {label: 'All Options', value: 'ALL'},
@@ -356,7 +526,7 @@ export function OrderSection(props) {
     ];
 
     const ICE_ITEM = {
-        "id": "gid://shopify/Product/7704944312536",
+        "id": "gid://shopify/Product/7834911965400",
         "title": "Extra Ice",
         "description": "",
         "tags": [],
@@ -375,19 +545,30 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
+    /* Debug Values */
+
+    /* END Debug Values */
+
 
     return (
         <Page>
             <Suspense>
+            <Header />
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
+                <div className="order-wrapper">
+
+                    <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+
                     <Layout>
                         <LayoutSection>
+
                             <div className="dish-card-wrapper order--properties">
                                 <OrderProperties
                                     activeScheme={activeScheme}
+                                    handleSchemeChange={(value) => setActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
-                                    handleContinue={() => setCurrentStep(2)}
+                                    handleContinue={() => confirmPersonsCount()}
                                     handleCancel={() => console.log("Cancel clicked")}
                                     step={1}
                                     currentStep={currentStep}
@@ -396,7 +577,7 @@ export function OrderSection(props) {
 
                             {/* Menu Sections */}
                     
-                            <div className={`dish-card-wrapper ${currentStep === 2 ? "" : "dishcard--wrapper-inactive"}`}>
+                            <div className={`dish-card-wrapper ${currentStep === 2 ? "step-active" : "dishcard--wrapper-inactive"}`}>
                                 <MenuSection 
                                     step={2} 
                                     currentStep={currentStep}
@@ -414,10 +595,11 @@ export function OrderSection(props) {
                                     selected={selectedMainItems}
                                     filters={selectedMainFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                    isSectionFilled={isSectionFilled(selectedMainItems)}
                                 />
                             </div>
                             
-                            <div className={`dish-card-wrapper ${currentStep === 3 ? "" : "dishcard--wrapper-inactive"}`}>
+                            <div className={`dish-card-wrapper ${currentStep === 3 ? "step-active" : "dishcard--wrapper-inactive"}`}>
                                 <MenuSection 
                                     step={3} 
                                     currentStep={currentStep}
@@ -435,10 +617,11 @@ export function OrderSection(props) {
                                     selected={selectedSmallItems}
                                     filters={selectedSmallFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                    isSectionFilled={isSectionFilled(selectedSmallItems)}
                                 />
                             </div>
 
-                            <div className={`dish-card-wrapper ${currentStep === 4 ? "" : "dishcard--wrapper-inactive"}`}>
+                            <div className={`dish-card-wrapper ${currentStep === 4 ? "step-active-final" : "dishcard--wrapper-inactive"}`}>
                                 <MenuSection 
                                     step={4} 
                                     currentStep={currentStep}
@@ -457,6 +640,7 @@ export function OrderSection(props) {
                                     filters={selectedAddonFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     noQuantityLimit={true}
+                                    isSectionFilled={isSectionFilled(selectedAddonItems)}
                                 />
                             </div>
 
@@ -467,7 +651,7 @@ export function OrderSection(props) {
                                 currentStep={currentStep}
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={pricingMultiplier}
+                                pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedSmallItems={[...selectedSmallItems]}
@@ -478,9 +662,10 @@ export function OrderSection(props) {
                             />  
                         </LayoutSection>
                     </Layout>
+                </div>
                 }
 
-{ getPhase(currentStep) === "payment" && 
+            { getPhase(currentStep) === "payment" && 
                 <div className="payment-wrapper">
                     <Layout>
                         <LayoutSection>
@@ -536,10 +721,11 @@ export function OrderSection(props) {
                                 handleGiftMessage={(value) => setGiftMessage(value)}
                                 handleAgreeToTerms={value => setAgreeToTerms(value)}
                                 handleReceiveTexts={value => setReceiveTexts(value)}
-                                handleContinue={() => setCurrentStep(7)}
+                                handleContinue={() => confirmDeliveryInfo()}
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={6}
                                 currentStep={currentStep}
+                                isGuest={isGuest}
                             />
 
                         </LayoutSection>
@@ -599,7 +785,7 @@ export function OrderSection(props) {
                             <OrderSummary 
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={pricingMultiplier}
+                                pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedSmallItems={[...selectedSmallItems]}
@@ -612,6 +798,7 @@ export function OrderSection(props) {
                         </LayoutSection>
                     </Layout>
                 </div>
+               
             }
 
             { getPhase(currentStep) === "confirmation" && 
@@ -652,7 +839,7 @@ export function OrderSection(props) {
                                 <OrderSummary 
                                     activeScheme={activeScheme}
                                     servingCount={servingCount}
-                                    pricingMultiplier={pricingMultiplier}
+                                    pricingMultiplier={planPricingMultiplier}
                                     orderTotal={getOrderTotal()}
                                     selectedMainItems={[...selectedMainItems]} 
                                     selectedSmallItems={[...selectedSmallItems]}
@@ -666,12 +853,13 @@ export function OrderSection(props) {
                         </Layout>
                     </div>
                 
-                    {/* <CompleteSignUp />  */}
+                    <CompleteSignUp/>
             
                 </div>
             }
 
             </Suspense>
+            <Footer />
         </Page>
     );
 }

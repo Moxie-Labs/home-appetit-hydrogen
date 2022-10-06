@@ -1,7 +1,7 @@
 .dish-card {
     cursor: pointer;
     position: relative;
-    width: 385px;
+    width: 406px;
     transition: box-shadow 0.5s;
     border: 3px solid transparent;
 }
@@ -14,7 +14,7 @@
 
     .dish-card.active, .dish-card.confirmed {
         /* border: 4px solid #2F80ED; */
-        opacity: 1;
+        opacity: 1 !important;
     }
 
     .dish-card.disabled {
@@ -35,24 +35,24 @@
 }
 
 .card__info-section {
-    padding: 15px;
+    padding: 20px;
     margin-top: -6px;
     border-radius: 0 0 20px 20px;
-    min-height: 146px;
+    min-height: 181px;
 }
 
 .card__quantity-section {
     clear: both;
-    margin-bottom: 60px;
-    /* margin-top: 50px; */
     text-align: center;
     width: 225px;
-    margin: 0 auto 60px;
+    margin: 0 auto 35px;
 }
 
     .card__quantity-count {
         color: #4F4F4F;
         font-size: 42px;
+        font-family: 'AvenirLTProRoman';
+        font-weight: bold;
     }
         .card__quantity-count.zero {
             color: #4F4F4F;
@@ -60,26 +60,31 @@
 
     .card__quantity-img.minus  {
         float: left;
-        margin-top: -16px;
+        /* margin-top: -16px; */
     }
 
     .card__quantity-img.plus  {
         float: right;
-        margin-top: -16px;
+        /* margin-top: -16px; */
     }
 
 .card__info-section h2, .card__quantity-title {
-    font-size: 18px;
-    font-family: 'AvenirLTProBlack' !important;
-    line-height: 25px;
+    font-size: 26px;
+    font-family: 'ITCGaramondBold' !important;
+    line-height: 26px;
     text-transform: uppercase;
     font-weight: bold;
+    margin: 0;
 }
 
-.card__info-section h2 span{
+.card__info-section p.dish-description{
     font-family: 'AvenirLTProRoman' !important;
     text-transform: lowercase;
     font-weight: 100;
+    font-size: 18px;
+    position: relative;
+    margin: 0;
+    line-height: 25px;
 }
     
 
@@ -131,13 +136,13 @@
     right: 2rem;
 }
 
-.card__info-section p {
+.card__info-section p.card__servings-disclaimer {
     display: inline;
     color: #474442;
     font-family: 'AvenirLTProRoman';
     font-size: 16px;
     position: absolute;
-    bottom: 20px;
+    bottom: 8px;
 }
 
 .card__quantity-wrapper {
@@ -170,7 +175,7 @@
 .card__quantity-field-wrapper {
     position: absolute;
     left: 50%;
-    top: 60%;
+    top: 75%;
     transform: translate(-50%, -60%);
 }
 
@@ -185,10 +190,21 @@
     transform: translateX(50%);
     width: 100%;
     bottom: 30px;
+    display: none;
 }
 
 .dish-card.active .card__info-section p.card__code {
     display: none !important;
+}
+
+p.card__code {
+    position: absolute;
+    bottom: 8px;
+}
+
+.modal--card__info p.card__code {
+    position: relative;
+    bottom: 0 !important;
 }
 
 .btn-counter-customize{
@@ -214,7 +230,7 @@
 }
 
 .modal--customize-inner .card__quantity-section {
-    margin: 5em 0 0;
+    margin: 30px 0 0;
 }
 
 button.Polaris-Modal-CloseButton {
@@ -227,10 +243,13 @@ button.Polaris-Modal-CloseButton {
     background-color: #F8EFE0 !important;
     padding: 2em;
     border-radius: 0 0 12px 12px;
+    /* position: absolute;
+    bottom: 0; */
 }
 
 section.modal--customize-inner {
-    padding: 2em 2em 0;
+    padding: 2em;
+    border-radius: 12px 12px 0 0;
 }
 
 section.modal--customize-disclaimer span:first-child {
@@ -273,6 +292,8 @@ img.card__quantity-img {
 
 section.modal--customize-disclaimer {
     font-size: 16px;
+    line-height: 24px;
+    font-family: 'AvenirLTProRoman';
 }
 
 .modal--customize-option-placeholder > * {
@@ -316,4 +337,99 @@ section.modal--customize-inner .card__quantity-title {
     opacity: 0.4;
 }
 
+.dish-card.active .card__quantity-inner-container{
+    /* text-align: center; */
+    position: relative;
+    left: 0;
+    top: 70px;
+}
 
+.card__quantity-inner-container p.card__code {
+    position: relative;
+    bottom: 0;
+}
+
+.dish-card.active p.dish-description {
+    display: none;
+}
+
+h2.card__quantity-title {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.card__quantity-inner-container p, .modal--card__info p {
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 25px;
+    font-size: 16px;
+    font-family: 'AvenirLTProRoman';
+    font-style: italic;
+}
+
+.card__description {
+    margin: 0;
+    padding: 0 0 20px;
+    line-height: 25px;
+}
+
+.dish-card-blur {
+    opacity: 1;
+}
+
+.modal--flexible-confirmaton {
+    width: 620px;
+    padding: 2.5rem;
+    background: #FFFCF5;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.modal--flexible-confirmaton .card__actions{
+    margin: auto;
+    width: 100%;
+}
+
+.btn-counter-customize{
+    color: #474442;
+}
+
+.modal--flexible-inner .card__actions .btn-modal-cancel {
+    flex: 50%;
+    background: transparent;
+    border-radius: 36px;
+    border: 2px solid #474442;
+}
+
+.modal--flexible-inner .card__actions .btn{
+    font-size: 14px;
+    flex: 1;
+}
+
+.modal--flexible-inner .subheading {
+    font-size: 24px;
+    color: #474442;
+    line-height: 38px;
+    font-family: 'AvenirLTProRoman' !important;
+    margin: 0.65rem 0;
+    padding: 0;
+}
+
+.modal--flexible-inner .ha-body {
+    padding: 0;
+    margin-bottom: 1.875rem;
+}
+
+.dishcard-extra-cost {
+    background: #474442;
+    border-radius: 6px;
+    color: white;
+    left: 0;
+    padding: 7px 10px 3px;
+    position: absolute;
+    top: 25px;
+}
