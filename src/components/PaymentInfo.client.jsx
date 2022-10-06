@@ -423,32 +423,33 @@ export default function PaymentInfo(props) {
         });
 
         paymentInfoSection = <div className="checkout-section checkout--payment-info checkout--payment-info--logged-in">
+            <h3 className="heading order_prop__heading ha-h3">Payment Information</h3>
             <select className="order_payment-method__dropdown left">
                 {creditCardOptions}
             </select>
 
             <p className="btn-add-new underline">
-                <span><img src={iconPlus.src} className="icon-span" width="17"/></span><a onClick={() => setActiveCardModal(true)}> Add New Payment</a>
+                <span><img src={iconPlus} className="icon-span" width="17"/></span><a onClick={() => setActiveCardModal(true)}> Add New Payment</a>
             </p>
 
             <div className={`payment-method-trigger payment-method--giftcards top${giftCardTriggered ? ' triggered' : ''}`} onClick={handleGiftCardTrigger}>
                 { !giftCardTriggered && 
                  <div>
-                    <span><img src={iconPlus.src} className="icon-span" width="17"/></span>
+                    <span><img src={iconPlus} className="icon-span" width="17"/></span>
                     <span className="text-right btn-add-new">Add Gift Card</span>
                  </div> 
                 } 
 
                 { giftCardTriggered && 
                 <div>
-                   <span><img src={iconCheckLight.src} className="icon-span" width="17"/></span>
+                   <span><img src={iconCheckLight} className="icon-span" width="17"/></span>
                    <span className="text-right btn-add-new gc-title-triggered">Add Gift Card</span>
                 </div>
                 } 
 
                 { giftCardTriggered && !giftCardsUsed &&
                 <div>
-                   <span><img src={iconCheckLight.src} className="icon-span" width="17"/></span>
+                   <span><img src={iconCheckLight} className="icon-span" width="17"/></span>
                    <span className="text-right btn-add-new gc-title-triggered">Add Gift Card</span>
                 </div>
                 } 
@@ -465,13 +466,13 @@ export default function PaymentInfo(props) {
             
             { !promoTriggered &&
             <div>
-              <span><img src={iconPlus.src} className="icon-span" width="17"/></span><span className="text-right btn-add-new">Add Promo Code</span>
+              <span><img src={iconPlus} className="icon-span" width="17"/></span><span className="text-right btn-add-new">Add Promo Code</span>
             </div>
             }
 
             { promoTriggered &&
                 <div>
-                    <span><img src={iconCheckLight.src} className="icon-span" width="17"/></span><span className="text-right btn-add-new gc-title-triggered">Add Promo Code</span>
+                    <span><img src={iconCheckLight} className="icon-span" width="17"/></span><span className="text-right btn-add-new gc-title-triggered">Add Promo Code</span>
                 </div>
             }
                 
@@ -486,13 +487,13 @@ export default function PaymentInfo(props) {
             <div className={`payment-method-trigger payment-method--giftcards bottom${referralTriggered ? ' triggered' : ''}`} onClick={handleReferralTrigger}>
             { !referralTriggered &&
                 <div>
-                     <span><img src={iconPlus.src} className="icon-span" width="17"/></span><span className="text-right btn-add-new">Use Referral Credit</span>
+                     <span><img src={iconPlus} className="icon-span" width="17"/></span><span className="text-right btn-add-new">Use Referral Credit</span>
                 </div>
             }
 
             { referralTriggered &&
                 <div>
-                    <span><img src={iconCheckLight.src} className="icon-span" width="17"/></span><span className="text-right btn-add-new gc-title-triggered">Use Referral Credit</span>
+                    <span><img src={iconCheckLight} className="icon-span" width="17"/></span><span className="text-right btn-add-new gc-title-triggered">Use Referral Credit</span>
                 </div>
             }
                 { referralTriggered && 
@@ -505,7 +506,7 @@ export default function PaymentInfo(props) {
             <Modal
                 isOpen={activeCardModal}
                 onRequestClose={dismissModals}
-                className="Polaris-Modal-Dialog__Modal"
+                className="Polaris-Modal-Dialog__Modal modal-new-payment"
             >
                 <div className="add-payment-modal-container">
                 <section className="modal--create-inner">            
