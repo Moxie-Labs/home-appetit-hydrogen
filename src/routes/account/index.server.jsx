@@ -89,7 +89,7 @@ export async function api(request, {session, queryShop}) {
 
   if (!customerAccessToken) return new Response(null, {status: 401});
 
-  const {email, phone, firstName, lastName, newPassword} = await request.json();
+  const {email, phone, firstName, lastName, newPassword, acceptsMarketing} = await request.json();
 
   const customer = {};
 
@@ -98,6 +98,7 @@ export async function api(request, {session, queryShop}) {
   if (firstName) customer.firstName = firstName;
   if (lastName) customer.lastName = lastName;
   if (newPassword) customer.password = newPassword;
+  if (acceptsMarketing !== undefined) customer.acceptsMarketing = acceptsMarketing;
 
   const {data, errors} = await queryShop({
     query: CUSTOMER_UPDATE_MUTATION,
@@ -128,15 +129,16 @@ const CUSTOMER_QUERY = gql`
       lastName
       phone
       email
+      acceptsMarketing
       defaultAddress {
         id
         formatted
       }
-      addresses(first: 6) {
+      addresses(first: 10) {
         edges {
           node {
             id
-            formatted
+            name
             firstName
             lastName
             company
@@ -144,13 +146,14 @@ const CUSTOMER_QUERY = gql`
             address2
             country
             province
+            provinceCode
             city
             zip
             phone
           }
         }
       }
-      orders(first: 250, sortKey: PROCESSED_AT, reverse: true) {
+      orders(first: 100, sortKey: PROCESSED_AT, reverse: true) {
         edges {
           node {
             id
