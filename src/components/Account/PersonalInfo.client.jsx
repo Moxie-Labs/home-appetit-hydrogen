@@ -43,6 +43,29 @@ export default function PersonalInfo(props) {
         dismissModals();
     }
 
+    const addressesSection = customer.addresses.length > 0 ? <section>
+        <h1 className="address-title">Saved Addresses</h1>
+            <article>
+                <h2 className="default-address-label">Default Address</h2>
+                <div className="address">
+                    <p>{addresses[0].address1}</p>
+                    {addresses[0].address2 !== "" && <p>{addresses[0].address2}</p>}
+                    <p>{addresses[0].city}, {addresses[0].state} {addresses[0].zip}</p>
+                </div>
+            </article>
+
+            { addresses.length === 2 &&
+                <article>
+                    <h2>Address 2</h2>
+                    <div className="address">
+                        <p>{addresses[1].address1}</p>
+                        {addresses[1].address2 !== "" && <p>{addresses[1].address2}</p>}
+                        <p>{addresses[1].city}, {addresses[1].state} {addresses[1].zip}</p>
+                    </div>
+                </article> 
+            }
+    </section> : null;
+
     return (
         <div className="account-information">
             <h1>Account Information</h1>
@@ -96,33 +119,12 @@ export default function PersonalInfo(props) {
                     </div>
                 </section>
             }
-        
 
-            <div className="line-separator"></div>
+<div className="line-separator"></div>
 
-            <h1 className="address-title">Saved Addresses</h1>
+      { addressesSection }
 
-            <article>
-                <h2 className="default-address-label">Default Address</h2>
-                <div className="address">
-                    <p>{addresses[0].address1}</p>
-                    {addresses[0].address2 !== "" && <p>{addresses[0].address2}</p>}
-                    <p>{addresses[0].city}, {addresses[0].state} {addresses[0].zip}</p>
-                </div>
-
-                <button className="btn btn-default">Add New Address</button>
-            </article>
-
-            { addresses.length === 2 &&
-                <article>
-                    <h2>Address 2</h2>
-                    <div className="address">
-                        <p>{addresses[1].address1}</p>
-                        {addresses[1].address2 !== "" && <p>{addresses[1].address2}</p>}
-                        <p>{addresses[1].city}, {addresses[1].state} {addresses[1].zip}</p>
-                    </div>
-                </article> 
-            }
+      <button className="btn btn-default">Add New Address</button>
        
 
        <div className="line-separator"></div>
