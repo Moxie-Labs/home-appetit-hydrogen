@@ -21,6 +21,8 @@ export default class OrderSummary extends React.Component {
     }
 
     calculateItemTotal(price) {
+        if (isNaN(parseFloat(price)))
+            price = 0.0;
         return formatter.format(price);
     }
 
@@ -32,37 +34,38 @@ export default class OrderSummary extends React.Component {
     showToastMessage() {
     }
 
-    orderSummary(activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal){
+    orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal){
         return (
             <section className="order-summary--enlarged-items">
                 <section className="order-summary--items main-items main--items-scheme">
                     <h4>{activeSchemeDisplay}</h4>
-                    <section className="order-summary--scheme-details">
+                    { activeScheme === 'traditional' && <section className="order-summary--scheme-details">
                         <ul>
                             <li className="order-summary--item">
                                 <span className="order-summary--item-name">{servingCount} people</span>
                                 <span className="order-summary--item-value">${pricingMultiplier}.00</span>
                             </li>
                         </ul>
-                    </section>
+                    </section> }
+                    
                 </section>
                 
                 <section className="order-summary--items main-items">
-                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} of 4 Entrées { Object.keys(mainItemList).length !== 0 && <span><img src={editIcon.src}/></span> }</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} { activeScheme === 'traditional' && `of 4` } Entrées { Object.keys(mainItemList).length !== 0 && <span><img src={editIcon}/></span> }</h4>
                     <ul>
                         {mainItemList} 
                     </ul>
                 </section>      
 
                 <section className="order-summary--items small-items">
-                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of 4 Small Plates { Object.keys(smallItemList).length !== 0 && <span><img src={editIcon.src}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} { activeScheme === 'traditional' && `of 4` } Small Plates { Object.keys(smallItemList).length !== 0 && <span><img src={editIcon}/></span>}</h4>
                     <ul>
                         {smallItemList}
                     </ul>
                 </section>     
 
                 <section className="order-summary--items addon-items">
-                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && <span><img src={editIcon.src}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && <span><img src={editIcon}/></span>}</h4>
                     <ul>
                         {addonItemList}
                     </ul>
@@ -84,6 +87,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`main-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    { activeScheme === 'flexible' && <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span> }
                 </li>
             );
         });
@@ -92,6 +96,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    { activeScheme === 'flexible' && <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span> }
                 </li>
             );
         });
@@ -99,7 +104,8 @@ export default class OrderSummary extends React.Component {
         const addonItemList = selectedAddonItems.map((item, i) => {
             return (
                 <li key={`addon-item-${i}`} className="order-summary--item">
-                    <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span><span className="price--extra-addon">+ ${item.choice.price}.00</span>
+                    <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                 </li>
             );
         });
@@ -117,9 +123,9 @@ export default class OrderSummary extends React.Component {
                 toastItemName += "...";
         }
         
-        const toastCostSection = (activeScheme !== 'traditional' || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0].cost.toFixed(2)}</span> : null;
+        const toastCostSection = (activeScheme !== 'traditional' || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0]?.cost.toFixed(2)}</span> : null;
 
-        const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt.src} className="icon-plus-alt" /> }</span></h3>
+        const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt} className="icon-plus-alt" /> }</span></h3>
 
 
         return (
@@ -130,18 +136,18 @@ export default class OrderSummary extends React.Component {
                 
                 { enlarged &&
                     <div>
-                    {this.orderSummary(activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)}
+                    {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)}
                     </div>
                 }
 
                 { getPhase === "payment" && <h3 className="order-summary__heading order-summary__hidden">Order Summary</h3> }
                 { getPhase === "payment" && 
-                    this.orderSummary(activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
+                    this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
                  }
 
                 { getPhase === "confirmation" && <h3 className="order-summary__heading order-summary__hidden">Order Summary</h3> }
                 { getPhase === "confirmation" && 
-                    this.orderSummary(activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
+                    this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
                  }
                 </section>
             </section>
