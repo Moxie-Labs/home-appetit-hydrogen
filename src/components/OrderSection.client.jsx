@@ -21,7 +21,7 @@ const FREE_QUANTITY_LIMIT = 4;
 const FIRST_STEP = 1;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
-const CONFIRMATION_STEP = 8;
+const CONFIRMATION_STEP = 7;
 const FIRST_WINDOW_START = 8;
 const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
 const DEFAULT_CARDS = [
@@ -49,7 +49,7 @@ const DEFAULT_CARDS = [
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
@@ -299,9 +299,7 @@ export function OrderSection(props) {
         setExtraIce(value);
     }
 
-
     const attemptSubmitOrder = () => {
-
         const buyerIdentityObj = {
             email: emailAddress,
             phone: phoneNumber,
@@ -327,7 +325,9 @@ export function OrderSection(props) {
 
         buyerIdentityUpdate(buyerIdentityObj);
 
-        window.location.href=`${checkoutUrl}`;
+        console.log("cartId", cartId);
+
+        // window.location.href=`${checkoutUrl}`;
     }
 
     const emptyCart = () => {
@@ -384,8 +384,28 @@ export function OrderSection(props) {
         
         cartAttributesUpdate(cartAttributesObj);
 
-        setCurrentStep(7);
+        if (instructions.length > 0) {
+            requestCallbackRuntime(confirmNote, 1000);
+        }
     }
+
+    const confirmNote = () => {
+        noteUpdate(instructions);
+    }
+
+    const requestCallbackRuntime = (callback, timeoutTime=0) => {
+        setTimeout(() => {
+            console.log("cartStatus", cartStatus);
+            if (cartStatus !== 'idle') {
+                console.log("Still waiting");
+                requestCallbackRuntime(callback, timeoutTime+500);
+            } else {
+                console.log("Running callback");
+                callback();
+            }
+        }, timeoutTime)
+    }
+
 
     /* END Helpers */
 
@@ -721,7 +741,10 @@ export function OrderSection(props) {
                                 handleGiftMessage={(value) => setGiftMessage(value)}
                                 handleAgreeToTerms={value => setAgreeToTerms(value)}
                                 handleReceiveTexts={value => setReceiveTexts(value)}
-                                handleContinue={() => confirmDeliveryInfo()}
+                                handleContinue={() => {
+                                    requestCallbackRuntime(confirmDeliveryInfo);
+                                    requestCallbackRuntime(attemptSubmitOrder, 2000);
+                                }}
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={6}
                                 currentStep={currentStep}
@@ -730,54 +753,6 @@ export function OrderSection(props) {
 
                         </LayoutSection>
 
-                        <LayoutSection>
-
-                            <PaymentInfo
-                                isGuest={isGuest}
-                                cardNumber={cardNumber}
-                                expiration={expiration} 
-                                securityCode={securityCode}
-                                zipcode={cardZipcode}
-                                firstName={billingFirstName}
-                                lastName={billingLastName}
-                                emailAddress={billingEmailAddress}
-                                phoneNumber={billingPhoneNumber}
-                                address={billingAddress}
-                                address2={billingAddress2}
-                                city={billingCity}
-                                billingZipcode={billingZipcode}
-                                sameAsBilling={sameAsBilling}
-                                creditCards={creditCards}
-                                giftCards={giftCards}
-                                giftCardTriggered={giftCardTriggered}
-                                promoTriggered={promoTriggered}
-                                referralTriggered={referralTriggered}
-                                handleCardNumberChange={(value) => setCardNumber(value)}
-                                handleExpirationChange={(value) => setExpiration(value)}
-                                handleSecurityCodeChange={(value) => setSecurityCode(value)}
-                                handleZipcodeChange={(value) => setCardZipcode(value)}
-                                handleSameAsBilling={(value) => setSameAsBilling(value)}
-                                handleStateChange={(value) => setBillingDeliveryState(value)}
-                                handleFirstNameChange={(value) => setBillingFirstName(value)}
-                                handleLastNameChange={(value) => setBillingLastName(value)}
-                                handleEmailChange={(value) => setBillingEmailAddress(value)}
-                                handlePhoneNumberChange={(value) => setBillingPhoneNumber(value)}
-                                handleAddressChange={(value) => setBillingAddress(value)}
-                                handleAddress2Change={(value) => setBillingAddress2(value)}
-                                handleCityChange={(value) => setBillingCity(value)}
-                                handleBillingZipcodeChange={(value) => setBillingZipcode(value)}
-                                handleGiftCardTrigger={() => setGiftCardTriggered(true)}
-                                handlePromoTrigger={() => setPromoTriggered(!promoTriggered)}
-                                handleReferralTrigger={() => setReferralTriggered(!referralTriggered)}
-                                handleCreditCardsChange={(value) => setCreditCards(value)}
-                                handleGiftCardsChange={(value) => setGiftCards(value)}
-                                handleContinue={() => attemptSubmitOrder()}
-                                handleCancel={() => {setCurrentStep(6)}}
-                                step={7}
-                                currentStep={currentStep}
-                            />
-
-                        </LayoutSection>
                     </Layout>
 
                     <Layout>

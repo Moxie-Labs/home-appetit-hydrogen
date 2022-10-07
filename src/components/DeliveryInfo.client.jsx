@@ -178,18 +178,7 @@ export default function DeliveryInfo(props) {
                             </section>
                         }
                     </div>
-
-                    <br></br>
-
-                    <section className="checkout--deliveryinfo-actions">
-                        <button className="btn btn-confirm btn-app btn-primary-small" onClick={handleContinue}>
-                            Continue
-                        </button>
-
-                        {/* <button className="btn btn-primary btn-app" onClick={handleCancel}>
-                            Cancel
-                        </button> */}
-                    </section>
+                    
                 </div>
             }
 
@@ -364,6 +353,12 @@ export default function DeliveryInfo(props) {
             }
 
             <hr></hr>
+
+            <div className="place-order-container">
+                <button className="btn btn-primary-small btn-place-order" onClick={handleContinue}>
+                    PLACE ORDER
+                </button>
+            </div>
             
             
         </div>
