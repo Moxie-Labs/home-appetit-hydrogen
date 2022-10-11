@@ -26,6 +26,7 @@ export default function Order() {
             <Layout>
                 <OrderSection
                     collectionData={collectionData}
+                    zipcodeData={null}
                 />
             </Layout>
         </Suspense>
