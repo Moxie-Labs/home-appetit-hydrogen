@@ -8,7 +8,6 @@ import OrderSummary from "./OrderSummary.client";
 import DeliveryWindow from "./DeliveryWindow.client";
 import { Page } from "./Page.client";
 import DeliveryInfo from "./DeliveryInfo.client";
-import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
 import { CompleteSignUp } from "./CompleteSignup.client";
 import {Header} from "./Header.client";
@@ -124,11 +123,6 @@ export function OrderSection(props) {
         });
         return newTags;
     }
-
-    // let selectedMainItemsReadout = [];
-    // selectedMainItems.forEach(item => {
-    //     selectedMainItemsReadout.push(item.title);
-    // });
 
     const doesCartHaveItem = (choice, collection) => {
         let retval = false;
@@ -325,9 +319,7 @@ export function OrderSection(props) {
 
         buyerIdentityUpdate(buyerIdentityObj);
 
-        console.log("cartId", cartId);
-
-        // window.location.href=`${checkoutUrl}`;
+        window.location.href=`${checkoutUrl}`;
     }
 
     const emptyCart = () => {
@@ -366,6 +358,8 @@ export function OrderSection(props) {
 
 
     const confirmDeliveryInfo = () => {
+
+        while(cartStatus !== 'idle') { ; }
 
         const cartAttributesObj = [
             {
