@@ -75,7 +75,7 @@ export function OrderSection(props) {
     let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
     let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
     let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
-    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "+12345678901");
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "(123) 456-7890");
     let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
     let [address2, setAddress2] = useState(isGuest ? null : "");
     let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
@@ -682,7 +682,7 @@ export function OrderSection(props) {
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
                                 handleContinue={() => setCurrentStep(6)}
-                                handleCancel={() => {setCurrentStep(4)}}
+                                handleCancel={() => {setCurrentStep(5)}}
                                 step={5}
                                 currentStep={currentStep}
                             />
@@ -699,6 +699,7 @@ export function OrderSection(props) {
                                 address={address}
                                 address2={address2}
                                 city={city}
+                                deliveryState={deliveryState}
                                 zipcode={zipcode}
                                 instructions={instructions}
                                 extraIce={extraIce}

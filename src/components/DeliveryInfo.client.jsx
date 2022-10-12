@@ -70,6 +70,19 @@ export default function DeliveryInfo(props) {
         handlePhoneNumberChange(event.target.value);
     }
 
+    const formattedPhoneNumber = number => {
+        let cleaned = ('' + number).replace(/\D/g, '');
+        
+        let match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+        
+        if (match && number.length > 9) {
+            let intlCode = (match[1] ? '+1 ' : '')
+            return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('')
+        } else {
+            return cleaned;
+        }
+    }
+
     const onAddressChange = (event) => {
         handleAddressChange(event.target.value);
     }
@@ -147,7 +160,7 @@ export default function DeliveryInfo(props) {
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
-                            <p>{phoneNumber}</p>
+                            <p>{formattedPhoneNumber(phoneNumber)}</p>
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
                     </section>
@@ -201,11 +214,11 @@ export default function DeliveryInfo(props) {
                         <div className="checkout--form-container">
                             <div className="checkout--form-field-col">
                                 <label>First Name:
-                                    <input className={`order_textfield${validationErrors.firstName !== undefined ? ' input-error' : ''}`} type="text" name="firstname" value={firstName} onChange={onFirstNameChange} placeholder={"First Name (Required)"}/>
+                                    <input className={`order_textfield${validationErrors.firstName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="firstname" value={firstName} onChange={onFirstNameChange} placeholder={"First Name (Required)"}/>
                                 </label>
 
                                 <label>Last Name:
-                                    <input className={`order_textfield${validationErrors.lastName !== undefined ? ' input-error' : ''}`} type="text" name="lastname" value={lastName} onChange={onLastNameChange} placeholder={"Last Name (Required)"}/>
+                                    <input className={`order_textfield${validationErrors.lastName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="lastname" value={lastName} onChange={onLastNameChange} placeholder={"Last Name (Required)"}/>
                                 </label>
                             </div>
 
@@ -215,7 +228,7 @@ export default function DeliveryInfo(props) {
                                 </label>
                                 
                                 <label>Mobile Number:
-                                    <input className={`order_textfield${validationErrors.phoneNumber !== undefined ? ' input-error' : ''}`} type="phone" name="phone" value={phoneNumber} onChange={onPhoneNumberChange} placeholder={"Phone Number (Required)"}/>
+                                    <input className={`order_textfield${validationErrors.phoneNumber !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="10" type="phone" name="phone" value={formattedPhoneNumber(phoneNumber)} onChange={onPhoneNumberChange} placeholder={"Phone Number (Required)"}/>
                                 </label>
                             </div>
                         </div>
@@ -264,7 +277,7 @@ export default function DeliveryInfo(props) {
                             <div className="checkout--form-container">
                                 <div className="checkout--form-field-col">
                                     <label>ZIP:
-                                        <input className={`order_textfield textfield_zip${validationErrors.zipcode !== undefined ? ' input-error' : ''}`} type="number" name="zipcode" maxLength={5} value={zipcode} onChange={onZipcodeChange} placeholder={"ZIP Code (Required)"}/>
+                                        <input className={`order_textfield textfield_zip${validationErrors.zipcode !== undefined ? ' input-error' : ''}`} type="text" name="zipcode" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={onZipcodeChange} placeholder={"ZIP Code (Required)"}/>
                                     </label>
                                 </div>
                             </div>
@@ -330,7 +343,7 @@ export default function DeliveryInfo(props) {
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
-                            <p>{phoneNumber}</p>
+                            <p>{formattedPhoneNumber(phoneNumber)}</p>
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
                     </section>
