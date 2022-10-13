@@ -34,11 +34,17 @@ export default class DishCard extends React.Component {
     }
 
     setQuantity(quantity) {
-        const {maxQuantity, showingExtra} = this.props;
-        if (!showingExtra) {
+        const { maxQuantity, showingExtra, freeQuantityLimit } = this.props;
+        const { quantity:currentQuantity } = this.state;
+
+        // if: decrementing, then: just check if above 0
+        if (quantity < currentQuantity)
             quantity = Math.max(0, quantity);
-            quantity = Math.min(quantity, maxQuantity)                
-        }
+        else if (quantity > maxQuantity) 
+            quantity = currentQuantity;
+        else
+            if (!showingExtra)
+                quantity = Math.min(quantity, freeQuantityLimit);
 
         this.setState({
             quantity: quantity
