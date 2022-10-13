@@ -49,7 +49,7 @@ const DEFAULT_CARDS = [
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
@@ -146,19 +146,42 @@ export function OrderSection(props) {
         return retval;
     }
 
+    const findCartLineByVariantId = variantId => {
+        let retval = null;
+        cartLines.map(line => {
+            if (line.merchandise.id === variantId) retval = line;
+        });
+
+        return retval;
+    }
+
     const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
 
-        console.log("addItemToCard::choice", choice);
+        const variantType = getVariantType(collection);        
 
         // if: item was already added, then: update quantity (or remove)
         if (doesCartHaveItem(choice, collection)) {
             console.log("addItemToCart::already exists", choice);
+            const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
+
             collection.map((item, i) => {
                 if (item.choice.title === choice.choice.title) {
-                    if (choice.quantity > 0) 
+                    if (choice.quantity > 0) {
                         item.quantity = choice.quantity;
-                    else 
-                        collection.splice(i, 1)
+                        console.log("existingCartLine", existingCartLine)
+                        linesUpdate([
+                            {
+                                id: existingCartLine.id,
+                                quantity: choice.quantity
+                            }
+                        ]);
+                    }
+                        
+                    else {
+                        collection.splice(i, 1);
+                        linesRemove([existingCartLine.id]);
+                    }
+                        
                 }
             });
 
@@ -175,15 +198,12 @@ export function OrderSection(props) {
             else 
                 setSelectedAddonItems([...selectedAddonItems]);
 
-
-            linesRemove([choice.choice.productOptions[1].node.id])
-
         }
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);
-            const variantType = getVariantType(collection);
+            
 
             if (collectionName === 'main') 
                 if (isAddingExtraItems)
@@ -214,10 +234,6 @@ export function OrderSection(props) {
             }
         }
 
-        console.log("selectedMainItems", selectedMainItems);
-        console.log("selectedMainItemsExtra", selectedMainItemsExtra);
-        console.log("selectedSmallItems", selectedSmallItems);
-        console.log("selectedSmallItemsExtra", selectedSmallItemsExtra);
     }
 
     const isSectionFilled = (collection) => {
@@ -525,7 +541,6 @@ export function OrderSection(props) {
     /* END GraphQL Values */
 
 
-
     /* Static Values */
     const TRADITIONAL_PLAN_VARIANT_IDS = [
         "gid://shopify/ProductVariant/43314850169048", // one person
@@ -674,6 +689,7 @@ export function OrderSection(props) {
                                     handleConfirm={() => setupNextSection(5)}
                                     handleEdit={() => setCurrentStep(4)}
                                     selected={selectedAddonItems}
+                                    selectedExtra={[]}
                                     filters={selectedAddonFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     noQuantityLimit={true}

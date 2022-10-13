@@ -34,17 +34,26 @@ export default class DishCard extends React.Component {
     }
 
     setQuantity(quantity) {
-        const { maxQuantity, showingExtra, freeQuantityLimit } = this.props;
+        const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity } = this.props;
         const { quantity:currentQuantity } = this.state;
 
         // if: decrementing, then: just check if above 0
         if (quantity < currentQuantity)
             quantity = Math.max(0, quantity);
-        else if (quantity > maxQuantity) 
+        
+        else if (quantity > (initialQuantity + maxQuantity) ) {
             quantity = currentQuantity;
+        }
+            
+        
         else
             if (!showingExtra)
                 quantity = Math.min(quantity, freeQuantityLimit);
+
+
+        console.log("quantityTotal", quantityTotal)
+        console.log("maxQuantity", maxQuantity)
+        console.log("currentQuantity", currentQuantity)
 
         this.setState({
             quantity: quantity
@@ -198,7 +207,7 @@ export default class DishCard extends React.Component {
             
             <div>
                 <img className="dish-image" src={imageURL} onClick={() => this.setIsCardActive(true)}/>
-                { showingExtra && <span className='dishcard-extra-cost'>$12.50</span> }
+                { showingExtra && <span className='dishcard-extra-cost'>{formatter.format(choice.price)}</span> }
             </div>
 
             <section className="card__info-section ha-color-bg-cream-shadow">

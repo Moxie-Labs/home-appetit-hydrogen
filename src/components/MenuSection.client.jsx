@@ -116,6 +116,8 @@ export default class MenuSection extends React.Component {
     isInSelection(selection, choice) {
         let retval = false;
 
+        if (typeof selection === 'undefined') return false;
+
         selection.map(item => {
             if (item.choice.title === choice.title)
                 retval = true; 
@@ -148,10 +150,16 @@ export default class MenuSection extends React.Component {
                             handleSelected={handleItemSelected}
                             initialQuantity={this.getExistingQuantity(choice)}
                             confirmed={this.getExistingQuantity(choice) > 0}
-                            maxQuantity={(freeQuantityLimit - getQuantityTotal(selected))}
+                            maxQuantity={isAddingExtraItems ? 9 : (freeQuantityLimit - getQuantityTotal(selected))}
                             showingExtra={isAddingExtraItems}
+                            quantityTotal={getQuantityTotal(selected)}
                             // disables if returning to regular selection and item is not already selected
-                            forceDisable={isSectionFilled && !isAddingExtraItems && !this.isInSelection(mainSelected, choice)}
+                            forceDisable={
+                                ( 
+                                    (!isAddingExtraItems && (isSectionFilled || this.isInSelection(extraSelected, choice)) && !this.isInSelection(mainSelected, choice) ) || 
+                                    (isAddingExtraItems && this.isInSelection(mainSelected, choice))
+                                )
+                            }
                         />
                     </div>
                 )
@@ -186,7 +194,7 @@ export default class MenuSection extends React.Component {
                 }) }
             </div>
             
-            { extraSelected.length > 0 &&
+            { (isSectionFilled || extraSelected.length > 0) &&
                 <div className={`suborder--summary-additional summary-container ${isAddingExtraItems ? 'active' : 'inactive'}`}>
                     <div className="summary--additional-wrapper">
                         <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { !isAddingExtraItems && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
