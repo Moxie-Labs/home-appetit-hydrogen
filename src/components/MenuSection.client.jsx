@@ -80,59 +80,14 @@ export default class MenuSection extends React.Component {
     }
 
     progressBarStatus(getQuantityTotal){
-        //switch case not working with > 4 (weird). I know looks ugly but 'if' works...
-        if(getQuantityTotal === 1) {
-              return (
-                <div className="progress-bar">
-                    <div className="progress-bar__order-item active"></div>
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                </div>
-              );
-          }
-
-       else if(getQuantityTotal === 2) {
-            return (
-              <div className="progress-bar">
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item"></div>
-                  <div className="progress-bar__order-item"></div>
-              </div>
-            );
-        }
-
-       else if(getQuantityTotal === 3) {
-            return (
-              <div className="progress-bar">
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item"></div>
-              </div>
-            );
-        }
-
-       else if(getQuantityTotal >= 4) {
-            return (
-              <div className="progress-bar">
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-              </div>
-            );
-        } else {
-            return (
-                <div className="progress-bar">
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                </div>
-            );
-        }
+        return (
+            <div className="progress-bar">
+                <div className={`progress-bar__order-item ${getQuantityTotal > 0 ? 'active' : null}`}></div>
+                <div className={`progress-bar__order-item ${getQuantityTotal > 1 ? 'active' : null}`}></div>
+                <div className={`progress-bar__order-item ${getQuantityTotal > 2 ? 'active' : null}`}></div>
+                <div className={`progress-bar__order-item ${getQuantityTotal > 3 ? 'active' : null}`}></div>
+            </div>
+        );
     }
 
     getExistingQuantity(dish) {
@@ -149,46 +104,35 @@ export default class MenuSection extends React.Component {
 
     showSectionExtras() {
         this.setState({showingExtra: true, modalDismissed: true});
+        this.props.handleAddExtra(true);
     }
 
     skipSectionExtras() {
         this.props.handleConfirm();
+        this.props.handleAddExtra(false);
         this.setState({modalDismissed: true})
     }
 
-    getSplitSelections() {
-        const { selected, freeQuantityLimit } = this.props;
-        const mainSelections = [];
-        const extraSelections = [];
-        let totalQuantity = 0;
-        Object.keys(selected).map(key => {
-            if (totalQuantity < freeQuantityLimit) {
-                mainSelections.push(selected[key]);
-                totalQuantity += selected[key].quantity;
-            } else {
-                extraSelections.push(selected[key]);
-            }
-            
+    isInSelection(selection, choice) {
+        let retval = false;
+
+        selection.map(item => {
+            if (item.choice.title === choice.title)
+                retval = true; 
         });
-        return {
-            mainSelections: mainSelections,
-            extraSelections: extraSelections
-        };
+
+        return retval;
     }
 
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled} = this.props;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems} = this.props;
         const {modalDismissed, showingExtra} = this.state;
         const additionalEntrees = 0;
         const filteredChoices = this.filterChoices(selected);
 
-        const splitSelections = this.getSplitSelections();
-
-        const mainSelected = splitSelections.mainSelections;
-        const extraSelected = splitSelections.extraSelections;
-
-        console.log("mainSelected", mainSelected)
+        const mainSelected = selected;
+        const extraSelected = selectedExtra;
 
         let filteredChoicesSection;
         if (filteredChoices.length > 0) {
@@ -205,7 +149,9 @@ export default class MenuSection extends React.Component {
                             initialQuantity={this.getExistingQuantity(choice)}
                             confirmed={this.getExistingQuantity(choice) > 0}
                             maxQuantity={(freeQuantityLimit - getQuantityTotal(selected))}
-                            showingExtra={showingExtra}
+                            showingExtra={isAddingExtraItems}
+                            // disables if returning to regular selection and item is not already selected
+                            forceDisable={isSectionFilled && !isAddingExtraItems && !this.isInSelection(mainSelected, choice)}
                         />
                     </div>
                 )
@@ -226,27 +172,28 @@ export default class MenuSection extends React.Component {
         // Render Sections
         const overviewSection = <section>
         <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
-        { Object.keys(selected).length !== 0 && 
+        { selected.length !== 0 && 
         <div className="suborder--summary-container">
-            <div className="suborder--summary-details">
-                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; <span><img onClick={handleEdit} src={iconEdit.src} className="icon-edit" width="65" /></span></h4>
-                {Object.keys(mainSelected).map(function(key) {
+
+            <div className={`suborder--summary-details summary-container ${isAddingExtraItems ? 'inactive' : 'active'}`}>
+                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; { isAddingExtraItems && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                { mainSelected.map((item, index) => {
                     return ( 
-                        <ul key={key} className="step--order-summary">
-                            <li>({mainSelected[key].quantity}) {mainSelected[key].choice.title} <span>{mainSelected[key].choice.description}</span></li>
+                        <ul key={index} className="step--order-summary">
+                            <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span></li>
                         </ul>
                     )
-                })}
+                }) }
             </div>
             
-            { isSectionFilled &&
-                <div className="suborder--summary-additional">
+            { extraSelected.length > 0 &&
+                <div className={`suborder--summary-additional summary-container ${isAddingExtraItems ? 'active' : 'inactive'}`}>
                     <div className="summary--additional-wrapper">
-                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; <span><img src={iconEdit.src} className="icon-edit" width="65"/></span></h4>
-                        {Object.keys(extraSelected).map(function(key) {
+                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { !isAddingExtraItems && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                        {extraSelected.map((item, index) => {
                             return ( 
-                                <ul key={key} className="step--order-summary">
-                                    <li>({extraSelected[key].quantity}) {extraSelected[key].choice.title} <span>{extraSelected[key].choice.description}</span></li>
+                                <ul key={index} className="step--order-summary">
+                                    <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span></li>
                                 </ul>
                             )
                         })}
@@ -271,7 +218,7 @@ export default class MenuSection extends React.Component {
                 </div>
             }
                         <br></br>
-            {this.progressBarStatus(getQuantityTotal(selected))}  
+            { step !== 4 && this.progressBarStatus(getQuantityTotal(selected))}  
             
             <br></br>
             

@@ -18,7 +18,7 @@ import {Footer} from "./Footer.client";
 // base configurations
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 1;
+const FIRST_STEP = 2;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 8;
@@ -58,8 +58,14 @@ export function OrderSection(props) {
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
 
+
+    const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
+    const [selectedSmallItemsExtra, setSelectedSmallItemsExtra] = useState([])
+    
     const [selectedMainItems, setSelectedMainItems] = useState([])
+    const [selectedMainItemsExtra, setSelectedMainItemsExtra] = useState([])
+
     const [selectedAddonItems, setSelectedAddonItems] = useState([])
     const [selectedSmallFilters, setSelectedSmallFilters] = useState([])
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
@@ -156,12 +162,18 @@ export function OrderSection(props) {
                 }
             });
 
-            if (collectionName === 'main') 
-                setSelectedMainItems([...collection]);
+            if (collectionName === 'main')
+                if (isAddingExtraItems)
+                    setSelectedMainItemsExtra([...selectedMainItemsExtra]);
+                else
+                    setSelectedMainItems([...collection]);
             else if (collectionName === 'small')
-                setSelectedSmallItems([...collection]);
+                if (isAddingExtraItems)
+                    setSelectedSmallItemsExtra([...selectedSmallItemsExtra]);
+                else
+                    setSelectedSmallItems([...selectedSmallItems]);
             else 
-                setSelectedAddonItems([...collection]);
+                setSelectedAddonItems([...selectedAddonItems]);
 
 
             linesRemove([choice.choice.productOptions[1].node.id])
@@ -174,21 +186,23 @@ export function OrderSection(props) {
             const variantType = getVariantType(collection);
 
             if (collectionName === 'main') 
-                setSelectedMainItems([...collection, choice]);
+                if (isAddingExtraItems)
+                    setSelectedMainItemsExtra([...selectedMainItemsExtra, choice]);
+                else
+                    setSelectedMainItems([...selectedMainItems, choice]);
             else if (collectionName === 'small')
-                setSelectedSmallItems([...collection, choice]);
+                if (isAddingExtraItems)
+                    setSelectedSmallItemsExtra([...selectedSmallItemsExtra, choice]);
+                else
+                    setSelectedSmallItems([...selectedSmallItems, choice]);
             else 
-                setSelectedAddonItems([...collection, choice]);
+                setSelectedAddonItems([...selectedAddonItems, choice]);
 
             setToastMessages([{item: `+${choice.quantity} ${choice.choice.title}`, cost: choice.choice.price}]);
             setShowToast(true);
             setTimeout(() => {
                 setShowToast(false);
             }, TOAST_CLEAR_TIME);
-
-            if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
-                // setCurrentStep(currentStep+1);
-            }
 
             if (addToShopifyCart) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
@@ -198,8 +212,12 @@ export function OrderSection(props) {
                     quantity: choice.quantity
                 });
             }
-            
         }
+
+        console.log("selectedMainItems", selectedMainItems);
+        console.log("selectedMainItemsExtra", selectedMainItemsExtra);
+        console.log("selectedSmallItems", selectedSmallItems);
+        console.log("selectedSmallItemsExtra", selectedSmallItemsExtra);
     }
 
     const isSectionFilled = (collection) => {
@@ -327,7 +345,9 @@ export function OrderSection(props) {
 
         buyerIdentityUpdate(buyerIdentityObj);
 
-        window.location.href=`${checkoutUrl}`;
+        console.log("checkoutURL", checkoutUrl);
+
+        // window.location.href=`${checkoutUrl}`;
     }
 
     const emptyCart = () => {
@@ -358,8 +378,10 @@ export function OrderSection(props) {
 
     // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
     const getVariantType = collection => {
-        if (activeScheme === 'traditional')
-            return collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+        if (currentStep === ADD_ON_STEP)
+            return 1;
+        else if (activeScheme === 'traditional')
+            return isAddingExtraItems ? 0 : 1;
         else
             return 0;
     }
@@ -385,6 +407,11 @@ export function OrderSection(props) {
         cartAttributesUpdate(cartAttributesObj);
 
         setCurrentStep(7);
+    }
+
+    const setupNextSection = nextStep => {
+        setIsAddingExtraItems(false);
+        setCurrentStep(nextStep);
     }
 
     /* END Helpers */
@@ -421,15 +448,16 @@ export function OrderSection(props) {
         };
         choicesEntrees.push(choice);
 
-        // map cart items to pre-selected choices        
-        cartLines.map(line => {
-            entree.node.variants.edges.forEach(variant => {
-                if (line.merchandise.id === variant.node.id) {
-                    console.log("Adding existing item", line.id)
-                    existingMainItems.push({choice: choice, quantity: line.quantity});
-                }
-            });
-        });
+        // map cart items to pre-selected choices      
+        // TODO restore  
+        // cartLines.map(line => {
+        //     entree.node.variants.edges.forEach(variant => {
+        //         if (line.merchandise.id === variant.node.id) {
+        //             console.log("Adding existing item", line.id)
+        //             existingMainItems.push({choice: choice, quantity: line.quantity});
+        //         }
+        //     });
+        // });
     });
 
     if (existingMainItems.length > 0 && selectedMainItems.length < 1) {
@@ -452,13 +480,13 @@ export function OrderSection(props) {
         choicesGreens.push(choice);
 
         // map cart items to pre-selected choices        
-        cartLines.map(line => {
-            greens.node.variants.edges.forEach(variant => {
-                if (line.merchandise.id === variant.node.id) {
-                    existingSmallItems.push({choice: choice, quantity: line.quantity});
-                }
-            });
-        });
+        // cartLines.map(line => {
+        //     greens.node.variants.edges.forEach(variant => {
+        //         if (line.merchandise.id === variant.node.id) {
+        //             existingSmallItems.push({choice: choice, quantity: line.quantity});
+        //         }
+        //     });
+        // });
     });
 
     if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) {
@@ -558,6 +586,8 @@ export function OrderSection(props) {
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
 
+                    <h1>Mode: {isAddingExtraItems === true ? "Adding Extras" : "Adding Included"}</h1>
+
                     <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
 
                     <Layout>
@@ -590,12 +620,16 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
-                                    handleConfirm={() => setCurrentStep(3)}
+                                    handleConfirm={() => setupNextSection(3)}
                                     handleEdit={() => setCurrentStep(2)}
+                                    handleAddExtra={(isAddingExtra) => setIsAddingExtraItems(isAddingExtra)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedMainItems}
+                                    selectedExtra={selectedMainItemsExtra}
                                     filters={selectedMainFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
                             
@@ -612,12 +646,15 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
-                                    handleConfirm={() => setCurrentStep(4)}
+                                    handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => setCurrentStep(3)}
+                                    handleAddExtra={(isAddingExtra) => setIsAddingExtraItems(isAddingExtra)}
                                     selected={selectedSmallItems}
+                                    selectedExtra={selectedSmallItemsExtra}
                                     filters={selectedSmallFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
 
@@ -634,13 +671,14 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedAddonFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
-                                    handleConfirm={() => setCurrentStep(5)}
+                                    handleConfirm={() => setupNextSection(5)}
                                     handleEdit={() => setCurrentStep(4)}
                                     selected={selectedAddonItems}
                                     filters={selectedAddonFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     noQuantityLimit={true}
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
 
@@ -654,7 +692,9 @@ export function OrderSection(props) {
                                 pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
+                                selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
@@ -788,7 +828,9 @@ export function OrderSection(props) {
                                 pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
+                                selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItems]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
@@ -842,7 +884,9 @@ export function OrderSection(props) {
                                     pricingMultiplier={planPricingMultiplier}
                                     orderTotal={getOrderTotal()}
                                     selectedMainItems={[...selectedMainItems]} 
+                                    selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                     selectedSmallItems={[...selectedSmallItems]}
+                                    selectedSmallItemsExtra={[...selectedSmallItems]}
                                     selectedAddonItems={[...selectedAddonItems]}
                                     toastMessages={toastMessages}
                                     showToast={showToast}

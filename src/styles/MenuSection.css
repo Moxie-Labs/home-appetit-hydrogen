@@ -99,6 +99,19 @@ ul.step--order-summary li span {
     gap: 2em;
 }
 
+.summary-container {
+    max-width: 50%;
+}
+
+    .summary-container.active li {
+        opacity: 1;
+    }
+
+    .summary-container.inactive li {
+        opacity: 0.6;
+    }
+
+
 .suborder--summary-details, .suborder--summary-additional {
     flex: 40%;
 }
