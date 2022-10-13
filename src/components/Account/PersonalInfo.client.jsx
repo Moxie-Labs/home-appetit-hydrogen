@@ -262,34 +262,64 @@ export default function PersonalInfo(props) {
                 <Modal
                     isOpen={showingAddressModal}
                     onRequestClose={() => closeAddressModal()}
+                    className="modal-new-address"
                 >
-                    <label>First Name:</label>
-                    <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
+                    <h4 className="ha-h4 text-uppercase text-center no-margin">Default Address</h4>
 
-                    <label>Last Name:</label>
-                    <input value={modalLastName} onChange={e => setModalLastName(e.target.value)}/>
+                    <div className="new-address-wrapper">
 
-                    <label>Address:</label>
-                    <input value={modalAddress1} onChange={e => setModalAddress1(e.target.value)}/>
+                    <div className="field-row">
+                        <div className="field">
+                        <label>First Name:</label>
+                        <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
+                        </div>
 
-                    <label>Address 2:</label>
-                    <input value={modalAddress2} onChange={e => setModalAddress2(e.target.value)}/>
+                        <div className="field">
+                        <label>Last Name:</label>
+                        <input value={modalLastName} onChange={e => setModalLastName(e.target.value)}/>
+                        </div>
+                    </div>
 
-                    <label>City:</label>
-                    <input value={modalCity} onChange={e => setModalCity(e.target.value)}/>
-
-                    <label>State:</label>
-                    <input value={modalProvince} onChange={e => setModalProvince(e.target.value)}/>
-
-                    <label>ZIP:</label>
-                    <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
-
+                    <div className="field-row">
+                    <div className="field">
                     <label>Phone:</label>
                     <input value={modalPhone} onChange={e => setModalPhone(e.target.value)}/>
+                    </div>
+                    </div>
 
-                    { !newAddressModal && <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
-                    { newAddressModal && <button onClick={() => submitNewAddress()}>Submit</button> }
-                    <button onClick={() => setShowingAddressModal(false)}>Cancel</button>
+                    <div className="field">
+                    <label>Address:</label>
+                    <input value={modalAddress1} onChange={e => setModalAddress1(e.target.value)}/>
+                    </div>
+                    
+                    <div className="field">
+                    <label>Address 2:</label>
+                    <input value={modalAddress2} onChange={e => setModalAddress2(e.target.value)}/>
+                    </div>
+
+                    <div className="field-row">
+                    <div className="field">
+                    <label>City:</label>
+                    <input value={modalCity} onChange={e => setModalCity(e.target.value)}/>
+                    </div>
+
+                    <div className="field">
+                    <label>State:</label>
+                    <input value={modalProvince} onChange={e => setModalProvince(e.target.value)}/>
+                    </div>
+
+                    <div className="field">
+                    <label>ZIP:</label>
+                    <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
+                    </div>
+                    </div>
+
+                    <div className="modal-action">
+                    { !newAddressModal && <button className="btn btn-primary-small" onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
+                    { newAddressModal && <button className="btn btn-primary-small" onClick={() => submitNewAddress()}>Submit</button> }
+                    <button className="btn btn-address-cancel" onClick={() => setShowingAddressModal(false)}>Cancel</button>
+                    </div>
+                    </div>
                 </Modal>
 
             </section>

@@ -551,3 +551,15 @@ section.step-section {
     vertical-align: top;
     margin-right: 5px;
 }
+
+.text-uppercase{
+    text-transform: uppercase;
+}
+
+.no-margin{
+    margin: 0;
+}
+
+.no-padding{
+    padding: 0;
+}

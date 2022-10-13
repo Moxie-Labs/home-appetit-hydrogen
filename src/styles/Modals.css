@@ -213,3 +213,68 @@ section.modal--customize-inner {
 .button-wrapper {
     display: flex;
 }
+
+.modal-new-address {
+    max-width: 620px;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    padding: 2.5rem;
+    background: #FFFCF5;
+    border-radius: 12px;
+}
+
+.new-address-wrapper .field-row {
+    display: flex;
+    gap: 20px;
+}
+
+.new-address-wrapper .field-row .field label, .new-address-wrapper .field label {
+    display: block;
+    font-size: 14px;
+    font-family: 'AvenirLTProRoman';
+    margin-top: 1.25rem;
+}
+
+.new-address-wrapper .field input {
+    background: #FFFCF5;
+    width: 100%;
+}
+
+.new-address-wrapper .field-row .field {
+    flex: 1;
+}
+
+.new-address-wrapper .field-row:nth-child(2) {
+    margin-right: 1.25rem;
+}
+
+.new-address-wrapper .field-row:nth-child(2) input {
+    width: 50%;
+}
+
+.modal-new-address .modal-action {
+    margin: 2.5rem 0;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 1.25rem;
+}
+
+.modal-new-address .modal-action button {
+    flex: 1;
+    height: 35px;
+    padding: 8px;
+    margin: 0;
+}
+
+.modal-new-address .modal-action button.btn-address-cancel {
+    background: transparent;
+    border: 2px solid #474442;
+    color: #474442;
+    font-size: 18px;
+    font-family: 'ITCAvantGardeProDemi';
+    border-radius: 24px;
+    padding: 6px;
+}

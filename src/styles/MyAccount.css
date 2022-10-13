@@ -69,7 +69,7 @@ hr.order-divider {
     margin: 0 !important;
 }
 
-.account-information input, .modal-new-payment input, .gift-card-information input {
+.account-information input, .modal-new-payment input, .gift-card-information input, .new-address-wrapper .field input {
     padding: 14px 25px;
     border-radius: 10px;
     border: 2px solid #385F83 !important;
