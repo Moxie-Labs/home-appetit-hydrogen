@@ -144,7 +144,7 @@ export default class DishCard extends React.Component {
     }
 
     render() {
-        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable} = this.props;
+        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice} = this.props;
         const {selected, quantity, isCardActive, confirmed, isModalShowing, checkedOptions, optionCost} = this.state;
         const {title, description, price, attributes, imageURL, productOptions} = choice;
 
@@ -207,7 +207,7 @@ export default class DishCard extends React.Component {
             
             <div>
                 <img className="dish-image" src={imageURL} onClick={() => this.setIsCardActive(true)}/>
-                { showingExtra && <span className='dishcard-extra-cost'>{formatter.format(choice.price)}</span> }
+                { showingExtra && !forceHidePrice && <span className='dishcard-extra-cost'>{formatter.format(choice.price)}</span> }
             </div>
 
             <section className="card__info-section ha-color-bg-cream-shadow">

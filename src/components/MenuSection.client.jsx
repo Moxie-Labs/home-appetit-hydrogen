@@ -90,26 +90,29 @@ export default class MenuSection extends React.Component {
         );
     }
 
-    getExistingQuantity(dish) {
-        const { collection } = this.props;
-        let quantity = 0;
+    getExistingQuantity(choice) {
+        const { selected, selectedExtra } = this.props;
+        let existingQuantity = 0;
     
-        collection.map((item, i) => {
-            if (item.choice.title === dish.title) 
-                quantity = item.quantity;
+        [...selected, ...selectedExtra].map(item => {
+            if (existingQuantity === 0)
+                if (item.choice.title === choice.title) {
+                    existingQuantity = item.quantity;
+                }
+                
         });
 
-        return quantity;
+        return parseInt(existingQuantity);
     }
 
     showSectionExtras() {
         this.setState({showingExtra: true, modalDismissed: true});
-        this.props.handleAddExtra(true);
+        this.props.handleIsAddingExtraItems(true);
     }
 
     skipSectionExtras() {
         this.props.handleConfirm();
-        this.props.handleAddExtra(false);
+        this.props.handleIsAddingExtraItems(false);
         this.setState({modalDismissed: true})
     }
 
@@ -129,8 +132,7 @@ export default class MenuSection extends React.Component {
     render() { 
 
         const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems} = this.props;
-        const {modalDismissed, showingExtra} = this.state;
-        const additionalEntrees = 0;
+        const {modalDismissed} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
         const mainSelected = selected;
@@ -138,8 +140,10 @@ export default class MenuSection extends React.Component {
 
         let filteredChoicesSection;
         if (filteredChoices.length > 0) {
-            filteredChoicesSection = filteredChoices.map((choice) => {
-                const intialQuantity = collection
+            filteredChoicesSection = filteredChoices.map(choice => {
+
+
+                const initialQuantity = this.getExistingQuantity(choice);
 
                 return (
                     <div className="dish-card-item" key={choice.title}>
@@ -148,12 +152,13 @@ export default class MenuSection extends React.Component {
                             freeQuantityLimit={freeQuantityLimit} 
                             servingCount={servingCount}
                             handleSelected={handleItemSelected}
-                            initialQuantity={this.getExistingQuantity(choice)}
+                            initialQuantity={initialQuantity}
                             confirmed={this.getExistingQuantity(choice) > 0}
                             maxQuantity={isAddingExtraItems ? 9 : (freeQuantityLimit - getQuantityTotal(selected))}
                             showingExtra={isAddingExtraItems}
                             quantityTotal={getQuantityTotal(selected)}
                             // disables if returning to regular selection and item is not already selected
+                            forceHidePrice={(isAddingExtraItems && this.isInSelection(mainSelected, choice))}
                             forceDisable={
                                 ( 
                                     (!isAddingExtraItems && (isSectionFilled || this.isInSelection(extraSelected, choice)) && !this.isInSelection(mainSelected, choice) ) || 
@@ -225,7 +230,7 @@ export default class MenuSection extends React.Component {
                     { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
                 </div>
             }
-                        <br></br>
+            <br></br>
             { step !== 4 && this.progressBarStatus(getQuantityTotal(selected))}  
             
             <br></br>

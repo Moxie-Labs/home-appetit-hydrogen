@@ -18,7 +18,7 @@ import {Footer} from "./Footer.client";
 // base configurations
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 2;
+const FIRST_STEP = 1;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 8;
@@ -361,9 +361,7 @@ export function OrderSection(props) {
 
         buyerIdentityUpdate(buyerIdentityObj);
 
-        console.log("checkoutURL", checkoutUrl);
-
-        // window.location.href=`${checkoutUrl}`;
+        window.location.href=`${checkoutUrl}`;
     }
 
     const emptyCart = () => {
@@ -447,7 +445,9 @@ export function OrderSection(props) {
     const addonsProducts = collections['add-ons'].products.edges;
 
     const existingMainItems = [];
+    const existingMainItemsExtra = [];
     const existingSmallItems = [];
+    const existingSmallItemsExtra = [];
     const existingAddonItems = [];
 
     const choicesEntrees = [];
@@ -466,19 +466,24 @@ export function OrderSection(props) {
 
         // map cart items to pre-selected choices      
         // TODO restore  
-        // cartLines.map(line => {
-        //     entree.node.variants.edges.forEach(variant => {
-        //         if (line.merchandise.id === variant.node.id) {
-        //             console.log("Adding existing item", line.id)
-        //             existingMainItems.push({choice: choice, quantity: line.quantity});
-        //         }
-        //     });
-        // });
+        cartLines.map(line => {
+            entree.node.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+
+                    // if: variant is Included, then: add to MainItems, else: add to Extras
+                    if (variant.node.title === "Included")
+                        existingMainItems.push({choice: choice, quantity: line.quantity});
+                    else
+                        existingMainItemsExtra.push({choice: choice, quantity: line.quantity});
+                }
+            });
+        });
     });
 
-    if (existingMainItems.length > 0 && selectedMainItems.length < 1) {
+    if (existingMainItems.length > 0 && selectedMainItems.length < 1) 
         setSelectedMainItems(existingMainItems);
-    }
+    if (existingMainItemsExtra.length > 0 && selectedMainItemsExtra.length < 1) 
+        setSelectedMainItemsExtra(existingMainItemsExtra);
 
     const choicesGreens = [];
     greensProducts.map(greens => {
@@ -496,18 +501,23 @@ export function OrderSection(props) {
         choicesGreens.push(choice);
 
         // map cart items to pre-selected choices        
-        // cartLines.map(line => {
-        //     greens.node.variants.edges.forEach(variant => {
-        //         if (line.merchandise.id === variant.node.id) {
-        //             existingSmallItems.push({choice: choice, quantity: line.quantity});
-        //         }
-        //     });
-        // });
+        cartLines.map(line => {
+            greens.node.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    if (variant.node.title === "Included")
+                        existingSmallItems.push({choice: choice, quantity: line.quantity});
+                    else
+                        existingSmallItemsExtra.push({choice: choice, quantity: line.quantity});
+                }
+            });
+        });
     });
 
-    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) {
+    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) 
         setSelectedSmallItems(existingSmallItems);
-    }
+    if (existingSmallItemsExtra.length > 0 && selectedSmallItemsExtra.length < 1) 
+        setSelectedSmallItemsExtra(existingSmallItemsExtra);
+    
 
     const choicesAddons = [];
     addonsProducts.map(addons => {
@@ -601,8 +611,6 @@ export function OrderSection(props) {
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
 
-                    <h1>Mode: {isAddingExtraItems === true ? "Adding Extras" : "Adding Included"}</h1>
-
                     <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
 
                     <Layout>
@@ -637,7 +645,6 @@ export function OrderSection(props) {
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
                                     handleConfirm={() => setupNextSection(3)}
                                     handleEdit={() => setCurrentStep(2)}
-                                    handleAddExtra={(isAddingExtra) => setIsAddingExtraItems(isAddingExtra)}
                                     handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedMainItems}
                                     selectedExtra={selectedMainItemsExtra}
@@ -663,7 +670,7 @@ export function OrderSection(props) {
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
                                     handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => setCurrentStep(3)}
-                                    handleAddExtra={(isAddingExtra) => setIsAddingExtraItems(isAddingExtra)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedSmallItems}
                                     selectedExtra={selectedSmallItemsExtra}
                                     filters={selectedSmallFilters}    
