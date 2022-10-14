@@ -1,10 +1,9 @@
-.myaccount-wrapper {
+/* .myaccount-wrapper {
     padding: 5rem;
-}
+} */
 
 .myaccount-page {
     width: 1440px;
-    padding: 0 5rem;
     display: flex;
     gap: 5%;
     flex-wrap: wrap;
@@ -168,10 +167,10 @@ h1.address-title {
 }
 
 .account-information article p {
-    font-size: 24px !important;
+    font-size: 24px;
     line-height: 32px;
-    font-family: AvenirLTProBlack !important;
-    margin: 0 !important;
+    font-family: 'AvenirLTProBlack';
+    margin: 0;
 }
 
 .address {
@@ -198,6 +197,7 @@ h1.address-title {
     font-size: 16px;
     color: #474442;
     font-weight: 800;
+    display: inline-block;
 }
 
 .account-information .btn-primary-small {
@@ -419,11 +419,11 @@ label.check-balance-label {
     margin: 1.875rem 0;
 }
 
-.account__address {
+/* .account__address {
     float: left;
     margin: 2vw 0;
     width: 50%;
-}
+} */
 
 .account__address-title {
     font-size: 1.1em;
@@ -433,4 +433,47 @@ label.check-balance-label {
 .account__address-body {
     font-size: 1.2em;
     font-weight: bold;
+}
+
+.communication-information .field {
+    margin-top: 1.875rem;
+    display: flex;
+    align-items: center;
+    line-height: 0;
+}
+
+.communication-information .field label {
+    font-family: 'AvenirLTProBlack';
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.account-information input[type="checkbox"] {
+    margin-top: -1px;
+}
+
+.new-address-cta {
+    margin-top: 1.875rem;
+}
+
+p.address-action-cta a {
+    text-transform: uppercase;
+    font-size: 18px;
+    color: #474442;
+    text-decoration: none;
+    border-bottom: 1px solid #474442;
+}
+
+article.account__address.account__address--default {
+    margin-top: 1.875rem;
+}
+
+article p.account__address-title {
+    font-size: 14px;
+    font-family: 'AvenirLTProRoman';
+    font-weight: 100;
+}
+
+article p.address-action-cta {
+    margin-top: 0.625rem;
 }

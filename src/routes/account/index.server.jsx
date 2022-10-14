@@ -13,6 +13,9 @@ import {PRODUCT_CARD_FRAGMENT} from '../../lib/fragments';
 import {getApiErrorMessage} from '../../lib/utils';
 import { Layout } from '../../components/Layout.client';
 import MyAccount from '../../components/MyAccount.client';
+import { Page } from "../../components/Page.client";
+import {Header} from '../../components/Header.client';
+import {Footer} from '../../components/Footer.client';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -54,8 +57,9 @@ function AuthenticatedAccount({
   const orders = flattenConnection(customer?.orders) || [];
 
   return (
+    <Page>
+    <Header />
     <Layout>
-      <h1>Account Info</h1>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account details'}} />
       </Suspense>
@@ -66,6 +70,8 @@ function AuthenticatedAccount({
       />
 
     </Layout>
+    <Footer />
+    </Page>
   );
 }
 

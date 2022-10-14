@@ -168,12 +168,12 @@ export default function PersonalInfo(props) {
 
     return (
         <div className="account-information">
-            <h1>Account Information</h1>
 
             { !editingPersonal && 
                 <section>
                     <button className="btn btn-default btn-edit" onClick={() => setEditingPersonal(true)}>Edit<img src={editIcon} width="24"/></button>
                      <div className="personal-info-wrapper">
+                        <h5 className="ha-h5 text-uppercase no-margin">Account information</h5>
                         <div className="info-row">
                             <h2><span className="info-label">First Name:</span><br /> {firstName}</h2>
                             <h2><span className="info-label">Last Name:</span><br />  {lastName}</h2>
@@ -195,6 +195,7 @@ export default function PersonalInfo(props) {
             { editingPersonal && 
                 <section>
                      <div className="personal-info-wrapper edit-wrapper">
+                     <h5 className="ha-h5 text-uppercase no-margin">Account information</h5>
                         <div className="info-row">
                             <label className="info-label-field">First Name:
                               <input value={firstNameState} onChange={e => setFirstNameState(e.target.value)}/>
@@ -225,15 +226,10 @@ export default function PersonalInfo(props) {
 
             <div className="line-separator"></div>
 
-            <Communication 
-                acceptsMarketing={acceptsMarketing}
-                receiveConsent={receiveConsent}
-                handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
-            /> 
-
             <section className="account__address-info">
                 <h1>Saved Addresses</h1>
 
+                <div className="account__address-inner">
                 { defaultAddr !== undefined && <article className="account__address account__address--default">
                     <p className="account__address-title">Default Address</p>
                     <p className="account__address-body">{defaultAddr.name}</p>
@@ -241,7 +237,7 @@ export default function PersonalInfo(props) {
                     {defaultAddr.address2 !== "" && <p>{defaultAddr.address2}</p>}
                     {defaultAddr.company !== "" && <p>{defaultAddr.company}</p>}
                     <p className="account__address-body">{defaultAddr.city}, {defaultAddr.provinceCode} {defaultAddr.zip}</p>
-                    <p><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
+                    <p className="address-action-cta"><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
                 </article> }
 
 
@@ -258,6 +254,11 @@ export default function PersonalInfo(props) {
                     </article> 
                     }
                 })}
+
+            </div>
+            <button className="btn btn-default new-address-cta" onClick={() => prepareNewAddress()}>Add New Address</button>
+
+            <div className="line-separator"></div>
 
                 <Modal
                     isOpen={showingAddressModal}
@@ -322,9 +323,16 @@ export default function PersonalInfo(props) {
                     </div>
                 </Modal>
 
+                
             </section>
 
-            <button className="btn btn-default" onClick={() => prepareNewAddress()}>Add New Address</button>
+            <Communication 
+                acceptsMarketing={acceptsMarketing}
+                receiveConsent={receiveConsent}
+                handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
+            /> 
+
+            
 
             
         </div>

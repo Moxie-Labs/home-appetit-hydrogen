@@ -251,7 +251,7 @@ h5,
 .ha-h4,
 .ha-h5,
 .ha-a {
-    font-family: 'ITCAvantGardeProDemi' !important;
+    font-family: "ITC Avant Garde Gothic W03 Md" !important;
 }
 
 .ha-p,
@@ -562,4 +562,18 @@ section.step-section {
 
 .no-padding{
     padding: 0;
+}
+
+.btn-order-cta {
+    width: 156px;
+    height: 35px;
+    background: #FFA877;
+    padding: 9px 24px;
+    border-radius: 24px;
+    font-size: 18px;
+    color: #474442;
+    text-decoration: none;
+    transition: background .2s;
+    text-align: center;
+    font-weight: bold;
 }

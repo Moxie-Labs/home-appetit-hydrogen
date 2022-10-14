@@ -100,6 +100,7 @@
 
 .ReactModal__Overlay {
     background: #47444294 !important;
+    z-index: 999;
 }
 
 section.modal--customize-inner {
