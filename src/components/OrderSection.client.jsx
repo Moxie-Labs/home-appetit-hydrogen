@@ -70,7 +70,7 @@ export function OrderSection(props) {
 
     const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
-    const [deliveryWindowDay, setDeliveryWindowDay] = useState(6);
+    const [deliveryWindowDay, setDeliveryWindowDay] = useState(1);
 
     let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
     let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");

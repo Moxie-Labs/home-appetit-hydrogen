@@ -79,8 +79,8 @@ export default function DeliveryWindow(props) {
                 <div>
 
                     <div className="delivery-date_container">
-                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 6 ? ' active' : ''}`} onClick={() => handleChangeDay(6)}>{getDisplayDate(deliveryWindowSaturday)}</h3>
-                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 0 ? ' active' : ''}`} onClick={() => handleChangeDay(0)}>{getDisplayDate(deliveryWindowSunday)}</h3>
+                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 1 ? ' active' : ''}`} onClick={() => handleChangeDay(1)}>{getDisplayDate(deliveryWindowSaturday)}</h3>
+                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 2 ? ' active' : ''}`} onClick={() => handleChangeDay(2)}>{getDisplayDate(deliveryWindowSunday)}</h3>
                     </div>
 
                     <label className="delivery-window_label">Delivery Window</label>
