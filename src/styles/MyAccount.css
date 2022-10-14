@@ -71,10 +71,10 @@ hr.order-divider {
 .account-information input, .modal-new-payment input, .gift-card-information input, .new-address-wrapper .field input {
     padding: 14px 25px;
     border-radius: 10px;
-    border: 2px solid #385F83 !important;
+    border: 2px solid #385F83;
     font-family: 'AvenirLTProRoman';
     font-size: 16px;
-    color: #474442 !important;
+    color: #474442;
     display: block;
 }
 
@@ -369,6 +369,7 @@ button.btn.btn-default.btn-edit.btn-modal-edit {
     display: inline;
     margin-right: 1.25rem;
     width: 45%;
+    border: 1px solid #474442;
 }
 
 .myaccount-page .account-panel-body .gift-card-information .btn-submit {
@@ -398,10 +399,10 @@ label.check-balance-label {
     margin: 1.25rem 0;
 }
 
-.gift-card-row a{
-    color:#474442;
+.gift-card-row a {
+    color: #474442;
+    font-family: 'ITCAvantGardeProDemi' !important;
 }
-
 .gift-card-row h2 {
     text-transform: uppercase;
 }

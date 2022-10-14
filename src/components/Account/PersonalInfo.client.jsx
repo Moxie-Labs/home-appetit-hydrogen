@@ -331,9 +331,8 @@ export default function PersonalInfo(props) {
                 receiveConsent={receiveConsent}
                 handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
             /> 
-
-            
-
+  
+            <button className="btn btn-default new-address-cta">Update preferences</button>
             
         </div>
     );

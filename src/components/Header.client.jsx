@@ -30,12 +30,12 @@ export function Header(){
                 </div>
                 <div className="nav-wrapper">
                     <ul>
-                        <li><a href="#" className="btn-order-cta">ORDER NOW</a></li>
-                        <li><a href="#" className="my-account-trigger" onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>MY ACCOUNT</a>
+                        <li><a href="/order" className="btn-order-cta">ORDER NOW</a></li>
+                        <li><a href="#" className="my-account-trigger" onMouseOver={handleMouseOver} >MY ACCOUNT</a>
                             
                         {isHovering && (
                             <ul className="account-dropdown">
-                                    <li><LogoutButton /></li>
+                                    <li><LogoutButton onMouseOut={handleMouseOut}/></li>
                                 </ul>
                             )}
                            

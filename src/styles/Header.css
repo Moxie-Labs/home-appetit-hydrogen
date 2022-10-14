@@ -46,10 +46,6 @@
     top: 50%;
 }
 
-ul.account-dropdown {
-    display: none;
-}
-
 .nav-wrapper ul li a {
     color: #474442;
     text-decoration: none;
