@@ -393,7 +393,7 @@ export function OrderSection(props) {
     // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
     const getVariantType = collection => {
         if (currentStep === ADD_ON_STEP)
-            return 1;
+            return 0;
         else if (activeScheme === 'traditional')
             return isAddingExtraItems ? 0 : 1;
         else
