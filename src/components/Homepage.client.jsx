@@ -3,8 +3,6 @@ import { Link } from '@shopify/hydrogen';
 export default function Homepage(props) {
     const { customerData, customerAccessToken } = props;
 
-    console.log("customerAccessToken", customerAccessToken)
-
     return (
         <>
             <h1>Home Appetit Hydrogen</h1>
