@@ -5,13 +5,17 @@ import {
   ShopifyAnalyticsConstants,
   useServerAnalytics,
   useLocalization,
-  useShopQuery
+  useShopQuery,
+  useSession
 } from '@shopify/hydrogen';
 import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';
 import { GET_CATEGORIES_QUERY } from '../../helpers/queries';
 
 export default function Order() {
+
+    const { customerAccessToken } = useSession();
+
     const {
         data: collectionData,
       } = useShopQuery({
@@ -26,6 +30,7 @@ export default function Order() {
             <Layout>
                 <OrderSection
                     collectionData={collectionData}
+                    isGuest={customerAccessToken === null}
                 />
             </Layout>
         </Suspense>

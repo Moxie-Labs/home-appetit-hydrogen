@@ -612,6 +612,7 @@ export function OrderSection(props) {
                 <div className="order-wrapper">
 
                     <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+                    { typeof props.customerAccessToken !== 'undefined' && <p>Signed In Using Token: {customerAccessToken}</p> }
 
                     <Layout>
                         <LayoutSection>
