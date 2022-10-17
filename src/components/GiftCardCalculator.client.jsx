@@ -100,7 +100,7 @@ export function GiftCardCalculator(props) {
                                 </div>
                             </div>
                             <div className="gc-row">
-                                <textarea name="message" id="" width="100%" rows="10"></textarea>
+                                <textarea name="message" id="" width="100%" rows="10" placeholder='Enter a custom message to be included with gift'></textarea>
                             </div>
                             <div className="gc-row">
                                 <label htmlFor="email-method">

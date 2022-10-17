@@ -49,6 +49,11 @@
     margin-bottom: 1.25rem;
     font-family: 'AvenirLTProRoman';
     font-size: 16px;
+    background-color: #FFFCF5;
+}
+
+.gc-wrapper input[type='text']::placeholder, .gc-wrapper textarea::placeholder {
+    color: #9E9694;
 }
 
 .gc-wrapper a.ha-a {
