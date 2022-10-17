@@ -71,15 +71,14 @@ export default function DeliveryInfo(props) {
     }
 
     const formattedPhoneNumber = number => {
-        let cleaned = ('' + number).replace(/\D/g, '');
         
-        let match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+        let match = number.match(/^(\d{3})(\d{3})(\d{4})$/);
         
         if (match && number.length > 9) {
-            let intlCode = (match[1] ? '+1 ' : '')
-            return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('')
+            let intlCode = '+1';
+            return [intlCode, match[1], match[2], match[3]].join('')
         } else {
-            return cleaned;
+            return number;
         }
     }
 
@@ -125,7 +124,7 @@ export default function DeliveryInfo(props) {
             errors.lastName = "Last Name is too short.";
         if (!emailAddress.includes("@"))
             errors.emailAddress = "Email Address is invalid.";
-        if (phoneNumber.length < 10)
+        if (phoneNumber.length < 12)
             errors.phoneNumber = "Last Name is too short.";
         if (address.length < 5)
             errors.address = "Address is too short.";
@@ -228,7 +227,7 @@ export default function DeliveryInfo(props) {
                                 </label>
                                 
                                 <label>Mobile Number:
-                                    <input className={`order_textfield${validationErrors.phoneNumber !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="10" type="phone" name="phone" value={formattedPhoneNumber(phoneNumber)} onChange={onPhoneNumberChange} placeholder={"Phone Number (Required)"}/>
+                                    <input className={`order_textfield${validationErrors.phoneNumber !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="12" type="phone" name="phone" value={formattedPhoneNumber(phoneNumber)} onChange={onPhoneNumberChange} placeholder={"Phone Number (Required)"}/>
                                 </label>
                             </div>
                         </div>

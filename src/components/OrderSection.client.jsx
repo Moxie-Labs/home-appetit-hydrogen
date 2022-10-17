@@ -75,7 +75,7 @@ export function OrderSection(props) {
     let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
     let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
     let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
-    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "(123) 456-7890");
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "+12345678901");
     let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
     let [address2, setAddress2] = useState(isGuest ? null : "");
     let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
