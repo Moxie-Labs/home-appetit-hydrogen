@@ -8,8 +8,8 @@ export default function DeliveryWindow(props) {
         deliveryWindowStart, 
         deliveryWindowEnd, 
         deliveryWindowDay,
-        deliveryWindowSaturday,
-        deliveryWindowSunday,
+        deliveryWindowOne,
+        deliveryWindowTwo,
         availableDeliveryStarts, 
         availableDeliveryEnds, 
         handleChangeStart, 
@@ -79,8 +79,8 @@ export default function DeliveryWindow(props) {
                 <div>
 
                     <div className="delivery-date_container">
-                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 1 ? ' active' : ''}`} onClick={() => handleChangeDay(1)}>{getDisplayDate(deliveryWindowSaturday)}</h3>
-                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 2 ? ' active' : ''}`} onClick={() => handleChangeDay(2)}>{getDisplayDate(deliveryWindowSunday)}</h3>
+                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 1 ? ' active' : ''}`} onClick={() => handleChangeDay(1)}>{getDisplayDate(deliveryWindowOne)}</h3>
+                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 2 ? ' active' : ''}`} onClick={() => handleChangeDay(2)}>{getDisplayDate(deliveryWindowTwo)}</h3>
                     </div>
 
                     <label className="delivery-window_label">Delivery Window</label>
@@ -106,7 +106,7 @@ export default function DeliveryWindow(props) {
                 // <div className="step-disabled">
                 <div>
                     <div className="delivery-date_container">
-                        <h3 className="subheading delivery-date_item active">{getDisplayDate(deliveryWindowDay === 1 ? deliveryWindowSaturday : deliveryWindowSunday)}</h3>     
+                        <h3 className="subheading delivery-date_item active">{getDisplayDate(deliveryWindowDay === 1 ? deliveryWindowOne : deliveryWindowTwo)}</h3>     
                     </div>
 
                     <div className="checkout--delivery-window-selectors">

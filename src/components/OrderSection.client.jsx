@@ -676,8 +676,8 @@ export function OrderSection(props) {
                                 deliveryWindowStart={deliveryWindowStart}
                                 deliveryWindowEnd={deliveryWindowEnd}
                                 deliveryWindowDay={deliveryWindowDay}
-                                deliveryWindowSaturday={dayOfWeek("next", "monday")}
-                                deliveryWindowSunday={dayOfWeek("next", "tuesday")}
+                                deliveryWindowOne={dayOfWeek("next", "monday")}
+                                deliveryWindowTwo={dayOfWeek("next", "tuesday")}
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
