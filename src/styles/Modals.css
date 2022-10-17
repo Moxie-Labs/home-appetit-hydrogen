@@ -124,6 +124,10 @@ section.modal--customize-inner {
     padding: 2.5rem;
 }
 
+.modal--gift-card .ha-h4{
+    text-transform: uppercase;
+}
+
 .modal--gift-card input::placeholder {
     color: #9E9694;
     font-family: 'AvenirLTProRoman';

@@ -1,0 +1,113 @@
+.gc-wrapper {
+    display: flex;
+    gap: 5.937rem;
+    background: #F8EFE0;
+    padding: 8rem 0;
+    margin: -10rem auto 0;
+    justify-content: space-evenly;
+}
+
+.gc-row {
+    display: block;
+}
+
+.gc-col {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.gc-col-item label {
+    display: block;
+}
+
+.gc-wrapper textarea {
+    width: 100%;
+}
+
+.gc-col-method label {
+    display: inline;
+}
+
+.gc-wrapper p,
+.gc-wrapper h1,
+.gc-wrapper h2,
+.gc-wrapper h3,
+.gc-wrapper h4,
+.gc-wrapper h5{
+    padding: 0;
+    margin: 0;
+}
+
+.gc-wrapper input[type='text'], .gc-wrapper textarea {
+    width: 100%;
+    padding: 0.875rem 1.56rem;
+    border-radius: 10px;
+    border: 1px solid #474442;
+    color: #474442;
+    margin-bottom: 1.25rem;
+    font-family: 'AvenirLTProRoman';
+    font-size: 16px;
+}
+
+.gc-wrapper a.ha-a {
+    color: #474442;
+}
+
+.gc-col-item label {
+    display: block;
+    margin-bottom: 0.625rem;
+}
+
+.gc-col-item {
+    flex: 1;
+}
+
+.gc-item-column.form-column {
+    max-width: 39.0625rem;
+}
+
+.form-balance, .para-col{
+    flex: 2;
+}
+
+.gc-col-item.form-balance input {
+    width: 67%;
+    margin-right: 0.5rem;
+}
+
+.gc-row.faq-row .gc-col {
+    align-items: baseline;
+}
+
+.gc-wrapper h5{
+    text-transform: uppercase;
+}
+
+p.gc-subtitle {
+    margin: 0.625rem 0 1.25rem;
+}
+
+.calculator-field label, .calculator-field input {
+    font-family: 'AvenirLTProRoman';
+}
+
+.calculator-field input{
+    font-size: 16px;
+}
+
+.calculator-field label{
+    font-size: 14px;
+}
+
+.gc-wrapper .btn.btn-primary-small {
+    height: 40px;
+    padding: 6px 24px 4px;
+}
+
+.gc-row.gc-method-field input {
+    max-width: 78%;
+    margin-bottom: 2.5rem;
+}
+
