@@ -290,7 +290,7 @@ export function OrderSection(props) {
         const iceChoice = {
             title: iceItem.title,
             attributes: [],
-            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount),
             description: "",
             imageURL: "",
             productOptions: []
@@ -472,7 +472,7 @@ export function OrderSection(props) {
         const choice = {
             title: addons.node.title,
             attributes: attributes,
-            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
             description: addons.node.description,
             imageURL: imgURL,
             productOptions: addons.node.variants.edges
@@ -682,7 +682,7 @@ export function OrderSection(props) {
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
                                 handleContinue={() => setCurrentStep(6)}
-                                handleCancel={() => {setCurrentStep(4)}}
+                                handleCancel={() => {setCurrentStep(5)}}
                                 step={5}
                                 currentStep={currentStep}
                             />
@@ -699,6 +699,7 @@ export function OrderSection(props) {
                                 address={address}
                                 address2={address2}
                                 city={city}
+                                deliveryState={deliveryState}
                                 zipcode={zipcode}
                                 instructions={instructions}
                                 extraIce={extraIce}
