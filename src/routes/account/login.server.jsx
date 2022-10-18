@@ -1,5 +1,5 @@
 import {Suspense} from 'react';
-import {useShopQuery, CacheLong, CacheNone, Seo, gql} from '@shopify/hydrogen';
+import {useShopQuery, CacheLong, CacheNone, Seo, gql, HydrogenRequest} from '@shopify/hydrogen';
 
 import {AccountLoginForm} from '../../components/Account';
 import { Layout } from '../../components/Layout.client';
@@ -41,7 +41,32 @@ export async function api(request, {session, queryShop}) {
     return new Response('Session storage not available.', {status: 400});
   }
 
-  const jsonBody = await request.json();
+  let jsonBody;
+
+  // try: logging in using JSON notation; catch: if the request is form-data
+  try {
+    console.log("Attempting login using JSON...");
+    jsonBody = await request.json();
+  } catch (e) {
+    console.log("received form-data.  Converting...");
+    let strArr = String(request.body).replace(/\s/g, "").split(";");
+    if (strArr === null) 
+      return new Response(`Invalid input request`);
+
+    let strEmail = strArr[1];
+    let strPass = strArr[2];
+
+    strEmail = strEmail.split("name=\"email\"")[1];
+    strEmail = strEmail.split("-")[0];
+
+    strPass = strPass.split("name=\"password\"")[1];
+    strPass = strPass.split("-")[0];
+
+    jsonBody = {
+        email: strEmail,
+        password: strPass
+    }
+  }
 
   if (!jsonBody.email || !jsonBody.password) {
     return new Response(
@@ -79,6 +104,8 @@ export async function api(request, {session, queryShop}) {
       {status: 401},
     );
   }
+
+  
 }
 
 const LOGIN_MUTATION = gql`
