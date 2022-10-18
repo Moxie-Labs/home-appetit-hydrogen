@@ -56,10 +56,10 @@ export async function api(request, {session, queryShop}) {
     let strEmail = strArr[1];
     let strPass = strArr[2];
 
-    strEmail = strEmail.split("name=\"email\"")[1];
+    strEmail = strEmail.split("name=\"customer[email]\"")[1];
     strEmail = strEmail.split("-")[0];
 
-    strPass = strPass.split("name=\"password\"")[1];
+    strPass = strPass.split("name=\"customer[password]\"")[1];
     strPass = strPass.split("-")[0];
 
     jsonBody = {
