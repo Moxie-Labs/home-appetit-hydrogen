@@ -43,7 +43,7 @@ export async function api(request, {session, queryShop}) {
 
   let jsonBody;
 
-  return new Response(`request.body: ${request.body}`);
+  return new Response(`request.body JSON: ${request.body.json()}, Text: ${request.body.text()}`);
 
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
