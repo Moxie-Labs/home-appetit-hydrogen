@@ -53,7 +53,8 @@ export async function api(request, {session, queryShop}) {
     jsonBody = await request.json();
   } catch (e) {
     console.log("received form-data.  Converting...");
-    let strArr = await String(request.text());
+    let strArr = await request.text();
+    strArr = String(strArr);
     // strArr = String(request.body).replace(/\s/g, "").split(";");
     strArr = strArr.replace(/\s/g, "").split(";");
     if (strArr === null) 
