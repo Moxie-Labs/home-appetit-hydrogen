@@ -324,7 +324,7 @@ export function OrderSection(props) {
         const iceChoice = {
             title: iceItem.title,
             attributes: [],
-            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount),
             description: "",
             imageURL: "",
             productOptions: []
@@ -526,7 +526,7 @@ export function OrderSection(props) {
         const choice = {
             title: addons.node.title,
             attributes: attributes,
-            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
             description: addons.node.description,
             imageURL: imgURL,
             productOptions: addons.node.variants.edges
@@ -853,7 +853,7 @@ export function OrderSection(props) {
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
-                                selectedSmallItemsExtra={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
@@ -909,7 +909,7 @@ export function OrderSection(props) {
                                     selectedMainItems={[...selectedMainItems]} 
                                     selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                     selectedSmallItems={[...selectedSmallItems]}
-                                    selectedSmallItemsExtra={[...selectedSmallItems]}
+                                    selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                     selectedAddonItems={[...selectedAddonItems]}
                                     toastMessages={toastMessages}
                                     showToast={showToast}
