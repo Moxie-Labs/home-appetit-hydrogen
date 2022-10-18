@@ -43,31 +43,41 @@ export async function api(request, {session, queryShop}) {
 
   let jsonBody;
 
-  jsonBody = await request.text();
+  const requestClone = request;
 
-  return new Response(`request.body Text: ${jsonBody}`);
+  // development
+  // jsonBody = await request.text();
+
+  // return new Response(`request.body Text: ${jsonBody}`);
+  jsonBody = await request.text();
 
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
     console.log("Attempting login using JSON...");
-    jsonBody = await request.json();
+    // jsonBody = await request.json();
+    jsonBody = JSON.parse(jsonBody);
   } catch (e) {
     console.log("received form-data.  Converting...");
-    let strArr = await request.text();
-    strArr = String(strArr);
-    // strArr = String(request.body).replace(/\s/g, "").split(";");
-    strArr = strArr.replace(/\s/g, "").split(";");
+    let strArr = jsonBody;
+
+    // strArr = String(strArr);
+    // let strArr = String(request.body).replace(/\s/g, "").split(";");
+    // let strArr = String(request.body)
+    // strArr = strArr.replace(/\s/g, "").split(";");
+    strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 
       return new Response(`Invalid input request`);
 
-    let strEmail = strArr[1];
-    let strPass = strArr[2];
+      // return new Response(`strArr[0]: ${strArr[0]}, strArr[1]: ${strArr[1]}`);
 
-    strEmail = strEmail.split("name=\"customer[email]\"")[1];
-    strEmail = strEmail.split("-")[0];
+    let strEmail = strArr[0];
+    let strPass = strArr[1];
 
-    strPass = strPass.split("name=\"customer[password]\"")[1];
-    strPass = strPass.split("-")[0];
+    strEmail = strEmail.split("&customer%5Bemail%5D=")[1];
+    strEmail = decodeURIComponent(strEmail);
+
+    strPass = strPass.split("&recaptcha-v3")[0];
+    strPass = decodeURIComponent(strPass);
 
     jsonBody = {
         email: strEmail,
