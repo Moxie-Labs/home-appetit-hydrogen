@@ -212,7 +212,7 @@ export default function PersonalInfo(props) {
                         </label>
 
                         <label className="info-label-field phone-label">Phone Number:
-                            <input className="phone-field" value={formattedPhoneNumber(phoneState)} onChange={e => setPhoneState(e.target.value)}/>
+                            <input className="phone-field" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="14" value={formattedPhoneNumber(phoneState)} onChange={e => setPhoneState(e.target.value)}/>
                         </label>
                     </div>
 
