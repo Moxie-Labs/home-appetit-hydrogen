@@ -11,7 +11,7 @@ export default function Index() {
     country: {isoCode: countryCode},
   } = useLocalization();
 
-  if (customerAccessToken != null) {
+  if (customerAccessToken != null && customerAccessToken.length) {
     const {data} = useShopQuery({
       query: CUSTOMER_QUERY,
       variables: {
