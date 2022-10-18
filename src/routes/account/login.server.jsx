@@ -41,34 +41,19 @@ export async function api(request, {session, queryShop}) {
     return new Response('Session storage not available.', {status: 400});
   }
 
-  let jsonBody;
-
-  const requestClone = request;
-
-  // development
-  // jsonBody = await request.text();
-
-  // return new Response(`request.body Text: ${jsonBody}`);
-  jsonBody = await request.text();
+  let jsonBody = await request.text();
+  let redirect = false;
 
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
     console.log("Attempting login using JSON...");
-    // jsonBody = await request.json();
     jsonBody = JSON.parse(jsonBody);
   } catch (e) {
     console.log("received form-data.  Converting...");
     let strArr = jsonBody;
-
-    // strArr = String(strArr);
-    // let strArr = String(request.body).replace(/\s/g, "").split(";");
-    // let strArr = String(request.body)
-    // strArr = strArr.replace(/\s/g, "").split(";");
     strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 
       return new Response(`Invalid input request`);
-
-      // return new Response(`strArr[0]: ${strArr[0]}, strArr[1]: ${strArr[1]}`);
 
     let strEmail = strArr[0];
     let strPass = strArr[1];
@@ -83,6 +68,8 @@ export async function api(request, {session, queryShop}) {
         email: strEmail,
         password: strPass
     }
+
+    redirect = true;
   }
 
   if (!jsonBody.email || !jsonBody.password) {
@@ -110,9 +97,12 @@ export async function api(request, {session, queryShop}) {
       data.customerAccessTokenCreate.customerAccessToken.accessToken,
     );
 
-    return new Response(null, {
-      status: 200,
-    });
+    if (redirect)
+      return response.redirect('/account');
+    else
+      return new Response(null, {
+        status: 200,
+      });
   } else {
     return new Response(
       JSON.stringify({
