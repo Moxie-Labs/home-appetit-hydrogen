@@ -76,7 +76,7 @@ export function OrderSection(props) {
 
     const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
-    const [deliveryWindowDay, setDeliveryWindowDay] = useState(6);
+    const [deliveryWindowDay, setDeliveryWindowDay] = useState(1);
 
     let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
     let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
@@ -739,8 +739,8 @@ export function OrderSection(props) {
                                 deliveryWindowStart={deliveryWindowStart}
                                 deliveryWindowEnd={deliveryWindowEnd}
                                 deliveryWindowDay={deliveryWindowDay}
-                                deliveryWindowSaturday={dayOfWeek("next", "monday")}
-                                deliveryWindowSunday={dayOfWeek("next", "tuesday")}
+                                deliveryWindowOne={dayOfWeek("next", "monday")}
+                                deliveryWindowTwo={dayOfWeek("next", "tuesday")}
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
