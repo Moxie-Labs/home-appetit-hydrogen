@@ -48,7 +48,7 @@ const DEFAULT_CARDS = [
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
@@ -57,8 +57,14 @@ export function OrderSection(props) {
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
 
+
+    const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
+    const [selectedSmallItemsExtra, setSelectedSmallItemsExtra] = useState([])
+    
     const [selectedMainItems, setSelectedMainItems] = useState([])
+    const [selectedMainItemsExtra, setSelectedMainItemsExtra] = useState([])
+
     const [selectedAddonItems, setSelectedAddonItems] = useState([])
     const [selectedSmallFilters, setSelectedSmallFilters] = useState([])
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
@@ -134,55 +140,83 @@ export function OrderSection(props) {
         return retval;
     }
 
+    const findCartLineByVariantId = variantId => {
+        let retval = null;
+        cartLines.map(line => {
+            if (line.merchandise.id === variantId) retval = line;
+        });
+
+        return retval;
+    }
+
     const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
 
-        console.log("addItemToCard::choice", choice);
+        const variantType = getVariantType(collection);        
 
         // if: item was already added, then: update quantity (or remove)
         if (doesCartHaveItem(choice, collection)) {
             console.log("addItemToCart::already exists", choice);
+            const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
+
             collection.map((item, i) => {
                 if (item.choice.title === choice.choice.title) {
-                    if (choice.quantity > 0) 
+                    if (choice.quantity > 0) {
                         item.quantity = choice.quantity;
-                    else 
-                        collection.splice(i, 1)
+                        console.log("existingCartLine", existingCartLine)
+                        linesUpdate([
+                            {
+                                id: existingCartLine.id,
+                                quantity: choice.quantity
+                            }
+                        ]);
+                    }
+                        
+                    else {
+                        collection.splice(i, 1);
+                        linesRemove([existingCartLine.id]);
+                    }
+                        
                 }
             });
 
-            if (collectionName === 'main') 
-                setSelectedMainItems([...collection]);
+            if (collectionName === 'main')
+                if (isAddingExtraItems)
+                    setSelectedMainItemsExtra([...selectedMainItemsExtra]);
+                else
+                    setSelectedMainItems([...collection]);
             else if (collectionName === 'small')
-                setSelectedSmallItems([...collection]);
+                if (isAddingExtraItems)
+                    setSelectedSmallItemsExtra([...selectedSmallItemsExtra]);
+                else
+                    setSelectedSmallItems([...selectedSmallItems]);
             else 
-                setSelectedAddonItems([...collection]);
-
-
-            linesRemove([choice.choice.productOptions[1].node.id])
+                setSelectedAddonItems([...selectedAddonItems]);
 
         }
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);
-            const variantType = getVariantType(collection);
+            
 
             if (collectionName === 'main') 
-                setSelectedMainItems([...collection, choice]);
+                if (isAddingExtraItems)
+                    setSelectedMainItemsExtra([...selectedMainItemsExtra, choice]);
+                else
+                    setSelectedMainItems([...selectedMainItems, choice]);
             else if (collectionName === 'small')
-                setSelectedSmallItems([...collection, choice]);
+                if (isAddingExtraItems)
+                    setSelectedSmallItemsExtra([...selectedSmallItemsExtra, choice]);
+                else
+                    setSelectedSmallItems([...selectedSmallItems, choice]);
             else 
-                setSelectedAddonItems([...collection, choice]);
+                setSelectedAddonItems([...selectedAddonItems, choice]);
 
             setToastMessages([{item: `+${choice.quantity} ${choice.choice.title}`, cost: choice.choice.price}]);
             setShowToast(true);
             setTimeout(() => {
                 setShowToast(false);
             }, TOAST_CLEAR_TIME);
-
-            if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
-                // setCurrentStep(currentStep+1);
-            }
 
             if (addToShopifyCart) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
@@ -192,8 +226,8 @@ export function OrderSection(props) {
                     quantity: choice.quantity
                 });
             }
-            
         }
+
     }
 
     const isSectionFilled = (collection) => {
@@ -284,7 +318,7 @@ export function OrderSection(props) {
         const iceChoice = {
             title: iceItem.title,
             attributes: [],
-            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount),
             description: "",
             imageURL: "",
             productOptions: []
@@ -350,8 +384,10 @@ export function OrderSection(props) {
 
     // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
     const getVariantType = collection => {
-        if (activeScheme === 'traditional')
-            return collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+        if (currentStep === ADD_ON_STEP)
+            return 0;
+        else if (activeScheme === 'traditional')
+            return isAddingExtraItems ? 0 : 1;
         else
             return 0;
     }
@@ -401,6 +437,11 @@ export function OrderSection(props) {
     }
 
 
+    const setupNextSection = nextStep => {
+        setIsAddingExtraItems(false);
+        setCurrentStep(nextStep);
+    }
+
     /* END Helpers */
 
 
@@ -418,7 +459,9 @@ export function OrderSection(props) {
     const addonsProducts = collections['add-ons'].products.edges;
 
     const existingMainItems = [];
+    const existingMainItemsExtra = [];
     const existingSmallItems = [];
+    const existingSmallItemsExtra = [];
     const existingAddonItems = [];
 
     const choicesEntrees = [];
@@ -435,20 +478,26 @@ export function OrderSection(props) {
         };
         choicesEntrees.push(choice);
 
-        // map cart items to pre-selected choices        
+        // map cart items to pre-selected choices      
+        // TODO restore  
         cartLines.map(line => {
             entree.node.variants.edges.forEach(variant => {
                 if (line.merchandise.id === variant.node.id) {
-                    console.log("Adding existing item", line.id)
-                    existingMainItems.push({choice: choice, quantity: line.quantity});
+
+                    // if: variant is Included, then: add to MainItems, else: add to Extras
+                    if (variant.node.title === "Included")
+                        existingMainItems.push({choice: choice, quantity: line.quantity});
+                    else
+                        existingMainItemsExtra.push({choice: choice, quantity: line.quantity});
                 }
             });
         });
     });
 
-    if (existingMainItems.length > 0 && selectedMainItems.length < 1) {
+    if (existingMainItems.length > 0 && selectedMainItems.length < 1) 
         setSelectedMainItems(existingMainItems);
-    }
+    if (existingMainItemsExtra.length > 0 && selectedMainItemsExtra.length < 1) 
+        setSelectedMainItemsExtra(existingMainItemsExtra);
 
     const choicesGreens = [];
     greensProducts.map(greens => {
@@ -469,15 +518,20 @@ export function OrderSection(props) {
         cartLines.map(line => {
             greens.node.variants.edges.forEach(variant => {
                 if (line.merchandise.id === variant.node.id) {
-                    existingSmallItems.push({choice: choice, quantity: line.quantity});
+                    if (variant.node.title === "Included")
+                        existingSmallItems.push({choice: choice, quantity: line.quantity});
+                    else
+                        existingSmallItemsExtra.push({choice: choice, quantity: line.quantity});
                 }
             });
         });
     });
 
-    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) {
+    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) 
         setSelectedSmallItems(existingSmallItems);
-    }
+    if (existingSmallItemsExtra.length > 0 && selectedSmallItemsExtra.length < 1) 
+        setSelectedSmallItemsExtra(existingSmallItemsExtra);
+    
 
     const choicesAddons = [];
     addonsProducts.map(addons => {
@@ -486,7 +540,7 @@ export function OrderSection(props) {
         const choice = {
             title: addons.node.title,
             attributes: attributes,
-            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
             description: addons.node.description,
             imageURL: imgURL,
             productOptions: addons.node.variants.edges
@@ -509,7 +563,6 @@ export function OrderSection(props) {
     }
 
     /* END GraphQL Values */
-
 
 
     /* Static Values */
@@ -604,12 +657,15 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
-                                    handleConfirm={() => setCurrentStep(3)}
+                                    handleConfirm={() => setupNextSection(3)}
                                     handleEdit={() => setCurrentStep(2)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedMainItems}
+                                    selectedExtra={selectedMainItemsExtra}
                                     filters={selectedMainFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
                             
@@ -626,12 +682,15 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
-                                    handleConfirm={() => setCurrentStep(4)}
+                                    handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => setCurrentStep(3)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedSmallItems}
+                                    selectedExtra={selectedSmallItemsExtra}
                                     filters={selectedSmallFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
 
@@ -648,13 +707,15 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedAddonFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
-                                    handleConfirm={() => setCurrentStep(5)}
+                                    handleConfirm={() => setupNextSection(5)}
                                     handleEdit={() => setCurrentStep(4)}
                                     selected={selectedAddonItems}
+                                    selectedExtra={[]}
                                     filters={selectedAddonFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     noQuantityLimit={true}
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
 
@@ -668,7 +729,9 @@ export function OrderSection(props) {
                                 pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
+                                selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
@@ -757,7 +820,9 @@ export function OrderSection(props) {
                                 pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
+                                selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
@@ -811,7 +876,9 @@ export function OrderSection(props) {
                                     pricingMultiplier={planPricingMultiplier}
                                     orderTotal={getOrderTotal()}
                                     selectedMainItems={[...selectedMainItems]} 
+                                    selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                     selectedSmallItems={[...selectedSmallItems]}
+                                    selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                     selectedAddonItems={[...selectedAddonItems]}
                                     toastMessages={toastMessages}
                                     showToast={showToast}
