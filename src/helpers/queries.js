@@ -70,3 +70,14 @@ export function GET_CHECKOUT_MUTATION(lineItemsInput) {
             }
     `;
 }
+
+export const GET_ZIPCODES_QUERY = gql`
+   {
+    page(handle:"order-now") {
+        handle
+        inrangeZipcodes:metafield(namespace:"custom", key:"in_range_zipcodes") {
+        value
+        }
+    }
+}
+`;
