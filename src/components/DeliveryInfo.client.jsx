@@ -315,7 +315,7 @@ export default function DeliveryInfo(props) {
                      <input className="order_textarea" type="textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Delivery Instructions"}/>
                  </section> */}
                  <section className="checkout--deliveryinfo-top">
-                    <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> <img src={iconEdit} width={65} className="iconEdit" /></span></h3>
+                    <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> { currentStep === step && <img src={iconEdit} width={65} className="iconEdit" />}</span></h3>
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
