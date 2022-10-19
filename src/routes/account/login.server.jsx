@@ -98,7 +98,11 @@ export async function api(request, {session, queryShop}) {
     );
 
     if (redirect)
-      return response.redirect('/account');
+    return new Response(null, {
+      status: 301,
+      headers: {Location: '/account'},
+    });
+      
     else
       return new Response(null, {
         status: 200,
