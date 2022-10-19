@@ -51,6 +51,15 @@ export default function Orders(props) {
     return (
         <div className="order-information">
 
+            { pastOrders.length == 0 && currentOrders.length == 0 &&
+                <div className="order__no-history">
+                    <h3 className="ha-h3 no-margin">No Order history</h3>
+                    <p className="ha-body no-margin">Check back after you’ve placed your next order!</p>
+                    <br />
+                    <a href="/order" className="btn-order-cta text-uppercase">Order now</a>
+                </div>
+            }
+
             { currentOrders.length > 0 && 
             <section>
                 <h1 className="ha-h5">Current Orders</h1>
