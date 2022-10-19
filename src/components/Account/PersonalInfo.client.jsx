@@ -191,12 +191,12 @@ export default function PersonalInfo(props) {
 
     return (
         <div className="account-information">
-            <h1>Account Information</h1>
 
             { !editingPersonal && 
                 <section>
                     <button className="btn btn-default btn-edit" onClick={() => setEditingPersonal(true)}>Edit<img src={editIcon} width="24"/></button>
                      <div className="personal-info-wrapper">
+                        <h5 className="ha-h5 text-uppercase no-margin">Account information</h5>
                         <div className="info-row">
                             <h2><span className="info-label">First Name:</span><br /> {firstName}</h2>
                             <h2><span className="info-label">Last Name:</span><br />  {lastName}</h2>
@@ -218,6 +218,7 @@ export default function PersonalInfo(props) {
             { editingPersonal && 
                 <section>
                      <div className="personal-info-wrapper edit-wrapper">
+                     <h5 className="ha-h5 text-uppercase no-margin">Account information</h5>
                         <div className="info-row">
                             <label className="info-label-field">First Name:
                               <input value={firstNameState} onChange={e => setFirstNameState(e.target.value)}/>
@@ -247,15 +248,10 @@ export default function PersonalInfo(props) {
 
 <div className="line-separator"></div>
 
-            <Communication 
-                acceptsMarketing={acceptsMarketing}
-                receiveConsent={receiveConsent}
-                handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
-            /> 
-
             <section className="account__address-info">
                 <h1>Saved Addresses</h1>
 
+                <div className="account__address-inner">
                 { defaultAddr !== undefined && <article className="account__address account__address--default">
                     <p className="account__address-title">Default Address</p>
                     <p className="account__address-body">{defaultAddr.name}</p>
@@ -263,7 +259,7 @@ export default function PersonalInfo(props) {
                     {defaultAddr.address2 !== "" && <p>{defaultAddr.address2}</p>}
                     {defaultAddr.company !== "" && <p>{defaultAddr.company}</p>}
                     <p className="account__address-body">{defaultAddr.city}, {defaultAddr.provinceCode} {defaultAddr.zip}</p>
-                    <p><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
+                    <p className="address-action-cta"><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
                 </article> }
 
 
@@ -281,43 +277,84 @@ export default function PersonalInfo(props) {
                     }
                 })}
 
+            </div>
+            <button className="btn btn-default new-address-cta" onClick={() => prepareNewAddress()}>Add New Address</button>
+
+            <div className="line-separator"></div>
+
                 <Modal
                     isOpen={showingAddressModal}
                     onRequestClose={() => closeAddressModal()}
+                    className="modal-new-address"
                 >
-                    <label>First Name:</label>
-                    <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
+                    <h4 className="ha-h4 text-uppercase text-center no-margin">Default Address</h4>
 
-                    <label>Last Name:</label>
-                    <input value={modalLastName} onChange={e => setModalLastName(e.target.value)}/>
+                    <div className="new-address-wrapper">
 
-                    <label>Address:</label>
-                    <input value={modalAddress1} onChange={e => setModalAddress1(e.target.value)}/>
+                    <div className="field-row">
+                        <div className="field">
+                        <label>First Name:</label>
+                        <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
+                        </div>
 
-                    <label>Address 2:</label>
-                    <input value={modalAddress2} onChange={e => setModalAddress2(e.target.value)}/>
+                        <div className="field">
+                        <label>Last Name:</label>
+                        <input value={modalLastName} onChange={e => setModalLastName(e.target.value)}/>
+                        </div>
+                    </div>
 
-                    <label>City:</label>
-                    <input value={modalCity} onChange={e => setModalCity(e.target.value)}/>
-
-                    <label>State:</label>
-                    <input value={modalProvince} onChange={e => setModalProvince(e.target.value)}/>
-
-                    <label>ZIP:</label>
-                    <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
-
+                    <div className="field-row">
+                    <div className="field">
                     <label>Phone:</label>
                     <input value={modalPhone} onChange={e => setModalPhone(e.target.value)}/>
+                    </div>
+                    </div>
 
-                    { !newAddressModal && <button onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
-                    { newAddressModal && <button onClick={() => submitNewAddress()}>Submit</button> }
-                    <button onClick={() => setShowingAddressModal(false)}>Cancel</button>
+                    <div className="field">
+                    <label>Address:</label>
+                    <input value={modalAddress1} onChange={e => setModalAddress1(e.target.value)}/>
+                    </div>
+                    
+                    <div className="field">
+                    <label>Address 2:</label>
+                    <input value={modalAddress2} onChange={e => setModalAddress2(e.target.value)}/>
+                    </div>
+
+                    <div className="field-row">
+                    <div className="field">
+                    <label>City:</label>
+                    <input value={modalCity} onChange={e => setModalCity(e.target.value)}/>
+                    </div>
+
+                    <div className="field">
+                    <label>State:</label>
+                    <input value={modalProvince} onChange={e => setModalProvince(e.target.value)}/>
+                    </div>
+
+                    <div className="field">
+                    <label>ZIP:</label>
+                    <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
+                    </div>
+                    </div>
+
+                    <div className="modal-action">
+                    { !newAddressModal && <button className="btn btn-primary-small" onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
+                    { newAddressModal && <button className="btn btn-primary-small" onClick={() => submitNewAddress()}>Submit</button> }
+                    <button className="btn btn-address-cancel" onClick={() => setShowingAddressModal(false)}>Cancel</button>
+                    </div>
+                    </div>
                 </Modal>
 
+                
             </section>
 
-            <button className="btn btn-default" onClick={() => prepareNewAddress()}>Add New Address</button>
-
+            <Communication 
+                acceptsMarketing={acceptsMarketing}
+                receiveConsent={receiveConsent}
+                handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
+            /> 
+  
+            <button className="btn btn-default new-address-cta">Update preferences</button>
             
         </div>
     );
