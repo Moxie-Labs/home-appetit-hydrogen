@@ -70,6 +70,28 @@ export default function PersonalInfo(props) {
         dismissModals();
     }
 
+    const addressesSection = customer.addresses.length > 0 ? <section>
+        <h1 className="address-title">Saved Addresses</h1>
+            <article>
+                <h2 className="default-address-label">Default Address</h2>
+                <div className="address">
+                    <p>{addresses[0].address1}</p>
+                    {addresses[0].address2 !== "" && <p>{addresses[0].address2}</p>}
+                    <p>{addresses[0].city}, {addresses[0].state} {addresses[0].zip}</p>
+                </div>
+            </article>
+
+            { addresses.length === 2 &&
+                <article>
+                    <h2>Address 2</h2>
+                    <div className="address">
+                        <p>{addresses[1].address1}</p>
+                        {addresses[1].address2 !== "" && <p>{addresses[1].address2}</p>}
+                        <p>{addresses[1].city}, {addresses[1].state} {addresses[1].zip}</p>
+                    </div>
+                </article> 
+            }
+    </section> : null;
     const openAddressModal = address => {
         setModalAddress(address);
         setModalAddressDefault(address.isDefaultAddress);
@@ -156,6 +178,7 @@ export default function PersonalInfo(props) {
     }
 
     const addresses = flattenConnection(customer?.addresses) || [];
+
     let defaultAddr;
 
     addresses.forEach(addr => {
@@ -221,9 +244,8 @@ export default function PersonalInfo(props) {
                     </div>
                 </section>
             }
-        
 
-            <div className="line-separator"></div>
+<div className="line-separator"></div>
 
             <Communication 
                 acceptsMarketing={acceptsMarketing}
