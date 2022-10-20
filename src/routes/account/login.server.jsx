@@ -109,10 +109,19 @@ export async function api(request, {session, queryShop}) {
     const today = new Date();
     if (redirect) {
      
-      // // if: in the delivery window, then: redirect to the Order page
-      console.log("windowData", windowData.page.orderWindowOpen.value);
-      if (today.getDay() >= parseInt(windowData.page.orderWindowOpen.value) && today.getDay() <= parseInt( windowData.page.orderWindowClosed.value))
-        redirectDest = '/order';
+      // find latest active menu and associated window
+      windowData.collections.edges.map(edge => {
+        if (redirectDest !== '/order') {
+          const menu = edge.node;
+          const startDate = new Date(menu.orderWindowOpen?.value);
+          const endDate = new Date(menu.orderWindowClosed?.value);
+  
+          if (startDate === null || endDate === null) ;
+          else if (today > endDate) ;
+          else if (today <= endDate && today >= startDate)
+            redirectDest = '/order';
+        }
+      });
 
       return new Response(null, {
         status: 200,

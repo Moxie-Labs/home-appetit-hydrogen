@@ -73,13 +73,17 @@ export function GET_CHECKOUT_MUTATION(lineItemsInput) {
 
 export const GET_ORDER_WINDOW_DAYS_QUERY = gql`
 {
-	page(handle:"order-now") {
-    title
-    orderWindowOpen:metafield(namespace:"custom", key:"order_window_start_day") {
-      value
-    }
-    orderWindowClosed:metafield(namespace:"custom", key:"order_window_end_day") {
-      value
-    }
+	collections(first:5, reverse: true) {
+        edges {
+            node {
+                title
+                orderWindowOpen:metafield(namespace:"custom", key:"start_date") {
+                    value
+                }
+                orderWindowClosed:metafield(namespace:"custom", key:"end_date") {
+                    value
+                }
+            }
+        }
   }
 }`;
