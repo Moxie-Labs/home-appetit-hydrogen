@@ -3,6 +3,7 @@ import {useShopQuery, CacheLong, CacheNone, Seo, gql, HydrogenRequest} from '@sh
 
 import {AccountLoginForm} from '../../components/Account';
 import { Layout } from '../../components/Layout.client';
+import { GET_ORDER_WINDOW_DAYS_QUERY } from '../../helpers/queries';
 // import {Layout} from '~/components/index.server';
 
 export default function Login({response}) {
@@ -17,6 +18,7 @@ export default function Login({response}) {
     cache: CacheLong(),
     preload: '*',
   });
+
 
   return (
     <Layout>
@@ -37,6 +39,7 @@ const SHOP_QUERY = gql`
 `;
 
 export async function api(request, {session, queryShop}) {
+
   if (!session) {
     return new Response('Session storage not available.', {status: 400});
   }
@@ -79,6 +82,11 @@ export async function api(request, {session, queryShop}) {
     );
   }
 
+  const { data: windowData } = await queryShop({
+    query: GET_ORDER_WINDOW_DAYS_QUERY,
+    cache: CacheNone()  
+  });
+
   const {data, errors} = await queryShop({
     query: LOGIN_MUTATION,
     variables: {
@@ -97,11 +105,20 @@ export async function api(request, {session, queryShop}) {
       data.customerAccessTokenCreate.customerAccessToken.accessToken,
     );
 
-    if (redirect)
-    return new Response(null, {
-      status: 301,
-      headers: {Location: '/account'},
-    });
+    let redirectDest = '/account';
+    const today = new Date();
+    if (redirect) {
+     
+      // // if: in the delivery window, then: redirect to the Order page
+      console.log("windowData", windowData.page.orderWindowOpen.value);
+      if (today.getDay() >= parseInt(windowData.page.orderWindowOpen.value) && today.getDay() <= parseInt( windowData.page.orderWindowClosed.value))
+        redirectDest = '/order';
+
+      return new Response(null, {
+        status: 200,
+        headers: {Location: redirectDest},
+      });
+    }
       
     else
       return new Response(null, {

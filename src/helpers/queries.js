@@ -70,3 +70,16 @@ export function GET_CHECKOUT_MUTATION(lineItemsInput) {
             }
     `;
 }
+
+export const GET_ORDER_WINDOW_DAYS_QUERY = gql`
+{
+	page(handle:"order-now") {
+    title
+    orderWindowOpen:metafield(namespace:"custom", key:"order_window_start_day") {
+      value
+    }
+    orderWindowClosed:metafield(namespace:"custom", key:"order_window_end_day") {
+      value
+    }
+  }
+}`;
