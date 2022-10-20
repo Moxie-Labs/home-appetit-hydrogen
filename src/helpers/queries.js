@@ -70,3 +70,17 @@ export function GET_CHECKOUT_MUTATION(lineItemsInput) {
             }
     `;
 }
+
+export const GET_LATEST_MENU_QUERY = gql`
+{
+    collection(handle: "menu_07-18-2022") {
+        products(first: 50) {
+            edges {
+                node {
+                    id
+                }
+            }
+        }
+    }
+}
+`;

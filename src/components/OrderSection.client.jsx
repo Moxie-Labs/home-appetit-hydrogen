@@ -450,21 +450,19 @@ export function OrderSection(props) {
     const {collectionData} = props;
 
     const collections = [];
-    collectionData.collections.edges.map(collection => {
-        collections[collection.node.handle] = collection.node;
-    });
+    // collectionData.collections.edges.map(collection => {
+    //     collections[collection.node.handle] = collection.node;
+    // });
 
-    const entreeProducts = collections['entrees'].products.edges;
-    const greensProducts = collections["greens-grains-small-plates"].products.edges;
-    const addonsProducts = collections['add-ons'].products.edges;
+    const {entreeProducts, greensProducts, addonProducts} = props;
 
     const existingMainItems = [];
     const existingMainItemsExtra = [];
     const existingSmallItems = [];
     const existingSmallItemsExtra = [];
     const existingAddonItems = [];
-
     const choicesEntrees = [];
+
     entreeProducts.map(entree => {
         const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
         const attributes = convertTags(entree.node.tags);
@@ -479,7 +477,6 @@ export function OrderSection(props) {
         choicesEntrees.push(choice);
 
         // map cart items to pre-selected choices      
-        // TODO restore  
         cartLines.map(line => {
             entree.node.variants.edges.forEach(variant => {
                 if (line.merchandise.id === variant.node.id) {
@@ -534,7 +531,7 @@ export function OrderSection(props) {
     
 
     const choicesAddons = [];
-    addonsProducts.map(addons => {
+    addonProducts.map(addons => {
         const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
         const attributes = convertTags(addons.node.tags);
         const choice = {
