@@ -220,33 +220,49 @@ export default class DishCard extends React.Component {
                     className="modal--flexible-confirmaton"
                 >
                     <div className="card__quantity-wrapper">
-                        <div className="card__quantity-inner-container">
-                            <h2 className="card__quantity-title">{title}</h2>
-                            {/* start placeholder */}
-                            <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
-                            <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
-                            {/* end placeholder */}
-                            <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
-                        </div>
+                        <div className="card__quantity-inner-wrapper">
+                            <div className="card__quantity-inner-container">
+                                <h2 className="card__quantity-title">{title}</h2>
+                                {/* start placeholder */}
+                                <p className='card__quantity-subtitle'>urna fermentum, sed id dolor ac donec egestas ut sted es</p>
+                                <br></br>
+                                <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
+                                <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
+                                {/* end placeholder */}
+                                <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
+                            </div>
 
-                        <div className="card__quantity-field-wrapper">
-                            <section className="card__quantity-section">
-                                <img className="card__quantity-img minus" src={quantityMinus} onClick={() => this.setQuantity(quantity-1)}/>
-                                <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
-                                <img className="card__quantity-img plus" src={quantityPlus} onClick={() => this.setQuantity(quantity+1)}/>
-                            </section>
-
-                            <section className="card__actions">
-                                <button className="btn btn-primary-small btn-counter-confirm" onClick={() => this.handleConfirm()}>Confirm</button>
-                            </section>    
+                            <div className="card__quantity-field-wrapper">
+                                <section className="card__quantity-section">
+                                    <img className="card__quantity-img minus" src={quantityMinus} onClick={() => this.setQuantity(quantity-1)}/>
+                                    <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
+                                    <img className="card__quantity-img plus" src={quantityPlus} onClick={() => this.setQuantity(quantity+1)}/>
+                                </section>
+                            </div>
                         </div>
 
                         <div className='modal--flexible-inner'>
-                        <h2 className='ha-h4'>Substitutions</h2>
-                        {substitutionSection}
+                            <p>*Customizations will be applied to all portions of this dish. For more individualized customizations, please check out our Flex option.</p>
 
-                        <h2 className='ha-h4'>Customizations</h2>
+                        <div className="modal--flexible-container">
+                            <h4 className='modal--flexible-heading'>Substitutions</h4>
+                            <div className="modal--flexible-checkbox-wrapper">
+                            {/* {substitutionSection} */}
+                            <Checkbox label="HELLO WORLD" />
+                            </div>
+                        </div>
+
+                        <div className="modal--flexible-container">
+                        <h4 className='modal--flexible-heading'>Customizations</h4>
+                        <div className="modal--flexible-checkbox-wrapper">
                         {modifiersSection}
+                        </div>
+                        </div>
+
+                        <section className="card__actions">
+                            <button className="btn btn-primary-small btn-counter-confirm" onClick={() => this.handleConfirm()}>Confirm</button>
+                            <p className='modal--flexible-price'><strong>+$2.00</strong> Customizations</p>
+                        </section>    
                     </div>
                     </div>
                     
