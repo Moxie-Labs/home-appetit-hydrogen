@@ -25,7 +25,7 @@ export default function Order() {
     const { customerAccessToken } = useSession();
     let customerData = null;
 
-    if (customerAccessToken != null) {
+    if (customerAccessToken != null && customerAccessToken != '') {
       const {data} = useShopQuery({
         query: CUSTOMER_QUERY,
         variables: {
