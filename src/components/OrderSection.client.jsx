@@ -447,7 +447,7 @@ export function OrderSection(props) {
 
     /* GraphQL Setup */
 
-    const {collectionData} = props;
+    const { collectionData, zipcodeType } = props;
 
     const collections = [];
     collectionData.collections.edges.map(collection => {
@@ -626,6 +626,8 @@ export function OrderSection(props) {
                 <div className="order-wrapper">
 
                     <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+
+                    { zipcodeType === "extended" && <h2>Please Note: Your zipcode is within our extended delivery range, and will incur an additional fee.</h2> }
 
                     <Layout>
                         <LayoutSection>
