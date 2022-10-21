@@ -115,11 +115,12 @@ export default class DishCard extends React.Component {
         const { selectedMods } = this.state;
         if (this.isModSelected(mod.id)) {
             const modIndex = this.findModIndex(mod.id);
-            const newSelectedMods = selectedMods.splice(modIndex, 1);
-            this.setState({selectedMods: newSelectedMods})
+            let newSelectedMods = selectedMods;
+            newSelectedMods.splice(modIndex, 1);
+            this.setState({selectedMods: [...newSelectedMods]})
         }
         else
-            this.setState({selectedMods: [...selectedMods, mod]})
+            this.setState({selectedMods: [...selectedMods, mod]});
     }
 
     prepModSubTitles(title) {
