@@ -197,8 +197,7 @@ export function OrderSection(props) {
 
                         if (modsAdded.length > 0) {
                             console.log("modsAdded", modsAdded);
-                            setTimeout(() => {
-                                const linesAddPayload = [];
+                            const linesAddPayload = [];
                                 modsAdded.map(mod => {
                                     linesAddPayload.push({ 
                                         merchandiseId: mod.variants.edges[0].node.id,
@@ -206,6 +205,7 @@ export function OrderSection(props) {
                                     });
                                 }); 
 
+                            setTimeout(() => {
                                 linesAdd(linesAddPayload);
                             }, 2000);
                         }
@@ -300,19 +300,40 @@ export function OrderSection(props) {
 
     const getOrderTotal = () => {
         let total = parseFloat(planPricingMultiplier);
-        selectedSmallItems.forEach((item, index) => {
-            if (activeScheme === 'flexible' || index >= 4)
+        selectedSmallItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                // TODO: add support for Flex plan quantity differences
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            
+            if (activeScheme === 'flexible')
                 total += parseFloat(item.choice.price * item.quantity);
         });
-        selectedMainItems.forEach((item, index) => {
-            if (activeScheme === 'flexible' || index >= 4)
-                total += parseFloat(item.choice.price * item.quantity);
-        });
-        selectedAddonItems.forEach(item => {
+        selectedSmallItemsExtra.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
             total += parseFloat(item.choice.price * item.quantity);
         });
-
-        console.log("getOrderTotal::total", total)
+        selectedMainItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            if (activeScheme === 'flexible')
+                total += parseFloat(item.choice.price * item.quantity);
+        });
+        selectedMainItemsExtra.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            total += parseFloat(item.choice.price * item.quantity);
+        });
+        selectedAddonItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            total += parseFloat(item.choice.price * item.quantity);
+        });
 
         return total;
     }
@@ -528,6 +549,7 @@ export function OrderSection(props) {
             modCollection.products.edges.map(edge => {
                 collectionProducts.push(edge.node);
             });
+            console.log("collectionProducts", collectionProducts);
             return collectionProducts;
         }
     }

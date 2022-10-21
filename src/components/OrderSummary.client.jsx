@@ -88,16 +88,30 @@ export default class OrderSummary extends React.Component {
         );
     }
 
+    prepModSubTitles(title) {
+        if (title.includes("(Sub) "))
+            return title.split("(Sub) ")[1];
+        else if (title.includes("(Mod) "))
+            return title.split("(Mod) ")[1];
+        else
+            return title;
+    }
+
     render() {
         const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase} = this.props;
         const {enlarged} = this.state;
-        console.log(getPhase);
 
         const mainItemList = selectedMainItems.map((item, i) => {
             return (
                 <li key={`main-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
                     { activeScheme === 'flexible' && <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span> }
+                    { item.selectedMods?.map(mod => {
+                        return <div className='order-summary--item-mod'>
+                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
+                        </div>
+                    }) }
                 </li>
             );
         });
@@ -107,6 +121,12 @@ export default class OrderSummary extends React.Component {
                 <li key={`main-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
+                    { item.selectedMods?.map(mod => {
+                        return <div className='order-summary--item-mod'>
+                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
+                        </div>
+                    }) }
                 </li>
             );
         });
@@ -116,6 +136,12 @@ export default class OrderSummary extends React.Component {
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
                     { activeScheme === 'flexible' && <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span> }
+                    { item.selectedMods?.map(mod => {
+                        return <div className='order-summary--item-mod'>
+                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
+                        </div>
+                    }) }
                 </li>
             );
         });
@@ -125,6 +151,12 @@ export default class OrderSummary extends React.Component {
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
+                    { item.selectedMods?.map(mod => {
+                        return <div className='order-summary--item-mod'>
+                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
+                        </div>
+                    }) }
                 </li>
             );
         });
@@ -134,6 +166,12 @@ export default class OrderSummary extends React.Component {
                 <li key={`addon-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
+                    { item.selectedMods?.map(mod => {
+                        return <div className='order-summary--item-mod'>
+                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
+                        </div>
+                    }) }
                 </li>
             );
         });

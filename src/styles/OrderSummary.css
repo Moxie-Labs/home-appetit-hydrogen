@@ -70,6 +70,10 @@
                 float: right;
             }
 
+        .order-summary--item-mod {
+            clear: both;
+        }
+
 
     .order-summary--total {
         padding: 20px 0 !important;
