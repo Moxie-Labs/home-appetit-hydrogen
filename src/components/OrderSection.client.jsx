@@ -17,7 +17,7 @@ import {Footer} from "./Footer.client";
 // base configurations
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 1;
+const FIRST_STEP = 2;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 7;
@@ -189,6 +189,8 @@ export function OrderSection(props) {
                     setSelectedSmallItemsExtra([...selectedSmallItemsExtra]);
                 else
                     setSelectedSmallItems([...selectedSmallItems]);
+            else if (collectionName === 'mod')
+                setSelectedMods([...selectedSmallItems])
             else 
                 setSelectedAddonItems([...selectedAddonItems]);
 
@@ -485,6 +487,10 @@ export function OrderSection(props) {
         
     }
 
+    const onModAdded = mod => {
+        console.log("mod", mod);
+    }
+
     /* END Helpers */
 
 
@@ -512,9 +518,6 @@ export function OrderSection(props) {
             substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
         };
         choicesEntrees.push(choice);
-
-        if (choice.modifications.length > 0)
-            console.log("choice w/mods", choice);
 
         // map cart items to pre-selected choices      
         cartLines.map(line => {
@@ -707,6 +710,7 @@ export function OrderSection(props) {
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleMod={(mod) => addItemToCart(mod, selectedMainItems, 'mod')}
                                 />
                             </div>
                             
@@ -732,6 +736,7 @@ export function OrderSection(props) {
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleMod={(mod) => onModAdded(mod)}
                                 />
                             </div>
 
@@ -757,6 +762,7 @@ export function OrderSection(props) {
                                     noQuantityLimit={true}
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleMod={(mod) => onModAdded(mod)}
                                 />
                             </div>
 

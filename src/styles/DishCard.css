@@ -220,6 +220,11 @@ p.card__code {
     cursor: pointer;
 }
 
+    .btn-counter-customize.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
 .btn-counter-confirm{
     padding: 16px 40px 12px !important;
 }

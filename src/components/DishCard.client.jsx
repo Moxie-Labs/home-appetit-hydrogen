@@ -10,7 +10,7 @@ export default class DishCard extends React.Component {
         super(props);
         this.state = {
             isCardActive: false,
-            isModalShowing: false,
+            isModModalShowing: false,
             quantity: props.initialQuantity,
             selected: ['hidden'],
             confirmed: props.confirmed,
@@ -31,6 +31,7 @@ export default class DishCard extends React.Component {
         this.handleSelected = this.props.handleSelected.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.handleOptionChoice = this.handleOptionChoice.bind(this);
+        this.handleMod = this.props.handleMod.bind(this);
     }
 
     setQuantity(quantity) {
@@ -50,11 +51,6 @@ export default class DishCard extends React.Component {
             if (!showingExtra)
                 quantity = Math.min(quantity, freeQuantityLimit);
 
-
-        console.log("quantityTotal", quantityTotal)
-        console.log("maxQuantity", maxQuantity)
-        console.log("currentQuantity", currentQuantity)
-
         this.setState({
             quantity: quantity
         });
@@ -63,15 +59,6 @@ export default class DishCard extends React.Component {
     calculateItemTotal() {
         return formatter.format(Math.max(0, (quantity  - freeQuantityLimit)) * price);
     }
-
-    // dishCardBlur(className) {
-    //     var elems = document.querySelectorAll(className);
-    //     var index = 0, length = elems.length;
-    //     for ( ; index < length; index++) {
-    //         elems[index].style.transition = "opacity 0.1s linear 0s";
-    //         elems[index].style.opacity = 0.5;
-    //     }
-    // }
 
     dishCardClear(className) {
         var elems = document.querySelectorAll(className);
@@ -89,10 +76,6 @@ export default class DishCard extends React.Component {
                 confirmed: false
             });
         }
-
-        // this.dishCardBlur('.dish-card-blur');
-        // this.dishCardBlur('.order_prop__subheading');
-        // this.dishCardBlur('.order_prop__heading');
     }
 
     handleConfirm() {
@@ -121,32 +104,43 @@ export default class DishCard extends React.Component {
     }
 
     toggleModal() {
-        const {isModalShowing} = this.state;
-        this.setState({isModalShowing: !isModalShowing});
+        const {isModModalShowing} = this.state;
+        this.setState({isModModalShowing: !isModModalShowing});
     }
 
     handleOptionChoice(option, index) {
         
-        const {checkedOptions, optionCost} = this.state;
-        let newCheckedOptions = [...checkedOptions];
-        let newOptionCost = optionCost;
-        newCheckedOptions[index] = !checkedOptions[index];
-        if (newCheckedOptions[index] === true) 
-            newOptionCost += option.cost;
-        else
-            newOptionCost -= option.cost;
+        // const {checkedOptions, optionCost} = this.state;
+        // let newCheckedOptions = [...checkedOptions];
+        // let newOptionCost = optionCost;
+        // newCheckedOptions[index] = !checkedOptions[index];
+        // if (newCheckedOptions[index] === true) 
+        //     newOptionCost += option.cost;
+        // else
+        //     newOptionCost -= option.cost;
 
-            console.log("optionCost", option.cost)
-        this.setState({
-            checkedOptions: newCheckedOptions,
-            optionCost: newOptionCost
-        })
+        //     console.log("optionCost", option.cost)
+        // this.setState({
+        //     checkedOptions: newCheckedOptions,
+        //     optionCost: newOptionCost
+        // })
+
+        this.handleMod(option);
+    }
+
+    prepModSubTitles(title) {
+        if (title.includes("(Sub) "))
+            return title.split("(Sub) ")[1];
+        else if (title.includes("(Mod) "))
+            return title.split("(Mod) ")[1];
+        else
+            return title;
     }
 
     render() {
         const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice} = this.props;
-        const {selected, quantity, isCardActive, confirmed, isModalShowing, checkedOptions, optionCost} = this.state;
-        const {title, description, price, attributes, imageURL, productOptions} = choice;
+        const {selected, quantity, isCardActive, confirmed, isModModalShowing, checkedOptions, optionCost} = this.state;
+        const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
 
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -154,10 +148,12 @@ export default class DishCard extends React.Component {
             minimumFractionDigits: 2
         })
 
-        const optionsSection = (productOptions === null) ? null : productOptions.map((option, index) => {
-            const optionIndex = index;
-            const productOption = option;
-            return <Checkbox key={index} label={option.name} checked={checkedOptions[index]} onChange={() => this.handleOptionChoice(productOption, optionIndex)}/>;
+        const modifiersSection = modifications === null ? null : modifications.map((mod, index) => {
+            return <Checkbox key={index} label={this.prepModSubTitles(mod.title)} checked={checkedOptions[index]} onChange={() => this.handleOptionChoice(mod, index)}/>;
+        });
+
+        const substitutionSection = substitutions === null ? null : substitutions.map((sub, index) => {
+            return <Checkbox key={index} label={this.prepModSubTitles(sub.title)} checked={checkedOptions[index]} onChange={() => this.handleOptionChoice(sub, index)}/>;
         });
 
         let attributesDisplay = '';
@@ -199,7 +195,7 @@ export default class DishCard extends React.Component {
 
                     <section className="card__actions">
                         <button className="btn btn-primary-small btn-counter-confirm" onClick={() => this.handleConfirm()}>Confirm</button>
-                        <button className="ha-a btn-counter-customize" onClick={() => this.handleCustomize()}>Customize</button>
+                        <button className={`ha-a btn-counter-customize ${ substitutions.length + modifications.length > 0 ? 'enabled' : 'disabled' }`} onClick={() => this.handleCustomize()}>Customize</button>
                     </section>    
                 </div>
             </div>
@@ -217,8 +213,46 @@ export default class DishCard extends React.Component {
                     <p className="card__code">{attributesDisplay}</p>
                     <p className="card__servings-disclaimer">{disclaimerText}</p>
                 </div>
-                            
+
                 <Modal
+                    isOpen={isModModalShowing}
+                    onClose={this.toggleModModal}
+                    className="modal--flexible-confirmaton"
+                >
+                    <div className="card__quantity-wrapper">
+                        <div className="card__quantity-inner-container">
+                            <h2 className="card__quantity-title">{title}</h2>
+                            {/* start placeholder */}
+                            <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
+                            <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
+                            {/* end placeholder */}
+                            <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
+                        </div>
+
+                        <div className="card__quantity-field-wrapper">
+                            <section className="card__quantity-section">
+                                <img className="card__quantity-img minus" src={quantityMinus} onClick={() => this.setQuantity(quantity-1)}/>
+                                <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
+                                <img className="card__quantity-img plus" src={quantityPlus} onClick={() => this.setQuantity(quantity+1)}/>
+                            </section>
+
+                            <section className="card__actions">
+                                <button className="btn btn-primary-small btn-counter-confirm" onClick={() => this.handleConfirm()}>Confirm</button>
+                            </section>    
+                        </div>
+
+                        <div className='modal--flexible-inner'>
+                        <h2 className='ha-h4'>Substitutions</h2>
+                        {substitutionSection}
+
+                        <h2 className='ha-h4'>Customizations</h2>
+                        {modifiersSection}
+                    </div>
+                    </div>
+                    
+                </Modal>
+                            
+                {/* <Modal
                     isOpen={isModalShowing}
                     onClose={this.toggleModal}
                     className="modal--flexible-confirmaton"
@@ -232,7 +266,7 @@ export default class DishCard extends React.Component {
                             <button className="btn ha-a btn-modal-cancel">Cancel</button>
                         </section>   
                     </div>
-                </Modal>
+                </Modal> */}
                 
             </section>
 
