@@ -17,7 +17,7 @@ export default function Order() {
         data: collectionData,
       } = useShopQuery({
         query: GET_CATEGORIES_QUERY,
-        cache: CacheNone(),
+        cache: CacheLong(),
         preload: true,
       });
 

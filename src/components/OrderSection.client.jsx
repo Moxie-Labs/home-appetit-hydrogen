@@ -149,6 +149,17 @@ export function OrderSection(props) {
         return retval;
     }
 
+    const findCollectionItemIndex = (item, collection) => {
+        let retval = -1;
+
+        collection.map((item, index) => {
+            if (item.choice.title === choice.choice.title)
+                retval = index;
+        });
+
+        return retval;
+    }
+
     const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
 
         const variantType = getVariantType(collection);        
@@ -162,18 +173,39 @@ export function OrderSection(props) {
                 if (item.choice.title === choice.choice.title) {
                     if (choice.quantity > 0) {
                         item.quantity = choice.quantity;
-                        console.log("existingCartLine", existingCartLine)
-                        linesUpdate([
-                            {
-                                id: existingCartLine.id,
+                        const linesUpdatePayload = [];
+                        linesUpdatePayload.push({
+                            id: existingCartLine.id,
+                            quantity: choice.quantity
+                        });
+
+                        choice.selectedMods.map(mod => {
+                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
+                            linesUpdatePayload.push({
+                                id: modCartLine.id,
                                 quantity: choice.quantity
-                            }
-                        ]);
+                            });
+                        });
+
+                        linesUpdate(linesUpdatePayload);
                     }
                         
                     else {
+                        // handle internal Cart Collection
                         collection.splice(i, 1);
-                        linesRemove([existingCartLine.id]);
+                        // TODO: remove from OrderSummary
+                        // item.selectedMods.map(mod => {
+                        //     const modIndex = findCollectionItemIndex(mod, collection);
+                        // });
+
+                        // update Shopify Cart
+                        const linesRemovePayload = [];
+                        linesRemovePayload.push(existingCartLine.id);
+                        choice.selectedMods.map(mod => {
+                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
+                            linesRemovePayload.push(modCartLine.id)
+                        });
+                        linesRemove(linesRemovePayload);
                     }
                         
                 }
@@ -189,8 +221,6 @@ export function OrderSection(props) {
                     setSelectedSmallItemsExtra([...selectedSmallItemsExtra]);
                 else
                     setSelectedSmallItems([...selectedSmallItems]);
-            else if (collectionName === 'mod')
-                setSelectedMods([...selectedSmallItems])
             else 
                 setSelectedAddonItems([...selectedAddonItems]);
 
@@ -222,11 +252,21 @@ export function OrderSection(props) {
 
             if (addToShopifyCart) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
-                // update Shopify Cart
-                linesAdd({ 
+                const linesAddPayload = [];
+                choice.selectedMods.map(mod => {
+                    linesAddPayload.push({ 
+                        merchandiseId: mod.variants.edges[0].node.id,
+                        quantity: choice.quantity
+                    });
+                }); 
+                
+                linesAddPayload.push({ 
                     merchandiseId: choice.choice.productOptions[variantType].node.id,
                     quantity: choice.quantity
                 });
+
+                // update Shopify Cart
+                linesAdd(linesAddPayload);
             }
         }
 
@@ -657,6 +697,7 @@ export function OrderSection(props) {
     /* END Static Values */
 
     /* Debug Values */
+    console.log("checkoutUrl", checkoutUrl);
 
     /* END Debug Values */
 
@@ -710,7 +751,6 @@ export function OrderSection(props) {
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
                                     isAddingExtraItems={isAddingExtraItems}
-                                    handleMod={(mod) => addItemToCart(mod, selectedMainItems, 'mod')}
                                 />
                             </div>
                             
@@ -736,7 +776,6 @@ export function OrderSection(props) {
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
                                     isAddingExtraItems={isAddingExtraItems}
-                                    handleMod={(mod) => onModAdded(mod)}
                                 />
                             </div>
 
@@ -762,7 +801,6 @@ export function OrderSection(props) {
                                     noQuantityLimit={true}
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
                                     isAddingExtraItems={isAddingExtraItems}
-                                    handleMod={(mod) => onModAdded(mod)}
                                 />
                             </div>
 

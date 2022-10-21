@@ -20,7 +20,8 @@ export default class DishCard extends React.Component {
                 false, 
                 false
             ],
-            optionCost: 0.0
+            optionCost: 0.0,
+            selectedMods: []
         }
 
         this.calculateItemTotal = this.calculateItemTotal.bind(this);
@@ -81,13 +82,14 @@ export default class DishCard extends React.Component {
     handleConfirm() {
         console.log("confirming...");
         const {choice, handleSelected} = this.props;
-        const {quantity} = this.state;
+        const {quantity, selectedMods} = this.state;
         this.setState({
             confirmed: quantity > 0,
-            isCardActive: false
+            isCardActive: false,
+            isModModalShowing: false
         });
 
-        handleSelected({choice: choice, quantity: quantity});
+        handleSelected({choice: choice, quantity: quantity, selectedMods: selectedMods});
 
         const step = document.querySelector(".step-active");
         step.scrollIntoView({behavior: "smooth", block: "start"});
@@ -99,7 +101,7 @@ export default class DishCard extends React.Component {
     }
 
     handleCustomize() {
-        this.handleConfirm();
+        // this.handleConfirm();
         this.toggleModal();
     }
 
@@ -108,24 +110,16 @@ export default class DishCard extends React.Component {
         this.setState({isModModalShowing: !isModModalShowing});
     }
 
-    handleOptionChoice(option, index) {
-        
-        // const {checkedOptions, optionCost} = this.state;
-        // let newCheckedOptions = [...checkedOptions];
-        // let newOptionCost = optionCost;
-        // newCheckedOptions[index] = !checkedOptions[index];
-        // if (newCheckedOptions[index] === true) 
-        //     newOptionCost += option.cost;
-        // else
-        //     newOptionCost -= option.cost;
+    handleOptionChoice(mod) {
 
-        //     console.log("optionCost", option.cost)
-        // this.setState({
-        //     checkedOptions: newCheckedOptions,
-        //     optionCost: newOptionCost
-        // })
-
-        this.handleMod(option);
+        const { selectedMods } = this.state;
+        if (this.isModSelected(mod.id)) {
+            const modIndex = this.findModIndex(mod.id);
+            const newSelectedMods = selectedMods.splice(modIndex, 1);
+            this.setState({selectedMods: newSelectedMods})
+        }
+        else
+            this.setState({selectedMods: [...selectedMods, mod]})
     }
 
     prepModSubTitles(title) {
@@ -137,9 +131,25 @@ export default class DishCard extends React.Component {
             return title;
     }
 
+    isModSelected(modId) {
+        return this.findModIndex(modId) !== -1;
+    }
+
+    findModIndex(modId) {
+        const { selectedMods } = this.state;
+
+        let retval = -1;
+        selectedMods.map((mod, index) => {
+            if (mod.id === modId)
+                retval = index;
+        });
+
+        return retval;
+    }
+
     render() {
         const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice} = this.props;
-        const {selected, quantity, isCardActive, confirmed, isModModalShowing, checkedOptions, optionCost} = this.state;
+        const {selected, quantity, isCardActive, confirmed, isModModalShowing, checkedOptions, optionCost, selectedMods} = this.state;
         const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
 
         const formatter = new Intl.NumberFormat('en-US', {
@@ -149,11 +159,11 @@ export default class DishCard extends React.Component {
         })
 
         const modifiersSection = modifications === null ? null : modifications.map((mod, index) => {
-            return <Checkbox key={index} label={this.prepModSubTitles(mod.title)} checked={checkedOptions[index]} onChange={() => this.handleOptionChoice(mod, index)}/>;
+            return <Checkbox key={index} label={this.prepModSubTitles(mod.title)} checked={this.isModSelected(mod.id)} onChange={() => this.handleOptionChoice(mod, index)}/>;
         });
 
         const substitutionSection = substitutions === null ? null : substitutions.map((sub, index) => {
-            return <Checkbox key={index} label={this.prepModSubTitles(sub.title)} checked={checkedOptions[index]} onChange={() => this.handleOptionChoice(sub, index)}/>;
+            return <Checkbox key={index} label={this.prepModSubTitles(sub.title)} checked={this.isModSelected(sub.id)} onChange={() => this.handleOptionChoice(sub, index)}/>;
         });
 
         let attributesDisplay = '';
