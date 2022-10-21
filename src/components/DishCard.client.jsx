@@ -247,8 +247,7 @@ export default class DishCard extends React.Component {
                         <div className="modal--flexible-container">
                             <h4 className='modal--flexible-heading'>Substitutions</h4>
                             <div className="modal--flexible-checkbox-wrapper">
-                            {/* {substitutionSection} */}
-                            <Checkbox label="HELLO WORLD" />
+                            {substitutionSection}
                             </div>
                         </div>
 
