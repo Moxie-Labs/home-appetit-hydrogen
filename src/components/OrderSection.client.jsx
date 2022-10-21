@@ -442,18 +442,53 @@ export function OrderSection(props) {
         setCurrentStep(nextStep);
     }
 
+    const findCollectionById = collectionId => {
+        let retval = null;
+        const { collectionsById } = props;
+        collectionsById.map(collection => {
+            if (collection.id === collectionId)
+                retval = collection;
+        });
+        return retval;
+    }
+
+    const getModifications = modifications => {
+        if (modifications === null)
+            return [];
+        else {
+            const { value:modifierId } = modifications;
+            const modCollection = findCollectionById(modifierId);
+            if (modCollection === null)
+                return [];
+            const collectionProducts = [];
+            modCollection.products.edges.map(edge => {
+                collectionProducts.push(edge.node);
+            });
+            return collectionProducts;
+        }
+    }
+
+    const getSubstitutions = substitutions => {
+        if (substitutions === null)
+            return [];
+        else {
+            const { value:substitutionId } = substitutions;
+            const { collectionsById } = props;
+            const subCollection = findCollectionById(substitutionId);
+            const collectionProducts = [];
+
+            subCollection.products.edges.map(edge => {
+                collectionProducts.push(edge.node);
+            });
+            return collectionProducts;
+        }
+        
+    }
+
     /* END Helpers */
 
 
     /* GraphQL Setup */
-
-    const {collectionData} = props;
-
-    const collections = [];
-    // collectionData.collections.edges.map(collection => {
-    //     collections[collection.node.handle] = collection.node;
-    // });
-
     const {entreeProducts, greensProducts, addonProducts} = props;
 
     const existingMainItems = [];
@@ -472,9 +507,14 @@ export function OrderSection(props) {
             price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
             description: entree.node.description,
             imageURL: imgURL,
-            productOptions: entree.node.variants.edges
+            productOptions: entree.node.variants.edges,
+            modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
+            substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
         };
         choicesEntrees.push(choice);
+
+        if (choice.modifications.length > 0)
+            console.log("choice w/mods", choice);
 
         // map cart items to pre-selected choices      
         cartLines.map(line => {
@@ -506,7 +546,9 @@ export function OrderSection(props) {
             price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
             description: greens.node.description,
             imageURL: imgURL,
-            productOptions: greens.node.variants.edges
+            productOptions: greens.node.variants.edges,
+            modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
+            substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
         }
 
         choicesGreens.push(choice);
@@ -540,7 +582,9 @@ export function OrderSection(props) {
             price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
             description: addons.node.description,
             imageURL: imgURL,
-            productOptions: addons.node.variants.edges
+            productOptions: addons.node.variants.edges,
+            modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
+            substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
         };
 
         choicesAddons.push(choice);

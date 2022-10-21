@@ -4,7 +4,7 @@ import {
 
 export const GET_CATEGORIES_QUERY = gql`
  {
-     collections(first: 7) {
+     collections(first: 20) {
          edges {
              node {
                  id
@@ -16,7 +16,6 @@ export const GET_CATEGORIES_QUERY = gql`
                              id
                              title
                              description
-                             # handle
                              tags
                              images(first: 1) {
                                  edges {
@@ -44,6 +43,12 @@ export const GET_CATEGORIES_QUERY = gql`
                                         } 
                                     }
                                 }
+                            }
+                            modifications:metafield(namespace:"custom", key:"modification") {
+                                value
+                            }
+                            substitutions:metafield(namespace:"custom", key:"substitutions") {
+                                value
                             }
                          }
                      }
