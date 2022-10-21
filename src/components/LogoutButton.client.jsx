@@ -9,8 +9,8 @@ export function LogoutButton(props) {
     };
   
     return (
-      <button className="text-primary/50" {...props} onClick={logout}>
-        Logout
-      </button>
+      <a href="#" className="text-primary/50" {...props} onClick={logout}>
+        LOGOUT
+      </a>
     );
   }
