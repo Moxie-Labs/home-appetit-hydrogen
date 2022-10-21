@@ -34,11 +34,26 @@ export default class DishCard extends React.Component {
     }
 
     setQuantity(quantity) {
-        const {maxQuantity, showingExtra} = this.props;
-        if (!showingExtra) {
+        const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity } = this.props;
+        const { quantity:currentQuantity } = this.state;
+
+        // if: decrementing, then: just check if above 0
+        if (quantity < currentQuantity)
             quantity = Math.max(0, quantity);
-            quantity = Math.min(quantity, maxQuantity)                
+        
+        else if (quantity > (initialQuantity + maxQuantity) ) {
+            quantity = currentQuantity;
         }
+            
+        
+        else
+            if (!showingExtra)
+                quantity = Math.min(quantity, freeQuantityLimit);
+
+
+        console.log("quantityTotal", quantityTotal)
+        console.log("maxQuantity", maxQuantity)
+        console.log("currentQuantity", currentQuantity)
 
         this.setState({
             quantity: quantity
@@ -49,14 +64,14 @@ export default class DishCard extends React.Component {
         return formatter.format(Math.max(0, (quantity  - freeQuantityLimit)) * price);
     }
 
-    dishCardBlur(className) {
-        var elems = document.querySelectorAll(className);
-        var index = 0, length = elems.length;
-        for ( ; index < length; index++) {
-            elems[index].style.transition = "opacity 0.1s linear 0s";
-            elems[index].style.opacity = 0.5;
-        }
-    }
+    // dishCardBlur(className) {
+    //     var elems = document.querySelectorAll(className);
+    //     var index = 0, length = elems.length;
+    //     for ( ; index < length; index++) {
+    //         elems[index].style.transition = "opacity 0.1s linear 0s";
+    //         elems[index].style.opacity = 0.5;
+    //     }
+    // }
 
     dishCardClear(className) {
         var elems = document.querySelectorAll(className);
@@ -75,9 +90,9 @@ export default class DishCard extends React.Component {
             });
         }
 
-        this.dishCardBlur('.dish-card-blur');
-        this.dishCardBlur('.order_prop__subheading');
-        this.dishCardBlur('.order_prop__heading');
+        // this.dishCardBlur('.dish-card-blur');
+        // this.dishCardBlur('.order_prop__subheading');
+        // this.dishCardBlur('.order_prop__heading');
     }
 
     handleConfirm() {
@@ -129,7 +144,7 @@ export default class DishCard extends React.Component {
     }
 
     render() {
-        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra} = this.props;
+        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice} = this.props;
         const {selected, quantity, isCardActive, confirmed, isModalShowing, checkedOptions, optionCost} = this.state;
         const {title, description, price, attributes, imageURL, productOptions} = choice;
 
@@ -159,7 +174,7 @@ export default class DishCard extends React.Component {
     
 
     return (
-        <div className={`dish-card${isCardActive ? ' active ' : ' dish-card-blur'}${confirmed ? ' confirmed' : ''} ${(maxQuantity < 1 && quantity < 1 && !isCardActive) ? ' disabled' : ''}`}>
+        <div className={`dish-card${isCardActive ? ' active ' : ' '}${confirmed ? ' confirmed' : ''} ${forceDisable ? 'disabled' : ''}`}>
             {!isCardActive && confirmed && 
                 <p className="card__quantity-badge">{quantity}</p>
             }
@@ -192,7 +207,7 @@ export default class DishCard extends React.Component {
             
             <div>
                 <img className="dish-image" src={imageURL} onClick={() => this.setIsCardActive(true)}/>
-                { showingExtra && <span className='dishcard-extra-cost'>$12.50</span> }
+                { showingExtra && !forceHidePrice && <span className='dishcard-extra-cost'>{formatter.format(choice.price)}</span> }
             </div>
 
             <section className="card__info-section ha-color-bg-cream-shadow">
@@ -202,84 +217,22 @@ export default class DishCard extends React.Component {
                     <p className="card__code">{attributesDisplay}</p>
                     <p className="card__servings-disclaimer">{disclaimerText}</p>
                 </div>
-
-                        {/* <div>
-                            <Modal
-                                isOpen={isModalShowing}
-                                onClose={this.toggleModal}
-                                className="modal-dishcard-customize"
-                            >
-                                <section className="modal--customize-inner">     
-                                    <div>
-                                        <h2 className="card__quantity-title">{title}</h2>
-                                        <p className="card__description">{description}</p>
-                                        
-                                        <div className="modal--card__info">
-                                            <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
-                                            <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
-                                            <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
-                                        </div>
-                                    </div>
-
-                                    <section className="modal--card-quantity card__quantity-section">
-                                        <img className="card__quantity-img minus" src={quantityMinus} onClick={() => this.setQuantity(quantity-1)}/>
-                                        <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
-                                        <img className="card__quantity-img plus" src={quantityPlus} onClick={() => this.setQuantity(quantity+1)}/>
-                                    </section>
-
-                                    
-                                </section>
-
-                                <section className="modal--customize-options">
-                                    <section className="modal--customize-disclaimer">
-                                        <span># Max Customizations</span>
-                                        <span>*Explanation copy non provident, similique sunt in culpa qui officia deserunt Flexible Plan</span>
-                                    </section>
-                                    
-                                    {optionsSection.length === 0 &&
-                                        <div className="modal--customize-option-placeholder">
-                                            <Checkbox
-                                             label="Customization option 1"
-                                            />
-                                            <Checkbox
-                                             label="Customization option 2"
-                                            />
-                                            <Checkbox
-                                             label="Customization option 3"
-                                            />
-                                        </div>
-                                    }
-
-                                    <section className="modal--customize-actions">
-                                        <button className="btn btn-primary-small btn-app" onClick={() => this.handleCustomize()}>Confirm</button>
-                                        {optionCostText &&
-                                          {optionCostText} 
-                                        } 
-                                        
-                                        {!optionCostText &&
-                                           <div className="modal--customize-cost"> <span>+$0.00</span> customizations</div> 
-                                        }
-
-                                    </section>
-                                </section>
-                            </Modal>
-                        </div> */}
                             
-                            <Modal
-                              isOpen={isModalShowing}
-                              onClose={this.toggleModal}
-                              className="modal--flexible-confirmaton"
-                            >
-                                <div className='modal--flexible-inner'>
-                                    <h2 className='ha-h4'>Change order type?</h2>
-                                    <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
-                                    <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
-                                    <section className="card__actions">
-                                        <button className="btn btn-primary-small btn-counter-confirm">Switch to flex plan</button>
-                                        <button className="btn ha-a btn-modal-cancel">Cancel</button>
-                                    </section>   
-                                </div>
-                            </Modal>
+                <Modal
+                    isOpen={isModalShowing}
+                    onClose={this.toggleModal}
+                    className="modal--flexible-confirmaton"
+                >
+                    <div className='modal--flexible-inner'>
+                        <h2 className='ha-h4'>Change order type?</h2>
+                        <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
+                        <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
+                        <section className="card__actions">
+                            <button className="btn btn-primary-small btn-counter-confirm">Switch to flex plan</button>
+                            <button className="btn ha-a btn-modal-cancel">Cancel</button>
+                        </section>   
+                    </div>
+                </Modal>
                 
             </section>
 

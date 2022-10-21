@@ -34,7 +34,7 @@ export default class OrderSummary extends React.Component {
     showToastMessage() {
     }
 
-    orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal){
+    orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal){
         return (
             <section className="order-summary--enlarged-items">
                 <section className="order-summary--items main-items main--items-scheme">
@@ -55,6 +55,11 @@ export default class OrderSummary extends React.Component {
                     <ul>
                         {mainItemList} 
                     </ul>
+                    { mainItemExtraList.length > 0 &&  
+                        <ul>
+                            {mainItemExtraList} 
+                        </ul>
+                    }
                 </section>      
 
                 <section className="order-summary--items small-items">
@@ -62,6 +67,11 @@ export default class OrderSummary extends React.Component {
                     <ul>
                         {smallItemList}
                     </ul>
+                    { smallItemExtraList.length > 0 &&  
+                        <ul>
+                            {smallItemExtraList} 
+                        </ul>
+                    }
                 </section>     
 
                 <section className="order-summary--items addon-items">
@@ -79,7 +89,7 @@ export default class OrderSummary extends React.Component {
     }
 
     render() {
-        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedSmallItems, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase} = this.props;
+        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase} = this.props;
         const {enlarged} = this.state;
         console.log(getPhase);
 
@@ -92,11 +102,29 @@ export default class OrderSummary extends React.Component {
             );
         });
 
+        const mainItemExtraList = selectedMainItemsExtra.map((item, i) => {
+            return (
+                <li key={`main-item-${i}`} className="order-summary--item">
+                    <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
+                </li>
+            );
+        });
+
         const smallItemList = selectedSmallItems.map((item, i) => {
             return (
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
                     { activeScheme === 'flexible' && <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span> }
+                </li>
+            );
+        });
+
+        const smallItemExtraList = selectedSmallItemsExtra.map((item, i) => {
+            return (
+                <li key={`small-item-${i}`} className="order-summary--item">
+                    <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                 </li>
             );
         });
@@ -136,7 +164,7 @@ export default class OrderSummary extends React.Component {
                 
                 { enlarged && getPhase === undefined ?
                     <div>
-                    {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)}
+                        {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)}
                     </div> 
                     :
                     <></>
@@ -144,12 +172,12 @@ export default class OrderSummary extends React.Component {
 
                 { getPhase === "payment" && <h3 className="order-summary__heading order-summary__hidden">Order Summary</h3> }
                 { getPhase === "payment" && 
-                    this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
+                    this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
                  }
 
                 { getPhase === "confirmation" && <h3 className="order-summary__heading order-summary__hidden">Order Summary</h3> }
                 { getPhase === "confirmation" && 
-                    this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, selectedSmallItems, smallItemList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
+                    this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
                  }
                 </section>
             </section>

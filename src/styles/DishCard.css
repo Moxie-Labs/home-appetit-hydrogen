@@ -14,12 +14,13 @@
 
     .dish-card.active, .dish-card.confirmed {
         /* border: 4px solid #2F80ED; */
-        opacity: 1 !important;
+        opacity: 1;
     }
 
     .dish-card.disabled {
         cursor: unset;
         opacity: 0.6;
+        transition: opacity 0.1s linear 0s;
         pointer-events: none;
     }
 
@@ -371,10 +372,6 @@ h2.card__quantity-title {
     margin: 0;
     padding: 0 0 20px;
     line-height: 25px;
-}
-
-.dish-card-blur {
-    opacity: 1;
 }
 
 .modal--flexible-confirmaton {

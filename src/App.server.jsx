@@ -10,6 +10,7 @@ import {
   ShopifyAnalytics,
   ShopifyProvider,
   CartProvider,
+  useSession
 } from '@shopify/hydrogen';
 import {EventsListener} from '~/components';
 import {DefaultSeo} from '~/components/index.server';
@@ -20,12 +21,16 @@ function App({request}) {
   const countryCode = localeMatch ? localeMatch[1] : undefined;
 
   const isHome = pathname === `/${countryCode ? countryCode + '/' : ''}`;
+  const { customerAccessToken } = useSession();
 
   return (
     <Suspense>
       <EventsListener />
       <ShopifyProvider countryCode={countryCode}>
-        <CartProvider countryCode={countryCode}>
+        <CartProvider 
+          countryCode={countryCode}
+          customerAccessToken={customerAccessToken}
+        >
           {/* <Suspense>
             <DefaultSeo />
           </Suspense> */}
