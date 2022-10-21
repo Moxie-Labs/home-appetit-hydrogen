@@ -179,15 +179,36 @@ export function OrderSection(props) {
                             quantity: choice.quantity
                         });
 
+                        const modsAdded = [];
                         choice.selectedMods.map(mod => {
                             const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
-                            linesUpdatePayload.push({
-                                id: modCartLine.id,
-                                quantity: choice.quantity
-                            });
+                            
+                            // if: mods were added after parent item was already set, then: add them separately, else: just update
+                            if (modCartLine === null) 
+                                modsAdded.push(mod);
+                            else
+                                linesUpdatePayload.push({
+                                    id: modCartLine.id,
+                                    quantity: choice.quantity
+                                });
                         });
 
                         linesUpdate(linesUpdatePayload);
+
+                        if (modsAdded.length > 0) {
+                            console.log("modsAdded", modsAdded);
+                            setTimeout(() => {
+                                const linesAddPayload = [];
+                                modsAdded.map(mod => {
+                                    linesAddPayload.push({ 
+                                        merchandiseId: mod.variants.edges[0].node.id,
+                                        quantity: choice.quantity
+                                    });
+                                }); 
+
+                                linesAdd(linesAddPayload);
+                            }, 2000);
+                        }
                     }
                         
                     else {
@@ -203,7 +224,8 @@ export function OrderSection(props) {
                         linesRemovePayload.push(existingCartLine.id);
                         choice.selectedMods.map(mod => {
                             const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
-                            linesRemovePayload.push(modCartLine.id)
+                            if (modCartLine !== null)
+                                linesRemovePayload.push(modCartLine.id)
                         });
                         linesRemove(linesRemovePayload);
                     }
