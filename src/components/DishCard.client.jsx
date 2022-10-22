@@ -32,7 +32,6 @@ export default class DishCard extends React.Component {
         this.handleSelected = this.props.handleSelected.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.handleOptionChoice = this.handleOptionChoice.bind(this);
-        this.handleMod = this.props.handleMod.bind(this);
     }
 
     setQuantity(quantity) {
@@ -124,10 +123,11 @@ export default class DishCard extends React.Component {
     }
 
     prepModSubTitles(title) {
-        if (title.includes("(Sub) "))
-            return title.split("(Sub) ")[1];
-        else if (title.includes("(Mod) "))
-            return title.split("(Mod) ")[1];
+        const formattedTitle = title.toLowerCase();
+        if (formattedTitle.includes("(sub) "))
+            return title.substring(6);
+        else if (formattedTitle.includes("(mod) "))
+            return title.substring(6);
         else
             return title;
     }
@@ -239,7 +239,7 @@ export default class DishCard extends React.Component {
 
                 <Modal
                     isOpen={isModModalShowing}
-                    onClose={this.toggleModModal}
+                    onRequestClose={() => this.toggleModal()}
                     className="modal--flexible-confirmaton"
                 >
                     <div className="card__quantity-wrapper wrapper-modal">
