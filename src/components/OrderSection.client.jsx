@@ -1,4 +1,4 @@
-import { gql, useCart } from "@shopify/hydrogen";
+import { useCart } from "@shopify/hydrogen";
 import { Suspense, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -17,7 +17,7 @@ import {Footer} from "./Footer.client";
 // base configurations
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 2;
+const FIRST_STEP = 1;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 7;
