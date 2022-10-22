@@ -240,7 +240,7 @@ export default class DishCard extends React.Component {
 
                 <Modal
                     isOpen={isModModalShowing}
-                    onClose={this.toggleModModal}
+                    onRequestClose={() => this.toggleModal()}
                     className="modal--flexible-confirmaton"
                 >
                     <div className="card__quantity-wrapper wrapper-modal">
