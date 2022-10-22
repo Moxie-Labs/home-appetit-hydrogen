@@ -124,7 +124,7 @@ export async function api(request, {session, queryShop}) {
       });
 
       return new Response(null, {
-        status: 200,
+        status: 301,
         headers: {Location: redirectDest},
       });
     }
