@@ -5,7 +5,7 @@ import { PRODUCT_CARD_FRAGMENT } from '../lib/fragments';
 
 export const GET_CATEGORIES_QUERY = gql`
  {
-     collections(first: 7) {
+     collections(first: 20) {
          edges {
              node {
                  id
@@ -17,7 +17,6 @@ export const GET_CATEGORIES_QUERY = gql`
                              id
                              title
                              description
-                             # handle
                              tags
                              images(first: 1) {
                                  edges {
@@ -45,6 +44,12 @@ export const GET_CATEGORIES_QUERY = gql`
                                         } 
                                     }
                                 }
+                            }
+                            modifications:metafield(namespace:"custom", key:"modification") {
+                                value
+                            }
+                            substitutions:metafield(namespace:"custom", key:"substitutions") {
+                                value
                             }
                          }
                      }
@@ -184,3 +189,16 @@ export const GET_ORDER_WINDOW_DAYS_QUERY = gql`
         }
   }
 }`;
+export const GET_LATEST_MENU_QUERY = gql`
+{
+    collection(handle: "menu_07-18-2022") {
+        products(first: 50) {
+            edges {
+                node {
+                    id
+                }
+            }
+        }
+    }
+}
+`;

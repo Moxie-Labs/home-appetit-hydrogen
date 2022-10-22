@@ -220,6 +220,11 @@ p.card__code {
     cursor: pointer;
 }
 
+    .btn-counter-customize.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
 .btn-counter-confirm{
     padding: 16px 40px 12px !important;
 }
@@ -374,9 +379,15 @@ h2.card__quantity-title {
     line-height: 25px;
 }
 
+.modal--flexible-confirmaton *{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
 .modal--flexible-confirmaton {
-    width: 620px;
-    padding: 2.5rem;
+    max-width: 620px;
+    padding: 0;
     background: #FFFCF5;
     position: absolute;
     left: 50%;
@@ -384,11 +395,14 @@ h2.card__quantity-title {
     transform: translate(-50%, -50%);
     border-radius: 12px;
     text-align: center;
+    width: 100%;
 }
 
-.modal--flexible-confirmaton .card__actions{
+.modal--flexible-confirmaton .card__actions {
     margin: auto;
     width: 100%;
+    gap: 5rem;
+    align-items: baseline;
 }
 
 .btn-counter-customize{
@@ -429,4 +443,93 @@ h2.card__quantity-title {
     padding: 7px 10px 3px;
     position: absolute;
     top: 25px;
+}
+
+.modal--flexible-confirmaton .card__quantity-field-wrapper {
+    position: relative;
+    left: unset;
+    top: unset;
+    transform: unset;
+}
+
+.modal--flexible-confirmaton .card__quantity-wrapper {
+    /* min-height: 284px; */
+    position: relative;
+    top: unset;
+    left: unset;
+    background: none;
+    padding: 0;
+}
+
+.modal--flexible-confirmaton .card__quantity-inner-container {
+    position: relative;
+    left: unset;
+    top: unset;
+}
+
+.modal--flexible-confirmaton .card__quantity-inner-wrapper {
+    padding: 1.875rem 1.875rem 0 1.875rem;
+    text-align: left;
+}
+
+.modal--flexible-confirmaton h2.card__quantity-title {
+    font-size: 1.125rem;
+    /* really need the !important here */
+    font-family: 'AvenirLTProBlack' !important; 
+}
+
+.modal--flexible-confirmaton .card__quantity-subtitle {
+    font-size: 1.125rem;
+    font-style: normal;
+}
+
+.modal--flexible-confirmaton .card__quantity-section{
+    margin: 1.875rem 0;
+}
+
+.modal--flexible-confirmaton .modal--flexible-inner {
+    padding: 1.875rem;
+    background: #F8EFE0;
+    text-align: left;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.modal--flexible-confirmaton .modal--flexible-inner p{
+    padding-bottom: 1.25rem;
+    font-size: 1rem;
+    font-style: italic;
+}
+
+h4.modal--flexible-heading {
+    /* really need the !important here */
+    font-family: 'AvenirLTProBlack' !important;
+    font-size: 1rem;
+    font-style: italic;
+    padding-bottom: 0.625rem;
+}
+
+.modal--flexible-container {
+    padding-bottom: 1.875rem;
+}
+
+.modal--flexible-confirmaton .modal--flexible-inner p.modal--flexible-price {
+    font-style: normal;
+    font-size: 1.125rem;
+}
+
+p.modal--flexible-price strong {
+    font-family: 'AvenirLTProBlack';
+}
+
+.modal--flexible-checkbox-wrapper {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1.125rem;
+}
+.modal--flexible-confirmaton input[type="checkbox"] {
+    padding: 5rem;
+    margin-right: 0.2rem;
+    vertical-align: text-top;
 }
