@@ -435,7 +435,7 @@ export function OrderSection(props) {
                         address1: address,
                         address2: address2,
                         city: city,
-                        country: country,
+                        country: "United States",
                         firstName: firstName,
                         lastName: lastName,
                         phone: phoneNumber,
@@ -458,7 +458,7 @@ export function OrderSection(props) {
         &checkout[shipping_address][address2]=${address2}
         &checkout[shipping_address][city]=${city}
         &checkout[shipping_address][province]=${deliveryState}
-        &checkout[shipping_address][country]=${country}
+        &checkout[shipping_address][country]=${"United States"}
         &checkout[shipping_address][zip]=${zipcode}`;
     }
 

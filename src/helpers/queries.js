@@ -191,7 +191,7 @@ export const GET_ORDER_WINDOW_DAYS_QUERY = gql`
 }`;
 export const GET_LATEST_MENU_QUERY = gql`
 {
-    collection(handle: "menu_07-18-2022") {
+    collection(handle: "menu_10-17-2022") {
         products(first: 50) {
             edges {
                 node {

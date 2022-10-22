@@ -71,6 +71,8 @@ export default function DeliveryInfo(props) {
     }
 
     const formattedPhoneNumber = number => {
+        if (number === null)
+            return null;
         
         let match = number.match(/^(\d{3})(\d{3})(\d{4})$/);
         
