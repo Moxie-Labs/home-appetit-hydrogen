@@ -275,6 +275,7 @@ export function OrderSection(props) {
             if (addToShopifyCart) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
                 const linesAddPayload = [];
+                console.log("choice selectedMods", choice.selectedMods);
                 choice.selectedMods.map(mod => {
                     linesAddPayload.push({ 
                         merchandiseId: mod.variants.edges[0].node.id,
@@ -286,6 +287,8 @@ export function OrderSection(props) {
                     merchandiseId: choice.choice.productOptions[variantType].node.id,
                     quantity: choice.quantity
                 });
+
+                console.log("linesAddPayload", linesAddPayload);
 
                 // update Shopify Cart
                 linesAdd(linesAddPayload);
@@ -549,7 +552,7 @@ export function OrderSection(props) {
             modCollection.products.edges.map(edge => {
                 collectionProducts.push(edge.node);
             });
-            console.log("collectionProducts", collectionProducts);
+            console.log("modCollection.collectionProducts", collectionProducts);
             return collectionProducts;
         }
     }
@@ -559,20 +562,17 @@ export function OrderSection(props) {
             return [];
         else {
             const { value:substitutionId } = substitutions;
-            const { collectionsById } = props;
             const subCollection = findCollectionById(substitutionId);
+            if (subCollection === null)
+                return [];
             const collectionProducts = [];
-
             subCollection.products.edges.map(edge => {
                 collectionProducts.push(edge.node);
             });
+            console.log("subCollection.collectionProducts", collectionProducts);
             return collectionProducts;
         }
         
-    }
-
-    const onModAdded = mod => {
-        console.log("mod", mod);
     }
 
     /* END Helpers */

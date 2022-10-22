@@ -6,17 +6,18 @@ import {
   useServerAnalytics,
   useLocalization,
   useShopQuery,
-  CacheNone
+  CacheNone,
+  flattenConnection
 } from '@shopify/hydrogen';
 import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';
-import { GET_CATEGORIES_QUERY, GET_LATEST_MENU_QUERY } from '../../helpers/queries';
+import { GET_BASE_COLLECTIONS_QUERY, GET_MENUS_QUERY, GET_MOD_COLLECTIONS_QUERY } from '../../helpers/queries';
 
-export default function Order() {
+export default function Order({response}) {
     const {
         data: collectionData,
       } = useShopQuery({
-        query: GET_CATEGORIES_QUERY,
+        query: GET_BASE_COLLECTIONS_QUERY,
         cache: CacheLong(),
         preload: true,
       });
@@ -24,39 +25,66 @@ export default function Order() {
       const {
         data: menuData
       } = useShopQuery({
-        query: GET_LATEST_MENU_QUERY,
+        query: GET_MENUS_QUERY,
         cache: CacheLong(),
         preload: true
       });
 
+      const {
+        data: modData
+      } = useShopQuery({
+        query: GET_MOD_COLLECTIONS_QUERY,
+        cache: CacheLong(),
+        preload: true
+      })
+
+      // get latest Menu
+      let latestMenu = null;
+      const today = new Date();
+      const recentMenus = flattenConnection(menuData.collections) || [];
+      recentMenus.map(menu => {
+        if (latestMenu === null) {
+          if (menu.startDate != null && menu.endDate != null) {
+            const startDate = new Date(menu.startDate?.value);
+            let endDate = new Date(menu.endDate?.value);
+            endDate.setDate(endDate.getDate() + 1);
+            if (today <= endDate && today >= startDate)
+              latestMenu = menu;
+          }
+        }
+      });
+
+      if (latestMenu === null)
+        return response.redirect(`https://${import.meta.env.VITE_STORE_DOMAIN}/pages/order-now`);
+
       let collectionsById = [];
-      let collectionsByHandle = [];
+      let collectionIdByHandle = [];
       collectionData.collections.edges.forEach(collection => {
-        collectionsByHandle[collection.node.handle] = collection.node;
+        collectionIdByHandle[collection.node.handle] = collection.node.id;
         collectionsById.push(collection.node);
       });
-  
-      const allEntreeProducts = collectionsByHandle['entrees'].products.edges;
-      const allGreensProducts = collectionsByHandle["greens-grains-small-plates"].products.edges;
-      const allAddonsProducts = collectionsByHandle['add-ons'].products.edges;
+
+      modData.collections.edges.forEach(collection => {
+        collectionsById.push(collection.node);
+      });
 
       let entreeProducts = [];
       let greensProducts = [];
       let addonProducts = [];
 
-      menuData.collection.products.edges.map(menuItem => {
-        allEntreeProducts.forEach(collItem => {
-          if (collItem.node.id === menuItem.node.id)
-            entreeProducts.push(collItem);
-        });
-        allGreensProducts.forEach(collItem => {
-          if (collItem.node.id === menuItem.node.id)
-            greensProducts.push(collItem);
-        });
-        allAddonsProducts.forEach(collItem => {
-          if (collItem.node.id === menuItem.node.id)
-            addonProducts.push(collItem);
-        });
+      latestMenu.products.edges.map(item => {
+        const menuItem = item.node;
+        if (menuItem.menuCategories !== null) {
+          const menuCategories = JSON.parse(menuItem.menuCategories?.value);
+          menuCategories.map(catId => {
+            if (catId === collectionIdByHandle['entrees'])
+              entreeProducts.push(item);
+            if (catId === collectionIdByHandle['greens-grains-small-plates'])
+              greensProducts.push(item);
+            if (catId === collectionIdByHandle['add-ons'])
+              addonProducts.push(item);
+          });
+        } 
       });
       
     return (
@@ -64,7 +92,6 @@ export default function Order() {
         <Suspense>
             <Layout>
                 <OrderSection
-                  collectionData={collectionData}
                   collectionsById={collectionsById}
                   entreeProducts={entreeProducts}
                   greensProducts={greensProducts}
