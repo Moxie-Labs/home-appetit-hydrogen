@@ -214,10 +214,6 @@ export function OrderSection(props) {
                     else {
                         // handle internal Cart Collection
                         collection.splice(i, 1);
-                        // TODO: remove from OrderSummary
-                        // item.selectedMods.map(mod => {
-                        //     const modIndex = findCollectionItemIndex(mod, collection);
-                        // });
 
                         // update Shopify Cart
                         const linesRemovePayload = [];
@@ -741,7 +737,6 @@ export function OrderSection(props) {
     /* END Static Values */
 
     /* Debug Values */
-    console.log("checkoutUrl", checkoutUrl);
 
     /* END Debug Values */
 

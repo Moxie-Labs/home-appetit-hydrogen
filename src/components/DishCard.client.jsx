@@ -32,7 +32,6 @@ export default class DishCard extends React.Component {
         this.handleSelected = this.props.handleSelected.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.handleOptionChoice = this.handleOptionChoice.bind(this);
-        this.handleMod = this.props.handleMod.bind(this);
     }
 
     setQuantity(quantity) {
