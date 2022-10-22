@@ -124,10 +124,11 @@ export default class DishCard extends React.Component {
     }
 
     prepModSubTitles(title) {
-        if (title.includes("(Sub) "))
-            return title.split("(Sub) ")[1];
-        else if (title.includes("(Mod) "))
-            return title.split("(Mod) ")[1];
+        const formattedTitle = title.toLowerCase();
+        if (formattedTitle.includes("(sub) "))
+            return title.substring(6);
+        else if (formattedTitle.includes("(mod) "))
+            return title.substring(6);
         else
             return title;
     }
