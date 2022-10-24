@@ -198,7 +198,7 @@ export default class MenuSection extends React.Component {
                 }) }
             </div>
             
-            { (isSectionFilled || extraSelected.length > 0) &&
+            { (isSectionFilled || selectedExtra.length > 0) &&
                 <div className={`suborder--summary-additional summary-container ${isAddingExtraItems ? 'active' : 'inactive'}`}>
                     <div className="summary--additional-wrapper">
                         <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { !isAddingExtraItems && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
