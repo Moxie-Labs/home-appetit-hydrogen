@@ -19,8 +19,41 @@ export default function Register({response}) {
 }
 
 export async function api(request, {queryShop}) {
-  return new Response(request.text(), {status: 200});
+  // return new Response(request.text(), {status: 200});
   // const jsonBody = await request.json();
+
+  let jsonBody = await request.text();
+
+  return new Response(jsonBody, {status: 200});
+  // let redirect = false;
+
+  // // try: logging in using JSON notation; catch: if the request is form-data
+  // try {
+  //   console.log("Attempting login using JSON...");
+  //   jsonBody = JSON.parse(jsonBody);
+  // } catch (e) {
+  //   console.log("received form-data.  Converting...");
+  //   let strArr = jsonBody;
+  //   strArr = strArr.split("&customer%5Bpassword%5D=");
+  //   if (strArr === null) 
+  //     return new Response(`Invalid input request`);
+
+  //   let strEmail = strArr[0];
+  //   let strPass = strArr[1];
+
+  //   strEmail = strEmail.split("&customer%5Bemail%5D=")[1];
+  //   strEmail = decodeURIComponent(strEmail);
+
+  //   strPass = strPass.split("&recaptcha-v3")[0];
+  //   strPass = decodeURIComponent(strPass);
+
+  //   jsonBody = {
+  //       email: strEmail,
+  //       password: strPass
+  //   }
+
+  //   redirect = true;
+  // }
 
   // if (!jsonBody.email || !jsonBody.password) {
   //   return new Response(
