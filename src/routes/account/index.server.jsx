@@ -58,7 +58,7 @@ function AuthenticatedAccount({
 
   return (
     <Page>
-    <Header />
+    {/* <Header /> */}
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account details'}} />

@@ -7,6 +7,7 @@ import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
 import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
 import { render } from 'react-dom';
+import { Header } from './Header.client';
 
 
 export default function MyAccount(props) {
@@ -252,6 +253,7 @@ export default function MyAccount(props) {
 
     return (
         <div>
+          <Header/>
         <div className='myaccount-wrapper'>
         <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
         <div className='myaccount-page'>
