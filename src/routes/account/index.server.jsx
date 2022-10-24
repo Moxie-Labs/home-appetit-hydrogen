@@ -67,7 +67,6 @@ function AuthenticatedAccount({
         />
 
       </Layout>
-      <Footer />
     </>
   );
 }
