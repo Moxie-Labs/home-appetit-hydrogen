@@ -411,7 +411,8 @@ export function OrderSection(props) {
 
     /* GraphQL Setup */
 
-    const { collectionData, zipcodeType } = props;
+    const { collectionData, zipcodeType, zipcodeArr } = props;
+    const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
 
     const collections = [];
     collectionData.collections.edges.map(collection => {
@@ -721,6 +722,7 @@ export function OrderSection(props) {
                                 address2={address2}
                                 city={city}
                                 zipcode={zipcode}
+                                zipcodeCheck={zipcodeCheck}
                                 instructions={instructions}
                                 extraIce={extraIce}
                                 isGift={isGift}
