@@ -58,19 +58,18 @@ function AuthenticatedAccount({
 
   return (
     <Page>
-    {/* <Header /> */}
-    <Layout>
-      <Suspense>
-        <Seo type="noindex" data={{title: 'Account details'}} />
-      </Suspense>
+      <Layout>
+        <Suspense>
+          <Seo type="noindex" data={{title: 'Account details'}} />
+        </Suspense>
 
-      <MyAccount 
-        customer={customer}
-        orders={orders}
-      />
+        <MyAccount 
+          customer={customer}
+          orders={orders}
+        />
 
-    </Layout>
-    <Footer />
+      </Layout>
+      <Footer />
     </Page>
   );
 }
