@@ -86,7 +86,7 @@ export function OrderSection(props) {
     let [address2, setAddress2] = useState(isGuest ? null : "");
     let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
     let [city, setCity] = useState(isGuest ? null : "Catawissa");
-    let [country, setCountry] = useState(isGuest ? null : "United States");
+    let [country, setCountry] = useState("United States");
     let [zipcode, setZipcode] = useState(isGuest ? null : "17820");    
 
     const [instructions, setInstructions] = useState("");
