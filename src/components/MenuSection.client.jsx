@@ -142,7 +142,6 @@ export default class MenuSection extends React.Component {
         if (filteredChoices.length > 0) {
             filteredChoicesSection = filteredChoices.map(choice => {
 
-
                 const initialQuantity = this.getExistingQuantity(choice);
 
                 return (

@@ -1,4 +1,4 @@
-import { gql, useCart } from "@shopify/hydrogen";
+import { useCart } from "@shopify/hydrogen";
 import { Suspense, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -150,6 +150,17 @@ export function OrderSection(props) {
         return retval;
     }
 
+    const findCollectionItemIndex = (item, collection) => {
+        let retval = -1;
+
+        collection.map((item, index) => {
+            if (item.choice.title === choice.choice.title)
+                retval = index;
+        });
+
+        return retval;
+    }
+
     const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
 
         const variantType = getVariantType(collection);        
@@ -163,18 +174,57 @@ export function OrderSection(props) {
                 if (item.choice.title === choice.choice.title) {
                     if (choice.quantity > 0) {
                         item.quantity = choice.quantity;
-                        console.log("existingCartLine", existingCartLine)
-                        linesUpdate([
-                            {
-                                id: existingCartLine.id,
-                                quantity: choice.quantity
-                            }
-                        ]);
+                        const linesUpdatePayload = [];
+                        linesUpdatePayload.push({
+                            id: existingCartLine.id,
+                            quantity: choice.quantity
+                        });
+
+                        const modsAdded = [];
+                        choice.selectedMods.map(mod => {
+                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
+                            
+                            // if: mods were added after parent item was already set, then: add them separately, else: just update
+                            if (modCartLine === null) 
+                                modsAdded.push(mod);
+                            else
+                                linesUpdatePayload.push({
+                                    id: modCartLine.id,
+                                    quantity: choice.quantity
+                                });
+                        });
+
+                        linesUpdate(linesUpdatePayload);
+
+                        if (modsAdded.length > 0) {
+                            console.log("modsAdded", modsAdded);
+                            const linesAddPayload = [];
+                                modsAdded.map(mod => {
+                                    linesAddPayload.push({ 
+                                        merchandiseId: mod.variants.edges[0].node.id,
+                                        quantity: choice.quantity
+                                    });
+                                }); 
+
+                            setTimeout(() => {
+                                linesAdd(linesAddPayload);
+                            }, 2000);
+                        }
                     }
                         
                     else {
+                        // handle internal Cart Collection
                         collection.splice(i, 1);
-                        linesRemove([existingCartLine.id]);
+
+                        // update Shopify Cart
+                        const linesRemovePayload = [];
+                        linesRemovePayload.push(existingCartLine.id);
+                        choice.selectedMods.map(mod => {
+                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
+                            if (modCartLine !== null)
+                                linesRemovePayload.push(modCartLine.id)
+                        });
+                        linesRemove(linesRemovePayload);
                     }
                         
                 }
@@ -221,11 +271,24 @@ export function OrderSection(props) {
 
             if (addToShopifyCart) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
-                // update Shopify Cart
-                linesAdd({ 
+                const linesAddPayload = [];
+                console.log("choice selectedMods", choice.selectedMods);
+                choice.selectedMods.map(mod => {
+                    linesAddPayload.push({ 
+                        merchandiseId: mod.variants.edges[0].node.id,
+                        quantity: choice.quantity
+                    });
+                }); 
+                
+                linesAddPayload.push({ 
                     merchandiseId: choice.choice.productOptions[variantType].node.id,
                     quantity: choice.quantity
                 });
+
+                console.log("linesAddPayload", linesAddPayload);
+
+                // update Shopify Cart
+                linesAdd(linesAddPayload);
             }
         }
 
@@ -237,19 +300,40 @@ export function OrderSection(props) {
 
     const getOrderTotal = () => {
         let total = parseFloat(planPricingMultiplier);
-        selectedSmallItems.forEach((item, index) => {
-            if (activeScheme === 'flexible' || index >= 4)
+        selectedSmallItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                // TODO: add support for Flex plan quantity differences
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            
+            if (activeScheme === 'flexible')
                 total += parseFloat(item.choice.price * item.quantity);
         });
-        selectedMainItems.forEach((item, index) => {
-            if (activeScheme === 'flexible' || index >= 4)
-                total += parseFloat(item.choice.price * item.quantity);
-        });
-        selectedAddonItems.forEach(item => {
+        selectedSmallItemsExtra.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
             total += parseFloat(item.choice.price * item.quantity);
         });
-
-        console.log("getOrderTotal::total", total)
+        selectedMainItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            if (activeScheme === 'flexible')
+                total += parseFloat(item.choice.price * item.quantity);
+        });
+        selectedMainItemsExtra.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            total += parseFloat(item.choice.price * item.quantity);
+        });
+        selectedAddonItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            total += parseFloat(item.choice.price * item.quantity);
+        });
 
         return total;
     }
@@ -451,29 +535,64 @@ export function OrderSection(props) {
         setCurrentStep(nextStep);
     }
 
+    const findCollectionById = collectionId => {
+        let retval = null;
+        const { collectionsById } = props;
+        collectionsById.map(collection => {
+            if (collection.id === collectionId)
+                retval = collection;
+        });
+        return retval;
+    }
+
+    const getModifications = modifications => {
+        if (modifications === null)
+            return [];
+        else {
+            const { value:modifierId } = modifications;
+            const modCollection = findCollectionById(modifierId);
+            if (modCollection === null)
+                return [];
+            const collectionProducts = [];
+            modCollection.products.edges.map(edge => {
+                collectionProducts.push(edge.node);
+            });
+            console.log("modCollection.collectionProducts", collectionProducts);
+            return collectionProducts;
+        }
+    }
+
+    const getSubstitutions = substitutions => {
+        if (substitutions === null)
+            return [];
+        else {
+            const { value:substitutionId } = substitutions;
+            const subCollection = findCollectionById(substitutionId);
+            if (subCollection === null)
+                return [];
+            const collectionProducts = [];
+            subCollection.products.edges.map(edge => {
+                collectionProducts.push(edge.node);
+            });
+            console.log("subCollection.collectionProducts", collectionProducts);
+            return collectionProducts;
+        }
+        
+    }
+
     /* END Helpers */
 
 
     /* GraphQL Setup */
-
-    const {collectionData} = props;
-
-    const collections = [];
-    collectionData.collections.edges.map(collection => {
-        collections[collection.node.handle] = collection.node;
-    });
-
-    const entreeProducts = collections['entrees'].products.edges;
-    const greensProducts = collections["greens-grains-small-plates"].products.edges;
-    const addonsProducts = collections['add-ons'].products.edges;
+    const {entreeProducts, greensProducts, addonProducts} = props;
 
     const existingMainItems = [];
     const existingMainItemsExtra = [];
     const existingSmallItems = [];
     const existingSmallItemsExtra = [];
     const existingAddonItems = [];
-
     const choicesEntrees = [];
+
     entreeProducts.map(entree => {
         const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
         const attributes = convertTags(entree.node.tags);
@@ -483,12 +602,13 @@ export function OrderSection(props) {
             price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
             description: entree.node.description,
             imageURL: imgURL,
-            productOptions: entree.node.variants.edges
+            productOptions: entree.node.variants.edges,
+            modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
+            substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
         };
         choicesEntrees.push(choice);
 
         // map cart items to pre-selected choices      
-        // TODO restore  
         cartLines.map(line => {
             entree.node.variants.edges.forEach(variant => {
                 if (line.merchandise.id === variant.node.id) {
@@ -518,7 +638,9 @@ export function OrderSection(props) {
             price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
             description: greens.node.description,
             imageURL: imgURL,
-            productOptions: greens.node.variants.edges
+            productOptions: greens.node.variants.edges,
+            modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
+            substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
         }
 
         choicesGreens.push(choice);
@@ -543,7 +665,7 @@ export function OrderSection(props) {
     
 
     const choicesAddons = [];
-    addonsProducts.map(addons => {
+    addonProducts.map(addons => {
         const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
         const attributes = convertTags(addons.node.tags);
         const choice = {
@@ -552,7 +674,9 @@ export function OrderSection(props) {
             price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
             description: addons.node.description,
             imageURL: imgURL,
-            productOptions: addons.node.variants.edges
+            productOptions: addons.node.variants.edges,
+            modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
+            substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
         };
 
         choicesAddons.push(choice);
