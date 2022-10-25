@@ -4,6 +4,7 @@ import { flattenConnection } from '@shopify/hydrogen';
 import Modal from "react-modal/lib/components/Modal";
 import { Checkbox } from "../Checkbox.client";
 import editIcon from "../../assets/icon-edit-alt.png";
+import { emailValidation } from "../../lib/utils";
 
 
 export default function PersonalInfo(props) {
@@ -50,6 +51,8 @@ export default function PersonalInfo(props) {
     // Modal will submit new address instead of sending an update request
     const [newAddressModal, setNewAddressModal] = useState(false);
 
+    const [fieldErrors, setFieldErrors] = useState(null);
+
     const formattedPhoneNumber = number => {
         let cleaned = ('' + number).replace(/\D/g, '');
         
@@ -74,8 +77,26 @@ export default function PersonalInfo(props) {
     }
 
     const updateFields = () => {
-        handleUpdatePersonal(firstNameState, lastNameState, emailState, compresssPhoneNumber(phoneState));
-        dismissModals();
+        if (validateFields()) {
+            handleUpdatePersonal(firstNameState, lastNameState, emailState, compresssPhoneNumber(phoneState));
+            dismissModals();
+        }
+    }
+
+    const validateFields = () => {
+        let newFieldErrors = {};
+        if (firstNameState === null || firstNameState.length < 1)
+            newFieldErrors.firstName = "First Name is too short."
+        if (lastNameState === null || lastNameState.length < 1)
+            newFieldErrors.lastName = "Last Name is too short."
+        if (phoneState === null || phoneState.length < 14)
+            newFieldErrors.phone = "Phone number is too short."
+        if (emailState === null || emailState.length < 3)
+            newFieldErrors.email = "Email is invalid.";
+
+        setFieldErrors(newFieldErrors);
+
+        return Object.keys(newFieldErrors).length < 1;
     }
 
     const addressesSection = customer.addresses.length > 0 ? <section>
@@ -201,7 +222,7 @@ export default function PersonalInfo(props) {
         <div className="account-information">
 
             { !editingPersonal && 
-                <section>
+                <section>            
                     <button className="btn btn-default btn-edit" onClick={() => setEditingPersonal(true)}>Edit<img src={editIcon} width="24"/></button>
                      <div className="personal-info-wrapper">
                         <h5 className="ha-h5 text-uppercase no-margin">Account information</h5>
@@ -227,6 +248,13 @@ export default function PersonalInfo(props) {
                 <section>
                      <div className="personal-info-wrapper edit-wrapper">
                      <h5 className="ha-h5 text-uppercase no-margin">Account information</h5>
+                        { fieldErrors !== null && Object.keys(fieldErrors).length > 0 && 
+                            <ul className="field-errors">
+                                {Object.values(fieldErrors).map(value => {
+                                    return <li>{value}</li> 
+                                })}
+                            </ul>
+                        }
                         <div className="info-row">
                             <label className="info-label-field">First Name:
                               <input value={firstNameState} onChange={e => setFirstNameState(e.target.value)}/>
