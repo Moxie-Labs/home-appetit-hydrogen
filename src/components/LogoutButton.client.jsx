@@ -10,7 +10,7 @@ export function LogoutButton(props) {
   
     return (
       <a href="#" className="text-primary/50" {...props} onClick={logout}>
-        LOGOUT
+        Sign Out
       </a>
     );
   }
