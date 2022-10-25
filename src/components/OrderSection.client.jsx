@@ -85,6 +85,7 @@ export function OrderSection(props) {
     let [address2, setAddress2] = useState(isGuest ? null : "");
     let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
     let [city, setCity] = useState(isGuest ? null : "Catawissa");
+    let [country, setCountry] = useState("United States");
     let [zipcode, setZipcode] = useState(isGuest ? null : "17820");    
 
     const [instructions, setInstructions] = useState("");
@@ -337,7 +338,7 @@ export function OrderSection(props) {
                         address1: address,
                         address2: address2,
                         city: city,
-                        country: "United States",
+                        country: country,
                         firstName: firstName,
                         lastName: lastName,
                         phone: phoneNumber,
@@ -353,7 +354,15 @@ export function OrderSection(props) {
 
         buyerIdentityUpdate(buyerIdentityObj);
 
-        window.location.href=`${checkoutUrl}`;
+        window.location.href=`${checkoutUrl}?checkout[email]=${emailAddress}
+        &checkout[shipping_address][first_name]=${firstName}
+        &checkout[shipping_address][last_name]=${lastName}
+        &checkout[shipping_address][address1]=${address}
+        &checkout[shipping_address][address2]=${address2}
+        &checkout[shipping_address][city]=${city}
+        &checkout[shipping_address][province]=${deliveryState}
+        &checkout[shipping_address][country]=${country}
+        &checkout[shipping_address][zip]=${zipcode}`;
     }
 
     const emptyCart = () => {
