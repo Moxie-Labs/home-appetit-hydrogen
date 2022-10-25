@@ -56,9 +56,14 @@ export default function PersonalInfo(props) {
         let match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
         
         if (match) {
-            let intlCode = (match[1] ? '+1 ' : '')
-            return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('')
+            return ['(', match[2], ') ', match[3], '-', match[4]].join('')
         }
+    }
+
+    const compresssPhoneNumber = number => {
+        let retval = "+1";
+        retval += number.replace(/[^+\d]+/g, "");
+        return retval;
     }
 
     const dismissModals = () => {
@@ -66,7 +71,7 @@ export default function PersonalInfo(props) {
     }
 
     const updateFields = () => {
-        handleUpdatePersonal(firstNameState, lastNameState, emailState, phoneState);
+        handleUpdatePersonal(firstNameState, lastNameState, emailState, compresssPhoneNumber(phoneState));
         dismissModals();
     }
 
