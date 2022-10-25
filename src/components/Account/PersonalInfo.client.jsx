@@ -61,8 +61,11 @@ export default function PersonalInfo(props) {
     }
 
     const compresssPhoneNumber = number => {
-        let retval = "+1";
-        retval += number.replace(/[^+\d]+/g, "");
+        let retval = null;
+        if (number !== null) {
+            retval = "+1";
+            retval += number.replace(/[^+\d]+/g, "");
+        }
         return retval;
     }
 
