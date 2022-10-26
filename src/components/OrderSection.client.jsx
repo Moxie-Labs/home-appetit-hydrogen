@@ -87,7 +87,7 @@ export function OrderSection(props) {
     const [toastMessages, setToastMessages] = useState([]);
     const [showToast, setShowToast] = useState(false);
 
-    const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
+    const [deliveryWindowStart, setDeliveryWindowStart] = useState(null);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
     const [deliveryWindowDay, setDeliveryWindowDay] = useState(1);
 
