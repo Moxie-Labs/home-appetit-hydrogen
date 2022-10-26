@@ -49,6 +49,20 @@ const DEFAULT_CARDS = [
 export function OrderSection(props) {
 
     const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
+    
+    const { customerData } = props;
+    let customer = null;
+    if (customerData != null) 
+         customer = customerData.customer;
+
+    let defaultAddress = null;
+    if (customer != null) {
+        customer.addresses.edges.map(addr => {
+            if (addr.node.id === customer.defaultAddress.id)
+                defaultAddress = addr.node;
+        });
+    }
+    
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
@@ -77,16 +91,15 @@ export function OrderSection(props) {
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
     const [deliveryWindowDay, setDeliveryWindowDay] = useState(1);
 
-    let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
-    let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
-    let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
-    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "+12345678901");
-    let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
-    let [address2, setAddress2] = useState(isGuest ? null : "");
-    let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
-    let [city, setCity] = useState(isGuest ? null : "Catawissa");
-    let [country, setCountry] = useState("United States");
-    let [zipcode, setZipcode] = useState(isGuest ? null : "17820");    
+    let [firstName, setFirstName] = useState(isGuest ? null : customer.firstName);
+    let [lastName, setLastName] = useState(isGuest ? null : customer.lastName);
+    let [emailAddress, setEmailAddress] = useState(isGuest ? null : customer.email);
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : customer.phone);
+    let [address, setAddress] = useState(defaultAddress === null ? null : defaultAddress.address1);
+    let [address2, setAddress2] = useState(defaultAddress === null ? null : defaultAddress.address2);
+    let [deliveryState, setDeliveryState] = useState(defaultAddress === null ? null : defaultAddress.province);
+    let [city, setCity] = useState(isGuest ? null : defaultAddress === null ? null : defaultAddress.city);
+    let [zipcode, setZipcode] = useState(defaultAddress === null ? null : defaultAddress.zip);    
 
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
@@ -759,6 +772,7 @@ export function OrderSection(props) {
                 <div className="order-wrapper">
 
                     <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+                    { typeof props.customerAccessToken !== 'undefined' && <p>Signed In Using Token: {customerAccessToken}</p> }
 
                     <Layout>
                         <LayoutSection>
@@ -892,7 +906,7 @@ export function OrderSection(props) {
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
                                 handleContinue={() => setCurrentStep(6)}
-                                handleCancel={() => {setCurrentStep(4)}}
+                                handleCancel={() => {setCurrentStep(5)}}
                                 step={5}
                                 currentStep={currentStep}
                             />
@@ -909,6 +923,7 @@ export function OrderSection(props) {
                                 address={address}
                                 address2={address2}
                                 city={city}
+                                deliveryState={deliveryState}
                                 zipcode={zipcode}
                                 instructions={instructions}
                                 extraIce={extraIce}

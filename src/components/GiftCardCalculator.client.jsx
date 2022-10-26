@@ -24,7 +24,7 @@ export function GiftCardCalculator(props) {
 
     const handleFocus = useCallback(() => {
         if (node.current == null) {
-        return;
+            return;
         }
         node.current.input.select();
         document.execCommand("copy");
@@ -65,6 +65,14 @@ export function GiftCardCalculator(props) {
     const suggestedAmountText = isFormReady() ? `$${calculateSuggestedAmount()}` : "Enter fields for suggested amount";
 
     const addButtonText = isFormReady() ? `Add $${calculateSuggestedAmount()}` : "Add";
+
+    const servingOptions = [
+        { label: '1 Person', value: 1 },
+        { label: '2 People', value: 2 },
+        { label: '3 People', value: 3 },
+        { label: '4 People', value: 4 },
+        { label: '5 People', value: 5 }
+    ];
 
     return (
         <Page>
@@ -194,35 +202,41 @@ export function GiftCardCalculator(props) {
                 isOpen={activeCalculator}
                 onRequestClose={dismissModals}
                 className="modal--gift-card"
-                >
-                    <h1 className='ha-h4 text-center '>Calculate Gift Amount</h1>
+            >
+                <h1 className='title'>Calculate Gift Amount</h1>
 
-                    <div className='calculator-wrapper'>
-                        <div className='calculator-field'>
-                            <label># of People:</label>
-                            <input type='number' placeholder='Enter amount' value={numberOfPeople} onChange={(e) => setNumberOfPeople(e.target.value)} min={1} max={5}/>
-                        </div>
-                        <div className='calculator-field'>
-                            <label># of Weeks:</label>
-                            <input type='number' placeholder='Enter amount' value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} min={1} max={8}/>
-                        </div>
-                        <div className='calculator-field'>
-                            <label>ZIP Code:</label>
-                            <input type='number' placeholder='Enter ZIP' value={zipcode} onChange={(e) => setZipcode(e.target.value)} maxLength={5} min={0} max={99999}/>
-                        </div>
+                <div className='calculator-wrapper'>
+                    <div className='calculator-field'>
+                        <label># of People:</label>
+                        <select className='calculator-select' value={numberOfPeople} onChange={(e) => setNumberOfPeople(e.target.value)}>
+                            {servingOptions.map(option => {
+                                return (
+                                    <option value={option.value}>{option.label}</option>
+                                )
+                            })}
+                        </select>
                     </div>
-
-                    <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
-
-                    <div className="text-center gift-card-control">
-                        <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={isFormReady} onClick={onAddGift}>
-                            {addButtonText} 
-                        </button>
-
-                        <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
-                            Cancel
-                        </button>
+                    <div className='calculator-field'>
+                        <label># of Weeks:</label>
+                        <input type='text' placeholder='Enter Weeks (max 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
                     </div>
+                    <div className='calculator-field'>
+                        <label>ZIP Code:</label>
+                        <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
+                    </div>
+                </div>
+
+                <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
+
+                <div className="text-center gift-card-control">
+                    <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={isFormReady} onClick={onAddGift}>
+                        {addButtonText}
+                    </button>
+
+                    <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
+                        Cancel
+                    </button>
+                </div>
 
                 </Modal>
                 <Footer />
