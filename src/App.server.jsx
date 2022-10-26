@@ -39,7 +39,6 @@ function App({request}) {
             <FileRoutes
               basePath={countryCode ? `/${countryCode}/` : undefined}
             />
-            <Route path="/order/guest/:zipcode" page={<Order guest={true} />} />
             <Route path="*" />
           </Router>
         </CartProvider>
