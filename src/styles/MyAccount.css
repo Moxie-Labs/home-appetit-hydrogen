@@ -1,17 +1,17 @@
-/* .myaccount-wrapper {
-    padding: 5rem;
-} */
+.myaccount-wrapper {
+    margin: auto;
+    max-width: 1260px;
+}
 
 .myaccount-page {
-    width: 1260px;
-    display: flex;
-    gap: 5%;
-    flex-wrap: wrap;
+    max-width: 1260px;
     justify-content: space-between;
+    display: flex;
+    gap: 3.1875rem;
 }
 
 .account-panel-switches {
-    width: 30%;
+    flex: 1;
 }
 
 section.account-panel-switches h2 {
@@ -24,12 +24,13 @@ section.account-panel-switches h2 {
 }
 
 .account-panel-body {
-    width: 65%;
+    width: auto;
     position: relative;
     padding: 40px;
     border-radius: 12px;
     background: #F8EFE0;
     min-height: 25rem;
+    flex: 2;
 }
 
 .account-panel-switch {
@@ -448,6 +449,7 @@ label.check-balance-label {
     font-family: 'AvenirLTProBlack';
     font-size: 16px;
     font-weight: bold;
+    line-height: 1.25rem;
 }
 
 .account-information input[type="checkbox"] {
@@ -486,4 +488,48 @@ article p.address-action-cta {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+.mobile-panel{
+    display: none;
+}
+
+@media screen and (max-width: 900px){
+    .desktop-panel{
+        display: none;
+    }
+
+    .mobile-panel{
+        display: block;
+    }
+}
+
+.mobile-panel .account-panel-switch {
+    border-bottom: none;
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.mobile-panel .account-panel-body{
+    border-radius: 0;
+    padding: 1rem;
+}
+
+.mobile-panel section.account-panel-switches h2{
+    font-size: 20px;
+    font-family: AvenirLTProBlack !important;
+    padding: 1rem;
+}
+
+.mobile-panel section.account-panel-switches .info-row h2{
+    text-transform: capitalize;
+}
+
+.mobile-panel .personal-info-wrapper .info-row{
+    flex-flow: column;
+}
+
+.mobile-panel .btn-reset{
+    width: 100%;
 }

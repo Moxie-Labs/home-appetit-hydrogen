@@ -21,10 +21,11 @@
     position: relative;
 }
 
-.header img{
+.header .logo img{
     width: 265px;
     margin: auto;
     vertical-align: middle;
+    margin-left: -4rem;
 }
 
 .nav-wrapper ul {
@@ -73,4 +74,56 @@ ul.account-dropdown li{
     margin: 0;
     box-sizing: border-box;
 }
+
+.mobile-menu{
+    display: none;
+}
+
+.mobile-menu img {
+    vertical-align: middle;
+}
+
+a.btn-order-cta.mobile-order-cta {
+    padding: 0.25rem 1.5rem;
+    display: none;
+}
+
+@media screen and (max-width: 960px){
+    .nav-main{
+        display: none;
+    }
+
+    .mobile-menu {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-inner{
+        padding: 0 1rem;
+    }
+
+    a.btn-order-cta.mobile-order-cta{
+        display: inline-block;
+        line-height: 1.75rem;
+        font-size: 0.75rem;
+        width: auto;
+    }
+
+    .desktop-order-cta{
+        display: none;
+    }
+
+    .header .logo img{
+        width: 8.5625rem;
+        margin-left: 0;
+    }
+
+    .nav-wrapper ul{
+        gap: 0;
+    }
+}
+
+
+
+
 
