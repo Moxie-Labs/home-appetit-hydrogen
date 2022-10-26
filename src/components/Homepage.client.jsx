@@ -6,6 +6,7 @@ export default function Homepage(props) {
     return (
         <>
             <h1>Home Appetit Hydrogen</h1>
+            {  }
             <ul>
                 <li>
                     <Link to="/account">My Account</Link>
