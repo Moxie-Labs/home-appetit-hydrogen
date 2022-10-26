@@ -748,10 +748,10 @@ export function OrderSection(props) {
         },
         "priceRange": {
             "minVariantPrice": {
-                "amount": "500.0"
+                "amount": "5.0"
             },
             "maxVariantPrice": {
-                "amount": "500.0"
+                "amount": "5.0"
             }
         }
     }

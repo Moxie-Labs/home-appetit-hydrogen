@@ -124,8 +124,8 @@ export default function DeliveryInfo(props) {
             errors.lastName = "Last Name is too short.";
         if (!emailAddress.includes("@"))
             errors.emailAddress = "Email Address is invalid.";
-        if (phoneNumber.length < 12)
-            errors.phoneNumber = "Last Name is too short.";
+        if (phoneNumber.length < 10)
+            errors.phoneNumber = "Phone Number is too short.";
         if (address.length < 5)
             errors.address = "Address is too short.";
         if (deliveryState === "")
