@@ -86,6 +86,7 @@ export default function DeliveryWindow(props) {
                     <label className="delivery-window_label">Delivery Window</label>
                     <div className="checkout--delivery-window-selectors">
                         <select className="order_delivery__dropdown left" style={{backgroundImage: `url(${iconArrowDown})`}} value={deliveryWindowStart} onChange={handleChangeStart}>
+                            <option selected disabled>- Select a Window -</option>
                             {startOptions}
                         </select> 
                         {/* -
