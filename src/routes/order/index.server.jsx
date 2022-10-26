@@ -125,6 +125,7 @@ export default function Order({response}) {
                   collectionData={collectionData}
                   customerData={customerData}
                   isGuest={customerData == null}
+                  zipcodeData={null}
                 />
             </Layout>
         </Suspense>

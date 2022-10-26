@@ -14,6 +14,7 @@ import {
 } from '@shopify/hydrogen';
 import {EventsListener} from '~/components';
 import {DefaultSeo} from '~/components/index.server';
+import Order from './routes/order/guest.server';
 
 function App({request}) {
   const pathname = new URL(request.normalizedUrl).pathname;
@@ -38,6 +39,7 @@ function App({request}) {
             <FileRoutes
               basePath={countryCode ? `/${countryCode}/` : undefined}
             />
+            <Route path="/order/guest/:zipcode" page={<Order guest={true} />} />
             <Route path="*" />
           </Router>
         </CartProvider>

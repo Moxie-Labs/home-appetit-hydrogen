@@ -774,6 +774,8 @@ export function OrderSection(props) {
                     <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
                     { typeof props.customerAccessToken !== 'undefined' && <p>Signed In Using Token: {customerAccessToken}</p> }
 
+                    { zipcodeType === "extended" && <h2>Please Note: Your zipcode is within our extended delivery range, and will incur an additional fee.</h2> }
+
                     <Layout>
                         <LayoutSection>
 
