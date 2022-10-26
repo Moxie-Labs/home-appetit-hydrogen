@@ -21,6 +21,11 @@ export default function Register({response}) {
 }
 
 export async function api(request, {session, queryShop}) {
+
+  if (!session) {
+    return new Response('Session storage not available.', {status: 400});
+  }
+
   let jsonBody = await request.text();
 
   let redirect = false;
@@ -60,6 +65,8 @@ export async function api(request, {session, queryShop}) {
         email: strEmail,
         password: strPass
     }
+
+    return new Response(jsonBody, {status: 200});
 
     redirect = true;
   }
