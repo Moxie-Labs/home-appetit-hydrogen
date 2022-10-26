@@ -67,6 +67,8 @@ export async function api(request, {session, queryShop}) {
     }
 
     redirect = true;
+
+    return new Response(JSON.stringify(jsonBody), {status: 200});
   }
 
   if (!jsonBody.email || !jsonBody.password) {
