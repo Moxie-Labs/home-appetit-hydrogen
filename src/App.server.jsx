@@ -14,7 +14,6 @@ import {
 } from '@shopify/hydrogen';
 import {EventsListener} from '~/components';
 import {DefaultSeo} from '~/components/index.server';
-import Order from './routes/order/guest.server';
 
 function App({request}) {
   const pathname = new URL(request.normalizedUrl).pathname;
