@@ -20,7 +20,7 @@ export default function Register({response}) {
   );
 }
 
-export async function api(request, {queryShop}) {
+export async function api(request, {session, queryShop}) {
   let jsonBody = await request.text();
 
   let redirect = false;
