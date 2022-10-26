@@ -66,8 +66,6 @@ export async function api(request, {session, queryShop}) {
         lastName: strLast
     }
 
-    return new Response(JSON.stringify(jsonBody), {status: 200});
-
     redirect = true;
   }
 
