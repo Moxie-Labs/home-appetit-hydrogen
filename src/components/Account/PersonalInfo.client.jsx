@@ -63,7 +63,7 @@ export default function PersonalInfo(props) {
         }
     }
 
-    const compresssPhoneNumber = number => {
+    const compressPhoneNumber = number => {
         let retval = null;
         if (number !== null) {
             retval = "+1";
@@ -78,7 +78,7 @@ export default function PersonalInfo(props) {
 
     const updateFields = () => {
         if (validateFields()) {
-            handleUpdatePersonal(firstNameState, lastNameState, emailState, compresssPhoneNumber(phoneState));
+            handleUpdatePersonal(firstNameState, lastNameState, emailState, compressPhoneNumber(phoneState));
             dismissModals();
         }
     }
@@ -89,7 +89,7 @@ export default function PersonalInfo(props) {
             newFieldErrors.firstName = "First Name is too short."
         if (lastNameState === null || lastNameState.length < 1)
             newFieldErrors.lastName = "Last Name is too short."
-        if (phoneState === null || phoneState.length < 14)
+        if (phoneState === null || formattedPhoneNumber(phoneState).length < 14)
             newFieldErrors.phone = "Phone number is too short."
         if (emailState === null || emailState.length < 3)
             newFieldErrors.email = "Email is invalid.";
