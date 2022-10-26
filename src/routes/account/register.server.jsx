@@ -60,10 +60,10 @@ export async function api(request, {session, queryShop}) {
     strFirst = strFirst.split("&customer%5Bfirst_name%5D=")[1];
 
     jsonBody = {
-      firstName: strFirst,
-      lastName: strLast,
         email: strEmail,
-        password: strPass
+        password: strPass,
+        firstName: strFirst,
+        lastName: strLast
     }
 
     return new Response(JSON.stringify(jsonBody), {status: 200});
