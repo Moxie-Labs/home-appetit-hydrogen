@@ -1,4 +1,4 @@
-import { gql, useCart } from "@shopify/hydrogen";
+import { useCart } from "@shopify/hydrogen";
 import { Suspense, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -48,7 +48,21 @@ const DEFAULT_CARDS = [
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
+    
+    const { customerData } = props;
+    let customer = null;
+    if (customerData != null) 
+         customer = customerData.customer;
+
+    let defaultAddress = null;
+    if (customer != null) {
+        customer.addresses.edges.map(addr => {
+            if (addr.node.id === customer.defaultAddress.id)
+                defaultAddress = addr.node;
+        });
+    }
+    
 
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
@@ -57,8 +71,14 @@ export function OrderSection(props) {
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
 
+
+    const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
+    const [selectedSmallItemsExtra, setSelectedSmallItemsExtra] = useState([])
+    
     const [selectedMainItems, setSelectedMainItems] = useState([])
+    const [selectedMainItemsExtra, setSelectedMainItemsExtra] = useState([])
+
     const [selectedAddonItems, setSelectedAddonItems] = useState([])
     const [selectedSmallFilters, setSelectedSmallFilters] = useState([])
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
@@ -69,17 +89,17 @@ export function OrderSection(props) {
 
     const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
-    const [deliveryWindowDay, setDeliveryWindowDay] = useState(6);
+    const [deliveryWindowDay, setDeliveryWindowDay] = useState(1);
 
-    let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
-    let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
-    let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
-    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "+12345678901");
-    let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
-    let [address2, setAddress2] = useState(isGuest ? null : "");
-    let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
-    let [city, setCity] = useState(isGuest ? null : "Catawissa");
-    let [zipcode, setZipcode] = useState(isGuest ? null : "17820");    
+    let [firstName, setFirstName] = useState(isGuest ? null : customer.firstName);
+    let [lastName, setLastName] = useState(isGuest ? null : customer.lastName);
+    let [emailAddress, setEmailAddress] = useState(isGuest ? null : customer.email);
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : customer.phone);
+    let [address, setAddress] = useState(defaultAddress === null ? null : defaultAddress.address1);
+    let [address2, setAddress2] = useState(defaultAddress === null ? null : defaultAddress.address2);
+    let [deliveryState, setDeliveryState] = useState(defaultAddress === null ? null : defaultAddress.province);
+    let [city, setCity] = useState(isGuest ? null : defaultAddress === null ? null : defaultAddress.city);
+    let [zipcode, setZipcode] = useState(defaultAddress === null ? null : defaultAddress.zip);    
 
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
@@ -124,11 +144,6 @@ export function OrderSection(props) {
         return newTags;
     }
 
-    // let selectedMainItemsReadout = [];
-    // selectedMainItems.forEach(item => {
-    //     selectedMainItemsReadout.push(item.title);
-    // });
-
     const doesCartHaveItem = (choice, collection) => {
         let retval = false;
         collection.map(item => {
@@ -139,45 +154,127 @@ export function OrderSection(props) {
         return retval;
     }
 
+    const findCartLineByVariantId = variantId => {
+        let retval = null;
+        cartLines.map(line => {
+            if (line.merchandise.id === variantId) retval = line;
+        });
+
+        return retval;
+    }
+
+    const findCollectionItemIndex = (item, collection) => {
+        let retval = -1;
+
+        collection.map((item, index) => {
+            if (item.choice.title === choice.choice.title)
+                retval = index;
+        });
+
+        return retval;
+    }
+
     const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
 
-        console.log("addItemToCard::choice", choice);
+        const variantType = getVariantType(collection);        
 
         // if: item was already added, then: update quantity (or remove)
         if (doesCartHaveItem(choice, collection)) {
             console.log("addItemToCart::already exists", choice);
+            const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
+
             collection.map((item, i) => {
                 if (item.choice.title === choice.choice.title) {
-                    if (choice.quantity > 0) 
+                    if (choice.quantity > 0) {
                         item.quantity = choice.quantity;
-                    else 
-                        collection.splice(i, 1)
+                        const linesUpdatePayload = [];
+                        linesUpdatePayload.push({
+                            id: existingCartLine.id,
+                            quantity: choice.quantity
+                        });
+
+                        const modsAdded = [];
+                        choice.selectedMods.map(mod => {
+                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
+                            
+                            // if: mods were added after parent item was already set, then: add them separately, else: just update
+                            if (modCartLine === null) 
+                                modsAdded.push(mod);
+                            else
+                                linesUpdatePayload.push({
+                                    id: modCartLine.id,
+                                    quantity: choice.quantity
+                                });
+                        });
+
+                        linesUpdate(linesUpdatePayload);
+
+                        if (modsAdded.length > 0) {
+                            console.log("modsAdded", modsAdded);
+                            const linesAddPayload = [];
+                                modsAdded.map(mod => {
+                                    linesAddPayload.push({ 
+                                        merchandiseId: mod.variants.edges[0].node.id,
+                                        quantity: choice.quantity
+                                    });
+                                }); 
+
+                            setTimeout(() => {
+                                linesAdd(linesAddPayload);
+                            }, 2000);
+                        }
+                    }
+                        
+                    else {
+                        // handle internal Cart Collection
+                        collection.splice(i, 1);
+
+                        // update Shopify Cart
+                        const linesRemovePayload = [];
+                        linesRemovePayload.push(existingCartLine.id);
+                        choice.selectedMods.map(mod => {
+                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
+                            if (modCartLine !== null)
+                                linesRemovePayload.push(modCartLine.id)
+                        });
+                        linesRemove(linesRemovePayload);
+                    }
+                        
                 }
             });
 
-            if (collectionName === 'main') 
-                setSelectedMainItems([...collection]);
+            if (collectionName === 'main')
+                if (isAddingExtraItems)
+                    setSelectedMainItemsExtra([...selectedMainItemsExtra]);
+                else
+                    setSelectedMainItems([...collection]);
             else if (collectionName === 'small')
-                setSelectedSmallItems([...collection]);
+                if (isAddingExtraItems)
+                    setSelectedSmallItemsExtra([...selectedSmallItemsExtra]);
+                else
+                    setSelectedSmallItems([...selectedSmallItems]);
             else 
-                setSelectedAddonItems([...collection]);
-
-
-            linesRemove([choice.choice.productOptions[1].node.id])
+                setSelectedAddonItems([...selectedAddonItems]);
 
         }
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);
-            const variantType = getVariantType(collection);
+            
 
             if (collectionName === 'main') 
-                setSelectedMainItems([...collection, choice]);
+                if (isAddingExtraItems)
+                    setSelectedMainItemsExtra([...selectedMainItemsExtra, choice]);
+                else
+                    setSelectedMainItems([...selectedMainItems, choice]);
             else if (collectionName === 'small')
-                setSelectedSmallItems([...collection, choice]);
+                if (isAddingExtraItems)
+                    setSelectedSmallItemsExtra([...selectedSmallItemsExtra, choice]);
+                else
+                    setSelectedSmallItems([...selectedSmallItems, choice]);
             else 
-                setSelectedAddonItems([...collection, choice]);
+                setSelectedAddonItems([...selectedAddonItems, choice]);
 
             setToastMessages([{item: `+${choice.quantity} ${choice.choice.title}`, cost: choice.choice.price}]);
             setShowToast(true);
@@ -185,20 +282,29 @@ export function OrderSection(props) {
                 setShowToast(false);
             }, TOAST_CLEAR_TIME);
 
-            if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
-                // setCurrentStep(currentStep+1);
-            }
-
             if (addToShopifyCart) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
-                // update Shopify Cart
-                linesAdd({ 
+                const linesAddPayload = [];
+                console.log("choice selectedMods", choice.selectedMods);
+                choice.selectedMods.map(mod => {
+                    linesAddPayload.push({ 
+                        merchandiseId: mod.variants.edges[0].node.id,
+                        quantity: choice.quantity
+                    });
+                }); 
+                
+                linesAddPayload.push({ 
                     merchandiseId: choice.choice.productOptions[variantType].node.id,
                     quantity: choice.quantity
                 });
+
+                console.log("linesAddPayload", linesAddPayload);
+
+                // update Shopify Cart
+                linesAdd(linesAddPayload);
             }
-            
         }
+
     }
 
     const isSectionFilled = (collection) => {
@@ -207,19 +313,40 @@ export function OrderSection(props) {
 
     const getOrderTotal = () => {
         let total = parseFloat(planPricingMultiplier);
-        selectedSmallItems.forEach((item, index) => {
-            if (activeScheme === 'flexible' || index >= 4)
+        selectedSmallItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                // TODO: add support for Flex plan quantity differences
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            
+            if (activeScheme === 'flexible')
                 total += parseFloat(item.choice.price * item.quantity);
         });
-        selectedMainItems.forEach((item, index) => {
-            if (activeScheme === 'flexible' || index >= 4)
-                total += parseFloat(item.choice.price * item.quantity);
-        });
-        selectedAddonItems.forEach(item => {
+        selectedSmallItemsExtra.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
             total += parseFloat(item.choice.price * item.quantity);
         });
-
-        console.log("getOrderTotal::total", total)
+        selectedMainItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            if (activeScheme === 'flexible')
+                total += parseFloat(item.choice.price * item.quantity);
+        });
+        selectedMainItemsExtra.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            total += parseFloat(item.choice.price * item.quantity);
+        });
+        selectedAddonItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            total += parseFloat(item.choice.price * item.quantity);
+        });
 
         return total;
     }
@@ -289,7 +416,7 @@ export function OrderSection(props) {
         const iceChoice = {
             title: iceItem.title,
             attributes: [],
-            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount),
             description: "",
             imageURL: "",
             productOptions: []
@@ -308,7 +435,7 @@ export function OrderSection(props) {
                         address1: address,
                         address2: address2,
                         city: city,
-                        country: "United States",
+                        country: country,
                         firstName: firstName,
                         lastName: lastName,
                         phone: phoneNumber,
@@ -324,9 +451,15 @@ export function OrderSection(props) {
 
         buyerIdentityUpdate(buyerIdentityObj);
 
-        console.log("cartId", cartId);
-
-        // window.location.href=`${checkoutUrl}`;
+        window.location.href=`${checkoutUrl}?checkout[email]=${emailAddress}
+        &checkout[shipping_address][first_name]=${firstName}
+        &checkout[shipping_address][last_name]=${lastName}
+        &checkout[shipping_address][address1]=${address}
+        &checkout[shipping_address][address2]=${address2}
+        &checkout[shipping_address][city]=${city}
+        &checkout[shipping_address][province]=${deliveryState}
+        &checkout[shipping_address][country]=${country}
+        &checkout[shipping_address][zip]=${zipcode}`;
     }
 
     const emptyCart = () => {
@@ -357,14 +490,18 @@ export function OrderSection(props) {
 
     // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
     const getVariantType = collection => {
-        if (activeScheme === 'traditional')
-            return collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
+        if (currentStep === ADD_ON_STEP)
+            return 0;
+        else if (activeScheme === 'traditional')
+            return isAddingExtraItems ? 0 : 1;
         else
             return 0;
     }
 
 
     const confirmDeliveryInfo = () => {
+
+        while(cartStatus !== 'idle') { ; }
 
         const cartAttributesObj = [
             {
@@ -406,6 +543,56 @@ export function OrderSection(props) {
     }
 
 
+    const setupNextSection = nextStep => {
+        setIsAddingExtraItems(false);
+        setCurrentStep(nextStep);
+    }
+
+    const findCollectionById = collectionId => {
+        let retval = null;
+        const { collectionsById } = props;
+        collectionsById.map(collection => {
+            if (collection.id === collectionId)
+                retval = collection;
+        });
+        return retval;
+    }
+
+    const getModifications = modifications => {
+        if (modifications === null)
+            return [];
+        else {
+            const { value:modifierId } = modifications;
+            const modCollection = findCollectionById(modifierId);
+            if (modCollection === null)
+                return [];
+            const collectionProducts = [];
+            modCollection.products.edges.map(edge => {
+                collectionProducts.push(edge.node);
+            });
+            console.log("modCollection.collectionProducts", collectionProducts);
+            return collectionProducts;
+        }
+    }
+
+    const getSubstitutions = substitutions => {
+        if (substitutions === null)
+            return [];
+        else {
+            const { value:substitutionId } = substitutions;
+            const subCollection = findCollectionById(substitutionId);
+            if (subCollection === null)
+                return [];
+            const collectionProducts = [];
+            subCollection.products.edges.map(edge => {
+                collectionProducts.push(edge.node);
+            });
+            console.log("subCollection.collectionProducts", collectionProducts);
+            return collectionProducts;
+        }
+        
+    }
+
     /* END Helpers */
 
 
@@ -414,20 +601,13 @@ export function OrderSection(props) {
     const { collectionData, zipcodeType, zipcodeArr } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
 
-    const collections = [];
-    collectionData.collections.edges.map(collection => {
-        collections[collection.node.handle] = collection.node;
-    });
-
-    const entreeProducts = collections['entrees'].products.edges;
-    const greensProducts = collections["greens-grains-small-plates"].products.edges;
-    const addonsProducts = collections['add-ons'].products.edges;
-
     const existingMainItems = [];
+    const existingMainItemsExtra = [];
     const existingSmallItems = [];
+    const existingSmallItemsExtra = [];
     const existingAddonItems = [];
-
     const choicesEntrees = [];
+
     entreeProducts.map(entree => {
         const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
         const attributes = convertTags(entree.node.tags);
@@ -437,24 +617,31 @@ export function OrderSection(props) {
             price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
             description: entree.node.description,
             imageURL: imgURL,
-            productOptions: entree.node.variants.edges
+            productOptions: entree.node.variants.edges,
+            modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
+            substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
         };
         choicesEntrees.push(choice);
 
-        // map cart items to pre-selected choices        
+        // map cart items to pre-selected choices      
         cartLines.map(line => {
             entree.node.variants.edges.forEach(variant => {
                 if (line.merchandise.id === variant.node.id) {
-                    console.log("Adding existing item", line.id)
-                    existingMainItems.push({choice: choice, quantity: line.quantity});
+
+                    // if: variant is Included, then: add to MainItems, else: add to Extras
+                    if (variant.node.title === "Included")
+                        existingMainItems.push({choice: choice, quantity: line.quantity});
+                    else
+                        existingMainItemsExtra.push({choice: choice, quantity: line.quantity});
                 }
             });
         });
     });
 
-    if (existingMainItems.length > 0 && selectedMainItems.length < 1) {
+    if (existingMainItems.length > 0 && selectedMainItems.length < 1) 
         setSelectedMainItems(existingMainItems);
-    }
+    if (existingMainItemsExtra.length > 0 && selectedMainItemsExtra.length < 1) 
+        setSelectedMainItemsExtra(existingMainItemsExtra);
 
     const choicesGreens = [];
     greensProducts.map(greens => {
@@ -466,7 +653,9 @@ export function OrderSection(props) {
             price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
             description: greens.node.description,
             imageURL: imgURL,
-            productOptions: greens.node.variants.edges
+            productOptions: greens.node.variants.edges,
+            modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
+            substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
         }
 
         choicesGreens.push(choice);
@@ -475,27 +664,34 @@ export function OrderSection(props) {
         cartLines.map(line => {
             greens.node.variants.edges.forEach(variant => {
                 if (line.merchandise.id === variant.node.id) {
-                    existingSmallItems.push({choice: choice, quantity: line.quantity});
+                    if (variant.node.title === "Included")
+                        existingSmallItems.push({choice: choice, quantity: line.quantity});
+                    else
+                        existingSmallItemsExtra.push({choice: choice, quantity: line.quantity});
                 }
             });
         });
     });
 
-    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) {
+    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) 
         setSelectedSmallItems(existingSmallItems);
-    }
+    if (existingSmallItemsExtra.length > 0 && selectedSmallItemsExtra.length < 1) 
+        setSelectedSmallItemsExtra(existingSmallItemsExtra);
+    
 
     const choicesAddons = [];
-    addonsProducts.map(addons => {
+    addonProducts.map(addons => {
         const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
         const attributes = convertTags(addons.node.tags);
         const choice = {
             title: addons.node.title,
             attributes: attributes,
-            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
             description: addons.node.description,
             imageURL: imgURL,
-            productOptions: addons.node.variants.edges
+            productOptions: addons.node.variants.edges,
+            modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
+            substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
         };
 
         choicesAddons.push(choice);
@@ -515,7 +711,6 @@ export function OrderSection(props) {
     }
 
     /* END GraphQL Values */
-
 
 
     /* Static Values */
@@ -579,6 +774,7 @@ export function OrderSection(props) {
                 <div className="order-wrapper">
 
                     <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+                    { typeof props.customerAccessToken !== 'undefined' && <p>Signed In Using Token: {customerAccessToken}</p> }
 
                     { zipcodeType === "extended" && <h2>Please Note: Your zipcode is within our extended delivery range, and will incur an additional fee.</h2> }
 
@@ -612,12 +808,15 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
-                                    handleConfirm={() => setCurrentStep(3)}
+                                    handleConfirm={() => setupNextSection(3)}
                                     handleEdit={() => setCurrentStep(2)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedMainItems}
+                                    selectedExtra={selectedMainItemsExtra}
                                     filters={selectedMainFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
                             
@@ -634,12 +833,15 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
-                                    handleConfirm={() => setCurrentStep(4)}
+                                    handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => setCurrentStep(3)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedSmallItems}
+                                    selectedExtra={selectedSmallItemsExtra}
                                     filters={selectedSmallFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
 
@@ -656,13 +858,15 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedAddonFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
-                                    handleConfirm={() => setCurrentStep(5)}
+                                    handleConfirm={() => setupNextSection(5)}
                                     handleEdit={() => setCurrentStep(4)}
                                     selected={selectedAddonItems}
+                                    selectedExtra={[]}
                                     filters={selectedAddonFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     noQuantityLimit={true}
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
                                 />
                             </div>
 
@@ -676,7 +880,9 @@ export function OrderSection(props) {
                                 pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
+                                selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
@@ -698,13 +904,13 @@ export function OrderSection(props) {
                                 deliveryWindowStart={deliveryWindowStart}
                                 deliveryWindowEnd={deliveryWindowEnd}
                                 deliveryWindowDay={deliveryWindowDay}
-                                deliveryWindowSaturday={dayOfWeek("next", "monday")}
-                                deliveryWindowSunday={dayOfWeek("next", "tuesday")}
+                                deliveryWindowOne={dayOfWeek("next", "monday")}
+                                deliveryWindowTwo={dayOfWeek("next", "tuesday")}
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
                                 handleContinue={() => setCurrentStep(6)}
-                                handleCancel={() => {setCurrentStep(4)}}
+                                handleCancel={() => {setCurrentStep(5)}}
                                 step={5}
                                 currentStep={currentStep}
                             />
@@ -721,6 +927,7 @@ export function OrderSection(props) {
                                 address={address}
                                 address2={address2}
                                 city={city}
+                                deliveryState={deliveryState}
                                 zipcode={zipcode}
                                 zipcodeCheck={zipcodeCheck}
                                 instructions={instructions}
@@ -766,7 +973,9 @@ export function OrderSection(props) {
                                 pricingMultiplier={planPricingMultiplier}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
+                                selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
@@ -820,7 +1029,9 @@ export function OrderSection(props) {
                                     pricingMultiplier={planPricingMultiplier}
                                     orderTotal={getOrderTotal()}
                                     selectedMainItems={[...selectedMainItems]} 
+                                    selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                     selectedSmallItems={[...selectedSmallItems]}
+                                    selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                     selectedAddonItems={[...selectedAddonItems]}
                                     toastMessages={toastMessages}
                                     showToast={showToast}

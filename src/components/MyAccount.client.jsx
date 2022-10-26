@@ -7,7 +7,7 @@ import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
 import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
 import { render } from 'react-dom';
-import { LogoutButton } from './LogoutButton.client';
+
 
 export default function MyAccount(props) {
 
@@ -251,6 +251,7 @@ export default function MyAccount(props) {
     
 
     return (
+        <div>
         <div className='myaccount-wrapper'>
         <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
         <div className='myaccount-page'>
@@ -261,7 +262,7 @@ export default function MyAccount(props) {
                 <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
-                <LogoutButton />
+                
             </section>
 
             <section className='account-panel-body'>
@@ -303,6 +304,8 @@ export default function MyAccount(props) {
             </section>
 
         </div>
+        </div>
+
         </div>
     );
 }
