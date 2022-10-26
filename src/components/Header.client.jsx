@@ -43,7 +43,7 @@ export function Header(prop){
                                     <li><a href="#">My Account</a></li>
                                     <li><a href="#">Orders</a></li>
                                     <li><a href="#">Referrals</a></li>
-                                    <li><LogoutButton onMouseOut={handleMouseOut}/></li>
+                                    <li><LogoutButton onMouseOut={handleMouseOut} redirectURL={`https://${rootUrl}`}/></li>
                                 </ul>
                             )}
                            
