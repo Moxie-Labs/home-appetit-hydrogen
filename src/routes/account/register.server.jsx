@@ -5,6 +5,7 @@ import {AccountCreateForm} from '../../components/Account';
 import { Layout } from '../../components/Layout.client';
 import {getApiErrorMessage} from '~/lib/utils';
 import { callLoginApi } from '../../components/Account/AccountLoginForm.client';
+import { LOGIN_MUTATION } from './login.server';
 
 export default function Register({response}) {
   response.cache(CacheNone());
@@ -97,16 +98,38 @@ export async function api(request, {queryShop}) {
     if (redirect) {
       let redirectDest = '/account';
 
-        // login to new Account
-        await callLoginApi({
-          email: jsonBody.email,
-          password: jsonBody.password
-        });
-  
-        return new Response(null, {
-          status: 301,
-          headers: {Location: redirectDest},
-        });
+      const {data, errors} = await queryShop({
+        query: LOGIN_MUTATION,
+        variables: {
+          input: {
+            email: jsonBody.email,
+            password: jsonBody.password,
+          },
+        },
+        // @ts-expect-error `queryShop.cache` is not yet supported but soon will be.
+        cache: CacheNone(),
+      });
+
+      if (data?.customerAccessTokenCreate?.customerAccessToken?.accessToken) {
+        await session.set(
+          'customerAccessToken',
+          data.customerAccessTokenCreate.customerAccessToken.accessToken,
+        );
+    
+          return new Response(null, {
+            status: 301,
+            headers: {Location: redirectDest},
+          });
+          
+      } else {
+        return new Response(
+          JSON.stringify({
+            error: data?.customerAccessTokenCreate?.customerUserErrors ?? errors,
+          }),
+          {status: 401},
+        );
+      }
+
     }
     else {
       return new Response(null, {

@@ -145,7 +145,7 @@ export async function api(request, {session, queryShop}) {
   
 }
 
-const LOGIN_MUTATION = gql`
+export const LOGIN_MUTATION = gql`
   mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
     customerAccessTokenCreate(input: $input) {
       customerUserErrors {
