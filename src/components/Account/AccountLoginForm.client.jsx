@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {useNavigate, Link} from '@shopify/hydrogen/client';
 import {getInputStyleClasses} from '../../lib/styleUtils';
+import { Header } from '../Header.client';
 
 export function AccountLoginForm({shopName}) {
   const navigate = useNavigate();

@@ -243,3 +243,13 @@ export const GET_ORDER_WINDOW_DAYS_QUERY = gql`
         }
   }
 }`;
+export const GET_ZIPCODES_QUERY = gql`
+   {
+    page(handle:"order-now") {
+        handle
+        inrangeZipcodes:metafield(namespace:"custom", key:"in_range_zipcodes") {
+        value
+        }
+    }
+}
+`;

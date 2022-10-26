@@ -15,7 +15,7 @@ export function Header(props){
 
     const {customerAccessToken} = props;
 
-    let accountSection = <li><a href="/account/login" className='btn-order-cta'>LOGIN</a></li>
+    let accountSection = <li><a href="/account/login" className='btn-login-cta'>LOGIN</a></li>
     
     if (customerAccessToken) 
         accountSection = <li><a href="/account" className="my-account-trigger" onMouseOver={handleMouseOver} >MY ACCOUNT</a>              
