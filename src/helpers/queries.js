@@ -33,6 +33,114 @@ export function GET_CHECKOUT_MUTATION(lineItemsInput) {
     `;
 }
 
+export const GET_MENUS_QUERY = gql`
+    {
+        collections(first:4, reverse:true, query:"*menu") {
+            edges {
+            node {
+                id
+                handle
+                endDate: metafield(namespace: "custom", key: "end_date") {
+                    value
+                    }
+                    startDate: metafield(namespace: "custom", key: "start_date") {
+                    value
+                    }
+                    products(first: 50) {
+                    edges {
+                        node {
+                        id
+                        title
+                        description
+                        tags
+                        images(first: 1) {
+                            edges {
+                            node {
+                                altText
+                                src
+                            }
+                            }
+                        }
+                        priceRange {
+                            minVariantPrice {
+                            amount
+                            }
+                            maxVariantPrice {
+                            amount
+                            }
+                        }
+                        variants(first: 2) {
+                            edges {
+                            node {
+                                id
+                                title
+                                priceV2 {
+                                amount
+                                }
+                            }
+                            }
+                        }
+                        menuCategories: metafield(
+                            namespace: "custom"
+                            key: "menu_categories"
+                        ) {
+                            value
+                        }
+                        modifications: metafield(namespace: "custom", key: "modification") {
+                            value
+                        }
+                        substitutions: metafield(namespace: "custom", key: "substitutions") {
+                            value
+                        }
+                        }
+                    }
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const GET_MOD_COLLECTIONS_QUERY = gql`
+     {
+        collections(first: 20, reverse: true, query: "*sub OR *mod OR *custom") {
+            edges {
+            node {
+                id
+                handle
+                products(first: 50) {
+                edges {
+                    node {
+                    id
+                    title
+                    priceRange {
+                        minVariantPrice {
+                        amount
+                        }
+                        maxVariantPrice {
+                        amount
+                        }
+                    }
+                    variants(first: 2) {
+                        edges {
+                        node {
+                            id
+                            title
+                            priceV2 {
+                            amount
+                            }
+                        }
+                        }
+                    }
+                    }
+                }
+                }
+            }
+            }
+        }
+        }
+
+`;
 export const CUSTOMER_QUERY = gql`
   ${PRODUCT_CARD_FRAGMENT}
   query CustomerDetails(
