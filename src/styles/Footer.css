@@ -1,6 +1,8 @@
-.footer {
+div.footer {
     width: 100%;
-    margin-top: 9.3rem;
+    max-width: 1440px;
+    position: relative;
+    bottom: -16rem;
 }
 
 .footer-item-wrapper{

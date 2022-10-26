@@ -1,13 +1,16 @@
 import { Link } from '@shopify/hydrogen';
 
 export default function Homepage(props) {
+    const { customerData, customerAccessToken } = props;
+
     return (
         <>
             <h1>Home Appetit Hydrogen</h1>
+            {  }
             <ul>
                 <li>
-                    <a style={{opacity: 0.6}}>My Account</a>
-                    <p>Status: Awaiting Code Merge</p>
+                    <Link to="/account">My Account</Link>
+                    <p>Status: Needs Styling</p>
                     <hr></hr>
                 </li>
                 <li>
@@ -15,16 +18,18 @@ export default function Homepage(props) {
                     <p>Status: Needs Visual Pass</p>
                     <hr></hr>
                 </li>
-                <li>
+                { customerData !== null && <li>
                     <Link to="/order">Order (Logged In)</Link>
-                    <p>Status: Cannot Generate Checkout from Cart</p>
+                    <p>Logged in as: <b>{customerData.customer.email}</b></p>
+                    <p>Status: Automatically associates Customers to Order when Token is present (such as now)</p>
+                    <hr></hr>
+                </li> }
+                { customerData === null && <li>
+                    <Link to="/order">Order (Guest)</Link>
+                    <p>Status: Defaults to Guest When Token is empty (such as now)</p>
                     <hr></hr>
                 </li>
-                <li>
-                    <Link to="/order?guest=true">Order (Guest)</Link>
-                    <p>Status: Assumes Logged-In User</p>
-                    <hr></hr>
-                </li>
+                }
                 <li>
                     <Link to="/gift-cards">Gift Cards</Link>
                     <p>Status: Awaiting Visual Pass</p>

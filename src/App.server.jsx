@@ -1,17 +1,51 @@
 import React from 'react';
-import renderHydrogen from '@shopify/hydrogen/entry-server';
-import {Router, FileRoutes, ShopifyProvider, CartProvider} from '@shopify/hydrogen';
 import {Suspense} from 'react';
+import renderHydrogen from '@shopify/hydrogen/entry-server';
+import {
+  FileRoutes,
+  PerformanceMetrics,
+  PerformanceMetricsDebug,
+  Route,
+  Router,
+  ShopifyAnalytics,
+  ShopifyProvider,
+  CartProvider,
+  useSession
+} from '@shopify/hydrogen';
+import {EventsListener} from '~/components';
+import {DefaultSeo} from '~/components/index.server';
+import Order from './routes/order/guest.server';
 
-function App() {
+function App({request}) {
+  const pathname = new URL(request.normalizedUrl).pathname;
+  const localeMatch = /^\/([a-z]{2})(\/|$)/i.exec(pathname);
+  const countryCode = localeMatch ? localeMatch[1] : undefined;
+
+  const isHome = pathname === `/${countryCode ? countryCode + '/' : ''}`;
+  const { customerAccessToken } = useSession();
+
   return (
-    <Suspense fallback={null}>
-      <ShopifyProvider>
-        <CartProvider>
+    <Suspense>
+      <EventsListener />
+      <ShopifyProvider countryCode={countryCode}>
+        <CartProvider 
+          countryCode={countryCode}
+          customerAccessToken={customerAccessToken}
+        >
+          {/* <Suspense>
+            <DefaultSeo />
+          </Suspense> */}
           <Router>
-            <FileRoutes />
+            <FileRoutes
+              basePath={countryCode ? `/${countryCode}/` : undefined}
+            />
+            <Route path="/order/guest/:zipcode" page={<Order guest={true} />} />
+            <Route path="*" />
           </Router>
         </CartProvider>
+        <PerformanceMetrics />
+        {import.meta.env.DEV && <PerformanceMetricsDebug />}
+        <ShopifyAnalytics />
       </ShopifyProvider>
     </Suspense>
   );

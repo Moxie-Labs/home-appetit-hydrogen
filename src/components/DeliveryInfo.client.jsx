@@ -70,6 +70,18 @@ export default function DeliveryInfo(props) {
         handlePhoneNumberChange(event.target.value);
     }
 
+    const formattedPhoneNumber = number => {
+        
+        let match = number.match(/^(\d{3})(\d{3})(\d{4})$/);
+        
+        if (match && number.length > 9) {
+            let intlCode = '+1';
+            return [intlCode, match[1], match[2], match[3]].join('')
+        } else {
+            return number;
+        }
+    }
+
     const onAddressChange = (event) => {
         handleAddressChange(event.target.value);
     }
@@ -112,7 +124,7 @@ export default function DeliveryInfo(props) {
             errors.lastName = "Last Name is too short.";
         if (!emailAddress.includes("@"))
             errors.emailAddress = "Email Address is invalid.";
-        if (phoneNumber.length < 10)
+        if (phoneNumber.length < 12)
             errors.phoneNumber = "Last Name is too short.";
         if (address.length < 5)
             errors.address = "Address is too short.";
@@ -147,7 +159,7 @@ export default function DeliveryInfo(props) {
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
-                            <p>{phoneNumber}</p>
+                            <p>{formattedPhoneNumber(phoneNumber)}</p>
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
                     </section>
@@ -178,18 +190,7 @@ export default function DeliveryInfo(props) {
                             </section>
                         }
                     </div>
-
-                    <br></br>
-
-                    <section className="checkout--deliveryinfo-actions">
-                        <button className="btn btn-confirm btn-app btn-primary-small" onClick={handleContinue}>
-                            Continue
-                        </button>
-
-                        {/* <button className="btn btn-primary btn-app" onClick={handleCancel}>
-                            Cancel
-                        </button> */}
-                    </section>
+                    
                 </div>
             }
 
@@ -201,11 +202,11 @@ export default function DeliveryInfo(props) {
                         <div className="checkout--form-container">
                             <div className="checkout--form-field-col">
                                 <label>First Name:
-                                    <input className={`order_textfield${validationErrors.firstName !== undefined ? ' input-error' : ''}`} type="text" name="firstname" value={firstName} onChange={onFirstNameChange} placeholder={"First Name (Required)"}/>
+                                    <input className={`order_textfield${validationErrors.firstName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="firstname" value={firstName} onChange={onFirstNameChange} placeholder={"First Name (Required)"}/>
                                 </label>
 
                                 <label>Last Name:
-                                    <input className={`order_textfield${validationErrors.lastName !== undefined ? ' input-error' : ''}`} type="text" name="lastname" value={lastName} onChange={onLastNameChange} placeholder={"Last Name (Required)"}/>
+                                    <input className={`order_textfield${validationErrors.lastName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="lastname" value={lastName} onChange={onLastNameChange} placeholder={"Last Name (Required)"}/>
                                 </label>
                             </div>
 
@@ -215,7 +216,7 @@ export default function DeliveryInfo(props) {
                                 </label>
                                 
                                 <label>Mobile Number:
-                                    <input className={`order_textfield${validationErrors.phoneNumber !== undefined ? ' input-error' : ''}`} type="phone" name="phone" value={phoneNumber} onChange={onPhoneNumberChange} placeholder={"Phone Number (Required)"}/>
+                                    <input className={`order_textfield${validationErrors.phoneNumber !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="12" type="phone" name="phone" value={formattedPhoneNumber(phoneNumber)} onChange={onPhoneNumberChange} placeholder={"Phone Number (Required)"}/>
                                 </label>
                             </div>
                         </div>
@@ -264,7 +265,7 @@ export default function DeliveryInfo(props) {
                             <div className="checkout--form-container">
                                 <div className="checkout--form-field-col">
                                     <label>ZIP:
-                                        <input className={`order_textfield textfield_zip${validationErrors.zipcode !== undefined ? ' input-error' : ''}`} type="number" name="zipcode" maxLength={5} value={zipcode} onChange={onZipcodeChange} placeholder={"ZIP Code (Required)"}/>
+                                        <input className={`order_textfield textfield_zip${validationErrors.zipcode !== undefined ? ' input-error' : ''}`} type="text" name="zipcode" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={onZipcodeChange} placeholder={"ZIP Code (Required)"}/>
                                     </label>
                                 </div>
                             </div>
@@ -326,11 +327,11 @@ export default function DeliveryInfo(props) {
                      <input className="order_textarea" type="textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Delivery Instructions"}/>
                  </section> */}
                  <section className="checkout--deliveryinfo-top">
-                    <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> <img src={iconEdit} width={65} className="iconEdit" /></span></h3>
+                    <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> { currentStep === step && <img src={iconEdit} width={65} className="iconEdit" />}</span></h3>
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
-                            <p>{phoneNumber}</p>
+                            <p>{formattedPhoneNumber(phoneNumber)}</p>
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
                     </section>
@@ -364,6 +365,12 @@ export default function DeliveryInfo(props) {
             }
 
             <hr></hr>
+
+            <div className="place-order-container">
+                <button className="btn btn-primary-small btn-place-order" onClick={handleContinue}>
+                    PLACE ORDER
+                </button>
+            </div>
             
             
         </div>

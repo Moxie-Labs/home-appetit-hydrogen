@@ -9,7 +9,15 @@
     top: 0;
     text-align: center;
     line-height: 3.75rem;
-    z-index: 999;
+    z-index: 1;
+    padding: 3px;
+}
+
+.header-inner{
+    display: flex;
+    justify-content: space-between;
+    max-width: 1440px;
+    margin: auto;
 }
 
 .header img{
@@ -17,3 +25,30 @@
     margin: auto;
     vertical-align: middle;
 }
+
+.nav-wrapper ul {
+    display: flex;
+    gap: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-wrapper ul li {
+    list-style: none;
+    padding-top: 0.5rem;
+}
+
+.logo {
+    width: 30%;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+}
+
+.nav-wrapper ul li a {
+    color: #474442;
+    text-decoration: none;
+    font-family: 'ITC Avant Garde Gothic W03 Md';
+}
+
