@@ -2,7 +2,7 @@ import {useState} from 'react';
 import logo from "../assets/logo.png";
 import { LogoutButton } from './LogoutButton.client';
 
-export function Header(){
+export function Header(props){
     const [isHovering, setIsHovering] = useState(false);
 
     const handleMouseOver = () => {
@@ -12,6 +12,21 @@ export function Header(){
     const handleMouseOut = () => {
       setIsHovering(false);
     };
+
+    const {customerAccessToken} = props;
+
+    let accountSection = <li><a href="/account/login" className='btn-order-cta'>LOGIN</a></li>
+    
+    if (customerAccessToken) 
+        accountSection = <li><a href="/account" className="my-account-trigger" onMouseOver={handleMouseOver} >MY ACCOUNT</a>              
+            {isHovering && (
+                <ul className="account-dropdown">
+                        <li><LogoutButton onMouseOut={handleMouseOut}/></li>
+                    </ul>
+                )}
+            </li>;
+
+
 
    return(
         <div className="header">
@@ -31,15 +46,7 @@ export function Header(){
                 <div className="nav-wrapper">
                     <ul>
                         <li><a href="/order" className="btn-order-cta">ORDER NOW</a></li>
-                        <li><a href="#" className="my-account-trigger" onMouseOver={handleMouseOver} >MY ACCOUNT</a>
-                            
-                        {isHovering && (
-                            <ul className="account-dropdown">
-                                    <li><LogoutButton onMouseOut={handleMouseOut}/></li>
-                                </ul>
-                            )}
-                           
-                        </li>
+                        {accountSection}
                         
                     </ul>
                 </div>
