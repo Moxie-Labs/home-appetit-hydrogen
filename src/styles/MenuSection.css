@@ -23,6 +23,8 @@ p.selectionCount {
     align-items: flex-start;
     padding: 0;
     gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .dish-card-wrapper {
@@ -187,6 +189,19 @@ button.btn-small-plates span img {
     border: 2px solid #474442;
     border-radius: 12.5px;
     display: flex;
+}
+
+@media screen and (max-width: 960px){
+    .progress-bar {
+        position: relative;
+        margin: 1.5rem 0 -0.3rem;
+    }
+}
+
+@media screen and (max-width: 460px){
+    .progress-bar{
+        width: 100%;
+    }
 }
 
 .progress-bar__order-item {

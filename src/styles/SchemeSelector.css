@@ -26,3 +26,33 @@ section#SchemeSelector img.badge {
 .ss-no-underline{
     border-bottom: none !important;
 }
+
+span.badge {
+    margin-left: -0.7rem;
+}
+
+@media screen and (max-width: 960px) {
+    .schemeType {
+        font-size: 18px;
+        margin: 0 1rem 0 0;
+    }
+
+    section#SchemeSelector {
+        margin: -1rem 0 0;
+        position: relative;
+    }
+
+    .order_prop__dropdown{
+        width: 100%;
+    }
+
+    /* .dish-card-wrapper{
+        border-bottom: none;
+    } */
+}
+
+@media screen and (max-width: 360px){
+    section#SchemeSelector{
+        margin-top: 0;
+    }
+}
