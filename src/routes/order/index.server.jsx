@@ -13,7 +13,7 @@ import {
 } from '@shopify/hydrogen';
 import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';
-import { GET_BASE_COLLECTIONS_QUERY, GET_MENUS_QUERY, GET_MOD_COLLECTIONS_QUERY, GET_ZIPCODES_QUERY, GET_CATEGORIES_QUERY } from '../../helpers/queries';
+import { GET_BASE_COLLECTIONS_QUERY, GET_MENUS_QUERY, GET_MOD_COLLECTIONS_QUERY, GET_ZIPCODES_QUERY } from '../../helpers/queries';
 import { PRODUCT_CARD_FRAGMENT } from '../../lib/fragments';
 
 export default function Order({response}) {
