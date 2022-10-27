@@ -23,6 +23,8 @@ p.selectionCount {
     align-items: flex-start;
     padding: 0;
     gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .dish-card-wrapper {
