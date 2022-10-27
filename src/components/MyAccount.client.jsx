@@ -7,6 +7,9 @@ import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
 import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
 import { render } from 'react-dom';
+import { Page } from './Page.client';
+import { Header } from './Header.client';
+import { Footer } from './Footer.client';
 
 
 export default function MyAccount(props) {
@@ -251,62 +254,64 @@ export default function MyAccount(props) {
     
 
     return (
-        <div>
-        <div className='myaccount-wrapper'>
-        <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
-        <div className='myaccount-page'>
-           
+        <Page>
+          <Header/>
+          <div className='myaccount-wrapper'>
+          <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
+            <div className='myaccount-page'>
+              
 
-            <section className='account-panel-switches'>
-                <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
-                
-            </section>
+                <section className='account-panel-switches'>
+                    <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
+                    <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment</h2>
+                    <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
+                    <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
+                    
+                </section>
 
-            <section className='account-panel-body'>
-                { activeTab === 'info' &&
-                    <PersonalInfo
-                        customer={customer}
-                        acceptsMarketing={acceptsMarketing}
-                        handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
-                        handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}
-                        handleUpdateAddress={(newAddress) => updateAddress(newAddress)}
-                        handleRemoveAddress={(addressId) => removeAddress(addressId)}
-                        handleNewAddress={(newAddress) => addAddress(newAddress)}
-                        handleUpdateDefault={(address) => defaultAddress(address)}
-                    /> 
-                }
+                <section className='account-panel-body'>
+                    { activeTab === 'info' &&
+                        <PersonalInfo
+                            customer={customer}
+                            acceptsMarketing={acceptsMarketing}
+                            handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
+                            handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}
+                            handleUpdateAddress={(newAddress) => updateAddress(newAddress)}
+                            handleRemoveAddress={(addressId) => removeAddress(addressId)}
+                            handleNewAddress={(newAddress) => addAddress(newAddress)}
+                            handleUpdateDefault={(address) => defaultAddress(address)}
+                        /> 
+                    }
 
-                { activeTab === 'payment' &&
-                    <Payment
-                        customer={customer}
-                        payments={customer.payments}
-                        handleAddCard={(number, name, expiry) => addCard(number, name, expiry)}
-                        handleRemoveCard={(index) => removeCard(index)}
-                    /> 
-                }
+                    { activeTab === 'payment' &&
+                        <Payment
+                            customer={customer}
+                            payments={customer.payments}
+                            handleAddCard={(number, name, expiry) => addCard(number, name, expiry)}
+                            handleRemoveCard={(index) => removeCard(index)}
+                        /> 
+                    }
 
-                { activeTab === 'orders' &&
-                    <Orders
-                        orders={orders}
-                    /> 
-                }
+                    { activeTab === 'orders' &&
+                        <Orders
+                            orders={orders}
+                        /> 
+                    }
 
-                { activeTab === 'gift_cards' &&
-                    <GiftCards
-                        customer={customer}
-                        giftBalance={rewards.giftCardBalance}
-                        referralCredit={rewards.referralBalance}
-                    /> 
-                }
-            </section>
+                    { activeTab === 'gift_cards' &&
+                        <GiftCards
+                            customer={customer}
+                            giftBalance={rewards.giftCardBalance}
+                            referralCredit={rewards.referralBalance}
+                        /> 
+                    }
+                </section>
 
-        </div>
-        </div>
+            </div>
+          </div>
 
-        </div>
+          <Footer/>
+        </Page>
     );
 }
 

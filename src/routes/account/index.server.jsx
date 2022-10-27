@@ -57,8 +57,7 @@ function AuthenticatedAccount({
   const orders = flattenConnection(customer?.orders) || [];
 
   return (
-    <Page>
-    <Header />
+    <>
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account details'}} />
@@ -70,8 +69,7 @@ function AuthenticatedAccount({
       />
 
     </Layout>
-    <Footer />
-    </Page>
+    </>
   );
 }
 
