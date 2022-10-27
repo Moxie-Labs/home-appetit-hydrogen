@@ -1,5 +1,8 @@
 import {useState} from 'react';
 import logo from "../assets/logo.png";
+import hamburgerMenu from "../assets/hamburger-menu.png";
+import iconDropdownArrow from "../assets/icon-dropdown-arrow.png";
+import iconDropdownReverse from "../assets/icon-dropdown-reverse.png";
 import { LogoutButton } from './LogoutButton.client';
 
 export function Header(prop){
@@ -18,8 +21,11 @@ export function Header(prop){
    return(
         <div className="header">
             <div className="header-inner">
+                <div className="mobile-menu">
+                    <img src={hamburgerMenu} width="24"/>
+                </div>
                 {!isOrdering &&
-                <div className="nav-wrapper">
+                <div className="nav-wrapper nav-main">
                     <ul>
                         <li><a href={`https://${rootUrl}/pages/how-it-works`}>HOW IT WORKS</a></li>
                         <li><a href={`https://${rootUrl}/pages/why-home-appetit`}>WHY HOME APPETIT</a></li>
@@ -29,21 +35,22 @@ export function Header(prop){
                 }
                 <div className="logo">
                     <a href={`https://${rootUrl}`}>
-                     <img src={logo} />
+                     <img src={logo}/>
                      </a>
                 </div>
                 {!isOrdering &&
                 <div className="nav-wrapper">
                     <ul>
-                        <li><a href="/order" className="btn-order-cta">ORDER NOW</a></li>
-                        <li><a href="/account" className="my-account-trigger" onMouseOver={handleMouseOver}>ACCOUNT</a>
+                        <li><a href="/order" className="btn-order-cta mobile-order-cta">ORDER</a></li>
+                        <li><a href="/order" className="btn-order-cta desktop-order-cta">ORDER NOW</a></li>
+                        <li><a href="/account" className="my-account-trigger nav-main" onMouseOver={handleMouseOver}>ACCOUNT &nbsp;<span> {isHovering && <img src={iconDropdownReverse} />}{!isHovering && <img src={iconDropdownArrow} />}</span></a>
                             
                         {isHovering && (
                             <ul className="account-dropdown">
                                     <li><a href="#">My Account</a></li>
                                     <li><a href="#">Orders</a></li>
                                     <li><a href="#">Referrals</a></li>
-                                    <li><LogoutButton onMouseOut={handleMouseOut} redirectURL={`https://${rootUrl}`}/></li>
+                                    <li><LogoutButton onMouseOut={handleMouseOut} redirectUrl={`https://${rootUrl}`}/></li>
                                 </ul>
                             )}
                            
