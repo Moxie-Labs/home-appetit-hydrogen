@@ -34,24 +34,28 @@ export default class OrderSummary extends React.Component {
     showToastMessage() {
     }
 
+
     orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal){
+        
+        const { freeQuantityLimit } = this.props;
+
         return (
             <section className="order-summary--enlarged-items">
                 <section className="order-summary--items main-items main--items-scheme">
                     <h4>{activeSchemeDisplay}</h4>
-                    { activeScheme === 'traditional' && <section className="order-summary--scheme-details">
+                    <section className="order-summary--scheme-details">
                         <ul>
                             <li className="order-summary--item">
                                 <span className="order-summary--item-name">{servingCount} people</span>
                                 <span className="order-summary--item-value">${pricingMultiplier}.00</span>
                             </li>
                         </ul>
-                    </section> }
+                    </section>
                     
                 </section>
                 
                 <section className="order-summary--items main-items">
-                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} { activeScheme === 'traditional' && `of 4` } Entrées { Object.keys(mainItemList).length !== 0 && <span><img src={editIcon}/></span> }</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} of {freeQuantityLimit} Entrées { Object.keys(mainItemList).length !== 0 && <span><img src={editIcon}/></span> }</h4>
                     <ul>
                         {mainItemList} 
                     </ul>
@@ -63,7 +67,7 @@ export default class OrderSummary extends React.Component {
                 </section>      
 
                 <section className="order-summary--items small-items">
-                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} { activeScheme === 'traditional' && `of 4` } Small Plates { Object.keys(smallItemList).length !== 0 && <span><img src={editIcon}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of {freeQuantityLimit} Small Plates { Object.keys(smallItemList).length !== 0 && <span><img src={editIcon}/></span>}</h4>
                     <ul>
                         {smallItemList}
                     </ul>
@@ -105,7 +109,6 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`main-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
-                    { activeScheme === 'flexible' && <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span> }
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
                             <span>→ {this.prepModSubTitles(mod.title)}</span>
@@ -135,7 +138,6 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
-                    { activeScheme === 'flexible' && <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span> }
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
                             <span>→ {this.prepModSubTitles(mod.title)}</span>

@@ -65,9 +65,9 @@ export function OrderSection(props) {
     
 
     const [totalPrice, setTotalPrice] = useState(100.0)
-    const [servingCount, setServingCount] = useState(1)
+    const [servingCount, setServingCount] = useState(3)
     const [selection, setSelections] = useState([])
-    const [activeScheme, setActiveScheme] = useState('traditional')
+    const [activeScheme, setActiveScheme] = useState('flexible')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
 
@@ -309,19 +309,15 @@ export function OrderSection(props) {
     }
 
     const isSectionFilled = (collection) => {
-        return ((activeScheme === 'traditional') && getQuantityTotal(collection) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP)
+        return getQuantityTotal(collection) >= getFreeQuantityLimit() && currentStep !== ADD_ON_STEP;
     }
 
     const getOrderTotal = () => {
         let total = parseFloat(planPricingMultiplier);
         selectedSmallItems.forEach(item => {
             item.selectedMods?.map(mod => {
-                // TODO: add support for Flex plan quantity differences
                 total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
             });
-            
-            if (activeScheme === 'flexible')
-                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedSmallItemsExtra.forEach(item => {
             item.selectedMods?.map(mod => {
@@ -333,8 +329,6 @@ export function OrderSection(props) {
             item.selectedMods?.map(mod => {
                 total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
             });
-            if (activeScheme === 'flexible')
-                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedMainItemsExtra.forEach(item => {
             item.selectedMods?.map(mod => {
@@ -493,10 +487,8 @@ export function OrderSection(props) {
     const getVariantType = collection => {
         if (currentStep === ADD_ON_STEP)
             return 0;
-        else if (activeScheme === 'traditional')
+        else 
             return isAddingExtraItems ? 0 : 1;
-        else
-            return 0;
     }
 
 
@@ -592,6 +584,13 @@ export function OrderSection(props) {
             return collectionProducts;
         }
         
+    }
+
+    const getFreeQuantityLimit = () => {
+        if (activeScheme === 'traditional')
+            return FREE_QUANTITY_LIMIT;
+        else
+            return FREE_QUANTITY_LIMIT * servingCount;
     }
 
     /* END Helpers */
@@ -761,10 +760,6 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
-    /* Debug Values */
-
-    /* END Debug Values */
-
 
     return (
         <Page>
@@ -775,12 +770,11 @@ export function OrderSection(props) {
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
 
-                    <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
                     { typeof props.customerAccessToken !== 'undefined' && <p>Signed In Using Token: {customerAccessToken}</p> }
 
                     <Layout>
                         <LayoutSection>
-
+                            <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
                             <div className="dish-card-wrapper order--properties">
                                 <OrderProperties
                                     activeScheme={activeScheme}
@@ -804,7 +798,8 @@ export function OrderSection(props) {
                                     servingCount={servingCount}
                                     choices={choicesEntrees} 
                                     collection={selectedMainItems}
-                                    freeQuantityLimit={FREE_QUANTITY_LIMIT} 
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
@@ -829,7 +824,8 @@ export function OrderSection(props) {
                                     servingCount={servingCount}
                                     choices={choicesGreens} 
                                     collection={selectedSmallItems}
-                                    freeQuantityLimit={FREE_QUANTITY_LIMIT}
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
@@ -855,6 +851,7 @@ export function OrderSection(props) {
                                     choices={choicesAddons} 
                                     collection={selectedAddonItems}
                                     freeQuantityLimit={99}
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedAddonFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
@@ -887,6 +884,7 @@ export function OrderSection(props) {
                                 toastMessages={toastMessages}
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                freeQuantityLimit={getFreeQuantityLimit()} 
                             />  
                         </LayoutSection>
                     </Layout>
@@ -981,6 +979,7 @@ export function OrderSection(props) {
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 getPhase={getPhase(currentStep)}
+                                freeQuantityLimit={getFreeQuantityLimit()} 
                             />  
                         </LayoutSection>
                     </Layout>
@@ -1037,6 +1036,7 @@ export function OrderSection(props) {
                                     showToast={showToast}
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     getPhase={getPhase(currentStep)}
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
                                 />  
                             </LayoutSection>
                         </Layout>
