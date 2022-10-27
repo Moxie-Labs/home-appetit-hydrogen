@@ -4,7 +4,7 @@ export function LogoutButton(props) {
         if (typeof props?.onClick === 'function') {
           props.onClick();
         }
-        window.location.href = props.redirectURL;
+        window.location.href = props.redirectUrl;
       });
     };
   

@@ -7,9 +7,9 @@ import Communication from '../components/Account/Communication.client';
 import GiftCards from '../components/Account/GiftCards.client';
 import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
 import { render } from 'react-dom';
-import {Page} from '../components/Page.client';
-import {Header} from '../components/Header.client';
-import {Footer} from '../components/Footer.client';
+import { Page } from './Page.client';
+import { Header } from './Header.client';
+import { Footer } from './Footer.client';
 import iconDropdownArrow from "../assets/icon-dropdown-arrow.png";
 import iconDropdownReverse from "../assets/icon-dropdown-reverse.png";
 
