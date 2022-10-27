@@ -126,12 +126,17 @@ export default function MyAccount(props) {
     }
 
     const updateCustomerInfo = async (firstName, lastName, email, phone) => {
-        await callAccountUpdateApi({
-            firstName,
-            lastName,
-            email,
-            phone: `+${removePhoneNumberFormatting(phone)}`
-        });
+
+        let updatePayload = {
+          firstName,
+          lastName,
+          email
+        }
+
+        if (phone !== null)
+          updatePayload.phone = `+${removePhoneNumberFormatting(phone)}`
+
+        await callAccountUpdateApi(updatePayload);
 
         renderServerComponents();
     }
