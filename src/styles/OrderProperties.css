@@ -72,8 +72,9 @@ select {
     margin: 40px 0 0 !important;
 }
 
-.order-wrapper {
-    max-width: 1260px !important;
+div .order-wrapper {
+    max-width: 1260px;
+    margin: auto;
 }
 
 @media screen and (max-width: 960px){
@@ -144,7 +145,7 @@ select {
         grid-auto-rows: 1fr;
     }
 
-    .dish-card-wrapper .layout {
+    main#mainContent .dish-card-wrapper .layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 3px !important;

@@ -67,17 +67,15 @@
 
     .payment-wrapper {
         display: flex;
-        /* margin: 80px 0; */
-        width: 1260px;
-        /* justify-content: space-between; */
+        max-width: 1260px;
         margin: auto;
         padding: 0;
-        /* align-content: flex-start; */
         gap: 40px;
+        justify-content: space-between;
     }
 
-    .payment-wrapper main:first-child {
-        flex: 70%;
+    .payment-wrapper main {
+        flex: 1;
     }
 
 .payment-wrapper > .Polaris-Layout:first-child {
@@ -225,4 +223,10 @@
     /* align-self: flex-start; */
     top: 40px;
     align-self: flex-start;
+}
+
+@media screen and (max-width: 960px) {
+    .payment-wrapper main:last-child{
+        align-self: stretch;
+    }
 }
