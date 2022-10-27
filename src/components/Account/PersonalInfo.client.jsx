@@ -240,7 +240,7 @@ export default function PersonalInfo(props) {
                             <h2><span className="info-label">Phone Number:</span> <br /> {formattedPhoneNumber(phone)}</h2>
                         </div>
                     </div>
-                    <button className="btn btn-default">Reset Password</button>
+                    <button className="btn btn-default btn-reset">Reset Password</button>
                 </section>
             }
 

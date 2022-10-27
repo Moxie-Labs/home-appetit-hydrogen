@@ -87,7 +87,7 @@ export function OrderSection(props) {
     const [toastMessages, setToastMessages] = useState([]);
     const [showToast, setShowToast] = useState(false);
 
-    const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
+    const [deliveryWindowStart, setDeliveryWindowStart] = useState(null);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
     const [deliveryWindowDay, setDeliveryWindowDay] = useState(1);
 
@@ -100,6 +100,7 @@ export function OrderSection(props) {
     let [deliveryState, setDeliveryState] = useState(defaultAddress === null ? null : defaultAddress.province);
     let [city, setCity] = useState(isGuest ? null : defaultAddress === null ? null : defaultAddress.city);
     let [zipcode, setZipcode] = useState(defaultAddress === null ? null : defaultAddress.zip);    
+    let [country, setCountry] = useState("United States");
 
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
@@ -597,7 +598,9 @@ export function OrderSection(props) {
 
 
     /* GraphQL Setup */
-    const {entreeProducts, greensProducts, addonProducts} = props;
+
+    const { collectionData, zipcodeType, zipcodeArr, entreeProducts, greensProducts, addonProducts } = props;
+    const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
 
     const existingMainItems = [];
     const existingMainItemsExtra = [];
@@ -766,15 +769,14 @@ export function OrderSection(props) {
     return (
         <Page>
             <Suspense>
-            <Header />
+            <Header 
+            isOrdering = {true}/>
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
 
                     <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
                     { typeof props.customerAccessToken !== 'undefined' && <p>Signed In Using Token: {customerAccessToken}</p> }
-
-                    { zipcodeType === "extended" && <h2>Please Note: Your zipcode is within our extended delivery range, and will incur an additional fee.</h2> }
 
                     <Layout>
                         <LayoutSection>
@@ -927,6 +929,7 @@ export function OrderSection(props) {
                                 city={city}
                                 deliveryState={deliveryState}
                                 zipcode={zipcode}
+                                zipcodeCheck={zipcodeCheck}
                                 instructions={instructions}
                                 extraIce={extraIce}
                                 isGift={isGift}

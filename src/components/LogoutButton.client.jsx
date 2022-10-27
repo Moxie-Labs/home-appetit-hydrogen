@@ -4,13 +4,13 @@ export function LogoutButton(props) {
         if (typeof props?.onClick === 'function') {
           props.onClick();
         }
-        window.location.href = '/account';
+        window.location.href = props.redirectURL;
       });
     };
   
     return (
       <a href="#" className="text-primary/50" {...props} onClick={logout}>
-        LOGOUT
+        Sign Out
       </a>
     );
   }
