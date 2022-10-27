@@ -48,6 +48,21 @@ export default function Order({response}) {
       });
 
       const {
+        data: zipcodeData,
+      } = useShopQuery({
+        query: GET_ZIPCODES_QUERY,
+        cache: CacheLong(),
+        preload: true,
+      });
+
+      const { inrangeZipcodes } = zipcodeData.page;
+      const validZipcodes = JSON.parse(inrangeZipcodes.value)
+      let zipcodeArr = [];
+      validZipcodes.forEach(validCode => {
+        zipcodeArr.push(validCode.zip_code);
+      });
+
+      const {
         data: menuData
       } = useShopQuery({
         query: GET_MENUS_QUERY,
@@ -117,14 +132,15 @@ export default function Order({response}) {
         <Suspense>
             <Layout>
                 <OrderSection
+                  collectionData={collectionData}
+                  zipcodeData={null}
+                  zipcodeArr={zipcodeArr}
                   collectionsById={collectionsById}
                   entreeProducts={entreeProducts}
                   greensProducts={greensProducts}
                   addonProducts={addonProducts}
-                  collectionData={collectionData}
                   customerData={customerData}
                   isGuest={customerData == null}
-                  zipcodeData={null}
                 />
             </Layout>
         </Suspense>
