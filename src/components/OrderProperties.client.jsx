@@ -75,6 +75,11 @@ export default class OrderProperties extends React.Component {
                                 )
                             })}
                         </select>
+                        {currentStep != step &&
+                        <div>
+                            <br />
+                            </div>
+                    }
                     </div>
                 </LayoutSection>
                 

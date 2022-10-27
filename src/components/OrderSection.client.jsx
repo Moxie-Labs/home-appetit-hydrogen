@@ -598,7 +598,7 @@ export function OrderSection(props) {
 
     /* GraphQL Setup */
 
-    const { collectionData, zipcodeType, zipcodeArr } = props;
+    const { collectionData, zipcodeType, zipcodeArr, entreeProducts, greensProducts, addonProducts } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
 
     const existingMainItems = [];
