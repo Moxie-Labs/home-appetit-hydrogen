@@ -57,3 +57,51 @@ form.subscription-form input {
 ul.footer-menu {
     margin-top: -0.5rem;
 }
+
+.copyright {
+    bottom: 30px;
+    position: absolute;
+    opacity: 0.5;
+}
+
+@media screen and (max-width: 960px){
+    .footer-item-wrapper{
+        flex-flow: column;
+    }
+
+    .footer-item-wrapper {
+        flex-flow: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    img.footer-logo {
+        margin: auto;
+        text-align: center;
+        display: flex;
+        align-items: center;
+    }
+
+    .footer .sub-heading{
+        text-align: center;
+    }
+
+    ul.footer-menu {
+        text-align: center;
+        padding: 0;
+    }
+
+    .footer-item .spacer {
+        /* display: none; */
+        margin-bottom: -6.875rem;
+    }
+
+    .footer-item:nth-child(2) {
+        text-align: center;
+        padding-bottom: 3rem;
+    }
+
+    .footer .social-wrapper{
+        gap: 0;
+    }
+}

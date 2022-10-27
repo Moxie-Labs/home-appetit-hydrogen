@@ -8,7 +8,6 @@ export function Footer(){
             <img src={ footerLogo } className="footer-logo"/>
             <div className="footer-item-wrapper">
             <div className="footer-item">
-                
                 <div className="sub-heading">
                     Get Order Reminders
                 </div>
@@ -16,6 +15,9 @@ export function Footer(){
                     <input type="text" placeholder="Enter your email"/>
                     <button type="submit">Sign Up</button>
                 </form>
+                <div className="copyright">
+                © {new Date().getFullYear()} HOME APPÉTIT
+                </div>
             </div>
             <div className="footer-item">
                 <div className="sub-heading">
@@ -27,7 +29,7 @@ export function Footer(){
                 </div>
             </div>
             <div className="footer-item">
-                <div className="sub-heading">
+                <div className="sub-heading spacer">
                     &nbsp;
                 </div>
                 <ul className="footer-menu">
@@ -38,7 +40,7 @@ export function Footer(){
                 </ul>
             </div>
             <div className="footer-item">
-                <div className="sub-heading">
+                <div className="sub-heading spacer">
                     &nbsp;
                 </div>
                 <ul className="footer-menu">
