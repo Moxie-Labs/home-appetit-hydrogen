@@ -75,3 +75,137 @@ select {
 .order-wrapper {
     max-width: 1260px !important;
 }
+
+@media screen and (max-width: 960px){
+    .dish-card-wrapper:first-child section.step-section{
+        flex-flow:column;
+    }
+
+    .illustration-placeholder {
+        height: auto;
+        margin: 1rem 0;
+    }
+
+    section#OrderProperties {
+        gap: 0;
+    }
+
+    section#OrderProperties .default-padding{
+        padding-top: 0;
+    }
+
+    button.btn.btn-primary-small.btn-app {
+        display: block;
+        width: 100%;
+    }
+
+    .dish-card-wrapper.order--properties{
+        padding: 0 0 1rem 0;
+    }
+
+    button.btn.btn-cancel {
+        right: 0;
+        top: 55px;
+        text-align: right;
+    }
+
+    /* .select-wrapper {
+        padding-bottom: 2rem;
+    } */
+
+    .dish-card-wrapper.step-active:after{
+        top: 40px;
+    }
+
+    .dish-card-wrapper section.step-section .p-subheading-width {
+        width: 100%;
+        font-size: 1rem;
+        line-height: 1.625rem;
+    }
+
+    section#OrderProperties .btn-app{
+        font-size: 16px;
+    }
+
+    .button-group {
+        flex-wrap: nowrap;
+        overflow: auto;
+    }
+
+    button.button-group--item.filterButton {
+        width: 100%;
+        white-space: nowrap;
+        margin-left: 0.5rem;
+    }
+
+    .dish-card-item .dish-card{
+        width: 100%;
+        flex: 1;
+        grid-auto-rows: 1fr;
+    }
+
+    .dish-card-wrapper .layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3px !important;
+    }
+
+    .dish-card-item .card__info-section h2, .card__quantity-title{
+        font-size: 14px;
+        line-height: 16px;
+    }
+
+    .dish-card-item .card__info-section p.dish-description{
+        font-size: 11px;
+        line-height: 16px;
+    }
+
+    .dish-card-item .dish-image{
+        height: 120px;
+    }
+
+    .dish-card-item .card__info-section p.card__servings-disclaimer{
+        font-size: 11px;
+        display: block;
+        text-align: left;
+        position: relative;
+        float: none;
+        right: 0;
+    }
+
+    .dish-card-item p.card__code{
+        font-size: 11px;
+        display: block;
+        text-align: left;
+    }
+
+    .dish-card-item .card__info-section {
+        min-height: 140px;
+        padding: 0.625rem;
+    }
+
+    .dish-card-item .card__code {
+        margin-top: 1.5rem;
+        position: relative;
+    }
+
+    .ReactModal__Content.ReactModal__Content--after-open.modal-entree-complete {
+        width: 90%;
+    }
+
+    .ReactModal__Content.ReactModal__Content--after-open.modal-entree-complete .btn.btn-primary-small,.ReactModal__Content.ReactModal__Content--after-open.modal-entree-complete  .btn.btn-secondary-small{
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .dish-card-item .card__quantity-wrapper {
+        position: fixed;
+        width: 75%;
+        margin: auto;
+        height: 50%;
+        z-index: 9999;
+        left: 50%;
+        top: 50%;
+        transform: translate(-60%, -60%);
+    }
+}

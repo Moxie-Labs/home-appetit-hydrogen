@@ -170,8 +170,7 @@
     background: #FFFCF5 !important;
     max-width: 1440px !important;
     margin: 0 auto;
-    padding: 10rem 0 0;
-    /* max-width: 99.8rem; */
+    padding-top: 6rem;
 }
 
 @media (min-width: 46.5em) {
@@ -187,12 +186,12 @@
 }
 
 .layout {
-    display: flex;
+    /* display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
-    margin-top: -1.6rem;
-    /* margin-left: -2rem; */
+    margin-top: 3rem; */
+    margin: auto;
 }
 
 .button-group {

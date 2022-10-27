@@ -10,6 +10,8 @@ import { render } from 'react-dom';
 import { Page } from './Page.client';
 import { Header } from './Header.client';
 import { Footer } from './Footer.client';
+import iconDropdownArrow from "../assets/icon-dropdown-arrow.png";
+import iconDropdownReverse from "../assets/icon-dropdown-reverse.png";
 
 
 export default function MyAccount(props) {
@@ -124,12 +126,17 @@ export default function MyAccount(props) {
     }
 
     const updateCustomerInfo = async (firstName, lastName, email, phone) => {
-        await callAccountUpdateApi({
-            firstName,
-            lastName,
-            email,
-            phone: `+${removePhoneNumberFormatting(phone)}`
-        });
+
+        let updatePayload = {
+          firstName,
+          lastName,
+          email
+        }
+
+        if (phone !== null)
+          updatePayload.phone = `+${removePhoneNumberFormatting(phone)}`
+
+        await callAccountUpdateApi(updatePayload);
 
         renderServerComponents();
     }
@@ -251,67 +258,113 @@ export default function MyAccount(props) {
         renderServerComponents();
     }
 
-    
+    function personalInfoPanel (){
+      return(
+        <section className='account-panel-body'>
+        <PersonalInfo
+            customer={customer}
+            acceptsMarketing={acceptsMarketing}
+            handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
+            handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}
+            handleUpdateAddress={(newAddress) => updateAddress(newAddress)}
+            handleRemoveAddress={(addressId) => removeAddress(addressId)}
+            handleNewAddress={(newAddress) => addAddress(newAddress)}
+            handleUpdateDefault={(address) => defaultAddress(address)}
+        /> 
+        </section>
+      )
+    }
+
+    function paymentPanel(){
+      return(
+        <section className='account-panel-body'>
+        <Payment
+          customer={customer}
+          payments={customer.payments}
+          handleAddCard={(number, name, expiry) => addCard(number, name, expiry)}
+          handleRemoveCard={(index) => removeCard(index)}
+      /> 
+      </section>
+      )
+    }
+
+    function ordersPanel(){
+      return(
+        <section className='account-panel-body'>
+        <Orders
+          orders={orders}
+        /> 
+        </section>
+      )
+    }
+
+    function giftCardsPanel(){
+      return(
+        <section className='account-panel-body'>
+        <GiftCards
+            customer={customer}
+            giftBalance={rewards.giftCardBalance}
+            referralCredit={rewards.referralBalance}
+        /> 
+        </section>
+      )
+    }
 
     return (
-        <Page>
-          <Header/>
-          <div className='myaccount-wrapper'>
-          <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
-            <div className='myaccount-page'>
-              
+      <Page>
+      <Header 
+      isOrdering = {false} />
+        <div className='myaccount-wrapper'>
+        <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
+        
+        <div className='myaccount-page desktop-panel'>
+            <section className='account-panel-switches'>
+                <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
+            </section>
+                { activeTab === 'info' &&
+                    personalInfoPanel()
+                }
 
-                <section className='account-panel-switches'>
-                    <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
-                    <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment</h2>
-                    <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
-                    <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals</h2>
-                    
-                </section>
+                { activeTab === 'payment' &&
+                    paymentPanel()
+                }
 
-                <section className='account-panel-body'>
-                    { activeTab === 'info' &&
-                        <PersonalInfo
-                            customer={customer}
-                            acceptsMarketing={acceptsMarketing}
-                            handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
-                            handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}
-                            handleUpdateAddress={(newAddress) => updateAddress(newAddress)}
-                            handleRemoveAddress={(addressId) => removeAddress(addressId)}
-                            handleNewAddress={(newAddress) => addAddress(newAddress)}
-                            handleUpdateDefault={(address) => defaultAddress(address)}
-                        /> 
-                    }
+                { activeTab === 'orders' &&
+                    ordersPanel()
+                }
 
-                    { activeTab === 'payment' &&
-                        <Payment
-                            customer={customer}
-                            payments={customer.payments}
-                            handleAddCard={(number, name, expiry) => addCard(number, name, expiry)}
-                            handleRemoveCard={(index) => removeCard(index)}
-                        /> 
-                    }
-
-                    { activeTab === 'orders' &&
-                        <Orders
-                            orders={orders}
-                        /> 
-                    }
-
-                    { activeTab === 'gift_cards' &&
-                        <GiftCards
-                            customer={customer}
-                            giftBalance={rewards.giftCardBalance}
-                            referralCredit={rewards.referralBalance}
-                        /> 
-                    }
-                </section>
-
+                { activeTab === 'gift_cards' &&
+                    giftCardsPanel()
+                }
+        </div>
+        <div className='myaccount-page mobile-panel'>
+              <section className='account-panel-switches'>
+                  <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info &nbsp;<span>{activeTab === 'info' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'info' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                      { activeTab === 'info' &&
+                          personalInfoPanel()
+                      }
+                  <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment &nbsp;<span>{activeTab === 'payment' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'payment' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                      { activeTab === 'payment' &&
+                          paymentPanel()
+                      }
+                  <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders &nbsp;<span>{activeTab === 'orders' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'orders' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                      { activeTab === 'orders' &&
+                          ordersPanel()
+                      }
+                  <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals &nbsp;<span>{activeTab === 'gift_cards' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'gift_cards' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                      { activeTab === 'gift_cards' &&
+                          giftCardsPanel()
+                      }
+              </section>
             </div>
-          </div>
+        </div>
 
-          <Footer/>
-        </Page>
+        <Footer />
+    </Page>
+
     );
 }
 

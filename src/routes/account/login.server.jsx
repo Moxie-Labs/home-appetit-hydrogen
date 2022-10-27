@@ -124,7 +124,7 @@ export async function api(request, {session, queryShop}) {
       });
 
       return new Response(null, {
-        status: 200,
+        status: 301,
         headers: {Location: redirectDest},
       });
     }
@@ -145,7 +145,7 @@ export async function api(request, {session, queryShop}) {
   
 }
 
-const LOGIN_MUTATION = gql`
+export const LOGIN_MUTATION = gql`
   mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
     customerAccessTokenCreate(input: $input) {
       customerUserErrors {
