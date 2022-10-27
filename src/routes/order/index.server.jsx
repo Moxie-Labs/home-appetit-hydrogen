@@ -1,7 +1,6 @@
 import {Suspense, useCallback, useState} from 'react';
 import {
   CacheLong,
-  CacheNone,
   Seo,
   ShopifyAnalyticsConstants,
   useServerAnalytics,

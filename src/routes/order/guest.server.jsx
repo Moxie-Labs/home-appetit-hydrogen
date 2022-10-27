@@ -11,14 +11,14 @@ import {
 } from '@shopify/hydrogen';
 import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';
-import { GET_CATEGORIES_QUERY, GET_ZIPCODES_QUERY } from '../../helpers/queries';
+import { GET_BASE_COLLECTIONS_QUERY, GET_ZIPCODES_QUERY } from '../../helpers/queries';
 
 export default function Order() {
 
     const {
         data: collectionData,
       } = useShopQuery({
-        query: GET_CATEGORIES_QUERY,
+        query: GET_BASE_COLLECTIONS_QUERY,
         cache: CacheLong(),
         preload: true,
       });
