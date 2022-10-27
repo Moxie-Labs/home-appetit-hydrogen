@@ -768,7 +768,8 @@ export function OrderSection(props) {
     return (
         <Page>
             <Suspense>
-            <Header />
+            <Header 
+            isOrdering = {true}/>
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
