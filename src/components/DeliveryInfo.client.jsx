@@ -15,7 +15,8 @@ export default function DeliveryInfo(props) {
         address2, 
         city, 
         deliveryState,
-        zipcode, 
+        zipcode,
+        zipcodeCheck, 
         instructions,
         extraIce,
         isGift,
@@ -134,6 +135,8 @@ export default function DeliveryInfo(props) {
             errors.deliveryState = "Please choose a state.";
         if (zipcode.length < 5)
             errors.zipcode = "ZIP Code is invalid.";
+        if (zipcodeCheck === undefined)
+            errors.zipcode = "This zipcode is not in our delivery zone.";
 
         return errors;
     

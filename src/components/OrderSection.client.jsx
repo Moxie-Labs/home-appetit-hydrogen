@@ -598,7 +598,9 @@ export function OrderSection(props) {
 
 
     /* GraphQL Setup */
-    const {entreeProducts, greensProducts, addonProducts} = props;
+
+    const { collectionData, zipcodeType, zipcodeArr } = props;
+    const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
 
     const existingMainItems = [];
     const existingMainItemsExtra = [];
@@ -767,7 +769,8 @@ export function OrderSection(props) {
     return (
         <Page>
             <Suspense>
-            <Header />
+            <Header 
+            isOrdering = {true}/>
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
@@ -926,6 +929,7 @@ export function OrderSection(props) {
                                 city={city}
                                 deliveryState={deliveryState}
                                 zipcode={zipcode}
+                                zipcodeCheck={zipcodeCheck}
                                 instructions={instructions}
                                 extraIce={extraIce}
                                 isGift={isGift}
