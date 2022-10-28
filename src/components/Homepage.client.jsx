@@ -6,7 +6,6 @@ export default function Homepage(props) {
     return (
         <>
             <h1>Home Appetit Hydrogen</h1>
-            {  }
             <ul>
                 <li>
                     <Link to="/account">My Account</Link>
@@ -18,13 +17,13 @@ export default function Homepage(props) {
                     <p>Status: Needs Visual Pass</p>
                     <hr></hr>
                 </li>
-                { customerData?.customer !== null && <li>
+                { customerData !== null && <li>
                     <Link to="/order">Order (Logged In)</Link>
                     <p>Logged in as: <b>{customerData.customer?.email}</b></p>
                     <p>Status: Automatically associates Customers to Order when Token is present (such as now)</p>
                     <hr></hr>
                 </li> }
-                { customerData?.customer === null && <li>
+                { customerData === null && <li>
                     <Link to="/order">Order (Guest)</Link>
                     <p>Status: Defaults to Guest When Token is empty (such as now)</p>
                     <hr></hr>

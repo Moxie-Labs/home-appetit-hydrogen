@@ -57,6 +57,7 @@ function AuthenticatedAccount({
   const orders = flattenConnection(customer?.orders) || [];
 
   return (
+    <>
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account details'}} />
@@ -68,7 +69,7 @@ function AuthenticatedAccount({
       />
 
     </Layout>
-
+    </>
   );
 }
 
@@ -102,6 +103,8 @@ export async function api(request, {session, queryShop}) {
   if (lastName) customer.lastName = lastName;
   if (newPassword) customer.password = newPassword;
   if (acceptsMarketing !== undefined) customer.acceptsMarketing = acceptsMarketing;
+  
+  console.log(`customer: ${Object.values(customer)}`);
 
   const {data, errors} = await queryShop({
     query: CUSTOMER_UPDATE_MUTATION,
