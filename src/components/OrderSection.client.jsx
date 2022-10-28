@@ -12,9 +12,10 @@ import OrderConfirmation from "./OrderConfirmation.client";
 import { CompleteSignUp } from "./CompleteSignup.client";
 import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
-
+import DebugValues from "./DebugValues.client";
 
 // base configurations
+const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG;
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
 const FIRST_STEP = 1;
@@ -774,12 +775,19 @@ export function OrderSection(props) {
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
-
-                    <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
-                    { typeof props.customerAccessToken !== 'undefined' && <p>Signed In Using Token: {customerAccessToken}</p> }
-
                     <Layout>
                         <LayoutSection>
+
+                        { SHOW_DEBUG && 
+                            <section>
+                                <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+                                <DebugValues
+                                    isAddingExtraItems={isAddingExtraItems}
+                                    selectedMainItems={selectedMainItems}
+                                    selectedMainItemsExtra={selectedMainItemsExtra}
+                                />
+                            </section> 
+                        }
 
                             <div className="dish-card-wrapper order--properties">
                                 <OrderProperties
