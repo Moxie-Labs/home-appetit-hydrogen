@@ -163,22 +163,12 @@ export default function DeliveryInfo(props) {
                 <div>
                     <section className="checkout--deliveryinfo-top">
                         <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> <img src={iconEdit} width={65} className="iconEdit" /></span></h3>
-                        {
-                        firstName === null || 
-                        lastName === null || 
-                        emailAddress === null || 
-                        phoneNumber === null || 
-                        zipcode === null || 
-                        deliveryState === null ? 
-                        <div className="contact-info">Please click on edit icon and fill all the *required delivery information</div> 
-                        : 
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
                             <p>{formattedPhoneNumber(phoneNumber)}</p>
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
-                        }
                     </section>
 
                     <label className="delivery-window_label">Delivery Instructions</label>
@@ -345,22 +335,12 @@ export default function DeliveryInfo(props) {
                  </section> */}
                     <section className="checkout--deliveryinfo-top">
                         <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> {currentStep === step && <img src={iconEdit} width={65} className="iconEdit" />}</span></h3>
-                        {
-                        firstName === null || 
-                        lastName === null || 
-                        emailAddress === null || 
-                        phoneNumber === null || 
-                        zipcode === null || 
-                        deliveryState === null ? 
-                        <div className="contact-info">Please click on edit icon and fill all the *required delivery information</div> 
-                        : 
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
                             <p>{formattedPhoneNumber(phoneNumber)}</p>
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
-                        }
                     </section>
                     <label className="delivery-window_label">Delivery Instructions</label>
                     <section className="checkout--deliveryinfo-top">

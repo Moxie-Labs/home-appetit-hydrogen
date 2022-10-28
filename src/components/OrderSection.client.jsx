@@ -910,11 +910,12 @@ export function OrderSection(props) {
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
-                                handleContinue={() => setCurrentStep(6)}
+                                handleContinue={() => {setCurrentStep(6); setIsEditing(isGuest)}}
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={5}
                                 currentStep={currentStep}
                                 isEditing={isEditing}
+                                setIsEditing={setIsEditing}
                             />
 
                         </LayoutSection>

@@ -22,6 +22,8 @@ export default function DeliveryWindow(props) {
         isEditing
     } = props;
 
+    const [selection, setSelection] = useState(false);
+
     const filteredEndOptions = availableDeliveryEnds.filter((option) => {
         return (!(option <= deliveryWindowStart));
     });
@@ -86,7 +88,7 @@ export default function DeliveryWindow(props) {
 
                     <label className="delivery-window_label">Delivery Window</label>
                     <div className="checkout--delivery-window-selectors">
-                        <select className="order_delivery__dropdown left" style={{backgroundImage: `url(${iconArrowDown})`}} value={deliveryWindowStart} onChange={handleChangeStart}>
+                        <select className="order_delivery__dropdown left" style={{backgroundImage: `url(${iconArrowDown})`}} value={deliveryWindowStart} onChange={(value) => {handleChangeStart(value); setSelection(true)}}>
                             <option selected disabled>- Select a Window -</option>
                             {startOptions}
                         </select> 
@@ -97,7 +99,7 @@ export default function DeliveryWindow(props) {
                     </div>
 
                     <div className="checkout--delivery-window-actions">
-                        <button className="btn btn-primary-small btn-confirm btn-app" onClick={handleContinue}>
+                        <button className={`btn btn-primary-small btn-confirm btn-app ${selection ? '' : 'disabled'}`} onClick={handleContinue}>
                             CONFIRM
                         </button>
                     </div> 
