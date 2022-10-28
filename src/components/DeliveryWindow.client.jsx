@@ -18,8 +18,11 @@ export default function DeliveryWindow(props) {
         handleContinue, 
         handleCancel,
         step,
-        currentStep
+        currentStep,
+        isEditing
     } = props;
+
+    const [selection, setSelection] = useState(false);
 
     const filteredEndOptions = availableDeliveryEnds.filter((option) => {
         return (!(option <= deliveryWindowStart));
@@ -67,7 +70,7 @@ export default function DeliveryWindow(props) {
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 
     return (
-        <div className="checkout-section checkout--delivery-window">
+        <div className={`checkout-section checkout--delivery-window ${isEditing ? 'disabled' : ''}`}>
             
             <h2 className="order_delivery__window-title heading order_prop__heading ha-h3">Select Delivery Window  
             { currentStep !== step && 
@@ -85,7 +88,7 @@ export default function DeliveryWindow(props) {
 
                     <label className="delivery-window_label">Delivery Window</label>
                     <div className="checkout--delivery-window-selectors">
-                        <select className="order_delivery__dropdown left" style={{backgroundImage: `url(${iconArrowDown})`}} value={deliveryWindowStart} onChange={handleChangeStart}>
+                        <select className="order_delivery__dropdown left" style={{backgroundImage: `url(${iconArrowDown})`}} value={deliveryWindowStart} onChange={(value) => {handleChangeStart(value); setSelection(true)}}>
                             <option selected disabled>- Select a Window -</option>
                             {startOptions}
                         </select> 
@@ -96,7 +99,7 @@ export default function DeliveryWindow(props) {
                     </div>
 
                     <div className="checkout--delivery-window-actions">
-                        <button className="btn btn-primary-small btn-confirm btn-app" onClick={handleContinue}>
+                        <button className={`btn btn-primary-small btn-confirm btn-app ${selection ? '' : 'disabled'}`} onClick={handleContinue}>
                             CONFIRM
                         </button>
                     </div> 

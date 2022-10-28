@@ -10,6 +10,13 @@
     clear: both;
 }
 
+.checkout-section.disabled{
+    cursor: unset;
+    opacity: 0.6;
+    transition: opacity 0.1s linear 0s;
+    pointer-events: none;
+}
+
 .contact-info{
     margin: 20px 0;
 }
