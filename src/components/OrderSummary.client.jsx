@@ -98,7 +98,7 @@ export default class OrderSummary extends React.Component {
     }
 
     render() {
-        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase} = this.props;
+        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing} = this.props;
         const {enlarged} = this.state;
 
         const mainItemList = selectedMainItems.map((item, i) => {
@@ -195,7 +195,7 @@ export default class OrderSummary extends React.Component {
 
 
         return (
-            <section className="order-summary">
+            <section className={`order-summary ${isEditing ? 'disabled' : ''}`}>
                 <section className="order-summary--inner" onClick={() => this.toggleEnlarge()}>
 
                 { getPhase !== "payment" && getPhase !== "confirmation" && summaryHeading }

@@ -7,30 +7,30 @@ import { Checkbox } from './Checkbox.client';
 export default function DeliveryInfo(props) {
 
     const {
-        firstName, 
-        lastName, 
-        emailAddress, 
-        phoneNumber, 
-        address, 
-        address2, 
-        city, 
+        firstName,
+        lastName,
+        emailAddress,
+        phoneNumber,
+        address,
+        address2,
+        city,
         deliveryState,
         zipcode,
-        zipcodeCheck, 
+        zipcodeCheck,
         instructions,
         extraIce,
         isGift,
         giftMessage,
         agreeToTerms,
         receiveTexts,
-        handleFirstNameChange, 
-        handleLastNameChange, 
-        handleEmailChange, 
-        handlePhoneNumberChange, 
-        handleAddressChange, 
-        handleAddress2Change, 
-        handleCityChange, 
-        handleZipcodeChange, 
+        handleFirstNameChange,
+        handleLastNameChange,
+        handleEmailChange,
+        handlePhoneNumberChange,
+        handleAddressChange,
+        handleAddress2Change,
+        handleCityChange,
+        handleZipcodeChange,
         handleStateChange,
         handleInstructionChange,
         handleExtraIce,
@@ -42,14 +42,15 @@ export default function DeliveryInfo(props) {
         handleCancel,
         step,
         currentStep,
-        isGuest
+        isGuest,
+        isEditing,
+        setIsEditing,
     } = props;
 
-    const [isEditing, setIsEditing] = useState(isGuest);
 
     const [validationErrors, setValidationErrors] = useState({});
 
-    const listOfStates = ['Alabama','Alaska','American Samoa','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Federated States of Micronesia','Florida','Georgia','Guam','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Marshall Islands','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Northern Mariana Islands','Ohio','Oklahoma','Oregon','Palau','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virgin Island','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+    const listOfStates = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
     const stateOptions = listOfStates.map((state, i) => {
         return <option key={i} value={state}>{state}</option>
@@ -58,7 +59,7 @@ export default function DeliveryInfo(props) {
     const onFirstNameChange = (event) => {
         handleFirstNameChange(event.target.value);
     }
-    
+
     const onLastNameChange = (event) => {
         handleLastNameChange(event.target.value);
     }
@@ -74,9 +75,9 @@ export default function DeliveryInfo(props) {
     const formattedPhoneNumber = number => {
         if (number === null || number.length < 1)
             return null;
-        
+
         let match = number.match(/^(\d{3})(\d{3})(\d{4})$/);
-        
+
         if (match && number.length > 9) {
             let intlCode = '+1';
             return [intlCode, match[1], match[2], match[3]].join('')
@@ -113,6 +114,7 @@ export default function DeliveryInfo(props) {
         const errors = getFormErrors();
         if (Object.keys(errors).length === 0) {
             setIsEditing(false);
+            setValidationErrors({});
             handleContinue;
         } else {
             setValidationErrors(errors);
@@ -139,7 +141,7 @@ export default function DeliveryInfo(props) {
             errors.zipcode = "This zipcode is not in our delivery zone.";
 
         return errors;
-    
+
     }
 
     const errorList = Object.values(validationErrors).map((error, i) => {
@@ -148,32 +150,42 @@ export default function DeliveryInfo(props) {
 
 
     return (
-        <div className="checkout-section checkout--delivery-info">
+        <div className={`checkout-section checkout--delivery-info ${currentStep === step ? '' : 'disabled'}`}>
 
-            { Object.keys(validationErrors).length > 0 && 
+            { Object.keys(validationErrors).length > 0 &&
                 <ul>
                     {errorList}
                 </ul>
-                
+
             }
 
-            { currentStep === step && !isEditing && 
+            { currentStep === step && !isEditing &&
                 <div>
                     <section className="checkout--deliveryinfo-top">
                         <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> <img src={iconEdit} width={65} className="iconEdit" /></span></h3>
+                        {
+                        firstName === null || 
+                        lastName === null || 
+                        emailAddress === null || 
+                        phoneNumber === null || 
+                        zipcode === null || 
+                        deliveryState === null ? 
+                        <div className="contact-info">Please click on edit icon and fill all the *required delivery information</div> 
+                        : 
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
                             <p>{formattedPhoneNumber(phoneNumber)}</p>
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
+                        }
                     </section>
 
                     <label className="delivery-window_label">Delivery Instructions</label>
                     <section className="checkout--deliveryinfo-top">
                         <textarea className="order_textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Enter instructions for finding or delivering to your location"} rows="6"></textarea>
                     </section>
-                    
+
                     {/* OPTION PLACEHOLDER */}
                     <div className="contact-option">
                         <Checkbox
@@ -187,19 +199,19 @@ export default function DeliveryInfo(props) {
                             onChange={() => handleIsGift(!isGift)}
                         />
 
-                        { isGift && 
+                        { isGift &&
                             <section className="checkout--deliveryinfo-top">
                                 <label>Gift Message
-                                        <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
-                                </label> 
+                                    <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
+                                </label>
                             </section>
                         }
                     </div>
-                    
+
                 </div>
             }
 
-            { currentStep === step && isEditing &&  
+            { currentStep === step && isEditing &&
                 <div>
                     <section className="checkout--deliveryinfo-top">
                         <h3 className="subheading ha-h3">Contact & Delivery Information</h3>
@@ -219,7 +231,7 @@ export default function DeliveryInfo(props) {
                                 <label>Email:
                                     <input className={`order_textfield${validationErrors.emailAddress !== undefined ? ' input-error' : ''}`} type="text" name="email" value={emailAddress} onChange={onEmailChange} placeholder={"Email Address (Required)"}/>
                                 </label>
-                                
+
                                 <label>Mobile Number:
                                     <input className={`order_textfield${validationErrors.phoneNumber !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="12" type="phone" name="phone" value={formattedPhoneNumber(phoneNumber)} onChange={onPhoneNumberChange} placeholder={"Phone Number (Required)"}/>
                                 </label>
@@ -248,12 +260,12 @@ export default function DeliveryInfo(props) {
                                 <label>Address:
                                     <input className={`order_textfield${validationErrors.address !== undefined ? ' input-error' : ''}`} type="text" name="address" value={address} onChange={onAddressChange} placeholder={"Address (Required)"}/>
                                 </label>
-                                
+
                                 <label>Address 2:
                                     <input className="order_textfield" type="text" name="address2" value={address2} onChange={onAddress2Change} placeholder={"Address 2"}/>
                                 </label>
                             </div>
-                            
+
                             <div className="checkout--form-field-col">
                                 <label>City:
                                     <input className={`order_textfield${validationErrors.city !== undefined ? ' input-error' : ''}`} type="text" name="city" value={city} onChange={onCityChange} placeholder={"City (Required)"}/>
@@ -265,16 +277,16 @@ export default function DeliveryInfo(props) {
                                     </select>
                                 </label>
                             </div>
-                            </div>
+                        </div>
 
-                            <div className="checkout--form-container">
-                                <div className="checkout--form-field-col">
-                                    <label>ZIP:
-                                        <input className={`order_textfield textfield_zip${validationErrors.zipcode !== undefined ? ' input-error' : ''}`} type="text" name="zipcode" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={onZipcodeChange} placeholder={"ZIP Code (Required)"}/>
-                                    </label>
-                                </div>
+                        <div className="checkout--form-container">
+                            <div className="checkout--form-field-col">
+                                <label>ZIP:
+                                    <input className={`order_textfield textfield_zip${validationErrors.zipcode !== undefined ? ' input-error' : ''}`} type="text" name="zipcode" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={onZipcodeChange} placeholder={"ZIP Code (Required)"}/>
+                                </label>
                             </div>
-                        
+                        </div>
+
                         <label>Delivery instructions
                             <textarea className="order_textarea" type="textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Delivery Instructions"} rows="6"></textarea>
                         </label>
@@ -291,11 +303,11 @@ export default function DeliveryInfo(props) {
                                 onChange={() => handleIsGift(!isGift)}
                             />
 
-                            { isGift && 
+                            { isGift &&
                                 <section className="checkout--deliveryinfo-top">
                                     <label>Gift Message
-                                            <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
-                                    </label> 
+                                        <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
+                                    </label>
                                 </section>
                             }
                         </div>
@@ -319,65 +331,75 @@ export default function DeliveryInfo(props) {
 
             }
 
-            { currentStep !== step &&  
-                 <div>
-                 {/* <section className="checkout--deliveryinfo-top">
+            { currentStep !== step &&
+                <div>
+                    {/* <section className="checkout--deliveryinfo-top">
                      <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}>Edit</span></h3>
                      <p>{firstName} {lastName}</p>
                      <p>{emailAddress}</p>
                      <p>{phoneNumber}</p>
                      <p>{address}, {deliveryState} {zipcode}</p>
                  </section>  */}
-                 {/* <section className="checkout--deliveryinfo-top">
+                    {/* <section className="checkout--deliveryinfo-top">
                      <input className="order_textarea" type="textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Delivery Instructions"}/>
                  </section> */}
-                 <section className="checkout--deliveryinfo-top">
-                    <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> { currentStep === step && <img src={iconEdit} width={65} className="iconEdit" />}</span></h3>
+                    <section className="checkout--deliveryinfo-top">
+                        <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> {currentStep === step && <img src={iconEdit} width={65} className="iconEdit" />}</span></h3>
+                        {
+                        firstName === null || 
+                        lastName === null || 
+                        emailAddress === null || 
+                        phoneNumber === null || 
+                        zipcode === null || 
+                        deliveryState === null ? 
+                        <div className="contact-info">Please click on edit icon and fill all the *required delivery information</div> 
+                        : 
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{emailAddress}</p>
                             <p>{formattedPhoneNumber(phoneNumber)}</p>
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
+                        }
                     </section>
-                <label className="delivery-window_label">Delivery Instructions</label>
-                <section className="checkout--deliveryinfo-top">
-                    <textarea className="order_textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Enter instructions for finding or delivering to your location"} rows="6"></textarea>
-                </section>
-                <div className="contact-option edit-state">
-                    <Checkbox
-                        label="Include extra ice $5.00"
-                        checked={extraIce}
-                        onChange={() => handleExtraIce(!extraIce)}
-                    />
-                    <Checkbox
-                        label="This order is a gift"
-                        checked={isGift}
-                        onChange={() => handleIsGift(!isGift)}
-                    />
+                    <label className="delivery-window_label">Delivery Instructions</label>
+                    <section className="checkout--deliveryinfo-top">
+                        <textarea className="order_textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Enter instructions for finding or delivering to your location"} rows="6"></textarea>
+                    </section>
+                    <div className="contact-option edit-state">
+                        <Checkbox
+                            label="Include extra ice $5.00"
+                            checked={extraIce}
+                            onChange={() => handleExtraIce(!extraIce)}
+                        />
+                        <Checkbox
+                            label="This order is a gift"
+                            checked={isGift}
+                            onChange={() => handleIsGift(!isGift)}
+                        />
 
-                    { isGift && 
-                        <section className="checkout--deliveryinfo-top">
-                            <label>Gift Message
+                        { isGift &&
+                            <section className="checkout--deliveryinfo-top">
+                                <label>Gift Message
                                     <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
-                            </label> 
-                        </section>
-                    }
+                                </label>
+                            </section>
+                        }
 
 
+                    </div>
                 </div>
-             </div>
             }
 
             <hr></hr>
 
             <div className="place-order-container">
-                <button className="btn btn-primary-small btn-place-order" onClick={handleContinue}>
+                <button className={`btn btn-primary-small btn-place-order ${isEditing || firstName === null || lastName === null || emailAddress === null || phoneNumber === null || zipcode === null || deliveryState === null ? 'disabled' : ''}`} onClick={handleContinue}>
                     PLACE ORDER
                 </button>
             </div>
-            
-            
+
+
         </div>
     );
 }

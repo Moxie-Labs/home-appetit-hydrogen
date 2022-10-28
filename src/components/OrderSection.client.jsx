@@ -70,6 +70,7 @@ export function OrderSection(props) {
     const [activeScheme, setActiveScheme] = useState('traditional')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
+    const [isEditing, setIsEditing] = useState(false);
 
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
@@ -913,6 +914,7 @@ export function OrderSection(props) {
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={5}
                                 currentStep={currentStep}
+                                isEditing={isEditing}
                             />
 
                         </LayoutSection>
@@ -959,6 +961,8 @@ export function OrderSection(props) {
                                 step={6}
                                 currentStep={currentStep}
                                 isGuest={isGuest}
+                                isEditing={isEditing}
+                                setIsEditing={setIsEditing}
                             />
 
                         </LayoutSection>
@@ -981,6 +985,7 @@ export function OrderSection(props) {
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 getPhase={getPhase(currentStep)}
+                                isEditing={isEditing}
                             />  
                         </LayoutSection>
                     </Layout>

@@ -18,7 +18,8 @@ export default function DeliveryWindow(props) {
         handleContinue, 
         handleCancel,
         step,
-        currentStep
+        currentStep,
+        isEditing
     } = props;
 
     const filteredEndOptions = availableDeliveryEnds.filter((option) => {
@@ -67,7 +68,7 @@ export default function DeliveryWindow(props) {
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 
     return (
-        <div className="checkout-section checkout--delivery-window">
+        <div className={`checkout-section checkout--delivery-window ${isEditing ? 'disabled' : ''}`}>
             
             <h2 className="order_delivery__window-title heading order_prop__heading ha-h3">Select Delivery Window  
             { currentStep !== step && 
