@@ -181,7 +181,7 @@ export function OrderSection(props) {
 
         const variantType = isIce ? 0 : getVariantType(collection);        
 
-        // if: item was already added, then: update quantity (or remove)
+        // if: item was already added in Traditional, then: update quantity and modifiers (or remove)
         if (doesCartHaveItem(choice, collection) && activeScheme === 'traditional') {
             console.log("addItemToCart::already exists", choice);
             const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
@@ -289,8 +289,17 @@ export function OrderSection(props) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
                 const linesAddPayload = [];
                 console.log("choice selectedMods", choice.selectedMods);
+                
+                let selectedModsAttr = [];
                 choice.selectedMods.map(mod => {
+                    selectedModsAttr.push(mod.title);
                     linesAddPayload.push({ 
+                        attributes: [
+                            { 
+                                key: "baseItemId",
+                                value: choice.choice.productOptions[variantType].node.id
+                            }
+                        ],
                         merchandiseId: mod.variants.edges[0].node.id,
                         quantity: choice.quantity
                     });
@@ -298,7 +307,8 @@ export function OrderSection(props) {
                 
                 linesAddPayload.push({ 
                     merchandiseId: choice.choice.productOptions[variantType].node.id,
-                    quantity: choice.quantity
+                    quantity: choice.quantity,
+                    attributes: selectedModsAttr.length < 1 ? [] : [{key: "Modifier(s)", value: selectedModsAttr.join(", ")}]
                 });
 
                 console.log("linesAddPayload", linesAddPayload);
@@ -795,6 +805,7 @@ export function OrderSection(props) {
                                     extraIceItem={props.extraIceItem}
                                     activeScheme={activeScheme}
                                     cartLines={cartLines}
+                                    checkoutUrl={checkoutUrl}
                                 />
                             </section> 
                         }
