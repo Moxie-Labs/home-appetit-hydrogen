@@ -11,7 +11,7 @@ export default function Index() {
     country: {isoCode: countryCode},
   } = useLocalization();
 
-  if (customerAccessToken != null) {
+  if (customerAccessToken != null && customerAccessToken != '') {
     const {data} = useShopQuery({
       query: CUSTOMER_QUERY,
       variables: {
@@ -22,14 +22,13 @@ export default function Index() {
       cache: CacheNone(),
     });
     customerData = data;
-  }
-    
+  } 
 
   return (
     <div>
       <Homepage
         customerAccessToken={customerAccessToken? customerAccessToken : null}
-        customerData={customerData? customerData : null}
+        customerData={customerData === null ? null : customerData}
       />
     </div>
   );

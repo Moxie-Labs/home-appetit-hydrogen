@@ -36,6 +36,13 @@
     color: #fff;
 }
 
+.btn-confirm.disabled{
+    cursor: unset;
+    opacity: 0.6;
+    transition: opacity 0.1s linear 0s;
+    pointer-events: none;
+}
+
 .btn-secondary {
     background-color: #fff;
     border: 2px solid #2F80ED;
