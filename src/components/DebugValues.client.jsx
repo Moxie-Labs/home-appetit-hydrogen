@@ -35,6 +35,23 @@ export default function DebugValues(props) {
                     </ul>
                 </div>
             }
+
+            <h2>Static Items</h2>
+            {props.traditionalPlanItem.variants.edges.map(edge => {
+                return <li>{edge.node.id}</li>
+            
+            })}
+
+            <h2>Pricing</h2>
+            <p>{props.activeScheme} Plan Price: ${props.planPrice}</p>
+
+            <h2>Cart</h2>
+            <ul>
+            {props.cartLines.map(line => {
+                const {product, variant} = line.merchandise;
+                return <li>{line.quantity}x {product.title}</li>
+            })}
+            </ul>
                     
         </section>
     )

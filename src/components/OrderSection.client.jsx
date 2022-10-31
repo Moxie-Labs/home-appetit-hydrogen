@@ -178,9 +178,9 @@ export function OrderSection(props) {
         return retval;
     }
 
-    const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
+    const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true, isIce=false) => {
 
-        const variantType = getVariantType(collection);        
+        const variantType = isIce ? 0 : getVariantType(collection);        
 
         // if: item was already added, then: update quantity (or remove)
         if (doesCartHaveItem(choice, collection)) {
@@ -316,7 +316,7 @@ export function OrderSection(props) {
     }
 
     const getOrderTotal = () => {
-        let total = parseFloat(planPricingMultiplier);
+        let total = parseFloat(getPlanPrice());
         selectedSmallItems.forEach(item => {
             item.selectedMods?.map(mod => {
                 // TODO: add support for Flex plan quantity differences
@@ -414,7 +414,6 @@ export function OrderSection(props) {
         return daysOfWeek[dayNumber];
     }
 
-    // TODO: grab GUID dynamically
     const addExtraIce = value => {
         const iceItem = ICE_ITEM;
         const iceChoice = {
@@ -423,9 +422,11 @@ export function OrderSection(props) {
             price: parseFloat(iceItem.priceRange.maxVariantPrice.amount),
             description: "",
             imageURL: "",
-            productOptions: []
+            productOptions: iceItem.variants,
+            modifications: [],
+            substitutions: [],
         }
-        addItemToCart({choice: iceChoice, quantity: (value ? 1 : 0)}, selectedAddonItems, "addons");
+        addItemToCart({choice: iceChoice, quantity: (value ? 1 : 0), selectedMods: []}, selectedAddonItems, "addons", true, true);
         setExtraIce(value);
     }
 
@@ -481,15 +482,10 @@ export function OrderSection(props) {
     }
 
     const confirmPersonsCount = () => {
-
-        if (activeScheme === 'traditional') {
-            const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
-
-            linesAdd({
-                merchandiseId: traditionalPlanVariantId,
-                quantity: 1
-            });
-        }
+        linesAdd({
+            merchandiseId: getSelectedPlan().id,
+            quantity: 1
+        });
 
         setCurrentStep(2);
     }
@@ -617,6 +613,16 @@ export function OrderSection(props) {
         setChangePlanModalShowing(false);
     }
 
+    const getSelectedPlan = () => {
+        const selectedPlan = activeScheme === 'traditional' ? props.traditionalPlanItem.variants.edges[Math.max(0,servingCount-1)].node : props.flexiblePlanItem.variants.edges[Math.max(0,servingCount-1)].node;
+        return selectedPlan;
+    }
+
+    const getPlanPrice = () => {
+        const selectedPlan = getSelectedPlan();
+        return parseFloat(selectedPlan.price.amount);
+    }
+
     /* END Helpers */
 
 
@@ -738,15 +744,15 @@ export function OrderSection(props) {
 
 
     /* Static Values */
-    const TRADITIONAL_PLAN_VARIANT_IDS = [
-        "gid://shopify/ProductVariant/43314850169048", // one person
-        "gid://shopify/ProductVariant/43314850201816", // two people, etc.
-        "gid://shopify/ProductVariant/43314850234584",
-        "gid://shopify/ProductVariant/43314850267352",
-        "gid://shopify/ProductVariant/43314850300120"
-    ];
+    const TRADITIONAL_PLAN_VARIANT_IDS = [];
+    props.traditionalPlanItem.variants.edges.map(edge => {
+        TRADITIONAL_PLAN_VARIANT_IDS.push(edge.node.id);
+    });
 
-    const planPricingMultiplier = activeScheme === 'traditional' ? `${50 * servingCount + 50}` : 0.0;
+    const FLEXIBLE_PLAN_VARIANT_IDS = [];
+    props.flexiblePlanItem.variants.edges.map(edge => {
+        FLEXIBLE_PLAN_VARIANT_IDS.push(edge.node.id);
+    });
 
     const filterSmallOptions = [
         {label: 'All Options', value: 'ALL'},
@@ -765,7 +771,7 @@ export function OrderSection(props) {
     ];
 
     const ICE_ITEM = {
-        "id": "gid://shopify/Product/7834911965400",
+        "id": props.extraIceItem.variants.edges[0].node.id,
         "title": "Extra Ice",
         "description": "",
         "tags": [],
@@ -774,12 +780,13 @@ export function OrderSection(props) {
         },
         "priceRange": {
             "minVariantPrice": {
-                "amount": "5.0"
+                "amount": props.extraIceItem.variants.edges[0].node.price.amount
             },
             "maxVariantPrice": {
-                "amount": "5.0"
+                "amount": props.extraIceItem.variants.edges[0].node.price.amount
             }
-        }
+        },
+        "variants": props.extraIceItem.variants.edges
     }
 
     /* END Static Values */
@@ -809,6 +816,12 @@ export function OrderSection(props) {
                                     isAddingExtraItems={isAddingExtraItems}
                                     selectedMainItems={selectedMainItems}
                                     selectedMainItemsExtra={selectedMainItemsExtra}
+                                    traditionalPlanItem={props.traditionalPlanItem}
+                                    planPrice={getPlanPrice()}
+                                    flexiblePlanItems={props.flexiblePlanItems}
+                                    extraIceItem={props.extraIceItem}
+                                    activeScheme={activeScheme}
+                                    cartLines={cartLines}
                                 />
                             </section> 
                         }
@@ -916,7 +929,7 @@ export function OrderSection(props) {
                                 currentStep={currentStep}
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={planPricingMultiplier}
+                                pricingMultiplier={getPlanPrice()}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedMainItemsExtra={[...selectedMainItemsExtra]} 
@@ -1029,7 +1042,7 @@ export function OrderSection(props) {
                             <OrderSummary 
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={planPricingMultiplier}
+                                pricingMultiplier={getPlanPrice()}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedMainItemsExtra={[...selectedMainItemsExtra]} 
@@ -1086,7 +1099,7 @@ export function OrderSection(props) {
                                 <OrderSummary 
                                     activeScheme={activeScheme}
                                     servingCount={servingCount}
-                                    pricingMultiplier={planPricingMultiplier}
+                                    pricingMultiplier={getPlanPrice()}
                                     orderTotal={getOrderTotal()}
                                     selectedMainItems={[...selectedMainItems]} 
                                     selectedMainItemsExtra={[...selectedMainItemsExtra]} 

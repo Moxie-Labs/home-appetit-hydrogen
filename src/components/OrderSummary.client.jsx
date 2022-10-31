@@ -39,14 +39,14 @@ export default class OrderSummary extends React.Component {
             <section className="order-summary--enlarged-items">
                 <section className="order-summary--items main-items main--items-scheme">
                     <h4>{activeSchemeDisplay}</h4>
-                    { activeScheme === 'traditional' && <section className="order-summary--scheme-details">
+                    <section className="order-summary--scheme-details">
                         <ul>
                             <li className="order-summary--item">
-                                <span className="order-summary--item-name">{servingCount} people</span>
+                                <span className="order-summary--item-name">{servingCount} {servingCount > 1 ? 'people' : 'person'}</span>
                                 <span className="order-summary--item-value">${pricingMultiplier}.00</span>
                             </li>
                         </ul>
-                    </section> }
+                    </section>
                     
                 </section>
                 
