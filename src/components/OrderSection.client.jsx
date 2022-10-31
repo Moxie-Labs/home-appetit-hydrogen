@@ -67,7 +67,7 @@ export function OrderSection(props) {
     
 
     const [totalPrice, setTotalPrice] = useState(100.0)
-    const [servingCount, setServingCount] = useState(1)
+    const [servingCount, setServingCount] = useState(0)
     const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState('traditional')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
@@ -476,6 +476,8 @@ export function OrderSection(props) {
         setSelectedMainItems([]);
         setSelectedSmallItems([]);
         setSelectedAddonItems([]);
+        setSelectedMainItemsExtra([]);
+        setSelectedSmallItemsExtra([]);
     }
 
     const confirmPersonsCount = () => {
@@ -803,6 +805,7 @@ export function OrderSection(props) {
                                 <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
                                 <DebugValues
                                     activeScheme={activeScheme}
+                                    servingCount={servingCount}
                                     isAddingExtraItems={isAddingExtraItems}
                                     selectedMainItems={selectedMainItems}
                                     selectedMainItemsExtra={selectedMainItemsExtra}
@@ -816,9 +819,10 @@ export function OrderSection(props) {
                                     handleSchemeChange={(value) => queryChangeActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
-                                    handleCancel={() => console.log("Cancel clicked")}
+                                    handleCancel={() => setCurrentStep(1)}
                                     step={1}
                                     currentStep={currentStep}
+                                    servingCount={servingCount}
                                 />
                             </div>
 
@@ -847,6 +851,7 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
+                                    activeScheme={activeScheme}
                                 />
                             </div>
                             
@@ -873,6 +878,7 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
+                                    activeScheme={activeScheme}
                                 />
                             </div>
 
@@ -899,6 +905,7 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
+                                    activeScheme={activeScheme}
                                 />
                             </div>
 

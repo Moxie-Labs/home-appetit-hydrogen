@@ -10,6 +10,8 @@ export default function DebugValues(props) {
 
             <p>Selected Plan: {props.activeScheme}</p>
 
+            <p>Serving Count: {props.servingCount}</p>
+
             <p>isAddingExtraItems: { isAddingExtraItems ? 'true' : 'false' } </p>
 
             { selectedMainItems !== undefined && 

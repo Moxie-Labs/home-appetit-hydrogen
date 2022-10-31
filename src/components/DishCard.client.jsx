@@ -166,7 +166,7 @@ export default class DishCard extends React.Component {
     }
 
     render() {
-        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice} = this.props;
+        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme} = this.props;
         const {selected, quantity, isCardActive, confirmed, isModModalShowing, checkedOptions, optionCost, selectedMods} = this.state;
         const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
 
@@ -271,7 +271,14 @@ export default class DishCard extends React.Component {
                         </div>
 
                         <div className='modal--flexible-inner'>
-                            <p>*Customizations will be applied to all portions of this dish. For more individualized customizations, please check out our <span className='underline clickable' onClick={() => this.handleChangePlan()}>Flex</span> option.</p>
+                            { activeScheme === 'traditional' && 
+                                <p>*Customizations will be applied to all portions of this dish. For more individualized customizations, please check out our <span className='underline clickable' onClick={() => this.handleChangePlan()}>Flex</span> option.</p>
+                            }
+
+
+                            { activeScheme === 'flexible' && 
+                                <p>*Customizations will not be applied to portions already in the cart. For customizations across all portions, please check out our <span className='underline clickable' onClick={() => this.handleChangePlan()}>Traditional</span> option.</p>
+                            }
 
                         <div className="modal--flexible-container">
                             <h4 className='modal--flexible-heading'>Substitutions</h4>
