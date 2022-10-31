@@ -588,7 +588,7 @@ export function OrderSection(props) {
         if (activeScheme === 'traditional')
             return FREE_QUANTITY_LIMIT;
         else
-            return FREE_QUANTITY_LIMIT * servingCount;
+            return FREE_QUANTITY_LIMIT * Math.max(1, servingCount);
     }
 
     
