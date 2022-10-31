@@ -13,6 +13,7 @@ import { CompleteSignUp } from "./CompleteSignup.client";
 import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
+import Modal from "react-modal/lib/components/Modal";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG;
@@ -72,7 +73,7 @@ export function OrderSection(props) {
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
     const [isEditing, setIsEditing] = useState(false);
-
+    const [isChangePlanModalShowing, setChangePlanModalShowing] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -596,6 +597,24 @@ export function OrderSection(props) {
         
     }
 
+    const queryChangeActiveScheme = (newScheme=null) => {
+        console.log("queryChangeActiveScheme");
+        if (newScheme === null)
+            newScheme = activeScheme === 'traditional' ? 'flexible' : 'traditional';
+        if (cartLines.length) 
+            setChangePlanModalShowing(true);
+        else
+            setActiveScheme(newScheme);
+    }
+
+    const changeActiveScheme = () => {
+        const newScheme = activeScheme === 'traditional' ? 'flexible' : 'traditional';
+        emptyCart();
+        setActiveScheme(newScheme);
+        setCurrentStep(FIRST_STEP);
+        setChangePlanModalShowing(false);
+    }
+
     /* END Helpers */
 
 
@@ -783,6 +802,7 @@ export function OrderSection(props) {
                             <section>
                                 <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
                                 <DebugValues
+                                    activeScheme={activeScheme}
                                     isAddingExtraItems={isAddingExtraItems}
                                     selectedMainItems={selectedMainItems}
                                     selectedMainItemsExtra={selectedMainItemsExtra}
@@ -793,7 +813,7 @@ export function OrderSection(props) {
                             <div className="dish-card-wrapper order--properties">
                                 <OrderProperties
                                     activeScheme={activeScheme}
-                                    handleSchemeChange={(value) => setActiveScheme(value)}
+                                    handleSchemeChange={(value) => queryChangeActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
                                     handleCancel={() => console.log("Cancel clicked")}
@@ -826,6 +846,7 @@ export function OrderSection(props) {
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
                                 />
                             </div>
                             
@@ -851,6 +872,7 @@ export function OrderSection(props) {
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
                                 />
                             </div>
 
@@ -876,6 +898,7 @@ export function OrderSection(props) {
                                     noQuantityLimit={true}
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
                                 />
                             </div>
 
@@ -898,6 +921,22 @@ export function OrderSection(props) {
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                             />  
                         </LayoutSection>
+
+                        <Modal
+                              isOpen={isChangePlanModalShowing}
+                              onRequestClose={() => setChangePlanModalShowing(!isChangePlanModalShowing)}
+                              className="modal--flexible-confirmaton"
+                            >
+                                <div className='modal--flexible-inner'>
+                                    <h2 className='ha-h4'>Change order type?</h2>
+                                    <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
+                                    <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
+                                    <section className="card__actions">
+                                        <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>Change Plan</button>
+                                        <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Keep Current Plan</button>
+                                    </section>   
+                                </div>
+                            </Modal>
                     </Layout>
                 </div>
                 }

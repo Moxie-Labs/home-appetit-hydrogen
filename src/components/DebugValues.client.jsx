@@ -8,6 +8,8 @@ export default function DebugValues(props) {
         <section>
             <h1>Debug Values</h1>
 
+            <p>Selected Plan: {props.activeScheme}</p>
+
             <p>isAddingExtraItems: { isAddingExtraItems ? 'true' : 'false' } </p>
 
             { selectedMainItems !== undefined && 
