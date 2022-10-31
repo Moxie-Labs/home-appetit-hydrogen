@@ -13,7 +13,7 @@ import {
 } from '@shopify/hydrogen';
 import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';
-import { GET_BASE_COLLECTIONS_QUERY, GET_MENUS_QUERY, GET_MOD_COLLECTIONS_QUERY, GET_ZIPCODES_QUERY } from '../../helpers/queries';
+import { GET_BASE_COLLECTIONS_QUERY, GET_EXTRA_ICE_ITEM, GET_FLEXIBLE_PLAN_ITEM, GET_MENUS_QUERY, GET_MOD_COLLECTIONS_QUERY, GET_TRADITIONAL_PLAN_ITEM, GET_ZIPCODES_QUERY } from '../../helpers/queries';
 import { PRODUCT_CARD_FRAGMENT } from '../../lib/fragments';
 
 export default function Order({response}) {
@@ -78,6 +78,34 @@ export default function Order({response}) {
         preload: true
       })
 
+      const {
+        data: tradPlanData
+      } = useShopQuery({
+        query: GET_TRADITIONAL_PLAN_ITEM,
+        cache: CacheLong(),
+        preload: true
+      });
+
+      const {
+        data: flexPlanData
+      } = useShopQuery({
+        query: GET_FLEXIBLE_PLAN_ITEM,
+        cache: CacheLong(),
+        preload: true
+      });
+
+      const {
+        data: extraIceData
+      } = useShopQuery({
+        query: GET_EXTRA_ICE_ITEM,
+        cache: CacheLong(),
+        preload: true
+      });
+
+      const traditionalPlanItem = tradPlanData.product;
+      const flexiblePlanItem = flexPlanData.product;
+      const extraIceItem = extraIceData.product;
+
       // get latest Menu
       let latestMenu = null;
       const today = new Date();
@@ -141,6 +169,9 @@ export default function Order({response}) {
                   addonProducts={addonProducts}
                   customerData={customerData}
                   isGuest={customerData == null}
+                  traditionalPlanItem={traditionalPlanItem}
+                  flexiblePlanItem={flexiblePlanItem}
+                  extraIceItem={extraIceItem}
                 />
             </Layout>
         </Suspense>
