@@ -18,7 +18,7 @@ import DebugValues from "./DebugValues.client";
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG;
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 1;
+const FIRST_STEP = 2;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 7;
@@ -68,7 +68,7 @@ export function OrderSection(props) {
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(1)
     const [selection, setSelections] = useState([])
-    const [activeScheme, setActiveScheme] = useState('traditional')
+    const [activeScheme, setActiveScheme] = useState('flexible')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
     const [isEditing, setIsEditing] = useState(false);
@@ -182,7 +182,7 @@ export function OrderSection(props) {
         const variantType = isIce ? 0 : getVariantType(collection);        
 
         // if: item was already added, then: update quantity (or remove)
-        if (doesCartHaveItem(choice, collection)) {
+        if (doesCartHaveItem(choice, collection) && activeScheme === 'traditional') {
             console.log("addItemToCart::already exists", choice);
             const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
 
