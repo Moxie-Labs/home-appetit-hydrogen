@@ -622,14 +622,6 @@ export function OrderSection(props) {
         setCurrentStep(FIRST_STEP);
         setChangePlanModalShowing(false);
     }
-
-    const getFreeQuantityLimit = () => {
-        if (activeScheme === 'traditional')
-            return FREE_QUANTITY_LIMIT;
-        else
-            return FREE_QUANTITY_LIMIT * Math.max(1, servingCount);
-    }
-
     
     const getSelectedPlan = () => {
         const selectedPlan = activeScheme === 'traditional' ? props.traditionalPlanItem.variants.edges[Math.max(0,servingCount-1)].node : props.flexiblePlanItem.variants.edges[Math.max(0,servingCount-1)].node;
