@@ -312,19 +312,15 @@ export function OrderSection(props) {
     }
 
     const isSectionFilled = (collection) => {
-        return ((activeScheme === 'traditional') && getQuantityTotal(collection) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP)
+        return getQuantityTotal(collection) >= getFreeQuantityLimit() && currentStep !== ADD_ON_STEP;
     }
 
     const getOrderTotal = () => {
         let total = parseFloat(getPlanPrice());
         selectedSmallItems.forEach(item => {
             item.selectedMods?.map(mod => {
-                // TODO: add support for Flex plan quantity differences
                 total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
             });
-            
-            if (activeScheme === 'flexible')
-                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedSmallItemsExtra.forEach(item => {
             item.selectedMods?.map(mod => {
@@ -336,8 +332,6 @@ export function OrderSection(props) {
             item.selectedMods?.map(mod => {
                 total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
             });
-            if (activeScheme === 'flexible')
-                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedMainItemsExtra.forEach(item => {
             item.selectedMods?.map(mod => {
@@ -494,10 +488,8 @@ export function OrderSection(props) {
     const getVariantType = collection => {
         if (currentStep === ADD_ON_STEP)
             return 0;
-        else if (activeScheme === 'traditional')
+        else 
             return isAddingExtraItems ? 0 : 1;
-        else
-            return 0;
     }
 
 
@@ -613,6 +605,14 @@ export function OrderSection(props) {
         setChangePlanModalShowing(false);
     }
 
+    const getFreeQuantityLimit = () => {
+        if (activeScheme === 'traditional')
+            return FREE_QUANTITY_LIMIT;
+        else
+            return FREE_QUANTITY_LIMIT * Math.max(1, servingCount);
+    }
+
+    
     const getSelectedPlan = () => {
         const selectedPlan = activeScheme === 'traditional' ? props.traditionalPlanItem.variants.edges[Math.max(0,servingCount-1)].node : props.flexiblePlanItem.variants.edges[Math.max(0,servingCount-1)].node;
         return selectedPlan;
@@ -791,10 +791,6 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
-    /* Debug Values */
-
-    /* END Debug Values */
-
 
     return (
         <Page>
@@ -850,7 +846,8 @@ export function OrderSection(props) {
                                     servingCount={servingCount}
                                     choices={choicesEntrees} 
                                     collection={selectedMainItems}
-                                    freeQuantityLimit={FREE_QUANTITY_LIMIT} 
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
@@ -877,7 +874,8 @@ export function OrderSection(props) {
                                     servingCount={servingCount}
                                     choices={choicesGreens} 
                                     collection={selectedSmallItems}
-                                    freeQuantityLimit={FREE_QUANTITY_LIMIT}
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
@@ -905,6 +903,7 @@ export function OrderSection(props) {
                                     choices={choicesAddons} 
                                     collection={selectedAddonItems}
                                     freeQuantityLimit={99}
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedAddonFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
@@ -939,6 +938,7 @@ export function OrderSection(props) {
                                 toastMessages={toastMessages}
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                freeQuantityLimit={getFreeQuantityLimit()} 
                             />  
                         </LayoutSection>
 
@@ -1053,6 +1053,7 @@ export function OrderSection(props) {
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 getPhase={getPhase(currentStep)}
+                                freeQuantityLimit={getFreeQuantityLimit()} 
                                 isEditing={isEditing}
                             />  
                         </LayoutSection>
@@ -1110,6 +1111,7 @@ export function OrderSection(props) {
                                     showToast={showToast}
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     getPhase={getPhase(currentStep)}
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
                                 />  
                             </LayoutSection>
                         </Layout>
