@@ -171,13 +171,22 @@ a.btn-order-cta.mobile-order-cta {
     font-size: 18px;
 }
 
-.logo.mobile-logo-margin {
-    margin-left: 2rem;
+@media screen and (min-width: 961px){
+    .header .logo img{
+        margin: 0;
+    }
 }
 
-.header-inner-ordering{
-    justify-content: flex-start;
+@media screen and (max-width: 960px) {
+    .header-inner-ordering{
+        justify-content: flex-start;
+    }
+
+    .logo.mobile-logo-margin {
+        margin-left: 2rem;
+    }
 }
+
 
 
 
