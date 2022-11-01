@@ -182,8 +182,8 @@ export function OrderSection(props) {
 
         const variantType = isIce ? 0 : getVariantType(collection);        
 
-        // if: item was already added, then: update quantity (or remove)
-        if (doesCartHaveItem(choice, collection)) {
+        // if: item was already added in Traditional, then: update quantity and modifiers (or remove)
+        if (doesCartHaveItem(choice, collection) && activeScheme === 'traditional') {
             console.log("addItemToCart::already exists", choice);
             const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
 
@@ -290,8 +290,17 @@ export function OrderSection(props) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
                 const linesAddPayload = [];
                 console.log("choice selectedMods", choice.selectedMods);
+                
+                let selectedModsAttr = [];
                 choice.selectedMods.map(mod => {
+                    selectedModsAttr.push(mod.title);
                     linesAddPayload.push({ 
+                        attributes: [
+                            { 
+                                key: "baseItemId",
+                                value: choice.choice.productOptions[variantType].node.id
+                            }
+                        ],
                         merchandiseId: mod.variants.edges[0].node.id,
                         quantity: choice.quantity
                     });
@@ -299,7 +308,8 @@ export function OrderSection(props) {
                 
                 linesAddPayload.push({ 
                     merchandiseId: choice.choice.productOptions[variantType].node.id,
-                    quantity: choice.quantity
+                    quantity: choice.quantity,
+                    attributes: selectedModsAttr.length < 1 ? [] : [{key: "Modifier(s)", value: selectedModsAttr.join(", ")}]
                 });
 
                 console.log("linesAddPayload", linesAddPayload);
@@ -587,6 +597,14 @@ export function OrderSection(props) {
         
     }
 
+    const getFreeQuantityLimit = () => {
+        if (activeScheme === 'traditional')
+            return FREE_QUANTITY_LIMIT;
+        else
+            return FREE_QUANTITY_LIMIT * Math.max(1, servingCount);
+    }
+
+    
     const queryChangeActiveScheme = (newScheme=null) => {
         console.log("queryChangeActiveScheme");
         if (newScheme === null)
@@ -816,8 +834,8 @@ export function OrderSection(props) {
                                     planPrice={getPlanPrice()}
                                     flexiblePlanItems={props.flexiblePlanItems}
                                     extraIceItem={props.extraIceItem}
-                                    activeScheme={activeScheme}
                                     cartLines={cartLines}
+                                    checkoutUrl={checkoutUrl}
                                 />
                             </section> 
                         }
@@ -861,7 +879,6 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
-                                    activeScheme={activeScheme}
                                 />
                             </div>
                             
@@ -889,7 +906,6 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
-                                    activeScheme={activeScheme}
                                 />
                             </div>
 
@@ -917,7 +933,6 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
-                                    activeScheme={activeScheme}
                                 />
                             </div>
 

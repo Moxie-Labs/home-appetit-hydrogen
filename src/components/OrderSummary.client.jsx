@@ -2,6 +2,7 @@ import React, {useState, useCallback} from 'react';
 import editIcon from "../assets/icon-edit-order-summary.png";
 import iconPlusAlt from "../assets/icon-plus-alt.png";
 import iconMinus from "../assets/icon-minus.png";
+import { prepModSubTitles } from '../lib/utils';
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -92,15 +93,6 @@ export default class OrderSummary extends React.Component {
         );
     }
 
-    prepModSubTitles(title) {
-        if (title.includes("(Sub) "))
-            return title.split("(Sub) ")[1];
-        else if (title.includes("(Mod) "))
-            return title.split("(Mod) ")[1];
-        else
-            return title;
-    }
-
     render() {
         const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing} = this.props;
         const {enlarged} = this.state;
@@ -111,7 +103,7 @@ export default class OrderSummary extends React.Component {
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
-                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            <span>→ {prepModSubTitles(mod.title)}</span>
                             {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
                         </div>
                     }) }
@@ -126,7 +118,7 @@ export default class OrderSummary extends React.Component {
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
-                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            <span>→ {prepModSubTitles(mod.title)}</span>
                             {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
                         </div>
                     }) }
@@ -140,7 +132,7 @@ export default class OrderSummary extends React.Component {
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
-                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            <span>→ {prepModSubTitles(mod.title)}</span>
                             {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
                         </div>
                     }) }
@@ -155,7 +147,7 @@ export default class OrderSummary extends React.Component {
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
-                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            <span>→ {prepModSubTitles(mod.title)}</span>
                             {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
                         </div>
                     }) }
@@ -170,7 +162,7 @@ export default class OrderSummary extends React.Component {
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
-                            <span>→ {this.prepModSubTitles(mod.title)}</span>
+                            <span>→ {prepModSubTitles(mod.title)}</span>
                             {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
                         </div>
                     }) }

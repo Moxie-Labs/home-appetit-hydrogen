@@ -52,6 +52,8 @@ export default function DebugValues(props) {
                 return <li>{line.quantity}x {product.title}</li>
             })}
             </ul>
+
+            <p><a href={props.checkoutUrl} target="_blank">Checkout URL</a></p>
                     
         </section>
     )

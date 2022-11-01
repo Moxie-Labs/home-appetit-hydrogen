@@ -81,12 +81,15 @@ export default class DishCard extends React.Component {
 
     handleConfirm() {
         console.log("confirming...");
-        const {choice, handleSelected} = this.props;
+        const {choice, handleSelected, activeScheme} = this.props;
         const {quantity, selectedMods} = this.state;
         this.setState({
             confirmed: quantity > 0,
             isCardActive: false,
-            isModModalShowing: false
+            isModModalShowing: false,
+            quantity: activeScheme === 'traditional' ? quantity : 0,
+            selectedMods: activeScheme === 'traditional' ? selectedMods : []
+
         });
 
         handleSelected({choice: choice, quantity: quantity, selectedMods: selectedMods});
@@ -166,7 +169,7 @@ export default class DishCard extends React.Component {
     }
 
     render() {
-        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme} = this.props;
+        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme, initialQuantity} = this.props;
         const {selected, quantity, isCardActive, confirmed, isModModalShowing, checkedOptions, optionCost, selectedMods} = this.state;
         const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
 
@@ -201,7 +204,7 @@ export default class DishCard extends React.Component {
     return (
         <div className={`dish-card${isCardActive ? ' active ' : ' '}${confirmed ? ' confirmed' : ''} ${forceDisable ? 'disabled' : ''}`}>
             {!isCardActive && confirmed && 
-                <p className="card__quantity-badge">{quantity}</p>
+                <p className="card__quantity-badge">{activeScheme === 'traditional' ? quantity : initialQuantity + quantity}</p>
             }
 
         {isCardActive && !confirmed &&
