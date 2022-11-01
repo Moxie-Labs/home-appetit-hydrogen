@@ -507,14 +507,20 @@ export function OrderSection(props) {
 
         while(cartStatus !== 'idle') { ; }
 
+        const deliveryWindows = generateDeliveryWindowDateTimes();
+
         const cartAttributesObj = [
             {
                 key: 'Order Type',
                 value: activeScheme
             },
             {
-                key: 'Delivery Window',
-                value: `${deliveryWindowStart} - ${deliveryWindowEnd}`
+                key: 'Delivery Window Start',
+                value: deliveryWindows.startDateTime
+            },
+            {
+                key: 'Delivery Window End',
+                value: deliveryWindows.endDateTime
             },
             {
                 key: 'Delivery Day',
@@ -631,6 +637,19 @@ export function OrderSection(props) {
     const getPlanPrice = () => {
         const selectedPlan = getSelectedPlan();
         return parseFloat(selectedPlan.price.amount);
+    }
+
+    const generateDeliveryWindowDateTimes = () => {
+        const dayOfWeekName = getDayOfWeekName(deliveryWindowDay).toLowerCase();
+        const deliveryWindowDateTime = dayOfWeek("next", dayOfWeekName);
+        const deliveryWindowStartDateTime = new Date(deliveryWindowDateTime.getTime());
+        const deliveryWindowEndDateTime = new Date (deliveryWindowDateTime.getTime());
+        const startMinutes = deliveryWindowStart == Math.floor(deliveryWindowStart) ? 0 : 30;
+        const endMinutes = deliveryWindowEnd == Math.floor(deliveryWindowEnd) ? 0 : 30;
+        deliveryWindowStartDateTime.setHours(deliveryWindowStart, startMinutes, 0);
+        deliveryWindowEndDateTime.setHours(deliveryWindowEnd, endMinutes, 0);
+
+        return { startDateTime: deliveryWindowStartDateTime, endDateTime: deliveryWindowEndDateTime};
     }
 
     /* END Helpers */
