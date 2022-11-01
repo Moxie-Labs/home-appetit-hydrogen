@@ -171,12 +171,12 @@ export default class DishCard extends React.Component {
         })
 
         const modifiersSection = modifications === null ? null : modifications.map((mod, index) => {
-            return <Checkbox key={index} label={`${this.prepModSubTitles(mod.title)} (${mod.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(mod.priceRange.maxVariantPrice.amount) : ''})`} checked={this.isModSelected(mod.id)} onChange={() => this.handleOptionChoice(mod, index)}/>;
+            return <Checkbox key={index} label={`${this.prepModSubTitles(mod.title)} ${mod.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(mod.priceRange.maxVariantPrice.amount) : ''}`} checked={this.isModSelected(mod.id)} onChange={() => this.handleOptionChoice(mod, index)}/>;
         });
 
         const substitutionSection = substitutions === null ? null : substitutions.map((sub, index) => {
             console.log(`sub: ${sub}, sub.maxVariantPrice: ${sub.maxVariantPrice}`)
-            return <Checkbox key={index} label={`${this.prepModSubTitles(sub.title)} (${sub.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''})`} checked={this.isModSelected(sub.id)} onChange={() => this.handleOptionChoice(sub, index)}/>;
+            return <Checkbox key={index} label={this.prepModSubTitles(sub.title)} price={`${sub.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''}`} checked={this.isModSelected(sub.id)} onChange={() => this.handleOptionChoice(sub, index)}/>;
         });
 
         let attributesDisplay = '';

@@ -533,8 +533,25 @@ p.modal--flexible-price strong {
     grid-template-columns: 1fr 1fr;
     row-gap: 1.125rem;
 }
-.modal--flexible-confirmaton input[type="checkbox"] {
-    padding: 5rem;
-    margin-right: 0.2rem;
-    vertical-align: text-top;
+
+input[type="checkbox"] {
+    appearance: none;
+    background-color: #fff;
+    margin-right: 1em;
+    font: inherit;
+    color: rgb(92, 83, 83);
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid rgb(92, 83, 83);
+    border-radius: 0.15em;
+    transform: translateY(0.275em);
 }
+
+input[type="checkbox"]::before {
+    content: "";
+    clip-path: polygon(15% 34%, 10% 43%, 5% 51%, 2% 56%, 36% 82%, 51% 66%, 62% 54%, 78% 34%, 98% 13%, 77% 0, 60% 21%, 34% 53%);
+  }
+  
+  input[type="checkbox"]:checked::before {
+    border-right: 0.95em solid rgb(92, 83, 83);
+  }
