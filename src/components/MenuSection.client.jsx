@@ -91,14 +91,17 @@ export default class MenuSection extends React.Component {
     }
 
     getExistingQuantity(choice) {
-        const { selected, selectedExtra } = this.props;
+        const { selected, selectedExtra, activeScheme} = this.props;
         let existingQuantity = 0;
     
         [...selected, ...selectedExtra].map(item => {
-            if (existingQuantity === 0)
-                if (item.choice.title === choice.title) {
+            if (existingQuantity === 0 && activeScheme === 'traditional') {
+                if (item.choice.title === choice.title)
                     existingQuantity = item.quantity;
-                }
+            }
+            else if (item.choice.title === choice.title)
+                    existingQuantity += item.quantity;
+                
                 
         });
 
@@ -131,7 +134,8 @@ export default class MenuSection extends React.Component {
 
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems} = this.props;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme
+        } = this.props;
         const {modalDismissed} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
@@ -164,8 +168,9 @@ export default class MenuSection extends React.Component {
                             //         (isAddingExtraItems && this.isInSelection(mainSelected, choice))
                             //     )
                             // }
-
                             forceDisable={false}
+                            handleChangePlan={handleChangePlan}
+                            activeScheme={activeScheme}
                         />
                     </div>
                 )
