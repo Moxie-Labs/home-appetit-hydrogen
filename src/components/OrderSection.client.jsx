@@ -16,7 +16,7 @@ import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
 
 // base configurations
-const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG;
+const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
 const FIRST_STEP = 1;
