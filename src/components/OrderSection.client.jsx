@@ -69,7 +69,7 @@ export function OrderSection(props) {
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(0)
     const [selection, setSelections] = useState([])
-    const [activeScheme, setActiveScheme] = useState('flexible')
+    const [activeScheme, setActiveScheme] = useState('traditional')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
     const [isEditing, setIsEditing] = useState(false);

@@ -9,6 +9,7 @@ import { Layout } from './Layout.client';
 import CardFilters from './CardFilters.client';
 import DishCard from './DishCard.client';
 import Modal from 'react-modal/lib/components/Modal';
+import { prepModSubTitles } from '../lib/utils';
 
 export default class MenuSection extends React.Component {
 
@@ -199,7 +200,11 @@ export default class MenuSection extends React.Component {
                 { mainSelected.map((item, index) => {
                     return ( 
                         <ul key={index} className="step--order-summary">
-                            <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span></li>
+                            <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span>
+                                {item.selectedMods?.map(mod => {
+                                    return <li><span>→ {prepModSubTitles(mod.title)}</span></li>
+                                })}
+                            </li>
                         </ul>
                     )
                 }) }
@@ -212,7 +217,11 @@ export default class MenuSection extends React.Component {
                         {extraSelected.map((item, index) => {
                             return ( 
                                 <ul key={index} className="step--order-summary">
-                                    <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span></li>
+                                   <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span>
+                                        {item.selectedMods?.map(mod => {
+                                            return <li><span>→ {prepModSubTitles(mod.title)}</span></li>
+                                        })}
+                                    </li>
                                 </ul>
                             )
                         })}
