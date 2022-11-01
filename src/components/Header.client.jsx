@@ -27,7 +27,7 @@ export function Header(prop){
 
    return(
         <div className="header">
-            <div className="header-inner">
+            <div className={`header-inner ${isOrdering ? 'header-inner-ordering' : ''}`}>
                 <div className="mobile-menu">
                     {isActive &&
                       <img src={iconCloseBtn} width="24" onClick={handleClick}/>
@@ -62,7 +62,7 @@ export function Header(prop){
                     </ul>
                 </div>
                 }
-                <div className="logo">
+                <div className={`logo ${isOrdering ? 'mobile-logo-margin' : ''}`}>
                     <a href={`https://${rootUrl}`}>
                      <img src={logo}/>
                      </a>

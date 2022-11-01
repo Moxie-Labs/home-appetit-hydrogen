@@ -39,9 +39,10 @@ form.subscription-form input {
     padding: 14px;
     border: none;
     border-bottom: 2px solid #474442;
-    width: 407px;
+    max-width: 25.4375rem;
     background: transparent;
     font-family: 'AvenirLTProRoman';
+    min-width: 21.375rem;
 }
 
 .footer .subscription-form button {
