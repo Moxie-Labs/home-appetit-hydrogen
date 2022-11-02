@@ -803,7 +803,7 @@ export function OrderSection(props) {
                             </section> 
                         }
 
-                            <div className="dish-card-wrapper order--properties">
+                            <div className={`dish-card-wrapper order--properties ${currentStep === 1 ? "" : "dishcard--wrapper-inactive"}`}>
                                 <OrderProperties
                                     activeScheme={activeScheme}
                                     handleSchemeChange={(value) => setActiveScheme(value)}
