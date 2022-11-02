@@ -813,9 +813,11 @@ export function OrderSection(props) {
                     <Layout>
                         <LayoutSection>
 
+                        <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+
                         { SHOW_DEBUG && 
                             <section>
-                                <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+                                
                                 <DebugValues
                                     activeScheme={activeScheme}
                                     servingCount={servingCount}
