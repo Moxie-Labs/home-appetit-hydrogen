@@ -54,6 +54,8 @@ export default function DebugValues(props) {
             </ul>
 
             <p><a href={props.checkoutUrl} target="_blank">Checkout URL</a></p>
+
+            <p>CartID: {props.cartId}</p>
                     
         </section>
     )

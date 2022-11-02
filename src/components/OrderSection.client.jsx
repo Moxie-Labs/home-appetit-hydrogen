@@ -527,6 +527,21 @@ export function OrderSection(props) {
                 value: deliveryWindows.deliveryDate
             }
         ];
+
+        if (isGift) {
+            cartAttributesObj.push({
+                key: 'Gift?',
+                value: 'Yes'
+            });
+
+            if (giftMessage.length > 0) {
+                cartAttributesObj.push({
+                    key: 'Gift Message',
+                    value: giftMessage
+                });
+            }
+            
+        }
         
         cartAttributesUpdate(cartAttributesObj);
 
@@ -863,6 +878,7 @@ export function OrderSection(props) {
                                     extraIceItem={props.extraIceItem}
                                     cartLines={cartLines}
                                     checkoutUrl={checkoutUrl}
+                                    cartId={cartId}
                                 />
                             </section> 
                         }
