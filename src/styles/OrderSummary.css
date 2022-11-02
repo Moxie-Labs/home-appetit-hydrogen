@@ -158,6 +158,13 @@ span.price--extra-addon {
     }
 }
 
+.payment-wrapper .order-summary.disabled{
+    cursor: unset;
+    opacity: 0.6;
+    transition: opacity 0.1s linear 0s;
+    pointer-events: none;
+}
+
 .payment-wrapper .order-summary--inner{
     box-shadow: none;
 }

@@ -253,3 +253,53 @@ export const GET_ZIPCODES_QUERY = gql`
     }
 }
 `;
+
+export const GET_TRADITIONAL_PLAN_ITEM = gql`
+  {
+    product(handle:"traditional-plan") {
+      variants(first:5) {
+        edges {
+          node {
+            id
+            price {
+              amount
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_FLEXIBLE_PLAN_ITEM = gql`
+  {
+    product(handle:"flexible-plan") {
+      variants(first:5) {
+        edges {
+          node {
+            id
+            price {
+              amount
+            }
+          }
+        }
+      }
+    }
+  }`;
+
+export const GET_EXTRA_ICE_ITEM = gql`
+  {
+    product(handle:"extra-ice") {
+      variants(first:1) {
+        edges {
+          node {
+            id
+            price {
+              amount
+            }
+          }
+        }
+      }
+    }
+  }
+`;

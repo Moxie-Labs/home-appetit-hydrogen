@@ -13,9 +13,10 @@ import { CompleteSignUp } from "./CompleteSignup.client";
 import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
+import Modal from "react-modal/lib/components/Modal";
 
 // base configurations
-const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG;
+const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
 const FIRST_STEP = 1;
@@ -66,12 +67,13 @@ export function OrderSection(props) {
     
 
     const [totalPrice, setTotalPrice] = useState(100.0)
-    const [servingCount, setServingCount] = useState(1)
+    const [servingCount, setServingCount] = useState(0)
     const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState('traditional')
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
-
+    const [isEditing, setIsEditing] = useState(false);
+    const [isChangePlanModalShowing, setChangePlanModalShowing] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -176,12 +178,12 @@ export function OrderSection(props) {
         return retval;
     }
 
-    const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
+    const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true, isIce=false) => {
 
-        const variantType = getVariantType(collection);        
+        const variantType = isIce ? 0 : getVariantType(collection);        
 
-        // if: item was already added, then: update quantity (or remove)
-        if (doesCartHaveItem(choice, collection)) {
+        // if: item was already added in Traditional, then: update quantity and modifiers (or remove)
+        if (doesCartHaveItem(choice, collection) && activeScheme === 'traditional') {
             console.log("addItemToCart::already exists", choice);
             const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
 
@@ -288,8 +290,17 @@ export function OrderSection(props) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
                 const linesAddPayload = [];
                 console.log("choice selectedMods", choice.selectedMods);
+                
+                let selectedModsAttr = [];
                 choice.selectedMods.map(mod => {
+                    selectedModsAttr.push(mod.title);
                     linesAddPayload.push({ 
+                        attributes: [
+                            { 
+                                key: "baseItemId",
+                                value: choice.choice.productOptions[variantType].node.id
+                            }
+                        ],
                         merchandiseId: mod.variants.edges[0].node.id,
                         quantity: choice.quantity
                     });
@@ -297,7 +308,8 @@ export function OrderSection(props) {
                 
                 linesAddPayload.push({ 
                     merchandiseId: choice.choice.productOptions[variantType].node.id,
-                    quantity: choice.quantity
+                    quantity: choice.quantity,
+                    attributes: selectedModsAttr.length < 1 ? [] : [{key: "Modifier(s)", value: selectedModsAttr.join(", ")}]
                 });
 
                 console.log("linesAddPayload", linesAddPayload);
@@ -310,19 +322,15 @@ export function OrderSection(props) {
     }
 
     const isSectionFilled = (collection) => {
-        return ((activeScheme === 'traditional') && getQuantityTotal(collection) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP)
+        return getQuantityTotal(collection) >= getFreeQuantityLimit() && currentStep !== ADD_ON_STEP;
     }
 
     const getOrderTotal = () => {
-        let total = parseFloat(planPricingMultiplier);
+        let total = parseFloat(getPlanPrice());
         selectedSmallItems.forEach(item => {
             item.selectedMods?.map(mod => {
-                // TODO: add support for Flex plan quantity differences
                 total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
             });
-            
-            if (activeScheme === 'flexible')
-                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedSmallItemsExtra.forEach(item => {
             item.selectedMods?.map(mod => {
@@ -334,8 +342,6 @@ export function OrderSection(props) {
             item.selectedMods?.map(mod => {
                 total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
             });
-            if (activeScheme === 'flexible')
-                total += parseFloat(item.choice.price * item.quantity);
         });
         selectedMainItemsExtra.forEach(item => {
             item.selectedMods?.map(mod => {
@@ -412,7 +418,6 @@ export function OrderSection(props) {
         return daysOfWeek[dayNumber];
     }
 
-    // TODO: grab GUID dynamically
     const addExtraIce = value => {
         const iceItem = ICE_ITEM;
         const iceChoice = {
@@ -421,9 +426,11 @@ export function OrderSection(props) {
             price: parseFloat(iceItem.priceRange.maxVariantPrice.amount),
             description: "",
             imageURL: "",
-            productOptions: []
+            productOptions: iceItem.variants,
+            modifications: [],
+            substitutions: [],
         }
-        addItemToCart({choice: iceChoice, quantity: (value ? 1 : 0)}, selectedAddonItems, "addons");
+        addItemToCart({choice: iceChoice, quantity: (value ? 1 : 0), selectedMods: []}, selectedAddonItems, "addons", true, true);
         setExtraIce(value);
     }
 
@@ -474,18 +481,15 @@ export function OrderSection(props) {
         setSelectedMainItems([]);
         setSelectedSmallItems([]);
         setSelectedAddonItems([]);
+        setSelectedMainItemsExtra([]);
+        setSelectedSmallItemsExtra([]);
     }
 
     const confirmPersonsCount = () => {
-
-        if (activeScheme === 'traditional') {
-            const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
-
-            linesAdd({
-                merchandiseId: traditionalPlanVariantId,
-                quantity: 1
-            });
-        }
+        linesAdd({
+            merchandiseId: getSelectedPlan().id,
+            quantity: 1
+        });
 
         setCurrentStep(2);
     }
@@ -494,10 +498,8 @@ export function OrderSection(props) {
     const getVariantType = collection => {
         if (currentStep === ADD_ON_STEP)
             return 0;
-        else if (activeScheme === 'traditional')
+        else 
             return isAddingExtraItems ? 0 : 1;
-        else
-            return 0;
     }
 
 
@@ -593,6 +595,42 @@ export function OrderSection(props) {
             return collectionProducts;
         }
         
+    }
+
+    const getFreeQuantityLimit = () => {
+        if (activeScheme === 'traditional')
+            return FREE_QUANTITY_LIMIT;
+        else
+            return FREE_QUANTITY_LIMIT * Math.max(1, servingCount);
+    }
+
+    
+    const queryChangeActiveScheme = (newScheme=null) => {
+        console.log("queryChangeActiveScheme");
+        if (newScheme === null)
+            newScheme = activeScheme === 'traditional' ? 'flexible' : 'traditional';
+        if (cartLines.length) 
+            setChangePlanModalShowing(true);
+        else
+            setActiveScheme(newScheme);
+    }
+
+    const changeActiveScheme = () => {
+        const newScheme = activeScheme === 'traditional' ? 'flexible' : 'traditional';
+        emptyCart();
+        setActiveScheme(newScheme);
+        setCurrentStep(FIRST_STEP);
+        setChangePlanModalShowing(false);
+    }
+    
+    const getSelectedPlan = () => {
+        const selectedPlan = activeScheme === 'traditional' ? props.traditionalPlanItem.variants.edges[Math.max(0,servingCount-1)].node : props.flexiblePlanItem.variants.edges[Math.max(0,servingCount-1)].node;
+        return selectedPlan;
+    }
+
+    const getPlanPrice = () => {
+        const selectedPlan = getSelectedPlan();
+        return parseFloat(selectedPlan.price.amount);
     }
 
     /* END Helpers */
@@ -716,15 +754,15 @@ export function OrderSection(props) {
 
 
     /* Static Values */
-    const TRADITIONAL_PLAN_VARIANT_IDS = [
-        "gid://shopify/ProductVariant/43314850169048", // one person
-        "gid://shopify/ProductVariant/43314850201816", // two people, etc.
-        "gid://shopify/ProductVariant/43314850234584",
-        "gid://shopify/ProductVariant/43314850267352",
-        "gid://shopify/ProductVariant/43314850300120"
-    ];
+    const TRADITIONAL_PLAN_VARIANT_IDS = [];
+    props.traditionalPlanItem.variants.edges.map(edge => {
+        TRADITIONAL_PLAN_VARIANT_IDS.push(edge.node.id);
+    });
 
-    const planPricingMultiplier = activeScheme === 'traditional' ? `${50 * servingCount + 50}` : 0.0;
+    const FLEXIBLE_PLAN_VARIANT_IDS = [];
+    props.flexiblePlanItem.variants.edges.map(edge => {
+        FLEXIBLE_PLAN_VARIANT_IDS.push(edge.node.id);
+    });
 
     const filterSmallOptions = [
         {label: 'All Options', value: 'ALL'},
@@ -743,7 +781,7 @@ export function OrderSection(props) {
     ];
 
     const ICE_ITEM = {
-        "id": "gid://shopify/Product/7834911965400",
+        "id": props.extraIceItem.variants.edges[0].node.id,
         "title": "Extra Ice",
         "description": "",
         "tags": [],
@@ -752,19 +790,16 @@ export function OrderSection(props) {
         },
         "priceRange": {
             "minVariantPrice": {
-                "amount": "5.0"
+                "amount": props.extraIceItem.variants.edges[0].node.price.amount
             },
             "maxVariantPrice": {
-                "amount": "5.0"
+                "amount": props.extraIceItem.variants.edges[0].node.price.amount
             }
-        }
+        },
+        "variants": props.extraIceItem.variants.edges
     }
 
     /* END Static Values */
-
-    /* Debug Values */
-
-    /* END Debug Values */
 
 
     return (
@@ -782,9 +817,17 @@ export function OrderSection(props) {
                             <section>
                                 <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
                                 <DebugValues
+                                    activeScheme={activeScheme}
+                                    servingCount={servingCount}
                                     isAddingExtraItems={isAddingExtraItems}
                                     selectedMainItems={selectedMainItems}
                                     selectedMainItemsExtra={selectedMainItemsExtra}
+                                    traditionalPlanItem={props.traditionalPlanItem}
+                                    planPrice={getPlanPrice()}
+                                    flexiblePlanItems={props.flexiblePlanItems}
+                                    extraIceItem={props.extraIceItem}
+                                    cartLines={cartLines}
+                                    checkoutUrl={checkoutUrl}
                                 />
                             </section> 
                         }
@@ -792,12 +835,13 @@ export function OrderSection(props) {
                             <div className="dish-card-wrapper order--properties">
                                 <OrderProperties
                                     activeScheme={activeScheme}
-                                    handleSchemeChange={(value) => setActiveScheme(value)}
+                                    handleSchemeChange={(value) => queryChangeActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
-                                    handleCancel={() => console.log("Cancel clicked")}
+                                    handleCancel={() => setCurrentStep(1)}
                                     step={1}
                                     currentStep={currentStep}
+                                    servingCount={servingCount}
                                 />
                             </div>
 
@@ -812,7 +856,8 @@ export function OrderSection(props) {
                                     servingCount={servingCount}
                                     choices={choicesEntrees} 
                                     collection={selectedMainItems}
-                                    freeQuantityLimit={FREE_QUANTITY_LIMIT} 
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
@@ -825,6 +870,7 @@ export function OrderSection(props) {
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
                                 />
                             </div>
                             
@@ -837,7 +883,8 @@ export function OrderSection(props) {
                                     servingCount={servingCount}
                                     choices={choicesGreens} 
                                     collection={selectedSmallItems}
-                                    freeQuantityLimit={FREE_QUANTITY_LIMIT}
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
@@ -850,6 +897,7 @@ export function OrderSection(props) {
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
                                 />
                             </div>
 
@@ -863,6 +911,7 @@ export function OrderSection(props) {
                                     choices={choicesAddons} 
                                     collection={selectedAddonItems}
                                     freeQuantityLimit={99}
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedAddonFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
@@ -875,6 +924,7 @@ export function OrderSection(props) {
                                     noQuantityLimit={true}
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
                                     isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
                                 />
                             </div>
 
@@ -885,7 +935,7 @@ export function OrderSection(props) {
                                 currentStep={currentStep}
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={planPricingMultiplier}
+                                pricingMultiplier={getPlanPrice()}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedMainItemsExtra={[...selectedMainItemsExtra]} 
@@ -895,8 +945,25 @@ export function OrderSection(props) {
                                 toastMessages={toastMessages}
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                freeQuantityLimit={getFreeQuantityLimit()} 
                             />  
                         </LayoutSection>
+
+                        <Modal
+                              isOpen={isChangePlanModalShowing}
+                              onRequestClose={() => setChangePlanModalShowing(!isChangePlanModalShowing)}
+                              className="modal--flexible-confirmaton"
+                            >
+                                <div className='modal--flexible-inner'>
+                                    <h2 className='ha-h4'>Change order type?</h2>
+                                    <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
+                                    <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
+                                    <section className="card__actions">
+                                        <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>Change Plan</button>
+                                        <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Keep Current Plan</button>
+                                    </section>   
+                                </div>
+                            </Modal>
                     </Layout>
                 </div>
                 }
@@ -917,10 +984,12 @@ export function OrderSection(props) {
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
-                                handleContinue={() => setCurrentStep(6)}
+                                handleContinue={() => {setCurrentStep(6); setIsEditing(isGuest)}}
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={5}
                                 currentStep={currentStep}
+                                isEditing={isEditing}
+                                setIsEditing={setIsEditing}
                             />
 
                         </LayoutSection>
@@ -967,6 +1036,8 @@ export function OrderSection(props) {
                                 step={6}
                                 currentStep={currentStep}
                                 isGuest={isGuest}
+                                isEditing={isEditing}
+                                setIsEditing={setIsEditing}
                             />
 
                         </LayoutSection>
@@ -978,7 +1049,7 @@ export function OrderSection(props) {
                             <OrderSummary 
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={planPricingMultiplier}
+                                pricingMultiplier={getPlanPrice()}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
                                 selectedMainItemsExtra={[...selectedMainItemsExtra]} 
@@ -989,6 +1060,8 @@ export function OrderSection(props) {
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 getPhase={getPhase(currentStep)}
+                                freeQuantityLimit={getFreeQuantityLimit()} 
+                                isEditing={isEditing}
                             />  
                         </LayoutSection>
                     </Layout>
@@ -1034,7 +1107,7 @@ export function OrderSection(props) {
                                 <OrderSummary 
                                     activeScheme={activeScheme}
                                     servingCount={servingCount}
-                                    pricingMultiplier={planPricingMultiplier}
+                                    pricingMultiplier={getPlanPrice()}
                                     orderTotal={getOrderTotal()}
                                     selectedMainItems={[...selectedMainItems]} 
                                     selectedMainItemsExtra={[...selectedMainItemsExtra]} 
@@ -1045,6 +1118,7 @@ export function OrderSection(props) {
                                     showToast={showToast}
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     getPhase={getPhase(currentStep)}
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
                                 />  
                             </LayoutSection>
                         </Layout>

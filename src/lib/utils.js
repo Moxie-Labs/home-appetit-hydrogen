@@ -247,3 +247,10 @@ export function passwordValidation(password) {
 export function removePhoneNumberFormatting(string) {
   return parseInt(string.replace(/[^0-9]/g, ''), 10);
 }
+
+export function prepModSubTitles(title) {
+  if (title.includes(") "))
+      return title.split(") ")[1];
+  else
+      return title;
+}
