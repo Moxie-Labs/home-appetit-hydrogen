@@ -524,7 +524,7 @@ export function OrderSection(props) {
             },
             {
                 key: 'Delivery Day',
-                value: getDayOfWeekName(deliveryWindowDay)
+                value: deliveryWindows.deliveryDate
             }
         ];
         
@@ -649,7 +649,21 @@ export function OrderSection(props) {
         deliveryWindowStartDateTime.setHours(deliveryWindowStart, startMinutes, 0);
         deliveryWindowEndDateTime.setHours(deliveryWindowEnd, endMinutes, 0);
 
-        return { startDateTime: deliveryWindowStartDateTime, endDateTime: deliveryWindowEndDateTime};
+        const startDTString = `${(addLeadingZero(deliveryWindowStartDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowStartDateTime.getDate())}/${deliveryWindowStartDateTime.getFullYear()} ${addLeadingZero(deliveryWindowStartDateTime.getHours())}:${addLeadingZero(deliveryWindowStartDateTime.getMinutes())}`;
+        const endDTString = `${(addLeadingZero(deliveryWindowEndDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowEndDateTime.getDate())}/${deliveryWindowEndDateTime.getFullYear()} ${addLeadingZero(deliveryWindowEndDateTime.getHours())}:${addLeadingZero(deliveryWindowEndDateTime.getMinutes())}`;
+
+        return { 
+            deliveryDate: `${(addLeadingZero(deliveryWindowStartDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowStartDateTime.getDate())}/${addLeadingZero(deliveryWindowStartDateTime.getFullYear())}`, 
+            startDateTime: startDTString, 
+            endDateTime: endDTString
+        };
+    }
+
+    const addLeadingZero = number => {
+        if (number < 10)
+            number = '0' + number;
+
+        return number;
     }
 
     /* END Helpers */
