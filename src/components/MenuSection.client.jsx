@@ -9,6 +9,7 @@ import { Layout } from './Layout.client';
 import CardFilters from './CardFilters.client';
 import DishCard from './DishCard.client';
 import Modal from 'react-modal/lib/components/Modal';
+import { prepModSubTitles } from '../lib/utils';
 
 export default class MenuSection extends React.Component {
 
@@ -91,14 +92,17 @@ export default class MenuSection extends React.Component {
     }
 
     getExistingQuantity(choice) {
-        const { selected, selectedExtra } = this.props;
+        const { selected, selectedExtra, activeScheme} = this.props;
         let existingQuantity = 0;
     
         [...selected, ...selectedExtra].map(item => {
-            if (existingQuantity === 0)
-                if (item.choice.title === choice.title) {
+            if (existingQuantity === 0 && activeScheme === 'traditional') {
+                if (item.choice.title === choice.title)
                     existingQuantity = item.quantity;
-                }
+            }
+            else if (item.choice.title === choice.title)
+                    existingQuantity += item.quantity;
+                
                 
         });
 
@@ -131,7 +135,8 @@ export default class MenuSection extends React.Component {
 
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems} = this.props;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme
+        } = this.props;
         const {modalDismissed} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
@@ -158,12 +163,15 @@ export default class MenuSection extends React.Component {
                             quantityTotal={getQuantityTotal(selected)}
                             // disables if returning to regular selection and item is not already selected
                             forceHidePrice={(isAddingExtraItems && this.isInSelection(mainSelected, choice))}
-                            forceDisable={
-                                ( 
-                                    (!isAddingExtraItems && (isSectionFilled || this.isInSelection(extraSelected, choice)) && !this.isInSelection(mainSelected, choice) ) || 
-                                    (isAddingExtraItems && this.isInSelection(mainSelected, choice))
-                                )
-                            }
+                            // forceDisable={
+                            //     ( 
+                            //         (!isAddingExtraItems && (isSectionFilled || this.isInSelection(extraSelected, choice)) && !this.isInSelection(mainSelected, choice) ) || 
+                            //         (isAddingExtraItems && this.isInSelection(mainSelected, choice))
+                            //     )
+                            // }
+                            forceDisable={false}
+                            handleChangePlan={handleChangePlan}
+                            activeScheme={activeScheme}
                         />
                     </div>
                 )
@@ -192,7 +200,11 @@ export default class MenuSection extends React.Component {
                 { mainSelected.map((item, index) => {
                     return ( 
                         <ul key={index} className="step--order-summary">
-                            <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span></li>
+                            <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span>
+                                {item.selectedMods?.map(mod => {
+                                    return <li><span>→ {prepModSubTitles(mod.title)}</span></li>
+                                })}
+                            </li>
                         </ul>
                     )
                 }) }
@@ -205,7 +217,11 @@ export default class MenuSection extends React.Component {
                         {extraSelected.map((item, index) => {
                             return ( 
                                 <ul key={index} className="step--order-summary">
-                                    <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span></li>
+                                   <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span>
+                                        {item.selectedMods?.map(mod => {
+                                            return <li><span>→ {prepModSubTitles(mod.title)}</span></li>
+                                        })}
+                                    </li>
                                 </ul>
                             )
                         })}
