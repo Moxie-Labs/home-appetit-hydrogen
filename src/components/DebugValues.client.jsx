@@ -8,6 +8,10 @@ export default function DebugValues(props) {
         <section>
             <h1>Debug Values</h1>
 
+            <p>Selected Plan: {props.activeScheme}</p>
+
+            <p>Serving Count: {props.servingCount}</p>
+
             <p>isAddingExtraItems: { isAddingExtraItems ? 'true' : 'false' } </p>
 
             { selectedMainItems !== undefined && 
@@ -48,6 +52,8 @@ export default function DebugValues(props) {
                 return <li>{line.quantity}x {product.title}</li>
             })}
             </ul>
+
+            <p><a href={props.checkoutUrl} target="_blank">Checkout URL</a></p>
                     
         </section>
     )

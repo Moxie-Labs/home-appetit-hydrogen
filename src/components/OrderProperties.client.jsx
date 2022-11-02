@@ -46,7 +46,7 @@ export default class OrderProperties extends React.Component {
 
     render() {   
 
-        const {activeScheme, step, currentStep} = this.props;
+        const {activeScheme, step, currentStep, servingCount} = this.props;
 
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
@@ -86,7 +86,7 @@ export default class OrderProperties extends React.Component {
                 
                     <LayoutSection>
                     { currentStep === step &&
-                        <button className="btn btn-primary-small btn-app" onClick={this.handleContinue}>
+                        <button className={`btn btn-primary-small btn-app ${servingCount < 1 ? 'btn-disabled' : ''}`} onClick={this.handleContinue}>
                             Continue
                         </button>
                     }
