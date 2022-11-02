@@ -507,18 +507,24 @@ export function OrderSection(props) {
 
         while(cartStatus !== 'idle') { ; }
 
+        const deliveryWindows = generateDeliveryWindowDateTimes();
+
         const cartAttributesObj = [
             {
                 key: 'Order Type',
                 value: activeScheme
             },
             {
-                key: 'Delivery Window',
-                value: `${deliveryWindowStart} - ${deliveryWindowEnd}`
+                key: 'Delivery Window Start',
+                value: deliveryWindows.startDateTime
+            },
+            {
+                key: 'Delivery Window End',
+                value: deliveryWindows.endDateTime
             },
             {
                 key: 'Delivery Day',
-                value: getDayOfWeekName(deliveryWindowDay)
+                value: deliveryWindows.deliveryDate
             }
         ];
         
@@ -633,6 +639,33 @@ export function OrderSection(props) {
     const getPlanPrice = () => {
         const selectedPlan = getSelectedPlan();
         return parseFloat(selectedPlan.price.amount);
+    }
+
+    const generateDeliveryWindowDateTimes = () => {
+        const dayOfWeekName = getDayOfWeekName(deliveryWindowDay).toLowerCase();
+        const deliveryWindowDateTime = dayOfWeek("next", dayOfWeekName);
+        const deliveryWindowStartDateTime = new Date(deliveryWindowDateTime.getTime());
+        const deliveryWindowEndDateTime = new Date (deliveryWindowDateTime.getTime());
+        const startMinutes = deliveryWindowStart == Math.floor(deliveryWindowStart) ? 0 : 30;
+        const endMinutes = deliveryWindowEnd == Math.floor(deliveryWindowEnd) ? 0 : 30;
+        deliveryWindowStartDateTime.setHours(deliveryWindowStart, startMinutes, 0);
+        deliveryWindowEndDateTime.setHours(deliveryWindowEnd, endMinutes, 0);
+
+        const startDTString = `${(addLeadingZero(deliveryWindowStartDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowStartDateTime.getDate())}/${deliveryWindowStartDateTime.getFullYear()} ${addLeadingZero(deliveryWindowStartDateTime.getHours())}:${addLeadingZero(deliveryWindowStartDateTime.getMinutes())}`;
+        const endDTString = `${(addLeadingZero(deliveryWindowEndDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowEndDateTime.getDate())}/${deliveryWindowEndDateTime.getFullYear()} ${addLeadingZero(deliveryWindowEndDateTime.getHours())}:${addLeadingZero(deliveryWindowEndDateTime.getMinutes())}`;
+
+        return { 
+            deliveryDate: `${(addLeadingZero(deliveryWindowStartDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowStartDateTime.getDate())}/${addLeadingZero(deliveryWindowStartDateTime.getFullYear())}`, 
+            startDateTime: startDTString, 
+            endDateTime: endDTString
+        };
+    }
+
+    const addLeadingZero = number => {
+        if (number < 10)
+            number = '0' + number;
+
+        return number;
     }
 
     /* END Helpers */
