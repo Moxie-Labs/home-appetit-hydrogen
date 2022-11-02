@@ -366,7 +366,7 @@ export function OrderSection(props) {
                 total += item.quantity;
             });
         }
-
+           
         return total;
     }
 
@@ -549,7 +549,9 @@ export function OrderSection(props) {
 
     const setupNextSection = nextStep => {
         setIsAddingExtraItems(false);
-        setCurrentStep(nextStep);
+        setCurrentStep(nextStep); 
+        const step = document.querySelector(".step-active");
+        step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     const findCollectionById = collectionId => {
@@ -842,6 +844,7 @@ export function OrderSection(props) {
                                     step={1}
                                     currentStep={currentStep}
                                     servingCount={servingCount}
+                                    deliveryWindowOne={dayOfWeek("next", "monday")}
                                 />
                             </div>
 
@@ -927,6 +930,9 @@ export function OrderSection(props) {
                                     handleChangePlan={() => queryChangeActiveScheme()}
                                 />
                             </div>
+                            <section className="menu-section__actions">
+                                <button className='btn btn-primary-small btn-app btn-disabled'>Place Order</button>
+                            </section>
 
                         </LayoutSection>
 
