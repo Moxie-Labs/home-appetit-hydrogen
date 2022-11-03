@@ -70,6 +70,7 @@ select {
 
 .scheme-inactive-padding{
     margin: 40px 0 0 !important;
+    opacity: 0.5;
 }
 
 .order-wrapper {
