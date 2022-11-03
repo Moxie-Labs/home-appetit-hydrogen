@@ -134,6 +134,10 @@ export default class MenuSection extends React.Component {
         return retval;
     }
 
+    pullStatus(data){
+        console.log(data);
+    }
+
     render() { 
 
         const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme
@@ -153,7 +157,8 @@ export default class MenuSection extends React.Component {
                 return (
                     <div className="dish-card-item" key={choice.title}>
                         <DishCard 
-                            choice={choice} 
+                            choice={choice}
+                            pullStatus={this.pullStatus}
                             freeQuantityLimit={freeQuantityLimit} 
                             servingCount={servingCount}
                             handleSelected={handleItemSelected}
@@ -266,7 +271,7 @@ export default class MenuSection extends React.Component {
         </Layout>
 
         <section className="menu-section__actions">
-            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm Selections</button>
+            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm and Continue</button>
         </section>
         
     </section>;

@@ -540,6 +540,19 @@ section.step-section {
     margin-top: 10px;
 }
 
+.delivery-window-label{
+    font-size: 28px;
+    margin-right: 25px;
+    font-family: "ITCAvantGardeProDemi";
+}
+
+.delivery-window-label.disabled{
+    opacity: 0.5;
+    font-size: 28px;
+    margin-right: 25px;
+    font-family: "ITCAvantGardeProDemi";
+}
+
 .order_textarea::placeholder {
     font-family: 'AvenirLTProRoman';
     font-size: 16px;

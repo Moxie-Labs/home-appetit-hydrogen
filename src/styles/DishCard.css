@@ -46,7 +46,7 @@
     clear: both;
     text-align: center;
     width: 225px;
-    margin: 0 auto 35px;
+    margin: 0 auto 25px;
 }
 
     .card__quantity-count {
@@ -94,6 +94,7 @@
     display: flex;
     justify-content: center;
     width: 345px;
+    margin-bottom: 10px;
 }
 
 .btn-card {
@@ -155,6 +156,7 @@
     background: #F8EFE0;
     border-radius: 20px;
     padding: 2em;
+    padding-top: 4em;
     display: flex;
     flex-flow: column;
     align-items: center;

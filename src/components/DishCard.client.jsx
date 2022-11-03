@@ -33,6 +33,7 @@ export default class DishCard extends React.Component {
         this.toggleModal = this.toggleModal.bind(this);
         this.handleOptionChoice = this.handleOptionChoice.bind(this);
         this.handleChangePlan = this.handleChangePlan.bind(this);
+        this.pullStatus = this.props.pullStatus.bind(this)
     }
 
     setQuantity(quantity) {
@@ -75,7 +76,7 @@ export default class DishCard extends React.Component {
             this.setState({
                 isCardActive: true,
                 confirmed: false
-            });
+            });     
         }
     }
 
@@ -101,6 +102,18 @@ export default class DishCard extends React.Component {
         this.dishCardClear('.step-active .order_prop__subheading');
         this.dishCardClear('.step-active .order_prop__heading');
         
+    }
+
+    handleCancel(){
+        const { initialQuantity } = this.props;
+        console.log('initialQuantity', initialQuantity);
+        this.setState({
+            quantity: initialQuantity,
+            isCardActive: false,
+            confirmed: initialQuantity > 0
+        });
+        const step = document.querySelector(".step-active");
+        step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     handleCustomize() {
@@ -202,7 +215,7 @@ export default class DishCard extends React.Component {
     
 
     return (
-        <div className={`dish-card${isCardActive ? ' active ' : ' '}${confirmed ? ' confirmed' : ''} ${forceDisable ? 'disabled' : ''}`}>
+        <div className={`dish-card${isCardActive ? ' active' :''}${confirmed ? ' confirmed' : ''} ${forceDisable ? 'disabled' : ''}`}>
             {!isCardActive && confirmed && 
                 <p className="card__quantity-badge">{activeScheme === 'traditional' ? quantity : initialQuantity + quantity}</p>
             }
@@ -228,7 +241,10 @@ export default class DishCard extends React.Component {
                     <section className="card__actions">
                         <button className="btn btn-primary-small btn-counter-confirm" onClick={() => this.handleConfirm()}>Confirm</button>
                         <button className={`ha-a btn-counter-customize ${ substitutions.length + modifications.length > 0 ? 'enabled' : 'disabled' }`} onClick={() => this.handleCustomize()}>Customize</button>
-                    </section>    
+                    </section>
+                    <section className="card__actions">
+                        <button className="ha-a btn-counter-customize enabled" onClick={() => this.handleCancel()}>Cancel</button>
+                    </section>     
                 </div>
             </div>
         }
