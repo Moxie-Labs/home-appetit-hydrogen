@@ -279,7 +279,7 @@ export default class MenuSection extends React.Component {
             <Frame>
 
                 <Modal
-                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart}
+                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step}
                     onRequestClose={() => this.setState({showingModal: false})}
                     className="modal-entree-complete"
                 >   
