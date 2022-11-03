@@ -28,7 +28,7 @@ export function Header(prop){
    return(
         <div className="header">
             <div className={`header-inner ${isOrdering ? 'header-inner-ordering' : ''}`}>
-                <div className="mobile-menu">
+                <div className={`mobile-menu ${isOrdering ? 'mobile-hide-menu' : ''}`}>
                     {isActive &&
                       <img src={iconCloseBtn} width="24" onClick={handleClick}/>
                     }

@@ -178,8 +178,16 @@ a.btn-order-cta.mobile-order-cta {
 }
 
 @media screen and (max-width: 960px) {
+    .mobile-menu.mobile-hide-menu {
+        display: none;
+    }
+
     .header-inner-ordering{
-        justify-content: flex-start;
+        justify-content: center;
+    }
+
+    .header-inner-ordering .logo.mobile-logo-margin{
+        margin: 0;
     }
 
     .logo.mobile-logo-margin {
