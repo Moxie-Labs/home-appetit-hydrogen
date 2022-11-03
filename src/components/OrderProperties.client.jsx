@@ -45,9 +45,14 @@ export default class OrderProperties extends React.Component {
         this.props.handleCancel();
     }
 
+    getDisplayDate(date) {
+        const retval = `${date.getMonth()+1}/${date.getDate()}`;
+        return retval;
+    }
+
     render() {   
 
-        const {activeScheme, step, currentStep, servingCount} = this.props;
+        const {activeScheme, step, currentStep, servingCount, deliveryWindowOne} = this.props;
 
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
@@ -60,6 +65,9 @@ export default class OrderProperties extends React.Component {
                         currentStep={currentStep}
                         step={1}
                     />
+                    <div>
+                        <span className={`delivery-window-label ${currentStep !== step ? 'disabled' : ''}`}>Place order for {this.getDisplayDate(deliveryWindowOne)} delivery</span>
+                    </div>
                     { currentStep === step &&
                         <p className="subheading order_prop__subheading ha-p">Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam molestie id. Quisque risus pellentesque aliquet donec. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam.</p>
                     }
