@@ -179,12 +179,14 @@ export default function DeliveryInfo(props) {
                     {/* OPTION PLACEHOLDER */}
                     <div className="contact-option">
                         <Checkbox
-                            label="Include extra ice $5.00"
+                            label="Include extra ice"
+                            price="$5.00"
                             checked={extraIce}
                             onChange={() => handleExtraIce(!extraIce)}
                         />
                         <Checkbox
                             label="This order is a gift"
+                            price=""
                             checked={isGift}
                             onChange={() => handleIsGift(!isGift)}
                         />

@@ -2,7 +2,8 @@ import React from 'react';
 // import CardFilters from "./CardFilters.client";
 // import DishCard from "./DishCard";
 import iconEdit from "../assets/icon-edit.png";
-import iconPlus from "../assets/icon-plus.png";
+import iconPlus from "../assets/icon-plus-alt.png";
+import iconArrowRight from "../assets/arrow-right.png"
 import { Frame } from './Frame.client';
 import { LayoutSection } from './LayoutSection.client';
 import { Layout } from './Layout.client';
@@ -287,8 +288,8 @@ export default class MenuSection extends React.Component {
                     <h2 className='text-center'>Care to add extra {title}</h2>
                     <p className='text-center'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. 
                     Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam <b>$12.50</b> each.</p>
-                    <button className='btn btn-primary-small' onClick={() => this.showSectionExtras()}>+ Add Extra {title}</button>
-                    <button className='btn btn-secondary-small' onClick={() => this.skipSectionExtras()}>Continue to {title === 'Entrées' ? 'Small Plates' : 'Add-ons'}</button>
+                    <button className='btn btn-primary-small' onClick={() => this.showSectionExtras()}><span><img src={iconPlus} width={65} className="icon-plus-alt"/></span> Add Extra {title}</button>
+                    <button className='btn btn-secondary-small' onClick={() => this.skipSectionExtras()}>Continue to {title === 'Entrées' ? 'Small Plates' : 'Add-ons'} <span><img src={iconArrowRight} width={65} className="icon-arrow-alt"/></span></button>
 
                 </Modal>
 

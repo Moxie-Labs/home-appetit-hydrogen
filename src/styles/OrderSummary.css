@@ -124,7 +124,12 @@ span.price--extra-addon {
 
 .icon-plus-alt {
     width: 15px;
-    /* margin-top: 2px; */
+    margin-left: 6px;
+    vertical-align: top;
+}
+
+.icon-arrow-alt {
+    width: 15px;
     margin-left: 6px;
     vertical-align: top;
 }

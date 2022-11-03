@@ -535,8 +535,12 @@ p.modal--flexible-price strong {
     grid-template-columns: 1fr 1fr;
     row-gap: 1.125rem;
 }
-.modal--flexible-confirmaton input[type="checkbox"] {
-    padding: 5rem;
-    margin-right: 0.2rem;
-    vertical-align: text-top;
+
+input[type="checkbox"] {
+    margin-right: 1em;
+    font: inherit;
+    width: 1.15em;
+    height: 1.15em;
+    transform: translateY(0.275em);
+    accent-color: #474447;
 }

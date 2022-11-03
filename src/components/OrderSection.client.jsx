@@ -264,8 +264,8 @@ export function OrderSection(props) {
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
-            console.log("addItemToCart::adding new item", choice);
-            
+            console.log("addItemToCart::adding new item", choice);    
+
 
             if (collectionName === 'main') 
                 if (isAddingExtraItems)
@@ -896,7 +896,10 @@ export function OrderSection(props) {
                                     activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
-                                    handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
+                                    handleItemSelected={isAddingExtraItems ? 
+                                        (choice) => addItemToCart(choice, selectedMainItemsExtra, 'main')
+                                        :
+                                        (choice) => addItemToCart(choice, selectedMainItems, 'main')}
                                     handleConfirm={() => setupNextSection(3)}
                                     handleEdit={() => setCurrentStep(2)}
                                     handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
@@ -923,7 +926,10 @@ export function OrderSection(props) {
                                     activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
-                                    handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
+                                    handleItemSelected={isAddingExtraItems ? 
+                                        (choice) => addItemToCart(choice, selectedSmallItemsExtra, 'small')
+                                        :
+                                        (choice) => addItemToCart(choice, selectedSmallItems, 'small')}
                                     handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => setCurrentStep(3)}
                                     handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
