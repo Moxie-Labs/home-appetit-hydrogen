@@ -1,4 +1,3 @@
-import React from 'react';
 import onePerson from "../assets/one-person.svg";
 import twoPeople from "../assets/two-people.svg";
 import threePeople from "../assets/three-people.svg";
@@ -6,13 +5,11 @@ import fourPeople from "../assets/four-people.svg";
 import smallPlate from "../assets/small-plate.svg";
 import largePlate from "../assets/large-plate.svg";
 
-class OrderIllustration extends React.Component {
+export default function OrderIllustration(props){
 
-    constructor(props) {
-        super(props);
-    }
+    const {activeScheme, servingCount} = props;
 
-    setPeople(servingCount){
+    const setPeople = (servingCount) => {
         switch(servingCount) {
             case '2':
             return 'Two People';
@@ -28,7 +25,7 @@ class OrderIllustration extends React.Component {
 
     }
 
-    setPeopleImg(servingCount, activeScheme){
+    const setPeopleImg = (servingCount, activeScheme) => {
         if(activeScheme === 'traditional'){
             switch(servingCount) {
                 case '2':
@@ -45,7 +42,7 @@ class OrderIllustration extends React.Component {
         }
     }
 
-    setTotal(servingCount, activeScheme){
+    const setTotal = (servingCount, activeScheme) => {
         if(activeScheme === 'traditional'){
             switch(servingCount) {
                 case '2':
@@ -74,13 +71,11 @@ class OrderIllustration extends React.Component {
             }
         }
     }
-
-    render() {
-        const {activeScheme, servingCount} = this.props;
+        
         return (
             <div>
-                <div className='illustration-total'>{this.setTotal(servingCount, activeScheme)}</div>
-                <div className='illustration-desc'>{activeScheme === 'traditional' ? 'Classic Order' : 'Flex Ordering'}-{this.setPeople(servingCount)}</div>
+                <div className='illustration-total'>{setTotal(servingCount, activeScheme)}</div>
+                <div className='illustration-desc'>{activeScheme === 'traditional' ? 'Classic Order' : 'Flex Ordering'}-{setPeople(servingCount)}</div>
                 <div className='illustration-desc-sub'>{servingCount === '1' || servingCount === 0 ? "4-6 Meals" : "4-6 Meals Per Person"}</div>
                 <div className='illustration-desc-division'></div>
                 <div className='illustration-desc-underline'>
@@ -88,10 +83,10 @@ class OrderIllustration extends React.Component {
                 </div>
                 <div className='illustration-section'>
                     <div className='illustration-section-img'>
-                        {activeScheme === 'traditional' && <img src={this.setPeopleImg(servingCount, activeScheme)} />}
+                        {activeScheme === 'traditional' && <img src={setPeopleImg(servingCount, activeScheme)} />}
                     </div>
                     <div className='illustration-section-img-1'> 
-                        <img src={smallPlate} width="30" />
+                        <img src={smallPlate} width="28" />
                         { activeScheme === 'traditional' ?
                         <span className='illustration-section-text'>4 Small Plates</span>
                         :
@@ -106,6 +101,7 @@ class OrderIllustration extends React.Component {
                         <span className='illustration-section-text'>{servingCount*4} Large Plates</span>
                         }
                     </div>
+                    {activeScheme === 'traditional' ? 
                     <div className='illustration-image-section'>
                         <div className='illustration-section-img-3'> 
                             <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
@@ -156,11 +152,42 @@ class OrderIllustration extends React.Component {
                             <img src={largePlate} width="52" />
                         </div>
                     </div>
+                    :
+                    <div>
+                        <div className='illustration-flex-section'>
+                            <div className='illustration-flex-person'>
+                                <img src={onePerson} width="27"/>
+                            </div>
+                            <div className='illustration-flex-small-plate'> 
+                                <img src={smallPlate} width="30" />
+                            </div>
+                            <div className='illustration-flex-small-plate'>
+                                <img src={smallPlate} width="30" />
+                            </div>
+                            <div className='illustration-flex-small-plate'> 
+                                <img src={smallPlate} width="30" />
+                            </div>
+                            <div className='illustration-flex-small-plate'> 
+                                <img src={smallPlate} width="30" />
+                            </div>
+                        </div>
+                        <div className='illustration-flex-section'>
+                            <div className='illustration-flex-large-plate'> 
+                                <img src={largePlate} width="34" />
+                            </div>
+                            <div className='illustration-flex-large-plate'> 
+                                <img src={largePlate} width="34" />
+                            </div>
+                            <div className='illustration-flex-large-plate'> 
+                                <img src={largePlate} width="34" />
+                            </div>
+                            <div className='illustration-flex-large-plate'> 
+                                <img src={largePlate} width="34" />
+                            </div>
+                        </div>
+                    </div>
+                    }
                 </div>
             </div>
         );
-    }
-    
 }
-
-export default OrderIllustration;

@@ -103,6 +103,25 @@ select.order_prop__dropdown:focus-visible {
     height: 100%;
 }
 
+.illustration-flex-section{
+    display: flex;
+    margin-left: 65%;
+}
+
+.illustration-flex-small-plate{
+    padding-left: 4%;
+}
+
+.illustration-flex-large-plate{
+    padding-left: 2%;
+}
+
+.illustration-flex-person{
+    position: absolute;
+    left: 55%;
+    top: 22%;
+}
+
 .illustration-section-img {
     position: relative;
     left: 12%;

@@ -10,7 +10,6 @@
     .order-summary--inner {
         background-color: #fff;
         box-shadow: 1px 1px 10px #aaa;
-        cursor: pointer;
         border-radius: 10px 10px 0 0;
     }
 
@@ -57,6 +56,7 @@
 
     .order-summary--inner h3 {
         margin: 0 !important;
+        cursor: pointer;
     }
 
         .order-summary--item {

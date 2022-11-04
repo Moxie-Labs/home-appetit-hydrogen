@@ -991,6 +991,7 @@ export function OrderSection(props) {
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 freeQuantityLimit={getFreeQuantityLimit()} 
+                                emptyCart={()=>emptyCart()}
                             />  
                         </LayoutSection>
 

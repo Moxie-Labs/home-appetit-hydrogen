@@ -134,10 +134,6 @@ export default class MenuSection extends React.Component {
         return retval;
     }
 
-    pullStatus(data){
-        console.log(data);
-    }
-
     render() { 
 
         const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme
@@ -158,7 +154,6 @@ export default class MenuSection extends React.Component {
                     <div className="dish-card-item" key={choice.title}>
                         <DishCard 
                             choice={choice}
-                            pullStatus={this.pullStatus}
                             freeQuantityLimit={freeQuantityLimit} 
                             servingCount={servingCount}
                             handleSelected={handleItemSelected}
