@@ -49,6 +49,17 @@
     margin: 0 auto 35px;
 }
 
+.card__overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: #474442;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    opacity: 0.5;
+}
+
     .card__quantity-count {
         color: #4F4F4F;
         font-size: 42px;

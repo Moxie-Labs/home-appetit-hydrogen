@@ -172,6 +172,7 @@ div .order-wrapper {
         position: relative;
         float: none;
         right: 0;
+        display: none;
     }
 
     .dish-card-item p.card__code{
@@ -181,7 +182,7 @@ div .order-wrapper {
     }
 
     .dish-card-item .card__info-section {
-        min-height: 140px;
+        min-height: 10rem;
         padding: 0.625rem;
     }
 
@@ -209,5 +210,6 @@ div .order-wrapper {
         top: 50%;
         transform: translate(-50%, -50%);
         max-width: 21.5625rem;
+        border: 3px solid #385F83;
     }
 }

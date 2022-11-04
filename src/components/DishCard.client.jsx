@@ -208,7 +208,10 @@ export default class DishCard extends React.Component {
             }
 
         {isCardActive && !confirmed &&
+           <div>
+           <div className="card__overlay"></div>
             <div className="card__quantity-wrapper">
+                
                 <div className="card__quantity-inner-container">
                      <h2 className="card__quantity-title">{title}</h2>
                      {/* start placeholder */}
@@ -230,6 +233,7 @@ export default class DishCard extends React.Component {
                         <button className={`ha-a btn-counter-customize ${ substitutions.length + modifications.length > 0 ? 'enabled' : 'disabled' }`} onClick={() => this.handleCustomize()}>Customize</button>
                     </section>    
                 </div>
+            </div>
             </div>
         }
             
