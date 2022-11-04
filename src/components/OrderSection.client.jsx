@@ -550,6 +550,21 @@ export function OrderSection(props) {
                 value: deliveryWindows.deliveryDate
             }
         ];
+
+        if (isGift) {
+            cartAttributesObj.push({
+                key: 'Gift?',
+                value: 'Yes'
+            });
+
+            if (giftMessage.length > 0) {
+                cartAttributesObj.push({
+                    key: 'Gift Message',
+                    value: giftMessage
+                });
+            }
+            
+        }
         
         cartAttributesUpdate(cartAttributesObj);
 
@@ -964,6 +979,7 @@ export function OrderSection(props) {
                                     cartLines={cartLines}
                                     checkoutUrl={checkoutUrl}
                                     currentStep={currentStep}
+                                    cartId={cartId}
                                 />
                             </section> 
                         }
