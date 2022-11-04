@@ -8,6 +8,8 @@ export default function DebugValues(props) {
         <section>
             <h1>Debug Values</h1>
 
+            <p>Current Step: {props.currentStep}</p>
+
             <p>Selected Plan: {props.activeScheme}</p>
 
             <p>Serving Count: {props.servingCount}</p>
