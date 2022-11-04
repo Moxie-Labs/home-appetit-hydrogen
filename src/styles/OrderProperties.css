@@ -73,9 +73,9 @@ select.order_prop__dropdown:focus-visible {
 
 .illustration-desc-division{
     position: absolute;
-    left: 70%;
+    left: 67%;
     right: 2%;
-    top: 26%;
+    top: 23%;
     border: 2px solid #474442;
 }
 
@@ -94,9 +94,13 @@ select.order_prop__dropdown:focus-visible {
     left: 58%;
     right: 2%;
     top: 37%;
-    bottom: 28%;
+    bottom: 33%;
     border: 3px solid #474442;
-    border-radius: inherit;
+    border-radius: 15px;
+}
+
+.illustration-image-section{
+    height: 100%;
 }
 
 .illustration-section-img {
@@ -119,50 +123,50 @@ select.order_prop__dropdown:focus-visible {
 
 .illustration-section-img-3 {
     position: relative;
-    left: 48%;
-    bottom: 30%;
+    left: 44%;
+    bottom: 62%;
 }
 
 .illustration-section-img-4 {
     position: relative;
-    left: 60%;
-    bottom: 44%;
+    left: 57%;
+    bottom: 103%;
 }
 
 .illustration-section-img-5 {
     position: relative;
-    left: 72%;
-    bottom: 58%;
+    left: 70%;
+    bottom: 144%;
 }
 
 .illustration-section-img-6 {
     position: relative;
-    left: 84%;
-    bottom: 72%;
+    left: 83%;
+    bottom: 185%;
 }
 
 .illustration-section-img-7 {
     position: relative;
-    left: 48%;
-    bottom: 56%;
+    left: 44%;
+    bottom: 197%;
 }
 
 .illustration-section-img-8 {
     position: relative;
-    left: 60%;
-    bottom: 68%;
+    left: 57%;
+    bottom: 236%;
 }
 
 .illustration-section-img-9 {
     position: relative;
-    left: 72%;
-    bottom: 80%;
+    left: 70%;
+    bottom: 276%;
 }
 
 .illustration-section-img-10 {
     position: relative;
-    left: 84%;
-    bottom: 92%;
+    left: 83%;
+    bottom: 316%;
 }
 
 .illustration-section-text{
@@ -172,6 +176,27 @@ select.order_prop__dropdown:focus-visible {
     font-size: 18px;
     margin-left: 10px;
     color: #474442;
+}
+
+.illustration-section-badge {  
+    background: #000;
+    border-radius: 10px;
+    color: white;
+    font-size: 12px;
+    top: 20px;
+    right: -42px;
+    padding: 5px 5px;
+    position: relative;
+    width: 22px;
+    height: 22px;
+    font-family: 'AvenirLTProRoman';
+    font-weight: bold;
+}
+
+.illustration-section-badge-hidden {  
+    visibility: hidden;
+    font-size: 12px;
+    height: 22px;
 }
 
 #OrderProperties label{

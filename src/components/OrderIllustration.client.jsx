@@ -42,19 +42,6 @@ class OrderIllustration extends React.Component {
                 default:
                 return onePerson;
             }
-        }   else    {
-            switch(servingCount) {
-                case '2':
-                return '$180';
-                case '3':
-                return '$230';
-                case '4':
-                return '$280';
-                case '5':
-                return '$330';
-                default:
-                return '$100';
-            }
         }
     }
 
@@ -101,39 +88,73 @@ class OrderIllustration extends React.Component {
                 </div>
                 <div className='illustration-section'>
                     <div className='illustration-section-img'>
-                        <img src={this.setPeopleImg(servingCount, activeScheme)} />
+                        {activeScheme === 'traditional' && <img src={this.setPeopleImg(servingCount, activeScheme)} />}
                     </div>
                     <div className='illustration-section-img-1'> 
                         <img src={smallPlate} width="30" />
+                        { activeScheme === 'traditional' ?
                         <span className='illustration-section-text'>4 Small Plates</span>
+                        :
+                        <span className='illustration-section-text'>{servingCount*4} Small Plates</span>
+                        }
                     </div>
                     <div className='illustration-section-img-2'>
                         <img src={largePlate} width="30" />
+                        { activeScheme === 'traditional' ?
                         <span className='illustration-section-text'>4 Large Plates</span>
+                        :
+                        <span className='illustration-section-text'>{servingCount*4} Large Plates</span>
+                        }
                     </div>
-                    <div className='illustration-section-img-3'> 
-                        <img src={smallPlate} width="50" />
-                    </div>
-                    <div className='illustration-section-img-4'> 
-                        <img src={smallPlate} width="50" />
-                    </div>
-                    <div className='illustration-section-img-5'> 
-                        <img src={smallPlate} width="50" />
-                    </div>
-                    <div className='illustration-section-img-6'> 
-                        <img src={smallPlate} width="50" />
-                    </div>
-                    <div className='illustration-section-img-7'> 
-                        <img src={largePlate} width="50" />
-                    </div>
-                    <div className='illustration-section-img-8'> 
-                        <img src={largePlate} width="50" />
-                    </div>
-                    <div className='illustration-section-img-9'> 
-                        <img src={largePlate} width="50" />
-                    </div>
-                    <div className='illustration-section-img-10'> 
-                        <img src={largePlate} width="50" />
+                    <div className='illustration-image-section'>
+                        <div className='illustration-section-img-3'> 
+                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                x{servingCount}
+                            </p>
+                            <img src={smallPlate} width="50" />
+                        </div>
+                        <div className='illustration-section-img-4'>
+                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                x{servingCount}
+                            </p>
+                            <img src={smallPlate} width="50" />
+                        </div>
+                        <div className='illustration-section-img-5'> 
+                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                x{servingCount}
+                            </p>
+                            <img src={smallPlate} width="50" />
+                        </div>
+                        <div className='illustration-section-img-6'> 
+                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                x{servingCount}
+                            </p>
+                            <img src={smallPlate} width="50" />
+                        </div>
+                        <div className='illustration-section-img-7'> 
+                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                x{servingCount}
+                            </p>
+                            <img src={largePlate} width="52" />
+                        </div>
+                        <div className='illustration-section-img-8'> 
+                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                x{servingCount}
+                            </p>
+                            <img src={largePlate} width="52" />
+                        </div>
+                        <div className='illustration-section-img-9'> 
+                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                x{servingCount}
+                            </p>
+                            <img src={largePlate} width="52" />
+                        </div>
+                        <div className='illustration-section-img-10'> 
+                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                x{servingCount}
+                            </p>
+                            <img src={largePlate} width="52" />
+                        </div>
                     </div>
                 </div>
             </div>
