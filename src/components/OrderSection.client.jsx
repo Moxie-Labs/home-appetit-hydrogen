@@ -134,6 +134,7 @@ export function OrderSection(props) {
     const [promoTriggered, setPromoTriggered] = useState(false);
     const [referralTriggered, setReferralTriggered] = useState(false);
 
+    const [userAddedItem, setUserAddedItem] = useState(false);
     const [isCollectionsLoading, setIsCollectionsLoading] = useState(true);
     const [isRestoringCart, setIsRestoringCart] = useState(false);
     const [cartWasRestored, setCartWasRestored] = useState(false);
@@ -147,9 +148,10 @@ export function OrderSection(props) {
         setupCardsAndCollections();
     }, []);
 
-    useEffect(() => {
-        if (!restoreCartModalDismissed && cartLines.length > 0)
+    useEffect(() => {        
+        if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
             setIsRestoringCart(true);
+        }
     },[cartLines])
 
     useEffect(() => {
@@ -202,6 +204,9 @@ export function OrderSection(props) {
     }
 
     const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true, isIce=false) => {
+
+        if (!userAddedItem)
+            setUserAddedItem(true);
 
         const variantType = isIce ? 0 : getVariantType(collection);        
 
@@ -508,12 +513,24 @@ export function OrderSection(props) {
         setSelectedSmallItemsExtra([]);
     }
 
+    const removeItem = item => {
+    //     let lineToRemove = null;
+        
+    //     cartLines.map(line => {
+    //         const {product, variant} = line.merchandise;
+    //         if (variant.id === item.choice.
+
+    //     });
+    }
+
     const confirmPersonsCount = () => {
         linesAdd({
             merchandiseId: getSelectedPlan().id,
             quantity: 1
         });
 
+        if (!userAddedItem)
+            setUserAddedItem(true);
         setCurrentStep(2);
     }
 
@@ -980,6 +997,7 @@ export function OrderSection(props) {
                                     checkoutUrl={checkoutUrl}
                                     currentStep={currentStep}
                                     cartId={cartId}
+                                    userAddedItem={userAddedItem}
                                 />
                             </section> 
                         }
