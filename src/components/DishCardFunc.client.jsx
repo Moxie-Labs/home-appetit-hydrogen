@@ -25,24 +25,23 @@ export default function DishCardFunc(props) {
         setQuantity(props.initialQuantity);
     },[props.initialQuantity])
 
-    const updateQuantity = quantity => {
+    const updateQuantity = newQuantity => {
         const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity } = props;
         const currentQuantity = quantity;
 
         // if: decrementing, then: just check if above 0
-        if (quantity < currentQuantity)
-            quantity = Math.max(0, quantity);
+        if (newQuantity < currentQuantity)
+            newQuantity = Math.max(0, newQuantity);
         
-        else if (quantity > (initialQuantity + maxQuantity) ) {
-            quantity = currentQuantity;
+        else if (newQuantity > (initialQuantity + maxQuantity) ) {
+            newQuantity = currentQuantity;
         }
             
         
-        else
-            if (!showingExtra)
-                quantity = Math.min(quantity, freeQuantityLimit);
+        else if (!showingExtra)
+            newQuantity = Math.min(newQuantity, freeQuantityLimit);
 
-        setQuantity(quantity);
+        setQuantity(newQuantity);
     }
 
     const calculateItemTotal = () => {
