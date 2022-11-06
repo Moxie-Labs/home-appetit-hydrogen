@@ -22,7 +22,15 @@ export default function DebugValues(props) {
                     <ul>
                         {selectedMainItems.map(item => {
                             console.log("debug::item", item);
-                            return <li>{item.quantity}x {item.choice.title} ({item.selectedVariantId})</li>
+                            return <li>{item.quantity}x {item.choice.title} ({item.selectedVariantId})
+                               <ul>
+                                    {item.selectedMods?.map(mod => {
+                                        console.log("mod", mod);
+                                        return <li>{mod.title} ({mod.variants.edges[0].node.id})</li>;
+                                    })}
+                                </ul>
+                                
+                            </li>
                         })}
                     </ul>
                 </div>

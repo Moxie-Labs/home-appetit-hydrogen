@@ -14,6 +14,7 @@ import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
+import { TRADITIONAL_PLAN_NAME } from "../lib/const";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
@@ -25,7 +26,7 @@ const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 7;
 const FIRST_WINDOW_START = 8;
 const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
-const DEFAULT_PLAN = 'flexible';
+const DEFAULT_PLAN = TRADITIONAL_PLAN_NAME;
 const DEFAULT_CARDS = [
     {
         brand: "Visa",
@@ -518,7 +519,7 @@ export function OrderSection(props) {
 
     const removeItem = (item, index, collectionName) => {
         console.log("removing Item: ", item)
-        let lineToRemove = null;
+        let linesToRemove = [];
         
         // delete from internal Cart/OrderSummary
         if (collectionName === 'main') {
@@ -526,23 +527,45 @@ export function OrderSection(props) {
             collection.splice(index, 1);
             setSelectedMainItems([...collection]);
         } else if (collectionName === 'mainExtra') {
-            const collection = selectedMainItems;
+            const collection = selectedMainItemsExtra;
             collection.splice(index, 1);
             setSelectedMainItemsExtra([...collection]);
+        } else if (collectionName === 'sides') {
+            const collection = selectedSmallItems;
+            collection.splice(index, 1);
+            setSelectedSmallItems([...collection]);
+        } else if (collectionName === 'sidesExtra') {
+            const collection = selectedSmallItemsExtra;
+            collection.splice(index, 1);
+            setSelectedSmallItemsExtra([...collection]);
+        } else if (collectionName === 'addons') {
+            const collection = selectedAddonItems;
+            collection.splice(index, 1);
+            setSelectedAddonItems([...collection]);
         }
 
         // delete from Shopify Cart
         cartLines.map(line => {
-            const {id} = line.merchandise;
-            console.log(`comparing lineID: ${id} to variantID: ${item.selectedVariantId}`);
-            if (id === item.selectedVariantId && lineToRemove === null) {
+            const {id:merchId} = line.merchandise;
+            console.log(`comparing lineID: ${merchId} to variantID: ${item.selectedVariantId}`);
+            if (merchId === item.selectedVariantId) {
                 console.log("item found!: ", line.merchandise.product.title);
-                lineToRemove = line.id;
+                linesToRemove.push(line.id);
+            } else {
+                // delete associated mods
+                item.selectedMods?.map(mod => {
+                    const {id:modId} = line.merchandise;
+                    const modVariantId = mod.variants.edges[0].node.id;
+                    if (modId === modVariantId)
+                        linesToRemove.push(line.id);
+                });
             }
         });
 
-        if (lineToRemove !== null)
-            linesRemove([lineToRemove]);
+        console.log("linesToRemove", linesToRemove);
+
+        if (linesToRemove.length > 0)
+            linesRemove(linesToRemove);
 
     }
 
@@ -1172,6 +1195,7 @@ export function OrderSection(props) {
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 freeQuantityLimit={getFreeQuantityLimit()} 
                                 removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
+                                isAddingExtraItems={isAddingExtraItems}
                             />  
                         </LayoutSection>
 

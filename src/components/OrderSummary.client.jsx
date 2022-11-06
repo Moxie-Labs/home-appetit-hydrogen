@@ -95,14 +95,14 @@ export default class OrderSummary extends React.Component {
     }
 
     render() {
-        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing, removeItem} = this.props;
+        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing, removeItem, isAddingExtraItems} = this.props;
         const {enlarged} = this.state;
 
         const mainItemList = selectedMainItems.map((item, i) => {
             return (
                 <li key={`main-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
-                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === MAIN_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'main')}> (D)</span> }
+                    { activeScheme === FLEXIBLE_PLAN_NAME && !isAddingExtraItems && removeItem !== null && currentStep === MAIN_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'main')}> (D)</span> }
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
                             <span>→ {prepModSubTitles(mod.title)}</span>
@@ -117,7 +117,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`main-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
-                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === MAIN_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'mainExtra')}> (D)</span> }
+                    { activeScheme === FLEXIBLE_PLAN_NAME && isAddingExtraItems && removeItem !== null && currentStep === MAIN_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'mainExtra')}> (D)</span> }
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
@@ -133,7 +133,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
-                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === SIDE_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'sides')}> (D)</span> }
+                    { activeScheme === FLEXIBLE_PLAN_NAME && !isAddingExtraItems && removeItem !== null && currentStep === SIDE_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'sides')}> (D)</span> }
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
                             <span>→ {prepModSubTitles(mod.title)}</span>
@@ -148,7 +148,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
-                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === SIDE_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'sidesExtra')}> (D)</span> }
+                    { activeScheme === FLEXIBLE_PLAN_NAME && isAddingExtraItems && removeItem !== null && currentStep === SIDE_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'sidesExtra')}> (D)</span> }
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
