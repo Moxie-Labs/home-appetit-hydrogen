@@ -1,5 +1,5 @@
 import { useCart } from "@shopify/hydrogen";
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
 import MenuSection from "./MenuSection.client";
@@ -133,6 +133,29 @@ export function OrderSection(props) {
     const [giftCardTriggered, setGiftCardTriggered] = useState(false);
     const [promoTriggered, setPromoTriggered] = useState(false);
     const [referralTriggered, setReferralTriggered] = useState(false);
+
+    const [isCollectionsLoading, setIsCollectionsLoading] = useState(true);
+    const [isRestoringCart, setIsRestoringCart] = useState(false);
+    const [cartWasRestored, setCartWasRestored] = useState(false);
+    const [restoreCartModalDismissed, setRestoreCartModalDismissed] = useState(false);
+    const [choicesEntrees, setChoicesEntrees] = useState([]);
+    const [choicesGreens, setChoicesGreens] = useState([]);
+    const [choicesAddons, setChoicesAddons] = useState([]);
+
+    // runs necessary Storefront API calls only when needed
+    useEffect(() => {
+        setupCardsAndCollections();
+    }, []);
+
+    useEffect(() => {
+        if (!restoreCartModalDismissed && cartLines.length > 0)
+            setIsRestoringCart(true);
+    },[cartLines])
+
+    useEffect(() => {
+        if (cartWasRestored)
+            determineCurrentStep();
+    }, [cartWasRestored])
 
     /* Helpers */
     const convertTags = tags => {
@@ -527,6 +550,21 @@ export function OrderSection(props) {
                 value: deliveryWindows.deliveryDate
             }
         ];
+
+        if (isGift) {
+            cartAttributesObj.push({
+                key: 'Gift?',
+                value: 'Yes'
+            });
+
+            if (giftMessage.length > 0) {
+                cartAttributesObj.push({
+                    key: 'Gift Message',
+                    value: giftMessage
+                });
+            }
+            
+        }
         
         cartAttributesUpdate(cartAttributesObj);
 
@@ -668,125 +706,196 @@ export function OrderSection(props) {
         return number;
     }
 
-    /* END Helpers */
-
-
-    /* GraphQL Setup */
+    const resetOrder = () => {
+        emptyCart();
+        setCurrentStep(1);
+    }
 
     const { collectionData, zipcodeType, zipcodeArr, entreeProducts, greensProducts, addonProducts } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
-
-    const existingMainItems = [];
-    const existingMainItemsExtra = [];
-    const existingSmallItems = [];
-    const existingSmallItemsExtra = [];
-    const existingAddonItems = [];
-    const choicesEntrees = [];
-
-    entreeProducts.map(entree => {
-        const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
-        const attributes = convertTags(entree.node.tags);
-        const choice = {
-            title: entree.node.title,
-            attributes: attributes,
-            price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
-            description: entree.node.description,
-            imageURL: imgURL,
-            productOptions: entree.node.variants.edges,
-            modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
-            substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
-        };
-        choicesEntrees.push(choice);
-
-        // map cart items to pre-selected choices      
-        cartLines.map(line => {
-            entree.node.variants.edges.forEach(variant => {
-                if (line.merchandise.id === variant.node.id) {
-
-                    // if: variant is Included, then: add to MainItems, else: add to Extras
-                    if (variant.node.title === "Included")
-                        existingMainItems.push({choice: choice, quantity: line.quantity});
-                    else
-                        existingMainItemsExtra.push({choice: choice, quantity: line.quantity});
-                }
-            });
-        });
-    });
-
-    if (existingMainItems.length > 0 && selectedMainItems.length < 1) 
-        setSelectedMainItems(existingMainItems);
-    if (existingMainItemsExtra.length > 0 && selectedMainItemsExtra.length < 1) 
-        setSelectedMainItemsExtra(existingMainItemsExtra);
-
-    const choicesGreens = [];
-    greensProducts.map(greens => {
-        const imgURL = greens.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : greens.node.images.edges[0].node.src;
-        const attributes = convertTags(greens.node.tags);
-        const choice = {
-            title: greens.node.title,
-            attributes: attributes,
-            price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
-            description: greens.node.description,
-            imageURL: imgURL,
-            productOptions: greens.node.variants.edges,
-            modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
-            substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
-        }
-
-        choicesGreens.push(choice);
-
-        // map cart items to pre-selected choices        
-        cartLines.map(line => {
-            greens.node.variants.edges.forEach(variant => {
-                if (line.merchandise.id === variant.node.id) {
-                    if (variant.node.title === "Included")
-                        existingSmallItems.push({choice: choice, quantity: line.quantity});
-                    else
-                        existingSmallItemsExtra.push({choice: choice, quantity: line.quantity});
-                }
-            });
-        });
-    });
-
-    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) 
-        setSelectedSmallItems(existingSmallItems);
-    if (existingSmallItemsExtra.length > 0 && selectedSmallItemsExtra.length < 1) 
-        setSelectedSmallItemsExtra(existingSmallItemsExtra);
     
+    const setupCardsAndCollections = () => {
+        const newChoicesEntrees = [];
+        const newChoicesGreens = [];
+        const newChoicesAddons = [];
 
-    const choicesAddons = [];
-    addonProducts.map(addons => {
-        const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
-        const attributes = convertTags(addons.node.tags);
-        const choice = {
-            title: addons.node.title,
-            attributes: attributes,
-            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
-            description: addons.node.description,
-            imageURL: imgURL,
-            productOptions: addons.node.variants.edges,
-            modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
-            substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
-        };
-
-        choicesAddons.push(choice);
-
-        // map cart items to pre-selected choices        
-        cartLines.map(line => {
-            addons.node.variants.edges.forEach(variant => {
-                if (line.merchandise.id === variant.node.id) {
-                    existingAddonItems.push({choice: choice, quantity: line.quantity});
-                }
-            });
+        entreeProducts.map(entree => {
+            const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
+            const attributes = convertTags(entree.node.tags);
+            const choice = {
+                title: entree.node.title,
+                attributes: attributes,
+                price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
+                description: entree.node.description,
+                imageURL: imgURL,
+                productOptions: entree.node.variants.edges,
+                modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
+                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
+            };
+            newChoicesEntrees.push(choice);
         });
-    });
 
-    if (existingAddonItems.length > 0 && selectedAddonItems.length < 1) {
-        setSelectedAddonItems(existingAddonItems);
+        greensProducts.map(greens => {
+            const imgURL = greens.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : greens.node.images.edges[0].node.src;
+            const attributes = convertTags(greens.node.tags);
+            const choice = {
+                title: greens.node.title,
+                attributes: attributes,
+                price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
+                description: greens.node.description,
+                imageURL: imgURL,
+                productOptions: greens.node.variants.edges,
+                modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
+                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
+            }
+
+            newChoicesGreens.push(choice);
+        });
+    
+        addonProducts.map(addons => {
+            const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
+            const attributes = convertTags(addons.node.tags);
+            const choice = {
+                title: addons.node.title,
+                attributes: attributes,
+                price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
+                description: addons.node.description,
+                imageURL: imgURL,
+                productOptions: addons.node.variants.edges,
+                modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
+                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
+            };
+
+            newChoicesAddons.push(choice);
+        });
+
+        setChoicesEntrees(newChoicesEntrees);
+        setChoicesGreens(newChoicesGreens);
+        setChoicesAddons(newChoicesAddons);
+        setIsCollectionsLoading(false);
     }
 
-    /* END GraphQL Values */
+    const restoreCart = () => {
+        const existingMainItems = [];
+        const existingMainItemsExtra = [];
+        const existingSmallItems = [];
+        const existingSmallItemsExtra = [];
+        const existingAddonItems = [];
 
+        entreeProducts.map(entree => {
+            // map cart items to pre-selected choices      
+            const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
+            const attributes = convertTags(entree.node.tags);
+            const choice = {
+                title: entree.node.title,
+                attributes: attributes,
+                price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
+                description: entree.node.description,
+                imageURL: imgURL,
+                productOptions: entree.node.variants.edges,
+                modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
+                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
+            };
+
+            cartLines.map(line => {
+                entree.node.variants.edges.forEach(variant => {
+                    if (line.merchandise.id === variant.node.id) {
+
+                        // if: variant is Included, then: add to MainItems, else: add to Extras
+                        if (variant.node.title === "Included")
+                            existingMainItems.push({choice: choice, quantity: line.quantity});
+                        else
+                            existingMainItemsExtra.push({choice: choice, quantity: line.quantity});
+                    }
+                });
+            });
+        });
+
+        if (existingMainItems.length > 0 && selectedMainItems.length < 1) 
+            setSelectedMainItems(existingMainItems);
+        if (existingMainItemsExtra.length > 0 && selectedMainItemsExtra.length < 1) 
+            setSelectedMainItemsExtra(existingMainItemsExtra);
+
+        greensProducts.map(greens => {
+            const imgURL = greens.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : greens.node.images.edges[0].node.src;
+            const attributes = convertTags(greens.node.tags);
+            const choice = {
+                title: greens.node.title,
+                attributes: attributes,
+                price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
+                description: greens.node.description,
+                imageURL: imgURL,
+                productOptions: greens.node.variants.edges,
+                modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
+                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
+            }
+
+            cartLines.map(line => {
+                greens.node.variants.edges.forEach(variant => {
+                    if (line.merchandise.id === variant.node.id) {
+                        if (variant.node.title === "Included")
+                            existingSmallItems.push({choice: choice, quantity: line.quantity});
+                        else
+                            existingSmallItemsExtra.push({choice: choice, quantity: line.quantity});
+                    }
+                });
+            });
+        });
+
+        if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) 
+            setSelectedSmallItems(existingSmallItems);
+        if (existingSmallItemsExtra.length > 0 && selectedSmallItemsExtra.length < 1) 
+            setSelectedSmallItemsExtra(existingSmallItemsExtra);
+
+
+        addonProducts.map(addons => {
+            // map cart items to pre-selected choices  
+            const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
+            const attributes = convertTags(addons.node.tags);
+            const choice = {
+                title: addons.node.title,
+                attributes: attributes,
+                price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
+                description: addons.node.description,
+                imageURL: imgURL,
+                productOptions: addons.node.variants.edges,
+                modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
+                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
+            };
+
+            cartLines.map(line => {
+                addons.node.variants.edges.forEach(variant => {
+                    if (line.merchandise.id === variant.node.id) {
+                        existingAddonItems.push({choice: choice, quantity: line.quantity});
+                    }
+                });
+            });
+        });
+
+        if (existingAddonItems.length > 0 && selectedAddonItems.length < 1) {
+            setSelectedAddonItems(existingAddonItems);
+        }
+
+        setCartWasRestored(true);
+        setIsRestoringCart(false);
+    }
+
+    const determineCurrentStep = () => {
+        let newCurrentStep = 1;
+
+        if (selectedAddonItems.length > 0)
+            newCurrentStep = 4;
+        else if (selectedSmallItems.length > 0)
+            newCurrentStep = 3;
+        else if (selectedMainItems.length > 0)
+            newCurrentStep = 2;
+        
+        if (newCurrentStep !== currentStep)
+            setCurrentStep(newCurrentStep);
+
+    }
+
+    /* END Helpers */
 
     /* Static Values */
     const TRADITIONAL_PLAN_VARIANT_IDS = [];
@@ -836,8 +945,14 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
+    if (isCollectionsLoading)
+        return <Page>
+            <Suspense>
+                <h1>One moment...</h1>
+            </Suspense>
+        </Page>;
 
-    return (
+    else return (
         <Page>
             <Suspense>
             <Header 
@@ -863,6 +978,8 @@ export function OrderSection(props) {
                                     extraIceItem={props.extraIceItem}
                                     cartLines={cartLines}
                                     checkoutUrl={checkoutUrl}
+                                    currentStep={currentStep}
+                                    cartId={cartId}
                                 />
                             </section> 
                         }
@@ -910,6 +1027,7 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
+                                    isRestoringCart={isRestoringCart}
                                 />
                             </div>
                             
@@ -940,6 +1058,7 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
+                                    isRestoringCart={isRestoringCart}
                                 />
                             </div>
 
@@ -967,6 +1086,7 @@ export function OrderSection(props) {
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
+                                    isRestoringCart={isRestoringCart}
                                 />
                             </div>
                             <section className="menu-section__actions">
@@ -996,20 +1116,42 @@ export function OrderSection(props) {
                         </LayoutSection>
 
                         <Modal
-                              isOpen={isChangePlanModalShowing}
-                              onRequestClose={() => setChangePlanModalShowing(!isChangePlanModalShowing)}
-                              className="modal--flexible-confirmaton"
-                            >
-                                <div className='modal--flexible-inner'>
-                                    <h2 className='ha-h4'>Change order type?</h2>
-                                    <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
-                                    <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
-                                    <section className="card__actions">
-                                        <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>Change Plan</button>
-                                        <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Keep Current Plan</button>
-                                    </section>   
-                                </div>
-                            </Modal>
+                            isOpen={isChangePlanModalShowing}
+                            onRequestClose={() => setChangePlanModalShowing(!isChangePlanModalShowing)}
+                            className="modal--flexible-confirmaton"
+                        >
+                            <div className='modal--flexible-inner'>
+                                <h2 className='ha-h4'>Change order type?</h2>
+                                <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
+                                <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
+                                <section className="card__actions">
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>Change Plan</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Keep Current Plan</button>
+                                </section>   
+                            </div>
+                        </Modal>
+
+                        <Modal
+                            isOpen={isRestoringCart && !restoreCartModalDismissed}
+                            className="modal--flexible-confirmaton"
+                        >
+                            <div className='modal--flexible-inner'>
+                                <h2 className='ha-h4'>Restore existing cart?</h2>
+                                <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
+                                <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
+                                <section className="card__actions">
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {
+                                        setRestoreCartModalDismissed(true);
+                                        restoreCart();
+                                    }}>Keep Cart</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => {
+                                        setRestoreCartModalDismissed(true);
+                                        resetOrder();
+                                        setIsRestoringCart(false);
+                                    }}>Start Over</button>
+                                </section>   
+                            </div>
+                        </Modal>
                     </Layout>
                 </div>
                 }
