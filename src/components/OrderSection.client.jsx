@@ -25,6 +25,7 @@ const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 7;
 const FIRST_WINDOW_START = 8;
 const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
+const DEFAULT_PLAN = 'flexible';
 const DEFAULT_CARDS = [
     {
         brand: "Visa",
@@ -69,7 +70,7 @@ export function OrderSection(props) {
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(0)
     const [selection, setSelections] = useState([])
-    const [activeScheme, setActiveScheme] = useState('traditional')
+    const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
     const [isEditing, setIsEditing] = useState(false);
@@ -294,6 +295,8 @@ export function OrderSection(props) {
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);    
 
+            choice.selectedVariantId = choice.choice.productOptions[variantType].node.id;
+            console.log("choice.selectedVariantId", choice.selectedVariantId);
 
             if (collectionName === 'main') 
                 if (isAddingExtraItems)
@@ -513,14 +516,34 @@ export function OrderSection(props) {
         setSelectedSmallItemsExtra([]);
     }
 
-    const removeItem = item => {
-    //     let lineToRemove = null;
+    const removeItem = (item, index, collectionName) => {
+        console.log("removing Item: ", item)
+        let lineToRemove = null;
         
-    //     cartLines.map(line => {
-    //         const {product, variant} = line.merchandise;
-    //         if (variant.id === item.choice.
+        // delete from internal Cart/OrderSummary
+        if (collectionName === 'main') {
+            const collection = selectedMainItems;
+            collection.splice(index, 1);
+            setSelectedMainItems([...collection]);
+        } else if (collectionName === 'mainExtra') {
+            const collection = selectedMainItems;
+            collection.splice(index, 1);
+            setSelectedMainItemsExtra([...collection]);
+        }
 
-    //     });
+        // delete from Shopify Cart
+        cartLines.map(line => {
+            const {id} = line.merchandise;
+            console.log(`comparing lineID: ${id} to variantID: ${item.selectedVariantId}`);
+            if (id === item.selectedVariantId && lineToRemove === null) {
+                console.log("item found!: ", line.merchandise.product.title);
+                lineToRemove = line.id;
+            }
+        });
+
+        if (lineToRemove !== null)
+            linesRemove([lineToRemove]);
+
     }
 
     const confirmPersonsCount = () => {
@@ -728,7 +751,7 @@ export function OrderSection(props) {
         setCurrentStep(1);
     }
 
-    const { collectionData, zipcodeType, zipcodeArr, entreeProducts, greensProducts, addonProducts } = props;
+    const { zipcodeArr, entreeProducts, greensProducts, addonProducts } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
     
     const setupCardsAndCollections = () => {
@@ -747,7 +770,8 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: entree.node.variants.edges,
                 modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
-                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
+                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions)),
+                baseCollection: 'main'
             };
             newChoicesEntrees.push(choice);
         });
@@ -763,7 +787,8 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: greens.node.variants.edges,
                 modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
-                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
+                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value),
+                baseCollection: 'sides'
             }
 
             newChoicesGreens.push(choice);
@@ -780,7 +805,8 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: addons.node.variants.edges,
                 modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
-                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
+                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value),
+                baseCollection: 'addons'
             };
 
             newChoicesAddons.push(choice);
@@ -811,12 +837,14 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: entree.node.variants.edges,
                 modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
-                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
+                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions)),
+                baseCollection: 'main'
             };
 
             cartLines.map(line => {
                 entree.node.variants.edges.forEach(variant => {
                     if (line.merchandise.id === variant.node.id) {
+                        choice.selectedVariantId = line.merchandise.id;
 
                         // if: variant is Included, then: add to MainItems, else: add to Extras
                         if (variant.node.title === "Included")
@@ -844,7 +872,8 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: greens.node.variants.edges,
                 modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
-                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
+                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value),
+                baseCollection: 'sides'
             }
 
             cartLines.map(line => {
@@ -877,7 +906,8 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: addons.node.variants.edges,
                 modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
-                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
+                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value),
+                baseCollection: 'addons'
             };
 
             cartLines.map(line => {
@@ -1129,6 +1159,7 @@ export function OrderSection(props) {
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 freeQuantityLimit={getFreeQuantityLimit()} 
+                                removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
                             />  
                         </LayoutSection>
 

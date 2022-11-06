@@ -3,6 +3,7 @@ import editIcon from "../assets/icon-edit-order-summary.png";
 import iconPlusAlt from "../assets/icon-plus-alt.png";
 import iconMinus from "../assets/icon-minus.png";
 import { prepModSubTitles } from '../lib/utils';
+import { ADDON_ITEMS_STEP, FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP } from '../lib/const';
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -94,13 +95,14 @@ export default class OrderSummary extends React.Component {
     }
 
     render() {
-        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing} = this.props;
+        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing, removeItem} = this.props;
         const {enlarged} = this.state;
 
         const mainItemList = selectedMainItems.map((item, i) => {
             return (
                 <li key={`main-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === MAIN_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'main')}> (D)</span> }
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
                             <span>→ {prepModSubTitles(mod.title)}</span>
@@ -115,6 +117,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`main-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === MAIN_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'mainExtra')}> (D)</span> }
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
@@ -130,6 +133,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === SIDE_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'sides')}> (D)</span> }
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
                             <span>→ {prepModSubTitles(mod.title)}</span>
@@ -144,6 +148,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`small-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === SIDE_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'sidesExtra')}> (D)</span> }
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
@@ -151,6 +156,7 @@ export default class OrderSummary extends React.Component {
                             {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
                         </div>
                     }) }
+                   
                 </li>
             );
         });
@@ -159,6 +165,7 @@ export default class OrderSummary extends React.Component {
             return (
                 <li key={`addon-item-${i}`} className="order-summary--item">
                     <span className="order-summary--item-name">{item.quantity}x {item.choice.title}</span>
+                    { activeScheme === FLEXIBLE_PLAN_NAME && removeItem !== null && currentStep === ADDON_ITEMS_STEP && <span onClick={() => removeItem(item, i, 'addons')}> (D)</span> }
                     <span className="price--extra-addon">+ ${item.choice.price * item.quantity}.00</span>
                     { item.selectedMods?.map(mod => {
                         return <div className='order-summary--item-mod'>
@@ -166,6 +173,7 @@ export default class OrderSummary extends React.Component {
                             {parseFloat(mod.priceRange.maxVariantPrice.amount) > 0 && <span className="price--extra-addon">+ {this.calculateItemTotal(mod.priceRange.maxVariantPrice.amount * item.quantity)}</span> } 
                         </div>
                     }) }
+                    
                 </li>
             );
         });
@@ -185,18 +193,20 @@ export default class OrderSummary extends React.Component {
         
         const toastCostSection = (activeScheme !== 'traditional' || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0]?.cost.toFixed(2)}</span> : null;
 
-        const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt} className="icon-plus-alt" /> }</span></h3>
+        const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? 
+        <h3 onClick={() => this.toggleEnlarge()} className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : 
+        <h3 onClick={() => this.toggleEnlarge()} className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt} className="icon-plus-alt" /> }</span></h3>
 
 
         return (
             <section className={`order-summary ${isEditing ? 'disabled' : ''}`}>
-                <section className="order-summary--inner" onClick={() => this.toggleEnlarge()}>
+                <section className="order-summary--inner">
 
                 { getPhase !== "payment" && getPhase !== "confirmation" && summaryHeading }
                 
                 { enlarged && getPhase === undefined ?
                     <div>
-                    {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)}
+                        {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)}
                     </div>
                     :
                     <></>
