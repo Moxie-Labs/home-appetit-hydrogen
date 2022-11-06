@@ -22,7 +22,7 @@ export default function DebugValues(props) {
                     <ul>
                         {selectedMainItems.map(item => {
                             console.log("debug::item", item);
-                            return <li>{item.quantity}x {item.choice.title} ({item.choice.selectedVariantId})</li>
+                            return <li>{item.quantity}x {item.choice.title} ({item.selectedVariantId})</li>
                         })}
                     </ul>
                 </div>

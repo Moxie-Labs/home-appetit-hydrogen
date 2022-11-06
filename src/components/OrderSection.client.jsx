@@ -844,13 +844,16 @@ export function OrderSection(props) {
             cartLines.map(line => {
                 entree.node.variants.edges.forEach(variant => {
                     if (line.merchandise.id === variant.node.id) {
-                        choice.selectedVariantId = line.merchandise.id;
+                        const item = {};
+                        item.selectedVariantId = line.merchandise.id;
+                        item.choice = choice;
+                        item.quantity = line.quantity;
 
                         // if: variant is Included, then: add to MainItems, else: add to Extras
                         if (variant.node.title === "Included")
-                            existingMainItems.push({choice: choice, quantity: line.quantity});
+                            existingMainItems.push(item);
                         else
-                            existingMainItemsExtra.push({choice: choice, quantity: line.quantity});
+                            existingMainItemsExtra.push(item);
                     }
                 });
             });
@@ -879,10 +882,15 @@ export function OrderSection(props) {
             cartLines.map(line => {
                 greens.node.variants.edges.forEach(variant => {
                     if (line.merchandise.id === variant.node.id) {
+                        const item = {};
+                        item.selectedVariantId = line.merchandise.id;
+                        item.choice = choice;
+                        item.quantity = line.quantity;
+
                         if (variant.node.title === "Included")
-                            existingSmallItems.push({choice: choice, quantity: line.quantity});
+                            existingSmallItems.push(item);
                         else
-                            existingSmallItemsExtra.push({choice: choice, quantity: line.quantity});
+                            existingSmallItemsExtra.push(item);
                     }
                 });
             });
@@ -912,8 +920,12 @@ export function OrderSection(props) {
 
             cartLines.map(line => {
                 addons.node.variants.edges.forEach(variant => {
+                    const item = {};
+                    item.selectedVariantId = line.merchandise.id;
+                    item.choice = choice;
+                    item.quantity = line.quantity;
                     if (line.merchandise.id === variant.node.id) {
-                        existingAddonItems.push({choice: choice, quantity: line.quantity});
+                        existingAddonItems.push(item);
                     }
                 });
             });
