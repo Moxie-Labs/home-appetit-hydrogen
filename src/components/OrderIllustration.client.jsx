@@ -71,6 +71,48 @@ export default function OrderIllustration(props){
             }
         }
     }
+
+    const elementsList = (servingCount) => {
+        const elements = [];
+
+        for (let i = 0  ; i < servingCount; i++) {
+          elements.push(<div>
+                            <div className='illustration-flex-section'>
+                                <div className='illustration-flex-person'>
+                                    <img src={onePerson} width="27"/>
+                                </div>
+                                <div className='illustration-small-plate'> 
+                                    <img src={smallPlate} width="30" />
+                                </div>
+                                <div className='illustration-small-plate'>
+                                    <img src={smallPlate} width="30" />
+                                </div>
+                                <div className='illustration-small-plate'> 
+                                    <img src={smallPlate} width="30" />
+                                </div>
+                                <div className='illustration-small-plate'> 
+                                    <img src={smallPlate} width="30" />
+                                </div>
+                            </div>
+                            <div className='illustration-flex-section'>
+                                <div className='illustration-large-plate'> 
+                                    <img src={largePlate} width="34" />
+                                </div>
+                                <div className='illustration-large-plate'> 
+                                    <img src={largePlate} width="34" />
+                                </div>
+                                <div className='illustration-large-plate'> 
+                                    <img src={largePlate} width="34" />
+                                </div>
+                                <div className='illustration-large-plate'> 
+                                    <img src={largePlate} width="34" />
+                                </div>
+                            </div>
+                        </div>);
+        }
+      
+        return elements;
+    }
         
         return (
             <div>
@@ -90,7 +132,7 @@ export default function OrderIllustration(props){
                         { activeScheme === 'traditional' ?
                         <span className='illustration-section-text'>4 Small Plates</span>
                         :
-                        <span className='illustration-section-text'>{servingCount*4} Small Plates</span>
+                        <span className='illustration-section-text'>{servingCount === 0 ? 4:servingCount*4} Small Plates</span>
                         }
                     </div>
                     <div className='illustration-section-img-2'>
@@ -98,93 +140,67 @@ export default function OrderIllustration(props){
                         { activeScheme === 'traditional' ?
                         <span className='illustration-section-text'>4 Large Plates</span>
                         :
-                        <span className='illustration-section-text'>{servingCount*4} Large Plates</span>
+                        <span className='illustration-section-text'>{servingCount === 0 ? 4:servingCount*4} Large Plates</span>
                         }
                     </div>
                     {activeScheme === 'traditional' ? 
-                    <div className='illustration-image-section'>
-                        <div className='illustration-section-img-3'> 
-                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
-                                x{servingCount}
-                            </p>
-                            <img src={smallPlate} width="50" />
+                    <div className="illustration-trad">
+                        <div className='illustration-image-section'>
+                            <div className='illustration-small-plate'> 
+                                <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                    x{servingCount}
+                                </p>
+                                <img src={smallPlate} width="50" />
+                            </div>
+                            <div className='illustration-small-plate'>
+                                <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                    x{servingCount}
+                                </p>
+                                <img src={smallPlate} width="50" />
+                            </div>
+                            <div className='illustration-small-plate'> 
+                                <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                    x{servingCount}
+                                </p>
+                                <img src={smallPlate} width="50" />
+                            </div>
+                            <div className='illustration-small-plate'> 
+                                <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                    x{servingCount}
+                                </p>
+                                <img src={smallPlate} width="50" />
+                            </div>
                         </div>
-                        <div className='illustration-section-img-4'>
-                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
-                                x{servingCount}
-                            </p>
-                            <img src={smallPlate} width="50" />
-                        </div>
-                        <div className='illustration-section-img-5'> 
-                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
-                                x{servingCount}
-                            </p>
-                            <img src={smallPlate} width="50" />
-                        </div>
-                        <div className='illustration-section-img-6'> 
-                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
-                                x{servingCount}
-                            </p>
-                            <img src={smallPlate} width="50" />
-                        </div>
-                        <div className='illustration-section-img-7'> 
-                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
-                                x{servingCount}
-                            </p>
-                            <img src={largePlate} width="52" />
-                        </div>
-                        <div className='illustration-section-img-8'> 
-                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
-                                x{servingCount}
-                            </p>
-                            <img src={largePlate} width="52" />
-                        </div>
-                        <div className='illustration-section-img-9'> 
-                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
-                                x{servingCount}
-                            </p>
-                            <img src={largePlate} width="52" />
-                        </div>
-                        <div className='illustration-section-img-10'> 
-                            <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
-                                x{servingCount}
-                            </p>
-                            <img src={largePlate} width="52" />
+                        <div className='illustration-image-section'>
+                            <div className='illustration-large-plate'> 
+                                <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                    x{servingCount}
+                                </p>
+                                <img src={largePlate} width="52" />
+                            </div>
+                            <div className='illustration-large-plate'> 
+                                <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                    x{servingCount}
+                                </p>
+                                <img src={largePlate} width="52" />
+                            </div>
+                            <div className='illustration-large-plate'> 
+                                <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                    x{servingCount}
+                                </p>
+                                <img src={largePlate} width="52" />
+                            </div>
+                            <div className='illustration-large-plate'> 
+                                <p className={`illustration-section-badge${servingCount === '1' || servingCount === 0 ? "-hidden" : "" }`}>
+                                    x{servingCount}
+                                </p>
+                                <img src={largePlate} width="52" />
+                            </div>
                         </div>
                     </div>
                     :
-                    <div>
-                        <div className='illustration-flex-section'>
-                            <div className='illustration-flex-person'>
-                                <img src={onePerson} width="27"/>
-                            </div>
-                            <div className='illustration-flex-small-plate'> 
-                                <img src={smallPlate} width="30" />
-                            </div>
-                            <div className='illustration-flex-small-plate'>
-                                <img src={smallPlate} width="30" />
-                            </div>
-                            <div className='illustration-flex-small-plate'> 
-                                <img src={smallPlate} width="30" />
-                            </div>
-                            <div className='illustration-flex-small-plate'> 
-                                <img src={smallPlate} width="30" />
-                            </div>
-                        </div>
-                        <div className='illustration-flex-section'>
-                            <div className='illustration-flex-large-plate'> 
-                                <img src={largePlate} width="34" />
-                            </div>
-                            <div className='illustration-flex-large-plate'> 
-                                <img src={largePlate} width="34" />
-                            </div>
-                            <div className='illustration-flex-large-plate'> 
-                                <img src={largePlate} width="34" />
-                            </div>
-                            <div className='illustration-flex-large-plate'> 
-                                <img src={largePlate} width="34" />
-                            </div>
-                        </div>
+                    <div className="illustration-flex">
+                        {elementsList(servingCount)}
                     </div>
                     }
                 </div>
