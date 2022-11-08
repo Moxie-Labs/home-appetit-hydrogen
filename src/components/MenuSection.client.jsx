@@ -6,9 +6,10 @@ import { Frame } from './Frame.client';
 import { LayoutSection } from './LayoutSection.client';
 import { Layout } from './Layout.client';
 import CardFilters from './CardFilters.client';
-import DishCard from './DishCard.client';
+import DishCard from './DishCardFunc.client';
 import Modal from 'react-modal/lib/components/Modal';
 import { prepModSubTitles } from '../lib/utils';
+import DishCardFunc from './DishCardFunc.client';
 
 export default class MenuSection extends React.Component {
 
@@ -153,7 +154,7 @@ export default class MenuSection extends React.Component {
 
                 return (
                     <div className="dish-card-item" key={choice.title}>
-                        <DishCard 
+                        <DishCardFunc 
                             choice={choice}
                             pullStatus={this.pullStatus}
                             freeQuantityLimit={freeQuantityLimit} 

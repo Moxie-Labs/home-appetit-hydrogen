@@ -145,6 +145,9 @@ export function OrderSection(props) {
     const [choicesGreens, setChoicesGreens] = useState([]);
     const [choicesAddons, setChoicesAddons] = useState([]);
 
+    // used for deleting lineitems when multiple instances exist (Flex plan)
+    const [lineIndexByVariantId, setLineIndexByVariantId] = useState([]);
+
     // runs necessary Storefront API calls only when needed
     useEffect(() => {
         setupCardsAndCollections();
@@ -185,10 +188,14 @@ export function OrderSection(props) {
         return retval;
     }
 
-    const findCartLineByVariantId = variantId => {
+    const findCartLineByVariantId = (variantId, index=0) => {
         let retval = null;
         cartLines.map(line => {
-            if (line.merchandise.id === variantId) retval = line;
+            if (line.merchandise.id === variantId) 
+                if (index > 0)
+                    index -= 1;
+                else    
+                    retval = line;
         });
 
         return retval;
@@ -259,20 +266,8 @@ export function OrderSection(props) {
                         }
                     }
                         
-                    else {
-                        // handle internal Cart Collection
-                        collection.splice(i, 1);
-
-                        // update Shopify Cart
-                        const linesRemovePayload = [];
-                        linesRemovePayload.push(existingCartLine.id);
-                        choice.selectedMods.map(mod => {
-                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
-                            if (modCartLine !== null)
-                                linesRemovePayload.push(modCartLine.id)
-                        });
-                        linesRemove(linesRemovePayload);
-                    }
+                    else
+                        removeItem(item, i, collectionName);
                         
                 }
             });
@@ -298,6 +293,9 @@ export function OrderSection(props) {
 
             choice.selectedVariantId = choice.choice.productOptions[variantType].node.id;
             console.log("choice.selectedVariantId", choice.selectedVariantId);
+
+            const lineIndex = addLineIndex(choice.choice.productOptions[variantType].node.id);
+            choice.lineIndex = lineIndex;
 
             if (collectionName === 'main') 
                 if (isAddingExtraItems)
@@ -351,6 +349,38 @@ export function OrderSection(props) {
             }
         }
 
+    }
+
+    // returns what instance of a line item is being added (Flex plan only)
+    const addLineIndex = variantId => {
+        console.log("getLineIndex for ", variantId);
+        let newLineIndex = lineIndexByVariantId;
+        if (newLineIndex[variantId] === undefined || newLineIndex[variantId] === null) {
+            console.log("generating new cell")
+            newLineIndex[variantId] = 1;
+        }
+            
+        else {
+            console.log("Adding to existing cell");
+            newLineIndex[variantId] += 1;
+        }
+            
+        setLineIndexByVariantId(newLineIndex);
+        console.log("newLineIndex", newLineIndex);
+        return newLineIndex[variantId];
+    }
+
+    const shiftLineIndexes = (index, variantId, collection) => {
+        collection.map(item => {
+            if (item.selectedVariantId === variantId && item.lineIndex > index) 
+                item.lineIndex -= 1;
+        });
+
+        let newLineIndex = lineIndexByVariantId;
+        newLineIndex[variantId] -= 1;
+        setLineIndexByVariantId(newLineIndex);
+
+        return collection;
     }
 
     const isSectionFilled = (collection) => {
@@ -519,53 +549,56 @@ export function OrderSection(props) {
 
     const removeItem = (item, index, collectionName) => {
         console.log("removing Item: ", item)
-        let linesToRemove = [];
+        let linesToModify = [];
         
         // delete from internal Cart/OrderSummary
         if (collectionName === 'main') {
-            const collection = selectedMainItems;
+            let collection = selectedMainItems;
             collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
             setSelectedMainItems([...collection]);
         } else if (collectionName === 'mainExtra') {
-            const collection = selectedMainItemsExtra;
+            let collection = selectedMainItemsExtra;
             collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
             setSelectedMainItemsExtra([...collection]);
         } else if (collectionName === 'sides') {
-            const collection = selectedSmallItems;
+            let collection = selectedSmallItems;
             collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
             setSelectedSmallItems([...collection]);
         } else if (collectionName === 'sidesExtra') {
-            const collection = selectedSmallItemsExtra;
+            let collection = selectedSmallItemsExtra;
             collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
             setSelectedSmallItemsExtra([...collection]);
         } else if (collectionName === 'addons') {
-            const collection = selectedAddonItems;
+            let collection = selectedAddonItems;
             collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
             setSelectedAddonItems([...collection]);
         }
 
         // delete from Shopify Cart
-        cartLines.map(line => {
-            const {id:merchId} = line.merchandise;
-            console.log(`comparing lineID: ${merchId} to variantID: ${item.selectedVariantId}`);
-            if (merchId === item.selectedVariantId) {
-                console.log("item found!: ", line.merchandise.product.title);
-                linesToRemove.push(line.id);
-            } else {
-                // delete associated mods
-                item.selectedMods?.map(mod => {
-                    const {id:modId} = line.merchandise;
-                    const modVariantId = mod.variants.edges[0].node.id;
-                    if (modId === modVariantId)
-                        linesToRemove.push(line.id);
-                });
-            }
+        const baseLine = findCartLineByVariantId(item.selectedVariantId, lineIndexByVariantId[item.selectedVariantId]);
+        linesToModify.push(baseLine.id);
+
+        cartLines.map(line => {          
+            // delete associated mods
+            item.selectedMods?.map(mod => {
+                const {id:modId} = line.merchandise;
+                const modVariantId = mod.variants.edges[0].node.id;
+                if (modId === modVariantId) {
+                    linesToModify.push(line.id);
+                }
+            });
         });
 
-        console.log("linesToRemove", linesToRemove);
+        console.log("linesToModify", linesToModify);
+        
+        if (linesToModify.length > 0)
+            linesRemove(linesToModify);
 
-        if (linesToRemove.length > 0)
-            linesRemove(linesToRemove);
 
     }
 
