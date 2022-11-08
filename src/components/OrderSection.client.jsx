@@ -1107,6 +1107,7 @@ export function OrderSection(props) {
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
                                     handleCancel={() => setCurrentStep(1)}
+                                    planPrice={getPlanPrice()}
                                     step={1}
                                     currentStep={currentStep}
                                     servingCount={servingCount}
@@ -1229,6 +1230,7 @@ export function OrderSection(props) {
                                 freeQuantityLimit={getFreeQuantityLimit()} 
                                 removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
                                 isAddingExtraItems={isAddingExtraItems}
+                                emptyCart={()=>emptyCart()}
                             />  
                         </LayoutSection>
 

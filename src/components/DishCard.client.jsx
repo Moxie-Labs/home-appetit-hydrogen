@@ -57,9 +57,12 @@ export default function DishCard(props) {
     }
 
     const updateIsCardActive = cardActive => {
+        if (!isCardActive)
+            props.setCardStatus(" disabled");
+
         setIsCardActive(cardActive);
         setConfirmed(!cardActive);
-
+        
         // resets quantity for Flex plan adds
         if (activeScheme === FLEXIBLE_PLAN_NAME)
             setQuantity(cardActive ? 0 : initialQuantity);
@@ -67,12 +70,13 @@ export default function DishCard(props) {
 
     const handleConfirm = () => {
         console.log("confirming...");
+        props.setCardStatus("");
         const {choice, handleSelected, activeScheme} = props;
         
-        setConfirmed(quantity > 0),
-        updateIsCardActive(false),
-        setIsModModalShowing(false),
-        updateQuantity(activeScheme === 'traditional' ? quantity : 0),
+        setConfirmed(quantity > 0);
+        updateIsCardActive(false);
+        setIsModModalShowing(false);
+        updateQuantity(activeScheme === 'traditional' ? quantity : 0);
         setSelectedMods(activeScheme === 'traditional' ? selectedMods : []);
 
         handleSelected({choice: choice, quantity: quantity, selectedMods: selectedMods});
@@ -87,10 +91,12 @@ export default function DishCard(props) {
     }
 
     const handleCancel = () => {
-        const { initialQuantity } = props;
+        const { initialQuantity, setCardStatus } = props;
+        setCardStatus("");
         updateQuantity(initialQuantity);
         updateIsCardActive(false);
-        setConfirmed(initialQuantity > 0)
+        setConfirmed(initialQuantity > 0);
+        setIsCardActive(false);
         const step = document.querySelector(".step-active");
         step.scrollIntoView({behavior: "smooth", block: "start"});
     }
@@ -184,7 +190,7 @@ export default function DishCard(props) {
     
 
     return (
-        <div className={`dish-card${isCardActive ? ' active' :''}${confirmed ? ' confirmed' : ''} ${forceDisable ? 'disabled' : ''}`}>
+        <div className={`dish-card${isCardActive ? ' active' : props.cardStatus}${confirmed ? ' confirmed' : ''}`}>
             {!isCardActive && confirmed && (initialQuantity + quantity > 0) && <p className="card__quantity-badge">{quantity}</p>}
 
             {isCardActive && !confirmed &&

@@ -6,20 +6,25 @@ import { Frame } from './Frame.client';
 import { LayoutSection } from './LayoutSection.client';
 import { Layout } from './Layout.client';
 import CardFilters from './CardFilters.client';
-import DishCard from './DishCardFunc.client';
 import Modal from 'react-modal/lib/components/Modal';
 import { prepModSubTitles } from '../lib/utils';
-import DishCardFunc from './DishCardFunc.client';
+import DishCard from './DishCard.client';
 
 export default class MenuSection extends React.Component {
 
     constructor(props) {  
         super(props);
+        this.setCardStatus.bind(this);
         this.state = {
             showingExtra: false,
-            modalDismissed: false
+            modalDismissed: false,
+            cardStatus: ''
         }
     }  
+
+    setCardStatus = (status) => {
+        this.setState({cardStatus: status})
+    }
 
     getChoicesByFilters(filters, choices) {
         const retval = [];
@@ -133,14 +138,10 @@ export default class MenuSection extends React.Component {
         return retval;
     }
 
-    pullStatus(data){
-        console.log(data);
-    }
-
     render() { 
 
         const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart } = this.props;
-        const {modalDismissed} = this.state;
+        const {modalDismissed, cardStatus} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
         const mainSelected = selected;
@@ -154,9 +155,10 @@ export default class MenuSection extends React.Component {
 
                 return (
                     <div className="dish-card-item" key={choice.title}>
-                        <DishCardFunc 
+                        <DishCard 
                             choice={choice}
-                            pullStatus={this.pullStatus}
+                            cardStatus={cardStatus}
+                            setCardStatus={this.setCardStatus}
                             freeQuantityLimit={freeQuantityLimit} 
                             servingCount={servingCount}
                             handleSelected={handleItemSelected}

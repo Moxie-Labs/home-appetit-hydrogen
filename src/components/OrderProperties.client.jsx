@@ -1,4 +1,5 @@
 import React, {useState, useCallback} from 'react';
+import OrderIllustration from "./OrderIllustration.client";
 import SchemeSelector from "./SchemeSelector.client";
 import iconEdit from "../assets/icon-edit.png";
 import iconArrowDown from "../assets/arrow-down.png";
@@ -51,7 +52,7 @@ export default class OrderProperties extends React.Component {
 
     render() {   
 
-        const {activeScheme, step, currentStep, servingCount, deliveryWindowOne} = this.props;
+        const {activeScheme, step, currentStep, servingCount, deliveryWindowOne, planPrice} = this.props;
 
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
@@ -110,7 +111,11 @@ export default class OrderProperties extends React.Component {
                 { currentStep === step &&
                 <div className="step-column">
                     <div className="illustration-placeholder">
-                         <img src={illustration} width="100%" />
+                        <OrderIllustration
+                            activeScheme={activeScheme}
+                            servingCount={servingCount}
+                            planPrice={planPrice}
+                        />
                     </div>
                 </div>
                 }
