@@ -60,6 +60,11 @@ export default function DebugValues(props) {
             <ul>
             {props.cartLines.map(line => {
                 const {id, product, variant} = line.merchandise;
+
+                // console.log(`line: ${product.title}, attributes: ${line.attribute}`);
+                // line.attributes.map(attr => {
+                //     // console.log("attr equals", attr.value === '(Sub) Gluten Free Pasta, (MOd) Extra Sauce');
+                // })
                 return <li>{line.quantity}x {product.title}({id})</li>
             })}
             </ul>

@@ -188,6 +188,27 @@ export function OrderSection(props) {
         return retval;
     }
 
+    const findCartLineByItem = item => {
+        let retval = null;
+        cartLines.map(line => {
+            if (line.merchandise.id === item.selectedVariantId && retval === null) {
+                
+                // if: item has modifiers, then find item that has same modifiers
+                if (item.selectedMods?.length > 0) {
+                    line.attributes.map(attr => {
+                        if (attr.value === item.selectedModsStr) {
+                            retval = line;
+                        }
+                    });
+                } else {
+                    retval = line;
+                }
+            }
+        });
+
+        return retval;
+    }
+
     const findCartLineByVariantId = (variantId, index=0) => {
         let retval = null;
         cartLines.map(line => {
@@ -296,6 +317,12 @@ export function OrderSection(props) {
 
             const lineIndex = addLineIndex(choice.choice.productOptions[variantType].node.id);
             choice.lineIndex = lineIndex;
+            
+            let selectedModsAttr = [];
+            choice.selectedMods.map(mod => {
+                selectedModsAttr.push(mod.title);
+            });
+            choice.selectedModsStr = selectedModsAttr.join(", ");
 
             if (collectionName === 'main') 
                 if (isAddingExtraItems)
@@ -321,9 +348,7 @@ export function OrderSection(props) {
                 const linesAddPayload = [];
                 console.log("choice selectedMods", choice.selectedMods);
                 
-                let selectedModsAttr = [];
                 choice.selectedMods.map(mod => {
-                    selectedModsAttr.push(mod.title);
                     linesAddPayload.push({ 
                         attributes: [
                             { 
@@ -580,24 +605,29 @@ export function OrderSection(props) {
         }
 
         // delete from Shopify Cart
-        const baseLine = findCartLineByVariantId(item.selectedVariantId, lineIndexByVariantId[item.selectedVariantId]);
-        linesToModify.push(baseLine.id);
+        const baseLine = findCartLineByItem(item);
+        if (baseLine !== null)
+            linesToModify.push({
+                id: baseLine.id,
+                quantity: 0
+            });
 
         cartLines.map(line => {          
-            // delete associated mods
+            // update associated mods quantities
             item.selectedMods?.map(mod => {
                 const {id:modId} = line.merchandise;
                 const modVariantId = mod.variants.edges[0].node.id;
                 if (modId === modVariantId) {
-                    linesToModify.push(line.id);
+                    linesToModify.push({
+                        id: line.id,
+                        quantity: Math.max(0, (line.quantity - item.quantity))
+                    });
                 }
             });
         });
-
-        console.log("linesToModify", linesToModify);
         
         if (linesToModify.length > 0)
-            linesRemove(linesToModify);
+            linesUpdate(linesToModify);
 
 
     }
