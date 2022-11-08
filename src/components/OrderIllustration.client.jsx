@@ -7,7 +7,7 @@ import largePlate from "../assets/large-plate.svg";
 
 export default function OrderIllustration(props){
 
-    const {activeScheme, servingCount} = props;
+    const {activeScheme, servingCount, planPrice} = props;
 
     const setPeople = (servingCount) => {
         switch(servingCount) {
@@ -38,36 +38,6 @@ export default function OrderIllustration(props){
                 return fourPeople;
                 default:
                 return onePerson;
-            }
-        }
-    }
-
-    const setTotal = (servingCount, activeScheme) => {
-        if(activeScheme === 'traditional'){
-            switch(servingCount) {
-                case '2':
-                return '$150';
-                case '3':
-                return '$200';
-                case '4':
-                return '$250';
-                case '5':
-                return '$300';
-                default:
-                return '$100';
-            }
-        }   else    {
-            switch(servingCount) {
-                case '2':
-                return '$180';
-                case '3':
-                return '$230';
-                case '4':
-                return '$280';
-                case '5':
-                return '$330';
-                default:
-                return '$100';
             }
         }
     }
@@ -116,7 +86,7 @@ export default function OrderIllustration(props){
         
         return (
             <div>
-                <div className='illustration-total'>{setTotal(servingCount, activeScheme)}</div>
+                <div className='illustration-total'>${planPrice}</div>
                 <div className='illustration-desc'>{activeScheme === 'traditional' ? 'Classic Order' : 'Flex Ordering'}-{setPeople(servingCount)}</div>
                 <div className='illustration-desc-sub'>{servingCount === '1' || servingCount === 0 ? "4-6 Meals" : "4-6 Meals Per Person"}</div>
                 <div className='illustration-desc-division'></div>

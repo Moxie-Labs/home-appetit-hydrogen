@@ -52,7 +52,7 @@ export default class OrderProperties extends React.Component {
 
     render() {   
 
-        const {activeScheme, step, currentStep, servingCount, deliveryWindowOne} = this.props;
+        const {activeScheme, step, currentStep, servingCount, deliveryWindowOne, planPrice} = this.props;
 
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
@@ -114,6 +114,7 @@ export default class OrderProperties extends React.Component {
                         <OrderIllustration
                             activeScheme={activeScheme}
                             servingCount={servingCount}
+                            planPrice={planPrice}
                         />
                     </div>
                 </div>
