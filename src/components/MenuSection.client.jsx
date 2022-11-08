@@ -16,11 +16,17 @@ export default class MenuSection extends React.Component {
 
     constructor(props) {  
         super(props);
+        this.setCardStatus.bind(this);
         this.state = {
             showingExtra: false,
-            modalDismissed: false
+            modalDismissed: false,
+            cardStatus: ''
         }
     }  
+
+    setCardStatus = (status) => {
+        this.setState({cardStatus: status})
+    }
 
     getChoicesByFilters(filters, choices) {
         const retval = [];
@@ -134,14 +140,10 @@ export default class MenuSection extends React.Component {
         return retval;
     }
 
-    pullStatus(data){
-        console.log(data);
-    }
-
     render() { 
 
         const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart } = this.props;
-        const {modalDismissed} = this.state;
+        const {modalDismissed, cardStatus} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
         const mainSelected = selected;
@@ -157,7 +159,8 @@ export default class MenuSection extends React.Component {
                     <div className="dish-card-item" key={choice.title}>
                         <DishCard 
                             choice={choice}
-                            pullStatus={this.pullStatus}
+                            cardStatus={cardStatus}
+                            setCardStatus={this.setCardStatus}
                             freeQuantityLimit={freeQuantityLimit} 
                             servingCount={servingCount}
                             handleSelected={handleItemSelected}

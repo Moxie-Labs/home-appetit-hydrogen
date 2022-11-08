@@ -991,6 +991,7 @@ export function OrderSection(props) {
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
                                     handleCancel={() => setCurrentStep(1)}
+                                    planPrice={getPlanPrice()}
                                     step={1}
                                     currentStep={currentStep}
                                     servingCount={servingCount}
@@ -1111,6 +1112,7 @@ export function OrderSection(props) {
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 freeQuantityLimit={getFreeQuantityLimit()} 
+                                emptyCart={()=>emptyCart()}
                             />  
                         </LayoutSection>
 

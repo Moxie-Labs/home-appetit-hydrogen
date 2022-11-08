@@ -49,6 +49,13 @@
     color: #2F80ED;
 }
 
+.btn-empty-cart {
+    border: 2px solid #000000;
+    color: #000000;
+    background: #f8efe0;
+    width: 100%;
+}
+
 .btn-cancel {
     background-color: transparent;
     border: none;

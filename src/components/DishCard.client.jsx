@@ -33,7 +33,6 @@ export default class DishCard extends React.Component {
         this.toggleModal = this.toggleModal.bind(this);
         this.handleOptionChoice = this.handleOptionChoice.bind(this);
         this.handleChangePlan = this.handleChangePlan.bind(this);
-        this.pullStatus = this.props.pullStatus.bind(this)
     }
 
     setQuantity(quantity) {
@@ -72,7 +71,8 @@ export default class DishCard extends React.Component {
 
     setIsCardActive(isCardActive) {
         console.log("activating");
-        if (!this.isCardActive) {
+        if (!this.isCardActive) { 
+        this.props.setCardStatus(" disabled");
             this.setState({
                 isCardActive: true,
                 confirmed: false
@@ -82,6 +82,7 @@ export default class DishCard extends React.Component {
 
     handleConfirm() {
         console.log("confirming...");
+        this.props.setCardStatus("");
         const {choice, handleSelected, activeScheme} = this.props;
         const {quantity, selectedMods} = this.state;
         this.setState({
@@ -107,6 +108,7 @@ export default class DishCard extends React.Component {
     handleCancel(){
         const { initialQuantity } = this.props;
         console.log('initialQuantity', initialQuantity);
+        this.props.setCardStatus("");
         this.setState({
             quantity: initialQuantity,
             isCardActive: false,
@@ -215,7 +217,7 @@ export default class DishCard extends React.Component {
     
 
     return (
-        <div className={`dish-card${isCardActive ? ' active' :''}${confirmed ? ' confirmed' : ''} ${forceDisable ? 'disabled' : ''}`}>
+        <div className={`dish-card${isCardActive ? ' active' : this.props.cardStatus}${confirmed ? ' confirmed' : ''}`}>
             {!isCardActive && confirmed && 
                 <p className="card__quantity-badge">{activeScheme === 'traditional' ? quantity : initialQuantity + quantity}</p>
             }

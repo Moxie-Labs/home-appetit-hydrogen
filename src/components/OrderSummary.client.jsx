@@ -94,7 +94,7 @@ export default class OrderSummary extends React.Component {
     }
 
     render() {
-        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing} = this.props;
+        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing, emptyCart} = this.props;
         const {enlarged} = this.state;
 
         const mainItemList = selectedMainItems.map((item, i) => {
@@ -185,18 +185,21 @@ export default class OrderSummary extends React.Component {
         
         const toastCostSection = (activeScheme !== 'traditional' || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0]?.cost.toFixed(2)}</span> : null;
 
-        const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt} className="icon-plus-alt" /> }</span></h3>
+        const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 onClick={() => this.toggleEnlarge()} className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 onClick={() => this.toggleEnlarge()} className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt} className="icon-plus-alt" /> }</span></h3>
 
 
         return (
             <section className={`order-summary ${isEditing ? 'disabled' : ''}`}>
-                <section className="order-summary--inner" onClick={() => this.toggleEnlarge()}>
+                <section className="order-summary--inner">
 
                 { getPhase !== "payment" && getPhase !== "confirmation" && summaryHeading }
                 
                 { enlarged && getPhase === undefined ?
                     <div>
-                    {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)}
+                    <div>
+                    {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal, emptyCart)}
+                    </div>
+                    <button className={`btn btn-empty-cart`} onClick={emptyCart}>Clear Cart</button>
                     </div>
                     :
                     <></>
