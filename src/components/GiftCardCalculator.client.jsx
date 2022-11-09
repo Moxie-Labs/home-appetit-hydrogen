@@ -142,33 +142,6 @@ export function GiftCardCalculator(props) {
                             <div className="line-separator"></div>
                         </div>
                     </div>
-                    <div className="gc-row">
-                        <div className="gc-col">
-                            <div className="gc-col-item">
-                                <h5 className="ha-h5">Check Gift card Balance</h5>
-                            </div>
-                            <div className="gc-col-item form-balance">
-                                <label htmlFor="code-balance">Check Balance:</label>
-                                <input type="text" placeholder='Enter code' />
-                                <span> <button type='submit' className='btn btn-primary-small'>SUBMIT</button></span>
-                                <div className="gc-row">
-                                    <div className="gc-col gc-balance">
-                                        <div className="gc-col-item">
-                                            <p className='no-margin'>Gift Card Balance</p>
-                                        </div>
-                                        <div className="gc-col-item">
-                                            <strong>$150.00</strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="gc-row">
-                        <div className="gc-col">
-                            <div className="line-separator"></div>
-                        </div>
-                    </div>
                     <div className="gc-row faq-row">
                         <div className="gc-col">
                             <div className="gc-col-item">
