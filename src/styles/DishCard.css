@@ -49,17 +49,6 @@
     margin: 0 auto 35px;
 }
 
-.card__overlay {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    background: #474442;
-    top: 0;
-    left: 0;
-    z-index: 9999;
-    opacity: 0.5;
-}
-
     .card__quantity-count {
         color: #4F4F4F;
         font-size: 42px;
@@ -475,6 +464,7 @@ h2.card__quantity-title {
     left: unset;
     background: none;
     padding: 0;
+    z-index: 999999999999999;
 }
 
 .modal--flexible-confirmaton .card__quantity-inner-container {
@@ -544,8 +534,56 @@ p.modal--flexible-price strong {
     grid-template-columns: 1fr 1fr;
     row-gap: 1.125rem;
 }
+
+@media screen and (max-width: 960px){
+    .modal--flexible-checkbox-wrapper {
+        display: block;
+    }
+
+    .modal--flexible-checkbox-wrapper .checkbox-temp {
+        padding: 0.3rem 0;
+    }
+
+    section.card__actions {
+        display: block;
+        text-align: center;
+    }
+
+    .modal--flexible-confirmaton .card__actions * {
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .ReactModal__Content.ReactModal__Content--after-open.modal--flexible-confirmaton {
+        width: 95%;
+        height: auto;
+        overflow: auto;
+    }
+
+    .card__quantity-wrapper.wrapper-modal {
+        gap: 0;
+    }
+
+    .modal--flexible-container {
+        padding-bottom: 1rem;
+    }
+}
+
 .modal--flexible-confirmaton input[type="checkbox"] {
     padding: 5rem;
     margin-right: 0.2rem;
     vertical-align: text-top;
+}
+
+@media screen and (max-width: 960px){
+    .card__overlay {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        background: #474442;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        opacity: 0.5;
+    }
 }
