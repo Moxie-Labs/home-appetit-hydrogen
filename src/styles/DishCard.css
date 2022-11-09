@@ -567,6 +567,11 @@ p.modal--flexible-price strong {
     .modal--flexible-container {
         padding-bottom: 1rem;
     }
+
+    ul.step--order-summary li {
+        font-size: 16px;
+        line-height: 23px;
+    }
 }
 
 .modal--flexible-confirmaton input[type="checkbox"] {
