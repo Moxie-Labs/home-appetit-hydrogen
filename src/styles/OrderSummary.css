@@ -6,6 +6,12 @@
     z-index: 99;
 }
 
+@media screen and (max-width: 860px){
+    section.order-summary {
+        width: 100%;
+        left: 0;
+    }
+}
 
     .order-summary--inner {
         background-color: #fff;
@@ -143,10 +149,24 @@ span.price--extra-addon {
     bottom: 0;
     position: relative;
     right: 0;
-    width: 407px;
+    width: 100%;
     z-index: 99;
     left: 0;
     cursor: default;
+    float: right;
+    max-width: 25.4375rem;
+    min-width: 10rem;
+}
+
+@media screen and (max-width: 860px){
+    .dishcard--wrapper-inactive .suborder--summary-container{
+        flex-flow: column;
+        gap: 0;
+    }
+
+    .summary-container {
+        max-width: 100%;
+    }
 }
 
 .payment-wrapper .order-summary.disabled{
@@ -160,6 +180,10 @@ span.price--extra-addon {
     box-shadow: none;
 }
 
+.payment-wrapper main:first-child {
+    flex: 2;
+}
+
 .payment-wrapper h3.order-summary__heading.order-summary__hidden {
     background: #385F83;
     color: #FFFCF5;
@@ -167,6 +191,7 @@ span.price--extra-addon {
 
 .payment-wrapper section.order-summary--enlarged-items {
     cursor: default;
+    border-radius: 0 0 10px 10px;
 }
 
 .payment-wrapper .layout {
@@ -183,3 +208,47 @@ span.price--extra-addon {
 .payment-wrapper .layout-section {
     width: 100%;
 }
+
+@media screen and (max-width: 960px){
+
+    .payment-wrapper .order-summary{
+        max-width: 100%;
+    }
+    .page .payment-wrapper{
+        flex-flow: column;
+        width: 100%;
+    }
+
+    .delivery-date_container .delivery-date_item{
+        font-size: 20px;
+        line-height: 24px;
+    }
+
+    .checkout--delivery-window-actions button.btn.btn-primary-small.btn-app {
+        font-size: 14px;
+        height: 45px;
+    }
+
+    .checkout--delivery-window-selectors .order_delivery__dropdown{
+        width: 100%;
+        background-position: 98%;
+    }
+
+    div .delivery-date_container {
+        margin: 1.875rem 0 1.25rem;
+    }
+
+    div .checkout--delivery-window-selectors{
+        margin-bottom: 1.875rem;
+    }
+
+    div .contact-info p{
+        font-size: 20px;
+    }
+
+}
+
+section.checkout--deliveryinfo-top {
+    margin-top: 1.875rem;
+}
+

@@ -339,7 +339,7 @@ h5,
 }
 
 .btn-app {
-    padding: 8px 106px 6px !important;
+   width: 25.375rem;
 }
 
 .btn.btn-primary-large[aria-disabled='true'] {

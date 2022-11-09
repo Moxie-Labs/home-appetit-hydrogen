@@ -104,6 +104,12 @@ ul.step--order-summary li span {
     gap: 2em;
 }
 
+@media screen and (max-width: 960px){
+    .suborder--summary-container{
+        flex-flow: column;
+    }
+}
+
 .summary-container {
     max-width: 50%;
 }

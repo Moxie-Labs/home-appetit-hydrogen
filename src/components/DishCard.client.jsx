@@ -194,6 +194,8 @@ export default function DishCard(props) {
             {!isCardActive && confirmed && (initialQuantity + quantity > 0) && <p className="card__quantity-badge">{quantity}</p>}
 
             {isCardActive && !confirmed &&
+            <div>
+                <div className="card__overlay"></div>
                 <div className="card__quantity-wrapper">
                     <div className="card__quantity-inner-container">
                         <h2 className="card__quantity-title">{title}</h2>
@@ -219,6 +221,7 @@ export default function DishCard(props) {
                             <button className="ha-a btn-counter-customize enabled" onClick={() => handleCancel()}>Cancel</button>
                         </section>     
                     </div>
+                </div>
                 </div>
             }
                 

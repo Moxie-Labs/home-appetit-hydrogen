@@ -246,7 +246,7 @@ const CUSTOMER_QUERY = gql`
               amount
               currencyCode
             }
-            lineItems(first: 2) {
+            lineItems(first: 5) {
               edges {
                 node {
                   variant {
@@ -258,6 +258,7 @@ const CUSTOMER_QUERY = gql`
                     }
                   }
                   title
+                  currentQuantity
                 }
               }
             }
@@ -265,6 +266,7 @@ const CUSTOMER_QUERY = gql`
         }
       }
     }
+
     featuredProducts: products(first: 12) {
       nodes {
         ...ProductCard
