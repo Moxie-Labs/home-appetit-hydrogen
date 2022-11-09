@@ -1,9 +1,10 @@
 import React, {useCallback, useState, useRef } from 'react';
+import { useCart } from '@shopify/hydrogen';
 import Modal from 'react-modal/lib/components/Modal';
-import { Page } from "./Page.client";
-import { Header } from "./Header.client";
-import { Footer } from "./Footer.client";
-import gcImg from "../assets/giftcard-img.png";
+import { Page } from '../Page.client';
+import { Header } from '../Header.client';
+import { Footer } from '../Footer.client';
+import gcImg from "../../assets/giftcard-img.png";
 
 
 const PREMIUM_ZIPCODES = [];
@@ -17,10 +18,10 @@ export function GiftCardCalculator(props) {
     const [numberOfWeeks, setNumberOfWeeks] = useState("");
     const [zipcode, setZipcode] = useState("");
 
-    const {handleAddGift} = props;
-
-
     const node = useRef(null);
+
+
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
 
     const handleFocus = useCallback(() => {
         if (node.current == null) {
@@ -56,15 +57,48 @@ export function GiftCardCalculator(props) {
     }
 
     const onAddGift = () => {
-        handleAddGift;
+
+        console.log("On Add Gift")
+
+        let cardProductIndex;
+        if (calculateSuggestedAmount() < 125) {
+            cardProductIndex = 0;
+        } else if (calculateSuggestedAmount() < 224) {
+            cardProductIndex = 1;
+        } else if (calculateSuggestedAmount() < 324) {
+            cardProductIndex = 2;
+        } else if (calculateSuggestedAmount() < 424) {
+            cardProductIndex = 3;
+        } else {
+            cardProductIndex = 5;
+        }
+
+        const cardVariantIndex = (calculateSuggestedAmount() - 25 - (cardProductIndex * 100));
+
+        const cardProduct = giftCards[cardProductIndex];
+        const variant = cardProduct.variants.edges[cardVariantIndex].node;
+        
+        linesAdd({
+            merchandiseId: variant.id,
+            quantity: 1
+        });
+
+
         dismissModals();
+
+    }
+
+    const onCheckout = () => {
+        window.location.href = checkoutUrl;
     }
 
     const activator = <a href="#" className='ha-a' onClick={toggleModal}>use our gift card calculator</a>;
 
     const suggestedAmountText = isFormReady() ? `$${calculateSuggestedAmount()}` : "Enter fields for suggested amount";
 
-    const addButtonText = isFormReady() ? `Add $${calculateSuggestedAmount()}` : "Add";
+    const addButtonText = isFormReady() ? `Purchase $${calculateSuggestedAmount()}` : "Purchase";
+
+    const { giftCards } = props;
 
     const servingOptions = [
         { label: '1 Person', value: 1 },
@@ -189,29 +223,46 @@ export function GiftCardCalculator(props) {
                             })}
                         </select>
                     </div>
-                    <div className='calculator-field'>
-                        <label># of Weeks:</label>
-                        <input type='text' placeholder='Enter Weeks (max 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
+
+                    <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
+
+                    <div className="text-center gift-card-control">
+                        <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={!isFormReady} onClick={() => onAddGift()}>
+                            {addButtonText} 
+                        </button>
+
+                        <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
+                            Cancel
+                        </button>
+                        <div className='calculator-field'>
+                            <label># of Weeks:</label>
+                            <input type='text' placeholder='Enter Weeks (max 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
+                        </div>
+                        <div className='calculator-field'>
+                            <label>ZIP Code:</label>
+                            <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
+                        </div>
                     </div>
-                    <div className='calculator-field'>
-                        <label>ZIP Code:</label>
-                        <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
+
+                    <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
+
+                    <div className="text-center gift-card-control">
+                        <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={isFormReady} onClick={onAddGift}>
+                            {addButtonText}
+                        </button>
+
+                        <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
+                            Cancel
+                        </button>
                     </div>
-                </div>
-
-                <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
-
-                <div className="text-center gift-card-control">
-                    <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={isFormReady} onClick={onAddGift}>
-                        {addButtonText}
-                    </button>
-
-                    <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
-                        Cancel
-                    </button>
-                </div>
+                    </div>
 
                 </Modal>
+
+                { cartLines.length > 0 && <button className={`btn btn-secondary btn-modal`} onClick={() => onCheckout()}>
+                    Checkout
+                </button>}
+
                 <Footer />
         </Page>        
     );

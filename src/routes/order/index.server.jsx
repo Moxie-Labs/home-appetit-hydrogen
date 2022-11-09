@@ -6,7 +6,6 @@ import {
   useServerAnalytics,
   useLocalization,
   useShopQuery,
-  CacheNone,
   flattenConnection,
   useSession,
   gql

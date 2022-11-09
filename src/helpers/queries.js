@@ -101,6 +101,51 @@ export const GET_MENUS_QUERY = gql`
     }
 `;
 
+export function GET_GIFT_CARD_QUERY(cardProductId) {
+
+    return gql`
+       {
+            product(id:cardProductId) {
+                variants(first:100) {
+                    edges {
+                        node {
+                            id
+                            price {
+                                amount
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    `;
+}
+
+export const GET_ALL_GIFT_CARDS_WITH_VARIANTS = gql`
+    {
+        collection(handle: "gift-cards") {
+            products(first: 5) {
+                edges {
+                    node {
+                        id
+                        title
+                        variants(first: 100) {
+                            edges {
+                                node {
+                                    id
+                                    price {
+                                        amount
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+`;
 export const GET_MOD_COLLECTIONS_QUERY = gql`
      {
         collections(first: 20, reverse: true, query: "*sub OR *mod OR *custom") {
