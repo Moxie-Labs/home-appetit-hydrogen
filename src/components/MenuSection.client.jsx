@@ -1,6 +1,4 @@
 import React from 'react';
-// import CardFilters from "./CardFilters.client";
-// import DishCard from "./DishCard";
 import iconEdit from "../assets/icon-edit.png";
 import iconPlus from "../assets/icon-plus-alt.png";
 import iconArrowRight from "../assets/arrow-right.png"
@@ -8,9 +6,9 @@ import { Frame } from './Frame.client';
 import { LayoutSection } from './LayoutSection.client';
 import { Layout } from './Layout.client';
 import CardFilters from './CardFilters.client';
-import DishCard from './DishCard.client';
 import Modal from 'react-modal/lib/components/Modal';
 import { prepModSubTitles } from '../lib/utils';
+import DishCard from './DishCard.client';
 
 export default class MenuSection extends React.Component {
 

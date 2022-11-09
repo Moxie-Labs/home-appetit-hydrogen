@@ -14,6 +14,7 @@ import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
+import { TRADITIONAL_PLAN_NAME } from "../lib/const";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
@@ -25,6 +26,7 @@ const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 7;
 const FIRST_WINDOW_START = 8;
 const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
+const DEFAULT_PLAN = TRADITIONAL_PLAN_NAME;
 const DEFAULT_CARDS = [
     {
         brand: "Visa",
@@ -69,7 +71,7 @@ export function OrderSection(props) {
     const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(0)
     const [selection, setSelections] = useState([])
-    const [activeScheme, setActiveScheme] = useState('traditional')
+    const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
     const [isEditing, setIsEditing] = useState(false);
@@ -136,6 +138,7 @@ export function OrderSection(props) {
     const [promoTriggered, setPromoTriggered] = useState(false);
     const [referralTriggered, setReferralTriggered] = useState(false);
 
+    const [userAddedItem, setUserAddedItem] = useState(false);
     const [isCollectionsLoading, setIsCollectionsLoading] = useState(true);
     const [isRestoringCart, setIsRestoringCart] = useState(false);
     const [cartWasRestored, setCartWasRestored] = useState(false);
@@ -143,6 +146,9 @@ export function OrderSection(props) {
     const [choicesEntrees, setChoicesEntrees] = useState([]);
     const [choicesGreens, setChoicesGreens] = useState([]);
     const [choicesAddons, setChoicesAddons] = useState([]);
+
+    // used for deleting lineitems when multiple instances exist (Flex plan)
+    const [lineIndexByVariantId, setLineIndexByVariantId] = useState([]);
 
     // runs necessary Storefront API calls only when needed
     useEffect(() => {
@@ -156,7 +162,7 @@ export function OrderSection(props) {
             }
         } else {
             setIsAlreadyOrderedModalShowing(false);
-            if (!restoreCartModalDismissed) {
+            if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
                 setIsRestoringCart(true);
             }   
         }
@@ -191,10 +197,35 @@ export function OrderSection(props) {
         return retval;
     }
 
-    const findCartLineByVariantId = variantId => {
+    const findCartLineByItem = item => {
         let retval = null;
         cartLines.map(line => {
-            if (line.merchandise.id === variantId) retval = line;
+            if (line.merchandise.id === item.selectedVariantId && retval === null) {
+                
+                // if: item has modifiers, then find item that has same modifiers
+                if (item.selectedMods?.length > 0) {
+                    line.attributes.map(attr => {
+                        if (attr.value === item.selectedModsStr) {
+                            retval = line;
+                        }
+                    });
+                } else {
+                    retval = line;
+                }
+            }
+        });
+
+        return retval;
+    }
+
+    const findCartLineByVariantId = (variantId, index=0) => {
+        let retval = null;
+        cartLines.map(line => {
+            if (line.merchandise.id === variantId) 
+                if (index > 0)
+                    index -= 1;
+                else    
+                    retval = line;
         });
 
         return retval;
@@ -212,6 +243,9 @@ export function OrderSection(props) {
     }
 
     const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true, isIce=false) => {
+
+        if (!userAddedItem)
+            setUserAddedItem(true);
 
         const variantType = isIce ? 0 : getVariantType(collection);        
 
@@ -262,20 +296,8 @@ export function OrderSection(props) {
                         }
                     }
                         
-                    else {
-                        // handle internal Cart Collection
-                        collection.splice(i, 1);
-
-                        // update Shopify Cart
-                        const linesRemovePayload = [];
-                        linesRemovePayload.push(existingCartLine.id);
-                        choice.selectedMods.map(mod => {
-                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
-                            if (modCartLine !== null)
-                                linesRemovePayload.push(modCartLine.id)
-                        });
-                        linesRemove(linesRemovePayload);
-                    }
+                    else
+                        removeItem(item, i, collectionName);
                         
                 }
             });
@@ -299,6 +321,17 @@ export function OrderSection(props) {
         else if (choice.quantity > 0) {
             console.log("addItemToCart::adding new item", choice);    
 
+            choice.selectedVariantId = choice.choice.productOptions[variantType].node.id;
+            console.log("choice.selectedVariantId", choice.selectedVariantId);
+
+            const lineIndex = addLineIndex(choice.choice.productOptions[variantType].node.id);
+            choice.lineIndex = lineIndex;
+            
+            let selectedModsAttr = [];
+            choice.selectedMods.map(mod => {
+                selectedModsAttr.push(mod.title);
+            });
+            choice.selectedModsStr = selectedModsAttr.join(", ");
 
             if (collectionName === 'main') 
                 if (isAddingExtraItems)
@@ -324,9 +357,7 @@ export function OrderSection(props) {
                 const linesAddPayload = [];
                 console.log("choice selectedMods", choice.selectedMods);
                 
-                let selectedModsAttr = [];
                 choice.selectedMods.map(mod => {
-                    selectedModsAttr.push(mod.title);
                     linesAddPayload.push({ 
                         attributes: [
                             { 
@@ -352,6 +383,38 @@ export function OrderSection(props) {
             }
         }
 
+    }
+
+    // returns what instance of a line item is being added (Flex plan only)
+    const addLineIndex = variantId => {
+        console.log("getLineIndex for ", variantId);
+        let newLineIndex = lineIndexByVariantId;
+        if (newLineIndex[variantId] === undefined || newLineIndex[variantId] === null) {
+            console.log("generating new cell")
+            newLineIndex[variantId] = 1;
+        }
+            
+        else {
+            console.log("Adding to existing cell");
+            newLineIndex[variantId] += 1;
+        }
+            
+        setLineIndexByVariantId(newLineIndex);
+        console.log("newLineIndex", newLineIndex);
+        return newLineIndex[variantId];
+    }
+
+    const shiftLineIndexes = (index, variantId, collection) => {
+        collection.map(item => {
+            if (item.selectedVariantId === variantId && item.lineIndex > index) 
+                item.lineIndex -= 1;
+        });
+
+        let newLineIndex = lineIndexByVariantId;
+        newLineIndex[variantId] -= 1;
+        setLineIndexByVariantId(newLineIndex);
+
+        return collection;
     }
 
     const isSectionFilled = (collection) => {
@@ -518,12 +581,74 @@ export function OrderSection(props) {
         setSelectedSmallItemsExtra([]);
     }
 
+    const removeItem = (item, index, collectionName) => {
+        console.log("removing Item: ", item)
+        let linesToModify = [];
+        
+        // delete from internal Cart/OrderSummary
+        if (collectionName === 'main') {
+            let collection = selectedMainItems;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedMainItems([...collection]);
+        } else if (collectionName === 'mainExtra') {
+            let collection = selectedMainItemsExtra;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedMainItemsExtra([...collection]);
+        } else if (collectionName === 'sides') {
+            let collection = selectedSmallItems;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedSmallItems([...collection]);
+        } else if (collectionName === 'sidesExtra') {
+            let collection = selectedSmallItemsExtra;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedSmallItemsExtra([...collection]);
+        } else if (collectionName === 'addons') {
+            let collection = selectedAddonItems;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedAddonItems([...collection]);
+        }
+
+        // delete from Shopify Cart
+        const baseLine = findCartLineByItem(item);
+        if (baseLine !== null)
+            linesToModify.push({
+                id: baseLine.id,
+                quantity: 0
+            });
+
+        cartLines.map(line => {          
+            // update associated mods quantities
+            item.selectedMods?.map(mod => {
+                const {id:modId} = line.merchandise;
+                const modVariantId = mod.variants.edges[0].node.id;
+                if (modId === modVariantId) {
+                    linesToModify.push({
+                        id: line.id,
+                        quantity: Math.max(0, (line.quantity - item.quantity))
+                    });
+                }
+            });
+        });
+        
+        if (linesToModify.length > 0)
+            linesUpdate(linesToModify);
+
+
+    }
+
     const confirmPersonsCount = () => {
         linesAdd({
             merchandiseId: getSelectedPlan().id,
             quantity: 1
         });
 
+        if (!userAddedItem)
+            setUserAddedItem(true);
         setCurrentStep(2);
     }
 
@@ -721,7 +846,7 @@ export function OrderSection(props) {
         setCurrentStep(1);
     }
 
-    const { collectionData, zipcodeType, zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered } = props;
+    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
     
     const setupCardsAndCollections = () => {
@@ -740,7 +865,8 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: entree.node.variants.edges,
                 modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
-                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
+                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions)),
+                baseCollection: 'main'
             };
             newChoicesEntrees.push(choice);
         });
@@ -756,7 +882,8 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: greens.node.variants.edges,
                 modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
-                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
+                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value),
+                baseCollection: 'sides'
             }
 
             newChoicesGreens.push(choice);
@@ -773,7 +900,8 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: addons.node.variants.edges,
                 modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
-                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
+                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value),
+                baseCollection: 'addons'
             };
 
             newChoicesAddons.push(choice);
@@ -804,18 +932,23 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: entree.node.variants.edges,
                 modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
-                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions))
+                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions)),
+                baseCollection: 'main'
             };
 
             cartLines.map(line => {
                 entree.node.variants.edges.forEach(variant => {
                     if (line.merchandise.id === variant.node.id) {
+                        const item = {};
+                        item.selectedVariantId = line.merchandise.id;
+                        item.choice = choice;
+                        item.quantity = line.quantity;
 
                         // if: variant is Included, then: add to MainItems, else: add to Extras
                         if (variant.node.title === "Included")
-                            existingMainItems.push({choice: choice, quantity: line.quantity});
+                            existingMainItems.push(item);
                         else
-                            existingMainItemsExtra.push({choice: choice, quantity: line.quantity});
+                            existingMainItemsExtra.push(item);
                     }
                 });
             });
@@ -837,16 +970,22 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: greens.node.variants.edges,
                 modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
-                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value)
+                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value),
+                baseCollection: 'sides'
             }
 
             cartLines.map(line => {
                 greens.node.variants.edges.forEach(variant => {
                     if (line.merchandise.id === variant.node.id) {
+                        const item = {};
+                        item.selectedVariantId = line.merchandise.id;
+                        item.choice = choice;
+                        item.quantity = line.quantity;
+
                         if (variant.node.title === "Included")
-                            existingSmallItems.push({choice: choice, quantity: line.quantity});
+                            existingSmallItems.push(item);
                         else
-                            existingSmallItemsExtra.push({choice: choice, quantity: line.quantity});
+                            existingSmallItemsExtra.push(item);
                     }
                 });
             });
@@ -870,13 +1009,18 @@ export function OrderSection(props) {
                 imageURL: imgURL,
                 productOptions: addons.node.variants.edges,
                 modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
-                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value)
+                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value),
+                baseCollection: 'addons'
             };
 
             cartLines.map(line => {
                 addons.node.variants.edges.forEach(variant => {
+                    const item = {};
+                    item.selectedVariantId = line.merchandise.id;
+                    item.choice = choice;
+                    item.quantity = line.quantity;
                     if (line.merchandise.id === variant.node.id) {
-                        existingAddonItems.push({choice: choice, quantity: line.quantity});
+                        existingAddonItems.push(item);
                     }
                 });
             });
@@ -990,6 +1134,7 @@ export function OrderSection(props) {
                                     checkoutUrl={checkoutUrl}
                                     currentStep={currentStep}
                                     cartId={cartId}
+                                    userAddedItem={userAddedItem}
                                 />
                             </section> 
                         }
@@ -1122,6 +1267,8 @@ export function OrderSection(props) {
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 freeQuantityLimit={getFreeQuantityLimit()} 
+                                removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
+                                isAddingExtraItems={isAddingExtraItems}
                                 emptyCart={()=>emptyCart()}
                             />  
                         </LayoutSection>

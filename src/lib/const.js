@@ -8,3 +8,9 @@ export function getImageLoadingPriority(
 ) {
   return index < maxEagerLoadCount ? ATTR_LOADING_EAGER : undefined;
 }
+
+export const MAIN_ITEMS_STEP = 2;
+export const SIDE_ITEMS_STEP = 3;
+export const ADDON_ITEMS_STEP = 4;
+export const TRADITIONAL_PLAN_NAME = 'traditional';
+export const FLEXIBLE_PLAN_NAME = 'flexible';
