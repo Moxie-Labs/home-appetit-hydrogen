@@ -8,6 +8,8 @@ export default function DebugValues(props) {
         <section>
             <h1>Debug Values</h1>
 
+            <p>Current Step: {props.currentStep}</p>
+
             <p>Selected Plan: {props.activeScheme}</p>
 
             <p>Serving Count: {props.servingCount}</p>
@@ -19,7 +21,16 @@ export default function DebugValues(props) {
                     <h2>Selected Main Items</h2>
                     <ul>
                         {selectedMainItems.map(item => {
-                            return <li>{item.quantity}x {item.choice.title}</li>
+                            console.log("debug::item", item);
+                            return <li>{item.quantity}x {item.choice.title} ({item.selectedVariantId}): index: {item.lineIndex}
+                               <ul>
+                                    {item.selectedMods?.map(mod => {
+                                        console.log("mod", mod);
+                                        return <li>{mod.title} ({mod.variants.edges[0].node.id})</li>;
+                                    })}
+                                </ul>
+                                
+                            </li>
                         })}
                     </ul>
                 </div>
@@ -48,12 +59,21 @@ export default function DebugValues(props) {
             <h2>Cart</h2>
             <ul>
             {props.cartLines.map(line => {
-                const {product, variant} = line.merchandise;
-                return <li>{line.quantity}x {product.title}</li>
+                const {id, product, variant} = line.merchandise;
+
+                // console.log(`line: ${product.title}, attributes: ${line.attribute}`);
+                // line.attributes.map(attr => {
+                //     // console.log("attr equals", attr.value === '(Sub) Gluten Free Pasta, (MOd) Extra Sauce');
+                // })
+                return <li>{line.quantity}x {product.title}({id})</li>
             })}
             </ul>
 
             <p><a href={props.checkoutUrl} target="_blank">Checkout URL</a></p>
+
+            <p>CartID: {props.cartId}</p>
+
+            <p>userAddedItem: {props.userAddedItem ? 'true' : 'false'}</p>
                     
         </section>
     )

@@ -27,12 +27,155 @@ select.order_prop__dropdown:focus-visible {
 .illustration-placeholder {
     height: 383px;
     width: 100%;
-    display: flex;
-    align-items: center;
+    display: flex;  
     justify-content: center;
     background: #F8EFE0;
     margin: 3em 0 1em;
     border-radius: 20px;
+}
+
+.illustration-total{
+    font-family: 'ITC Garamond Std';
+    height: fit-content;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 86px;
+    color: #474442;
+    position: relative;
+    right: 19%;
+}
+
+.illustration-desc{
+    text-transform: uppercase;
+    position: relative;
+    height: fit-content;
+    bottom: 18%;
+    left: 22%;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+    color: #474442;
+}
+
+.illustration-desc-sub{
+    text-transform: uppercase;
+    position: relative;
+    height: fit-content;
+    bottom: 14%;
+    left: 22%;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    color: #474442;
+}
+
+.illustration-desc-division{
+    position: absolute;
+    left: 67%;
+    right: 2%;
+    top: 23%;
+    border: 2px solid #474442;
+}
+
+.illustration-desc-underline{
+    position: relative;
+    height: fit-content;
+    top: -8%;
+    left: 14%;
+    font-style: normal;
+    font-size: 22px;
+    color: #474442;
+}
+
+.illustration-section{
+    position: absolute;
+    left: 58%;
+    right: 2%;
+    top: 37%;
+    bottom: 33%;
+    border: 3px solid #474442;
+    border-radius: 15px;
+}
+
+.illustration-image-section{
+    display: flex;
+    margin-top: -8%;
+    margin-left: 46%;
+}
+
+.illustration-flex{
+    margin-top: -6%;
+}
+
+.illustration-trad{
+    margin-top: -20%;
+}
+
+.illustration-flex-section{
+    display: flex;
+    margin-left: 65%;
+}
+
+.illustration-small-plate{
+    padding-right: 6%;
+}
+
+.illustration-large-plate{
+    padding-right: 5%;
+}
+
+.illustration-flex-person{
+    position: absolute;
+    left: 55%;
+}
+
+.illustration-section-img {
+    position: relative;
+    left: 12%;
+    top: 14%;
+}
+
+.illustration-section-img-1 {
+    position: relative;
+    left: 6%;
+    top: 18%;
+}
+
+.illustration-section-img-2 {
+    position: relative;
+    left: 6%;
+    top: 22%;
+}
+
+.illustration-section-text{
+    font-style: normal;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 18px;
+    margin-left: 10px;
+    color: #474442;
+}
+
+.illustration-section-badge {  
+    background: #000;
+    border-radius: 10px;
+    color: white;
+    font-size: 12px;
+    top: 20px;
+    right: -42px;
+    padding: 5px 5px;
+    position: relative;
+    width: 22px;
+    height: 22px;
+    font-family: 'AvenirLTProRoman';
+    font-weight: bold;
+}
+
+.illustration-section-badge-hidden {  
+    visibility: hidden;
+    font-size: 12px;
+    height: 22px;
 }
 
 #OrderProperties label{
@@ -70,6 +213,7 @@ select {
 
 .scheme-inactive-padding{
     margin: 40px 0 0 !important;
+    opacity: 0.5;
 }
 
 div .order-wrapper {

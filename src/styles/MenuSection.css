@@ -57,15 +57,18 @@ p.selectionCount {
 
 .dishcard--wrapper-inactive .Polaris-Frame {
     min-height: auto !important;
+    opacity: 0.5;
 }
 
 .dishcard--wrapper-inactive .suborder--summary-container {
     margin-top: 26px;
+    opacity: 0.5;
 }
 
 .dishcard--wrapper-inactive.dish-card-wrapper:after{ 
     content: "+";
     top: 45px;
+    opacity: 0.5;
 }
 
 .dish-card-wrapper:first-child section.step-section{
@@ -131,6 +134,7 @@ ul.step--order-summary li span {
 
 .dish-card-wrapper.dishcard--wrapper-inactive h2 {
     margin-top: 20px;
+    opacity: 0.5;
 }
 
 .small-plates {

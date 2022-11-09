@@ -1,67 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import quantityPlus from "../assets/quantity-plus.png";
 import quantityMinus from "../assets/quantity-minus.png";
 import { Checkbox } from './Checkbox.client';
 import Modal from 'react-modal/lib/components/Modal';
+import { FLEXIBLE_PLAN_NAME, TRADITIONAL_PLAN_NAME } from '../lib/const';
 
-export default class DishCard extends React.Component {
+export default function DishCard(props) {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isCardActive: false,
-            isModModalShowing: false,
-            quantity: props.initialQuantity,
-            selected: ['hidden'],
-            confirmed: props.confirmed,
-            checkedOptions: [
-                false, 
-                false, 
-                false, 
-                false
-            ],
-            optionCost: 0.0,
-            selectedMods: []
-        }
+    const [isCardActive, setIsCardActive] = useState(false);
+    const [isModModalShowing, setIsModModalShowing] = useState(false);
+    const [quantity, setQuantity] = useState(props.initialQuantity);
+    const [selected, setSelected] = useState(['hidden']);
+    const [confirmed, setConfirmed] = useState(props.confirmed);
+    const [checkedOptions, setCheckedOptions] = useState([
+        false, 
+        false, 
+        false, 
+        false
+    ]);
+    const [optionCost, setOptionCost] = useState(0.0);
+    const [selectedMods, setSelectedMods] = useState([]);
 
-        this.calculateItemTotal = this.calculateItemTotal.bind(this);
-        this.setQuantity = this.setQuantity.bind(this);
-        this.setIsCardActive = this.setIsCardActive.bind(this);
-        this.handleConfirm = this.handleConfirm.bind(this);
-        this.handleCustomize = this.handleCustomize.bind(this);
-        this.handleSelected = this.props.handleSelected.bind(this);
-        this.toggleModal = this.toggleModal.bind(this);
-        this.handleOptionChoice = this.handleOptionChoice.bind(this);
-        this.handleChangePlan = this.handleChangePlan.bind(this);
-    }
+    useEffect(() => {
+        setQuantity(props.initialQuantity);
+    },[props.initialQuantity])
 
-    setQuantity(quantity) {
-        const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity } = this.props;
-        const { quantity:currentQuantity } = this.state;
+    const updateQuantity = newQuantity => {
+        const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity } = props;
+        const currentQuantity = quantity;
 
         // if: decrementing, then: just check if above 0
-        if (quantity < currentQuantity)
-            quantity = Math.max(0, quantity);
+        if (newQuantity < currentQuantity)
+            newQuantity = Math.max(0, newQuantity);
         
-        else if (quantity > (initialQuantity + maxQuantity) ) {
-            quantity = currentQuantity;
+        else if (newQuantity > (initialQuantity + maxQuantity) ) {
+            newQuantity = currentQuantity;
         }
             
         
-        else
-            if (!showingExtra)
-                quantity = Math.min(quantity, freeQuantityLimit);
+        else if (!showingExtra)
+            newQuantity = Math.min(newQuantity, freeQuantityLimit);
 
-        this.setState({
-            quantity: quantity
-        });
+        setQuantity(newQuantity);
     }
 
-    calculateItemTotal() {
+    const calculateItemTotal = () => {
         return formatter.format(Math.max(0, (quantity  - freeQuantityLimit)) * price);
     }
 
-    dishCardClear(className) {
+    const dishCardClear = className => {
         var elems = document.querySelectorAll(className);
         var index = 0, length = elems.length;
         for ( ; index < length; index++) {
@@ -69,64 +56,71 @@ export default class DishCard extends React.Component {
         }
     }
 
-    setIsCardActive(isCardActive) {
-        console.log("activating");
-        if (!this.isCardActive) {
-            this.setState({
-                isCardActive: true,
-                confirmed: false
-            });
-        }
+    const updateIsCardActive = cardActive => {
+        if (!isCardActive)
+            props.setCardStatus(" disabled");
+
+        setIsCardActive(cardActive);
+        setConfirmed(!cardActive);
+        
+        // resets quantity for Flex plan adds
+        if (activeScheme === FLEXIBLE_PLAN_NAME)
+            setQuantity(cardActive ? 0 : initialQuantity);
     }
 
-    handleConfirm() {
+    const handleConfirm = () => {
         console.log("confirming...");
-        const {choice, handleSelected, activeScheme} = this.props;
-        const {quantity, selectedMods} = this.state;
-        this.setState({
-            confirmed: quantity > 0,
-            isCardActive: false,
-            isModModalShowing: false,
-            quantity: activeScheme === 'traditional' ? quantity : 0,
-            selectedMods: activeScheme === 'traditional' ? selectedMods : []
-
-        });
+        props.setCardStatus("");
+        const {choice, handleSelected, activeScheme} = props;
+        
+        setConfirmed(quantity > 0);
+        updateIsCardActive(false);
+        setIsModModalShowing(false);
+        updateQuantity(activeScheme === 'traditional' ? quantity : 0);
+        setSelectedMods(activeScheme === 'traditional' ? selectedMods : []);
 
         handleSelected({choice: choice, quantity: quantity, selectedMods: selectedMods});
 
         const step = document.querySelector(".step-active");
         step.scrollIntoView({behavior: "smooth", block: "start"});
 
-        this.dishCardClear('.dish-card-blur');
-        this.dishCardClear('.step-active .order_prop__subheading');
-        this.dishCardClear('.step-active .order_prop__heading');
+        dishCardClear('.dish-card-blur');
+        dishCardClear('.step-active .order_prop__subheading');
+        dishCardClear('.step-active .order_prop__heading');
         
     }
 
-    handleCustomize() {
-        // this.handleConfirm();
-        this.toggleModal();
+    const handleCancel = () => {
+        const { initialQuantity, setCardStatus } = props;
+        setCardStatus("");
+        updateQuantity(initialQuantity);
+        updateIsCardActive(false);
+        setConfirmed(initialQuantity > 0);
+        setIsCardActive(false);
+        const step = document.querySelector(".step-active");
+        step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
-    toggleModal() {
-        const {isModModalShowing} = this.state;
-        this.setState({isModModalShowing: !isModModalShowing});
+    const handleCustomize = () => {
+        toggleModal();
     }
 
-    handleOptionChoice(mod) {
+    const toggleModal = () => {
+        setIsModModalShowing(!isModModalShowing);
+    }
 
-        const { selectedMods } = this.state;
-        if (this.isModSelected(mod.id)) {
-            const modIndex = this.findModIndex(mod.id);
+    const handleOptionChoice = mod => {
+        if (isModSelected(mod.id)) {
+            const modIndex = findModIndex(mod.id);
             let newSelectedMods = selectedMods;
             newSelectedMods.splice(modIndex, 1);
-            this.setState({selectedMods: [...newSelectedMods]})
+            setSelectedMods([...newSelectedMods]);
         }
         else
-            this.setState({selectedMods: [...selectedMods, mod]});
+            setSelectedMods([...selectedMods, mod]);
     }
 
-    prepModSubTitles(title) {
+    const prepModSubTitles = title => {
         const formattedTitle = title.toLowerCase();
         if (formattedTitle.includes("(sub) "))
             return title.substring(6);
@@ -136,13 +130,11 @@ export default class DishCard extends React.Component {
             return title;
     }
 
-    isModSelected(modId) {
-        return this.findModIndex(modId) !== -1;
+    const isModSelected = modId => {
+        return findModIndex(modId) !== -1;
     }
 
-    findModIndex(modId) {
-        const { selectedMods } = this.state;
-
+    const findModIndex = modId => {
         let retval = -1;
         selectedMods.map((mod, index) => {
             if (mod.id === modId)
@@ -152,25 +144,21 @@ export default class DishCard extends React.Component {
         return retval;
     }
 
-    calcuculateModTotalCost() {
-        const { selectedMods, quantity } = this.state;
+    const calcuculateModTotalCost = () => {
         let totalCost = 0.0;
         selectedMods.map(mod => {
-            // TODO: support cost when on Flex plan
             totalCost += parseFloat(mod.priceRange.maxVariantPrice.amount * quantity);
         });
 
         return totalCost;
     }
 
-    handleChangePlan() {
-        this.setState({isModModalShowing: false});
-        this.props.handleChangePlan();
+    const handleChangePlan = () => {
+        setIsModModalShowing(false);
+        props.handleChangePlan();
     }
 
-    render() {
-        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme, initialQuantity} = this.props;
-        const {selected, quantity, isCardActive, confirmed, isModModalShowing, checkedOptions, optionCost, selectedMods} = this.state;
+        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme, initialQuantity} = props;
         const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
 
         const formatter = new Intl.NumberFormat('en-US', {
@@ -180,12 +168,12 @@ export default class DishCard extends React.Component {
         })
 
         const modifiersSection = modifications === null ? null : modifications.map((mod, index) => {
-            return <Checkbox key={index} label={`${this.prepModSubTitles(mod.title)} (${mod.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(mod.priceRange.maxVariantPrice.amount) : ''})`} checked={this.isModSelected(mod.id)} onChange={() => this.handleOptionChoice(mod, index)}/>;
+            return <Checkbox key={index} label={`${prepModSubTitles(mod.title)} ${mod.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(mod.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(mod.id)} onChange={() => handleOptionChoice(mod, index)}/>;
         });
 
         const substitutionSection = substitutions === null ? null : substitutions.map((sub, index) => {
             console.log(`sub: ${sub}, sub.maxVariantPrice: ${sub.maxVariantPrice}`)
-            return <Checkbox key={index} label={`${this.prepModSubTitles(sub.title)} (${sub.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''})`} checked={this.isModSelected(sub.id)} onChange={() => this.handleOptionChoice(sub, index)}/>;
+            return <Checkbox key={index} label={prepModSubTitles(sub.title)} price={`${sub.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(sub.id)} onChange={() => handleOptionChoice(sub, index)}/>;
         });
 
         let attributesDisplay = '';
@@ -202,135 +190,118 @@ export default class DishCard extends React.Component {
     
 
     return (
-        <div className={`dish-card${isCardActive ? ' active ' : ' '}${confirmed ? ' confirmed' : ''} ${forceDisable ? 'disabled' : ''}`}>
-            {!isCardActive && confirmed && 
-                <p className="card__quantity-badge">{activeScheme === 'traditional' ? quantity : initialQuantity + quantity}</p>
-            }
+        <div className={`dish-card${isCardActive ? ' active' : props.cardStatus}${confirmed ? ' confirmed' : ''}`}>
+            {!isCardActive && confirmed && (initialQuantity + quantity > 0) && <p className="card__quantity-badge">{quantity}</p>}
 
-        {isCardActive && !confirmed &&
-           <div>
-           <div className="card__overlay"></div>
-            <div className="card__quantity-wrapper">
-                
-                <div className="card__quantity-inner-container">
-                     <h2 className="card__quantity-title">{title}</h2>
-                     {/* start placeholder */}
-                     <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
-                     <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
-                     {/* end placeholder */}
-                     <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
-                </div>
-
-                <div className="card__quantity-field-wrapper">
-                    <section className="card__quantity-section">
-                        <img className="card__quantity-img minus" src={quantityMinus} onClick={() => this.setQuantity(quantity-1)}/>
-                        <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
-                        <img className="card__quantity-img plus" src={quantityPlus} onClick={() => this.setQuantity(quantity+1)}/>
-                    </section>
-
-                    <section className="card__actions">
-                        <button className="btn btn-primary-small btn-counter-confirm" onClick={() => this.handleConfirm()}>Confirm</button>
-                        <button className={`ha-a btn-counter-customize ${ substitutions.length + modifications.length > 0 ? 'enabled' : 'disabled' }`} onClick={() => this.handleCustomize()}>Customize</button>
-                    </section>    
-                </div>
-            </div>
-            </div>
-        }
-            
+            {isCardActive && !confirmed &&
             <div>
-                <img className="dish-image" src={imageURL} onClick={() => this.setIsCardActive(true)}/>
-                { showingExtra && !forceHidePrice && <span className='dishcard-extra-cost'>{formatter.format(choice.price)}</span> }
-            </div>
+                <div className="card__overlay"></div>
+                <div className="card__quantity-wrapper">
+                    <div className="card__quantity-inner-container">
+                        <h2 className="card__quantity-title">{title}</h2>
+                        {/* start placeholder */}
+                        <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
+                        <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
+                        {/* end placeholder */}
+                        <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
+                    </div>
 
-            <section className="card__info-section ha-color-bg-cream-shadow">
-                <div onClick={() => this.setIsCardActive(true)}>
-                    <h2>{title}</h2>
-                    <p className='dish-description'>{description}</p>
-                    <p className="card__code">{attributesDisplay}</p>
-                    <p className="card__servings-disclaimer">{disclaimerText}</p>
+                    <div className="card__quantity-field-wrapper">
+                        <section className="card__quantity-section">
+                            <img className="card__quantity-img minus" src={quantityMinus} onClick={() => updateQuantity(quantity-1)}/>
+                            <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
+                            <img className="card__quantity-img plus" src={quantityPlus} onClick={() => updateQuantity(quantity+1)}/>
+                        </section>
+
+                        <section className="card__actions">
+                            <button className="btn btn-primary-small btn-counter-confirm" onClick={() => handleConfirm()}>Confirm</button>
+                            <button className={`ha-a btn-counter-customize ${ substitutions.length + modifications.length > 0 ? 'enabled' : 'disabled' }`} onClick={() => handleCustomize()}>Customize</button>
+                        </section>
+                        <section className="card__actions">
+                            <button className="ha-a btn-counter-customize enabled" onClick={() => handleCancel()}>Cancel</button>
+                        </section>     
+                    </div>
+                </div>
+                </div>
+            }
+                
+                <div>
+                    <img className="dish-image" src={imageURL} onClick={() => updateIsCardActive(true)}/>
+                    { showingExtra && !forceHidePrice && <span className='dishcard-extra-cost'>{formatter.format(choice.price)}</span> }
                 </div>
 
-                <Modal
-                    isOpen={isModModalShowing}
-                    onRequestClose={() => this.toggleModal()}
-                    className="modal--flexible-confirmaton"
-                >
-                    <div className="card__quantity-wrapper wrapper-modal">
-                        <div className="card__quantity-inner-wrapper">
-                            <div className="card__quantity-inner-container">
-                                <h2 className="card__quantity-title">{title}</h2>
-                                {/* start placeholder */}
-                                <p className='card__quantity-subtitle'>urna fermentum, sed id dolor ac donec egestas ut sted es</p>
-                                <br></br>
-                                <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
-                                <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
-                                {/* end placeholder */}
-                                <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
+                <section className="card__info-section ha-color-bg-cream-shadow">
+                    <div onClick={() => updateIsCardActive(true)}>
+                        <h2>{title}</h2>
+                        <p className='dish-description'>{description}</p>
+                        <p className="card__code">{attributesDisplay}</p>
+                        <p className="card__servings-disclaimer">{disclaimerText}</p>
+                    </div>
+
+                    <Modal
+                        isOpen={isModModalShowing}
+                        onRequestClose={() => toggleModal()}
+                        className="modal--flexible-confirmaton"
+                    >
+                        <div className="card__quantity-wrapper wrapper-modal">
+                            <div className="card__quantity-inner-wrapper">
+                                <div className="card__quantity-inner-container">
+                                    <h2 className="card__quantity-title">{title}</h2>
+                                    {/* start placeholder */}
+                                    <p className='card__quantity-subtitle'>urna fermentum, sed id dolor ac donec egestas ut sted es</p>
+                                    <br></br>
+                                    <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
+                                    <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
+                                    {/* end placeholder */}
+                                    <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
+                                </div>
+
+                                <div className="card__quantity-field-wrapper">
+                                    <section className="card__quantity-section">
+                                        <img className="card__quantity-img minus" src={quantityMinus} onClick={() => updateQuantity(quantity-1)}/>
+                                        <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
+                                        <img className="card__quantity-img plus" src={quantityPlus} onClick={() => updateQuantity(quantity+1)}/>
+                                    </section>
+                                </div>
                             </div>
 
-                            <div className="card__quantity-field-wrapper">
-                                <section className="card__quantity-section">
-                                    <img className="card__quantity-img minus" src={quantityMinus} onClick={() => this.setQuantity(quantity-1)}/>
-                                    <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
-                                    <img className="card__quantity-img plus" src={quantityPlus} onClick={() => this.setQuantity(quantity+1)}/>
-                                </section>
+                            <div className='modal--flexible-inner'>
+                                { activeScheme === 'traditional' && 
+                                    <p>*Customizations will be applied to all portions of this dish. For more individualized customizations, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Flex</span> option.</p>
+                                }
+
+
+                                { activeScheme === 'flexible' && 
+                                    <p>*Customizations will not be applied to portions already in the cart. For customizations across all portions, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Traditional</span> option.</p>
+                                }
+
+                            <div className="modal--flexible-container">
+                                <h4 className='modal--flexible-heading'>Substitutions</h4>
+                                <div className="modal--flexible-checkbox-wrapper">
+                                    {substitutionSection}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className='modal--flexible-inner'>
-                            { activeScheme === 'traditional' && 
-                                <p>*Customizations will be applied to all portions of this dish. For more individualized customizations, please check out our <span className='underline clickable' onClick={() => this.handleChangePlan()}>Flex</span> option.</p>
-                            }
-
-
-                            { activeScheme === 'flexible' && 
-                                <p>*Customizations will not be applied to portions already in the cart. For customizations across all portions, please check out our <span className='underline clickable' onClick={() => this.handleChangePlan()}>Traditional</span> option.</p>
-                            }
-
-                        <div className="modal--flexible-container">
-                            <h4 className='modal--flexible-heading'>Substitutions</h4>
+                            <div className="modal--flexible-container">
+                            <h4 className='modal--flexible-heading'>Customizations</h4>
                             <div className="modal--flexible-checkbox-wrapper">
-                                {substitutionSection}
+                                {modifiersSection}
                             </div>
-                        </div>
+                            </div>
 
-                        <div className="modal--flexible-container">
-                        <h4 className='modal--flexible-heading'>Customizations</h4>
-                        <div className="modal--flexible-checkbox-wrapper">
-                            {modifiersSection}
+                            <section className="card__actions">
+                                <button className="btn btn-primary-small btn-counter-confirm" onClick={() => handleConfirm()}>Confirm</button>
+                                <p className='modal--flexible-price'><strong>+{formatter.format(calcuculateModTotalCost())}</strong> Customizations</p>
+                            </section>    
                         </div>
                         </div>
-
-                        <section className="card__actions">
-                            <button className="btn btn-primary-small btn-counter-confirm" onClick={() => this.handleConfirm()}>Confirm</button>
-                            <p className='modal--flexible-price'><strong>+{formatter.format(this.calcuculateModTotalCost())}</strong> Customizations</p>
-                        </section>    
-                    </div>
-                    </div>
+                        
+                    </Modal>
                     
-                </Modal>
-                            
-                {/* <Modal
-                    isOpen={isModalShowing}
-                    onClose={this.toggleModal}
-                    className="modal--flexible-confirmaton"
-                >
-                    <div className='modal--flexible-inner'>
-                        <h2 className='ha-h4'>Change order type?</h2>
-                        <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
-                        <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
-                        <section className="card__actions">
-                            <button className="btn btn-primary-small btn-counter-confirm">Switch to flex plan</button>
-                            <button className="btn ha-a btn-modal-cancel">Cancel</button>
-                        </section>   
-                    </div>
-                </Modal> */}
-                
-            </section>
+                </section>
 
-            
-        </div>
-    )
+                
+            </div>
+        )
     }
 
-}

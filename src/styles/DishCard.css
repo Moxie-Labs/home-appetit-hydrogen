@@ -46,7 +46,7 @@
     clear: both;
     text-align: center;
     width: 225px;
-    margin: 0 auto 35px;
+    margin: 0 auto 25px;
 }
 
     .card__quantity-count {
@@ -94,6 +94,7 @@
     display: flex;
     justify-content: center;
     width: 345px;
+    margin-bottom: 10px;
 }
 
 .btn-card {
@@ -155,6 +156,7 @@
     background: #F8EFE0;
     border-radius: 20px;
     padding: 2em;
+    padding-top: 4em;
     display: flex;
     flex-flow: column;
     align-items: center;
@@ -574,10 +576,14 @@ p.modal--flexible-price strong {
     }
 }
 
-.modal--flexible-confirmaton input[type="checkbox"] {
-    padding: 5rem;
-    margin-right: 0.2rem;
-    vertical-align: text-top;
+input[type="checkbox"] {
+    cursor: pointer;
+    margin-right: 1em;
+    font: inherit;
+    width: 1.15em;
+    height: 1.15em;
+    transform: translateY(0.275em);
+    accent-color: #474447;
 }
 
 @media screen and (max-width: 960px){

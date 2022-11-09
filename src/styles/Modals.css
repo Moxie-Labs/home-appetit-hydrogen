@@ -194,11 +194,12 @@ section.modal--customize-inner {
 }
 
 .modal-entree-complete {
-    width: 630px;
+    width: 730px;
     margin: auto;
     top: 50%;
     left: 50%;
     position: absolute;
+    text-align: center;
     transform: translate(-50%, -50%);
     background: #FFFCF5;
     padding: 2em;
