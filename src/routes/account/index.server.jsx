@@ -171,6 +171,25 @@ const CUSTOMER_QUERY = gql`
               amount
               currencyCode
             }
+            subtotalPrice{
+              amount
+            }
+            totalShippingPrice{
+              amount
+            }
+            totalTax{
+              amount
+            }
+            totalPrice{
+              amount
+            }
+            shippingAddress{   
+                address1
+                address2
+                city
+                zip
+                province
+            }
             lineItems(first: 2) {
               edges {
                 node {
@@ -181,8 +200,15 @@ const CUSTOMER_QUERY = gql`
                       height
                       width
                     }
+                    price{
+                      amount
+                    }
                   }
                   title
+                  currentQuantity
+                  originalTotalPrice{
+                    amount
+                  }
                 }
               }
             }

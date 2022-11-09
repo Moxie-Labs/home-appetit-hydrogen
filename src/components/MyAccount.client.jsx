@@ -291,9 +291,11 @@ export default function MyAccount(props) {
     function ordersPanel(){
       return(
         <section className='account-panel-body'>
-        <Orders
-          orders={orders}
-        /> 
+          <Orders
+            orders={orders}
+            customer={customer}
+            payments={customer.payments}
+          /> 
         </section>
       )
     }
