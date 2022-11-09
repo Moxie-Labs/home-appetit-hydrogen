@@ -76,6 +76,8 @@ export function OrderSection(props) {
     const [isGuest, setIsGuest] = useState(props.isGuest);
     const [isEditing, setIsEditing] = useState(false);
     const [isChangePlanModalShowing, setChangePlanModalShowing] = useState(false);
+    const [isAlreadyOrderedModalShowing, setIsAlreadyOrderedModalShowing] = useState(false);
+    const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -153,9 +155,16 @@ export function OrderSection(props) {
         setupCardsAndCollections();
     }, []);
 
-    useEffect(() => {        
-        if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
-            setIsRestoringCart(true);
+    useEffect(() => {
+        if (cartLines.length < 1) {
+            if (props.customerAlreadyOrdered) {
+                setIsAlreadyOrderedModalShowing(true);
+            }
+        } else {
+            setIsAlreadyOrderedModalShowing(false);
+            if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
+                setIsRestoringCart(true);
+            }   
         }
     },[cartLines])
 
@@ -837,7 +846,7 @@ export function OrderSection(props) {
         setCurrentStep(1);
     }
 
-    const { zipcodeArr, entreeProducts, greensProducts, addonProducts } = props;
+    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
     
     const setupCardsAndCollections = () => {
@@ -1263,6 +1272,20 @@ export function OrderSection(props) {
                                 emptyCart={()=>emptyCart()}
                             />  
                         </LayoutSection>
+
+                        <Modal
+                            isOpen={isAlreadyOrderedModalShowing && !alreadyOrderedModalDismissed}
+                            className="modal--flexible-confirmaton"
+                        >
+                            <div className='modal--flexible-inner'>
+                                <h2 className='ha-h4'>Continue with New Order?</h2>
+                                <p className='ha-body'>It looks like you already placed an order for this week.  You can view your existing order or continue placing a new one.<br></br><br></br>If you have any issues with your current order, please <a href="#">contact us</a></p>
+                                <section className="card__actions">
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {window.location.href = '/account'}}>View Existing Order</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setAlreadyOrderedModalDismissed(true)}>Start New Order</button>
+                                </section>   
+                            </div>
+                        </Modal>
 
                         <Modal
                             isOpen={isChangePlanModalShowing}
