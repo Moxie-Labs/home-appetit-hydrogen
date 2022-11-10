@@ -11,7 +11,7 @@ import {
 } from '@shopify/hydrogen';
 import { Layout } from '../components/Layout.server';
 import { GiftCardCalculator } from '../components/GiftCard/GiftCardCalculator.client';
-import { GET_ALL_GIFT_CARDS_WITH_VARIANTS, GET_GIFT_CARD_QUERY } from '../helpers/queries';
+import { GET_ALL_GIFT_CARDS_WITH_VARIANTS } from '../helpers/queries';
 
 export default function GiftCards() {
   const {

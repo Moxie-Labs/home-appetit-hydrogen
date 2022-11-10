@@ -1,4 +1,4 @@
-import React, {useCallback, useState, useRef } from 'react';
+import React, {useCallback, useState, useRef, useEffect } from 'react';
 import { useCart } from '@shopify/hydrogen';
 import Modal from 'react-modal/lib/components/Modal';
 import { Page } from '../Page.client';
@@ -13,15 +13,27 @@ const REGULAR_RATE = 50;
 
 export function GiftCardCalculator(props) {
 
+    useEffect(() => {
+        const linesToRemove = [];
+        cartLines.map(line => {
+            linesToRemove.push(line.id);
+        });
+
+        linesRemove(linesToRemove);
+    },[])
+
     const [activeCalculator, setActiveCalculator] = useState(false);
     const [numberOfPeople, setNumberOfPeople] = useState("");
     const [numberOfWeeks, setNumberOfWeeks] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [zipcode, setZipcode] = useState("");
+    const [giftCardAmount, setGiftCardAmount] = useState(null);
 
     const node = useRef(null);
 
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
+    const { checkoutUrl, linesAdd, linesRemove, lines: cartLines } = useCart();
 
     const handleFocus = useCallback(() => {
         if (node.current == null) {
@@ -40,7 +52,11 @@ export function GiftCardCalculator(props) {
     };
 
     const isFormReady = () => {
-        return (numberOfPeople.length > 0 && numberOfWeeks.length > 0 && zipcode.length === 5);
+        return (giftCardAmount >= 25 && giftCardAmount <= 1000);
+    }   
+
+    const isModalFormReady = () => {
+        return (numberOfWeeks.length > 0 && zipcode.length === 5);
     }
 
     const calculateSuggestedAmount = () => {
@@ -56,47 +72,75 @@ export function GiftCardCalculator(props) {
         }
     }
 
-    const onAddGift = () => {
+    const attemptCheckout = () => {
 
-        console.log("On Add Gift")
+        if (giftCardAmount >= 25)  {
 
-        let cardProductIndex;
-        if (calculateSuggestedAmount() < 125) {
-            cardProductIndex = 0;
-        } else if (calculateSuggestedAmount() < 224) {
-            cardProductIndex = 1;
-        } else if (calculateSuggestedAmount() < 324) {
-            cardProductIndex = 2;
-        } else if (calculateSuggestedAmount() < 424) {
-            cardProductIndex = 3;
-        } else {
-            cardProductIndex = 5;
-        }
+            let cardProductIndex;
+            if (giftCardAmount < 126) {
+                cardProductIndex = 2;
+            } else if (giftCardAmount < 226) {
+                cardProductIndex = 0;
+            } else if (giftCardAmount < 326) {
+                cardProductIndex = 1;
+            } else if (giftCardAmount < 426) {
+                cardProductIndex = 3;
+            } else if (giftCardAmount < 526) {
+                cardProductIndex = 4;
+            } else if (giftCardAmount < 626) {
+                cardProductIndex = 5;
+            } else if (giftCardAmount < 726) {
+                cardProductIndex = 6;
+            } else if (giftCardAmount < 826) {
+                cardProductIndex = 7;
+            } else if (giftCardAmount < 926) {
+                cardProductIndex = 8;
+            } else {
+                cardProductIndex = 9;
+            }
+    
+            const offset = giftCardAmount < 126 ? 25 : 26;
 
-        const cardVariantIndex = (calculateSuggestedAmount() - 25 - (cardProductIndex * 100));
+            let amountStr = String(giftCardAmount - offset);
+            if (amountStr.length > 2)
+                amountStr = amountStr.slice(-2);
+            const cardVariantIndex = (parseInt(amountStr));
+    
+            const cardProduct = props.giftCards[cardProductIndex];
+            const variant = cardProduct.variants.edges[cardVariantIndex].node;
+    
+            
+            linesAdd({
+                merchandiseId: variant.id,
+                quantity: 1
+            });
+    
+            setTimeout(() => {
+                window.location.href = checkoutUrl;
+            }, 1000);
+    
+        } else
+            alert("Gift Card must be at least $25");
+       
+    }
 
-        const cardProduct = giftCards[cardProductIndex];
-        const variant = cardProduct.variants.edges[cardVariantIndex].node;
-        
-        linesAdd({
-            merchandiseId: variant.id,
-            quantity: 1
-        });
-
-
+    const onConfirmCalculatedAmount = amount => {
+        setGiftCardAmount(amount);
         dismissModals();
-
     }
 
-    const onCheckout = () => {
-        window.location.href = checkoutUrl;
+    const onGiftCardAmountChange = amount => {
+        if (amount.length < 1)
+            amount = 0;
+        setGiftCardAmount(parseInt(amount));
     }
+
 
     const activator = <a href="#" className='ha-a' onClick={toggleModal}>use our gift card calculator</a>;
 
-    const suggestedAmountText = isFormReady() ? `$${calculateSuggestedAmount()}` : "Enter fields for suggested amount";
+    const suggestedAmountText = isModalFormReady() ? `$${calculateSuggestedAmount()}` : "Enter fields for suggested amount";
 
-    const addButtonText = isFormReady() ? `Purchase $${calculateSuggestedAmount()}` : "Purchase";
+    const addButtonText = isModalFormReady() ? `Purchase $${calculateSuggestedAmount()}` : "Purchase";
 
     const { giftCards } = props;
 
@@ -111,18 +155,24 @@ export function GiftCardCalculator(props) {
     return (
         <Page>
             <Header />
+            <ul>
+                {cartLines.map(line => {
+                    return <li>{line.merchandise.product.title}</li>
+                })}
+            </ul>
+
             <div className="gc-wrapper">
                 <div className="gc-item-column">
                     <img src={gcImg} />
                 </div>
                 <div className="gc-item-column form-column">
                     <h2 className='ha-h2 no-margin no-padding'>Home Appétit Gift Card</h2>
-                    <p className='gc-subtitle ha-body'>Purchase a gift card for any amount or use our calculator below to determine the ideal gift. Note: All gift cards are digit</p>
+                    <p className='gc-subtitle ha-body'>Purchase a gift card for any amount or use our calculator below to determine the ideal gift. <u>Note: All gift cards are digital.</u></p>
                     <div className="gc-row">
                         <div className="gc-col">
                             <div className="gc-col-item">
                                 <label htmlFor="gc-amount">Gift card amount:</label>
-                                <input type="text" />
+                                <input type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
                             </div>
                             <div className="gc-col-item">
                                 {activator}
@@ -136,9 +186,9 @@ export function GiftCardCalculator(props) {
                             <label htmlFor="receipient-form">Recipient’s Information:</label>
                             <div className="gc-row">
                                 <div className="gc-col">
-                                    <div className="gc-col-item"><input type="text" placeholder='First Name*' /></div>
-                                    <div className="gc-col-item"><input type="text" placeholder='Last Name*' /></div>
-                                    <div className="gc-col-item"><input type="text" placeholder='Zip Code*' /></div>
+                                    <div className="gc-col-item"><input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First Name*' /></div>
+                                    <div className="gc-col-item"><input type="text" value={lastName} onChange={e => setFirstName(e.target.value)} placeholder='Last Name*' /></div>
+                                    <div className="gc-col-item"><input type="text" vavlue={zipcode} onChange={e => setFirstName(e.target.value)} placeholder='Zip Code*' /></div>
                                 </div>
                             </div>
                             <div className="gc-row">
@@ -164,7 +214,7 @@ export function GiftCardCalculator(props) {
                                     <input type="text" disabled placeholder='Email Address*' />
                                 </div>
                                 <div className="gc-row">
-                                    <button className='btn btn-primary-small'>Add To cart</button>
+                                    <button className={`btn btn-primary-small ${isFormReady() ? '' : 'disabled'}`} disabled={!isFormReady()} onClick={() => attemptCheckout()}>Purchase Card</button>
                                 </div>
                             </div>
                             </form>
@@ -223,43 +273,31 @@ export function GiftCardCalculator(props) {
                             })}
                         </select>
                     </div>
-
-                    <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
-
-                    <div className="text-center gift-card-control">
-                        <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={!isFormReady} onClick={() => onAddGift()}>
-                            {addButtonText} 
-                        </button>
-
-                        <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
-                            Cancel
-                        </button>
-                        <div className='calculator-field'>
-                            <label># of Weeks:</label>
-                            <input type='text' placeholder='Enter Weeks (max 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
-                        </div>
-                        <div className='calculator-field'>
-                            <label>ZIP Code:</label>
-                            <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
-                        </div>
+                    <div className='calculator-field'>
+                        <label># of Weeks:</label>
+                        <input type='text' placeholder='(up to 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
                     </div>
-
-                    <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
-
-                    <div className="text-center gift-card-control">
-                        <button className={`btn btn-primary-small btn-confirm btn-modal${isFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={isFormReady} onClick={onAddGift}>
-                            {addButtonText}
-                        </button>
-
-                        <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
-                            Cancel
-                        </button>
+                    <div className='calculator-field'>
+                        <label>ZIP Code:</label>
+                        <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
                     </div>
-                    </div>
+                </div>
+
+                <p className='gift-card-calculator--amount text-center'>{suggestedAmountText}</p>
+
+                <div className="text-center gift-card-control">
+                    <button className={`btn btn-primary-small btn-confirm btn-modal${isModalFormReady() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={!isModalFormReady} onClick={() => onConfirmCalculatedAmount(calculateSuggestedAmount())}>
+                        {addButtonText}
+                    </button>
+
+                    <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
+                        Cancel
+                    </button>
+                </div>
 
                 </Modal>
 
-                { cartLines.length > 0 && <button className={`btn btn-secondary btn-modal`} onClick={() => onCheckout()}>
+                { cartLines.length > 0 && <button className={`btn btn-secondary btn-modal`} onClick={() => onAddGift()}>
                     Checkout
                 </button>}
 
