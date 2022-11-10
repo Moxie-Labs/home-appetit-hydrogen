@@ -216,8 +216,9 @@ select {
     opacity: 0.5;
 }
 
-.order-wrapper {
-    max-width: 1260px !important;
+div .order-wrapper {
+    max-width: 1260px;
+    margin: auto;
 }
 
 @media screen and (max-width: 960px){
@@ -288,7 +289,7 @@ select {
         grid-auto-rows: 1fr;
     }
 
-    .dish-card-wrapper .layout {
+    main#mainContent .dish-card-wrapper .layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 3px !important;
@@ -315,6 +316,7 @@ select {
         position: relative;
         float: none;
         right: 0;
+        display: none;
     }
 
     .dish-card-item p.card__code{
@@ -324,7 +326,7 @@ select {
     }
 
     .dish-card-item .card__info-section {
-        min-height: 140px;
+        min-height: 10rem;
         padding: 0.625rem;
     }
 
@@ -344,12 +346,14 @@ select {
 
     .dish-card-item .card__quantity-wrapper {
         position: fixed;
-        width: 75%;
+        width: 100%;
         margin: auto;
         height: 50%;
-        z-index: 9999;
+        z-index: 2;
         left: 50%;
         top: 50%;
-        transform: translate(-60%, -60%);
+        transform: translate(-50%, -50%);
+        max-width: 21.5625rem;
+        border: 3px solid #385F83;
     }
 }

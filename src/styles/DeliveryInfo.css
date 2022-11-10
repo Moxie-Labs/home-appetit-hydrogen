@@ -65,3 +65,22 @@ section.checkout--deliveryinfo-top .ha-h5 {
 .contact-option.edit-state {
     margin-bottom: 40px;
 }
+
+.contact-option.edit-state .checkbox-temp {
+    padding-top: 1rem;
+}
+
+@media screen and (max-width: 960px) {
+    /* .place-order-container {
+        position: absolute;
+        bottom: -130%;
+        z-index: 999999;
+        left: 0;
+        width: 95%;
+        margin: 1rem;
+    } */
+
+    .place-order-container .btn.btn-primary-small{
+        width: 100%;
+    }
+}

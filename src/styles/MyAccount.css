@@ -533,3 +533,63 @@ article p.address-action-cta {
 .mobile-panel .btn-reset{
     width: 100%;
 }
+
+a.orders--order-number{
+    text-decoration: underline;
+}
+
+a.orders--order-number:hover{
+    cursor: pointer;
+}
+
+.details--column:first-child {
+    flex: 1;
+}
+
+.table-header, .table-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #0000001a;
+    padding: 0.7rem;
+}
+
+.table--title, .table-row div {
+    flex: 1;
+}
+
+table.order-table td {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+}
+
+.order-details-wrapper {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-around;
+    gap: 3rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #FFFCF5;
+    width: 100%;
+    max-width: 1300px;
+    border-radius: 10px;
+    padding: 1rem 2rem 3rem;
+}
+
+.order-details-wrapper .product-table {
+    border: 1px solid #ccc;
+}
+
+.table-row-total {
+    justify-content: space-between;
+    display: flex;
+    padding: 0.7rem;
+}
+
+.table-row-total .table-column div {
+    padding-bottom: 12px;
+}
+

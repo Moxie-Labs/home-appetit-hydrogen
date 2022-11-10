@@ -227,7 +227,14 @@ section.modal--customize-inner {
 }
 
 .modal-entree-complete .btn.btn-secondary-small{
-    padding: 13px 24px 12px !important;
+    padding: 13px 24px 12px;
+}
+
+@media screen and (max-width: 960px){
+    .modal-entree-complete .btn.btn-secondary-small{
+        padding: 13px 0 12px;
+    }
+    
 }
 
 .button-wrapper {

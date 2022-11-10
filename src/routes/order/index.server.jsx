@@ -26,6 +26,7 @@ export default function Order({response}) {
     let customerData = null;
 
     if (customerAccessToken != null && customerAccessToken != '') {
+      console.log("customerAccessToken", customerAccessToken)
       const {data} = useShopQuery({
         query: CUSTOMER_QUERY,
         variables: {
@@ -124,6 +125,23 @@ export default function Order({response}) {
       if (latestMenu === null)
         return response.redirect(`https://${import.meta.env.VITE_STORE_DOMAIN}/pages/order-now`);
 
+
+      // check if Customer already placed an Order during this Window
+      let customerAlreadyOrdered = false;
+      if (customerData !== null) {
+        const orders = flattenConnection(customerData.customer.orders);
+        if (orders.length > 0) {
+          console.log("orders", orders);
+          const startDate = new Date(latestMenu.startDate?.value);
+          let endDate = new Date(latestMenu.endDate?.value);
+          endDate.setDate(endDate.getDate() + 1);
+          const latestOrderDate = new Date(orders[0].processedAt);
+          if (latestOrderDate <= endDate && latestOrderDate >= startDate)
+            customerAlreadyOrdered = true;
+        }
+      
+      }
+
       let collectionsById = [];
       let collectionIdByHandle = [];
       collectionData.collections.edges.forEach(collection => {
@@ -171,6 +189,7 @@ export default function Order({response}) {
                   traditionalPlanItem={traditionalPlanItem}
                   flexiblePlanItem={flexiblePlanItem}
                   extraIceItem={extraIceItem}
+                  customerAlreadyOrdered={customerAlreadyOrdered}
                 />
             </Layout>
         </Suspense>
@@ -214,7 +233,7 @@ const CUSTOMER_QUERY = gql`
           }
         }
       }
-      orders(first: 100, sortKey: PROCESSED_AT, reverse: true) {
+      orders(first: 2, sortKey: PROCESSED_AT, reverse: true) {
         edges {
           node {
             id
@@ -226,7 +245,7 @@ const CUSTOMER_QUERY = gql`
               amount
               currencyCode
             }
-            lineItems(first: 2) {
+            lineItems(first: 5) {
               edges {
                 node {
                   variant {
@@ -238,6 +257,7 @@ const CUSTOMER_QUERY = gql`
                     }
                   }
                   title
+                  currentQuantity
                 }
               }
             }
@@ -245,6 +265,7 @@ const CUSTOMER_QUERY = gql`
         }
       }
     }
+
     featuredProducts: products(first: 12) {
       nodes {
         ...ProductCard

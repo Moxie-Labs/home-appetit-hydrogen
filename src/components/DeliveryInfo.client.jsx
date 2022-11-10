@@ -193,9 +193,9 @@ export default function DeliveryInfo(props) {
 
                         { isGift &&
                             <section className="checkout--deliveryinfo-top">
-                                <label>Gift Message
-                                    <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
-                                </label>
+                                <label className='delivery-window_label'>Gift Message
+                                        <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
+                                </label> 
                             </section>
                         }
                     </div>
@@ -297,9 +297,9 @@ export default function DeliveryInfo(props) {
 
                             { isGift &&
                                 <section className="checkout--deliveryinfo-top">
-                                    <label>Gift Message
-                                        <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
-                                    </label>
+                                    <label className='delivery-window_label'>Gift Message
+                                            <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
+                                    </label> 
                                 </section>
                             }
                         </div>
@@ -344,25 +344,26 @@ export default function DeliveryInfo(props) {
                             <p>{address}, {deliveryState} {zipcode}</p>
                         </div>
                     </section>
-                    <label className="delivery-window_label">Delivery Instructions</label>
-                    <section className="checkout--deliveryinfo-top">
-                        <textarea className="order_textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Enter instructions for finding or delivering to your location"} rows="6"></textarea>
-                    </section>
-                    <div className="contact-option edit-state">
-                        <Checkbox
-                            label="Include extra ice $5.00"
-                            checked={extraIce}
-                            onChange={() => handleExtraIce(!extraIce)}
-                        />
-                        <Checkbox
-                            label="This order is a gift"
-                            checked={isGift}
-                            onChange={() => handleIsGift(!isGift)}
-                        />
 
-                        { isGift &&
-                            <section className="checkout--deliveryinfo-top">
-                                <label>Gift Message
+                <section className="checkout--deliveryinfo-top">
+                    <label className="delivery-window_label">Delivery Instructions</label>
+                    <textarea className="order_textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Enter instructions for finding or delivering to your location"} rows="6"></textarea>
+                </section>
+                <div className="contact-option edit-state">
+                    <Checkbox
+                        label="Include extra ice $5.00"
+                        checked={extraIce}
+                        onChange={() => handleExtraIce(!extraIce)}
+                    />
+                    <Checkbox
+                        label="This order is a gift"
+                        checked={isGift}
+                        onChange={() => handleIsGift(!isGift)}
+                    />
+
+                    { isGift && 
+                        <section className="checkout--deliveryinfo-top">
+                            <label className='delivery-window_label'>Gift Message
                                     <textarea className="order_textarea" type="textarea" name="gift_note" value={giftMessage} onChange={e => handleGiftMessage(e.target.value)} placeholder={"Gift Message (optional)"} rows="6"></textarea>
                                 </label>
                             </section>
@@ -376,8 +377,8 @@ export default function DeliveryInfo(props) {
             <hr></hr>
 
             <div className="place-order-container">
-                <button className={`btn btn-primary-small btn-place-order ${isEditing || firstName === null || lastName === null || emailAddress === null || phoneNumber === null || zipcode === null || deliveryState === null ? 'disabled' : ''}`} onClick={handleContinue}>
-                    PLACE ORDER
+                <button className="btn btn-primary-small btn-place-order" onClick={handleContinue}>
+                    CONTINUE TO PAYMENT
                 </button>
             </div>
 
