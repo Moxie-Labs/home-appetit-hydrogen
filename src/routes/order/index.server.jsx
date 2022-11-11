@@ -8,7 +8,8 @@ import {
   useShopQuery,
   flattenConnection,
   useSession,
-  gql
+  gql,
+  CacheNone
 } from '@shopify/hydrogen';
 import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';

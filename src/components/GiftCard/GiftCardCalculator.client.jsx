@@ -13,14 +13,14 @@ const REGULAR_RATE = 50;
 
 export function GiftCardCalculator(props) {
 
-    useEffect(() => {
-        const linesToRemove = [];
-        cartLines.map(line => {
-            linesToRemove.push(line.id);
-        });
+    // useEffect(() => {
+    //     const linesToRemove = [];
+    //     cartLines.map(line => {
+    //         linesToRemove.push(line.id);
+    //     });
 
-        linesRemove(linesToRemove);
-    },[])
+    //     linesRemove(linesToRemove);
+    // },[])
 
     const [activeCalculator, setActiveCalculator] = useState(false);
     const [numberOfPeople, setNumberOfPeople] = useState("");
@@ -231,7 +231,6 @@ export function GiftCardCalculator(props) {
                     <div className="gc-row">
                         
                         <div className="gc-col-item">
-                            <form action="">
                             <label htmlFor="receipient-form">Recipient’s Information:</label>
                             <div className="gc-row">
                                 <div className="gc-col">
@@ -267,7 +266,6 @@ export function GiftCardCalculator(props) {
                                     <button className={`btn btn-primary-small ${isFormReady() ? '' : 'disabled'}`} onClick={() => attemptCheckout()}>Purchase Card</button>
                                 </div>
                             </div>
-                            </form>
                         </div>
                         
                     </div>
