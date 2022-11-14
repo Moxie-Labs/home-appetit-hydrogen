@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { gql } from '@shopify/hydrogen';
 import PersonalInfo from '../components/Account/PersonalInfo.client';
 import Payment from '../components/Account/Payment.client';
@@ -37,6 +37,11 @@ export default function MyAccount(props) {
 
     const renderServerComponents = useRenderServerComponents();
     const {orders} = props;
+
+    useEffect(() => {
+      if (window.location.hash === '#orders')
+        setActiveTab('orders')
+    }, []);
 
     const updateCustomerInfo = async (firstName, lastName, email, phone) => {
 

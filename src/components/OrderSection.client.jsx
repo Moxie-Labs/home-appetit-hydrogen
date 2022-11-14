@@ -1295,7 +1295,7 @@ export function OrderSection(props) {
                                 <h2 className='ha-h4'>Continue with New Order?</h2>
                                 <p className='ha-body'>It looks like you already placed an order for this week.  You can view your existing order or continue placing a new one.<br></br><br></br>If you have any issues with your current order, please <a href="#">contact us</a></p>
                                 <section className="card__actions">
-                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {window.location.href = '/account'}}>View Existing Order</button>
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {window.location.href = '/account#orders'}}>View Existing Order</button>
                                     <button className="btn ha-a btn-modal-cancel" onClick={() => setAlreadyOrderedModalDismissed(true)}>Start New Order</button>
                                 </section>   
                             </div>
