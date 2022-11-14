@@ -4,7 +4,7 @@ import Modal from "react-modal/lib/components/Modal";
 export default function Orders(props) {
 
     const [showModal, setShowModal] = useState(false);
-    const { orders, customer } = props;
+    const { orders, customer, handleViewOrder } = props;
     const { payments, addresses } = customer;
     const currentOrders = [];
     const pastOrders = [];
