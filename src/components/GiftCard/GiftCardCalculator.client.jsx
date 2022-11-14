@@ -252,7 +252,7 @@ export function GiftCardCalculator(props) {
                                     </div>
                                 </div>
                                 <div className="gc-row gc-method-field">
-                                    <input type="text" value={useMyEmail ? customerEmail : email} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
+                                    <input type="text" value={useMyEmail ? customerEmail : email} disabled={useMyEmail} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
                                 </div>
                                 <div className="gc-row">
                                     {errorSection}
