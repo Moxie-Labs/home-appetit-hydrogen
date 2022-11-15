@@ -14,7 +14,7 @@ import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
-import { TRADITIONAL_PLAN_NAME } from "../lib/const";
+import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME } from "../lib/const";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
@@ -730,8 +730,8 @@ export function OrderSection(props) {
 
 
     const setupNextSection = nextStep => {
-        setIsAddingExtraItems(false);
-        setCurrentStep(nextStep); 
+        // setIsAddingExtraItems(false);
+        updateCurrentStep(nextStep); 
         const step = document.querySelector(".step-active");
         step.scrollIntoView({behavior: "smooth", block: "start"});
     }
@@ -1049,8 +1049,21 @@ export function OrderSection(props) {
             newCurrentStep = 2;
         
         if (newCurrentStep !== currentStep)
-            setCurrentStep(newCurrentStep);
+            updateCurrentStep(newCurrentStep);
 
+    }
+
+    const updateCurrentStep = step => {
+        let isAddingExtra = false;
+
+        // if: Customer already picked 
+        if (step === MAIN_ITEMS_STEP && getQuantityTotal(selectedMainItems) >= getFreeQuantityLimit())
+            isAddingExtra = true;
+        else if (step === SIDE_ITEMS_STEP && getQuantityTotal(selectedSmallItems) >= getFreeQuantityLimit())
+            isAddingExtra = true;
+
+        setCurrentStep(step);
+        setIsAddingExtraItems(isAddingExtra);
     }
 
     /* END Helpers */
@@ -1178,7 +1191,7 @@ export function OrderSection(props) {
                                         :
                                         (choice) => addItemToCart(choice, selectedMainItems, 'main')}
                                     handleConfirm={() => setupNextSection(3)}
-                                    handleEdit={() => setCurrentStep(2)}
+                                    handleEdit={() => updateCurrentStep(2)}
                                     handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedMainItems}
                                     selectedExtra={selectedMainItemsExtra}
@@ -1209,7 +1222,7 @@ export function OrderSection(props) {
                                         :
                                         (choice) => addItemToCart(choice, selectedSmallItems, 'small')}
                                     handleConfirm={() => setupNextSection(4)}
-                                    handleEdit={() => setCurrentStep(3)}
+                                    handleEdit={() => updateCurrentStep(3)}
                                     handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedSmallItems}
                                     selectedExtra={selectedSmallItemsExtra}
@@ -1237,7 +1250,7 @@ export function OrderSection(props) {
                                     handleFiltersUpdate={(filters) => setSelectedAddonFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
                                     handleConfirm={() => setupNextSection(5)}
-                                    handleEdit={() => setCurrentStep(4)}
+                                    handleEdit={() => updateCurrentStep(4)}
                                     selected={selectedAddonItems}
                                     selectedExtra={[]}
                                     filters={selectedAddonFilters}    
@@ -1274,6 +1287,7 @@ export function OrderSection(props) {
                                 removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
                                 isAddingExtraItems={isAddingExtraItems}
                                 emptyCart={()=>emptyCart()}
+                                handleChangeCurrentStep={step => updateCurrentStep(step)}
                             />  
                         </LayoutSection>
 

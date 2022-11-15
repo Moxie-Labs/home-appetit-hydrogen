@@ -17,16 +17,7 @@ export default function GiftCards(props) {
     return (
         <div className="gift-card-information">
             <h1 className="ha-h5">Gift Cards</h1>
-
-            <label className="check-balance-label">Check Balance</label>
-            <input type="text" value={balanceCheckValue} onChange={e => setBalanceCheckValue(e.target.value)}/>
-            <button className="btn btn-primary-small ha-color-bg-orange btn-submit" onClick={() => mockCheckBalace()}>Submit</button>
-
-            <div className="balance-wrapper">
-                <p>Gift Card Balance</p>
-                <p><strong>${giftBalance.toFixed(2)}</strong></p>
-            </div>
-    
+            
             <div className="line-separator"></div>
 
             <div className="gift-card-row">
