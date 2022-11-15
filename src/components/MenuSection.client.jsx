@@ -172,13 +172,16 @@ export default class MenuSection extends React.Component {
                             // disables if returning to regular selection and item is not already selected
                             forceHidePrice={false}
                             // forceHidePrice={(isAddingExtraItems && this.isInSelection(mainSelected, choice))}
+                            forceDisable={
+                                (isSectionFilled && initialQuantity < 1 && !isAddingExtraItems)
+                            }
                             // forceDisable={
                             //     ( 
                             //         (!isAddingExtraItems && (isSectionFilled || this.isInSelection(extraSelected, choice)) && !this.isInSelection(mainSelected, choice) ) || 
                             //         (isAddingExtraItems && this.isInSelection(mainSelected, choice))
                             //     )
                             // }
-                            forceDisable={false}
+                            // forceDisable={false}
                             handleChangePlan={handleChangePlan}
                             activeScheme={activeScheme}
                         />
