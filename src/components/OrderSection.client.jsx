@@ -579,6 +579,9 @@ export function OrderSection(props) {
         setSelectedAddonItems([]);
         setSelectedMainItemsExtra([]);
         setSelectedSmallItemsExtra([]);
+        setIsAddingExtraItems(false);
+        setCurrentStep(FIRST_STEP);
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     }
 
     const removeItem = (item, index, collectionName) => {
@@ -862,6 +865,7 @@ export function OrderSection(props) {
                 attributes: attributes,
                 price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
                 description: entree.node.description,
+                totalInventory: entree.node.totalInventory,
                 imageURL: imgURL,
                 productOptions: entree.node.variants.edges,
                 modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
