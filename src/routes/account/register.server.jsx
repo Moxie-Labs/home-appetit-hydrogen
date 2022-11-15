@@ -85,6 +85,7 @@ export async function api(request, {session, queryShop}) {
         password: jsonBody.password,
         firstName: jsonBody.firstName,
         lastName: jsonBody.lastName,
+        acceptsMarketing: true
       },
     },
     // @ts-expect-error `queryShop.cache` is not yet supported but soon will be.

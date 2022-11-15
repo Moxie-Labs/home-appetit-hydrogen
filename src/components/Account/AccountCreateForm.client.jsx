@@ -5,6 +5,7 @@ import {emailValidation, passwordValidation} from '../../lib/utils';
 
 import {callLoginApi} from './AccountLoginForm.client';
 import {getInputStyleClasses} from '../../lib/styleUtils';
+import { Checkbox } from '../Checkbox.client';
 
 export function AccountCreateForm() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export function AccountCreateForm() {
   const [emailError, setEmailError] = useState(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null);
+  const [hasConsented, setHasConsented] = useState(false);
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -110,10 +112,18 @@ export function AccountCreateForm() {
               <p className={`text-red-500 text-xs`}>{passwordError} &nbsp;</p>
             )}
           </div>
+          <div className="mb-3">
+            <Checkbox
+              label="I agree to receieve marketing material from Home Appétit"
+              checked={hasConsented}
+              onChange={() => setHasConsented(!hasConsented)}
+            />
+          </div>
           <div className="flex items-center justify-between">
             <button
               className="bg-primary text-contrast rounded py-2 px-4 focus:shadow-outline block w-full"
               type="submit"
+              disabled={!hasConsented}
             >
               Create Account
             </button>
