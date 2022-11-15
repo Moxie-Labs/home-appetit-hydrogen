@@ -97,10 +97,12 @@ export default class MenuSection extends React.Component {
     }
 
     getExistingQuantity(choice) {
-        const { selected, selectedExtra, activeScheme} = this.props;
+        const { selected, selectedExtra, activeScheme, isAddingExtraItems} = this.props;
         let existingQuantity = 0;
+
+        const activeCollection = isAddingExtraItems ? [...selectedExtra] : [...selected];
     
-        [...selected, ...selectedExtra].map(item => {
+        activeCollection.map(item => {
             if (existingQuantity === 0 && activeScheme === 'traditional') {
                 if (item.choice.title === choice.title)
                     existingQuantity = item.quantity;
@@ -168,7 +170,8 @@ export default class MenuSection extends React.Component {
                             showingExtra={isAddingExtraItems}
                             quantityTotal={getQuantityTotal(selected)}
                             // disables if returning to regular selection and item is not already selected
-                            forceHidePrice={(isAddingExtraItems && this.isInSelection(mainSelected, choice))}
+                            forceHidePrice={false}
+                            // forceHidePrice={(isAddingExtraItems && this.isInSelection(mainSelected, choice))}
                             // forceDisable={
                             //     ( 
                             //         (!isAddingExtraItems && (isSectionFilled || this.isInSelection(extraSelected, choice)) && !this.isInSelection(mainSelected, choice) ) || 
@@ -198,7 +201,7 @@ export default class MenuSection extends React.Component {
         // Render Sections
         const overviewSection = <section>
         <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
-        { selected.length !== 0 && 
+        { (selected.length + selectedExtra.length) !== 0 && 
         <div className="suborder--summary-container">
 
             <div className={`suborder--summary-details summary-container ${isAddingExtraItems ? 'inactive' : 'active'}`}>
