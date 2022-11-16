@@ -158,7 +158,7 @@ export default function DishCard(props) {
         props.handleChangePlan();
     }
 
-        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme, initialQuantity} = props;
+        const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme, initialQuantity, cardStatus} = props;
         const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
 
         const formatter = new Intl.NumberFormat('en-US', {
@@ -187,11 +187,11 @@ export default function DishCard(props) {
 
         const optionCostText = optionCost > 0 ? `+${formatter.format(optionCost)} customizations` : null;
 
-    
+        const finalCardStatus = forceDisable ? " disabled" : cardStatus;
 
     return (
-        <div className={`dish-card${isCardActive ? ' active' : props.cardStatus}${confirmed ? ' confirmed' : ''}`}>
-            {!isCardActive && confirmed && (initialQuantity + quantity > 0) && <p className="card__quantity-badge">{quantity}</p>}
+        <div className={`dish-card${isCardActive ? ' active' : (finalCardStatus)}${confirmed ? ' confirmed' : ''}`}>
+            {!isCardActive && (initialQuantity + quantity > 0) && <p className="card__quantity-badge">{quantity}</p>}
 
             {isCardActive && !confirmed &&
             <div>

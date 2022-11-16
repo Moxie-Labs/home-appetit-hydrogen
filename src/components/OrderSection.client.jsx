@@ -252,6 +252,7 @@ export function OrderSection(props) {
         // if: item was already added in Traditional, then: update quantity and modifiers (or remove)
         if (doesCartHaveItem(choice, collection) && activeScheme === 'traditional') {
             console.log("addItemToCart::already exists", choice);
+            console.log("collectionName: ", collectionName);
             const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
 
             collection.map((item, i) => {
@@ -306,7 +307,7 @@ export function OrderSection(props) {
                 if (isAddingExtraItems)
                     setSelectedMainItemsExtra([...selectedMainItemsExtra]);
                 else
-                    setSelectedMainItems([...collection]);
+                    setSelectedMainItems([...selectedMainItems]);
             else if (collectionName === 'small')
                 if (isAddingExtraItems)
                     setSelectedSmallItemsExtra([...selectedSmallItemsExtra]);
@@ -333,12 +334,12 @@ export function OrderSection(props) {
             });
             choice.selectedModsStr = selectedModsAttr.join(", ");
 
-            if (collectionName === 'main') 
+            if (collectionName.includes('main')) 
                 if (isAddingExtraItems)
                     setSelectedMainItemsExtra([...selectedMainItemsExtra, choice]);
                 else
                     setSelectedMainItems([...selectedMainItems, choice]);
-            else if (collectionName === 'small')
+            else if (collectionName.includes('sides'))
                 if (isAddingExtraItems)
                     setSelectedSmallItemsExtra([...selectedSmallItemsExtra, choice]);
                 else
@@ -585,7 +586,8 @@ export function OrderSection(props) {
     }
 
     const removeItem = (item, index, collectionName) => {
-        console.log("removing Item: ", item)
+        console.log("removing Item: ", item);
+        console.log("collectionName: ", collectionName);
         let linesToModify = [];
         
         // delete from internal Cart/OrderSummary
@@ -1187,7 +1189,7 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
                                     handleItemSelected={isAddingExtraItems ? 
-                                        (choice) => addItemToCart(choice, selectedMainItemsExtra, 'main')
+                                        (choice) => addItemToCart(choice, selectedMainItemsExtra, 'mainExtra')
                                         :
                                         (choice) => addItemToCart(choice, selectedMainItems, 'main')}
                                     handleConfirm={() => setupNextSection(3)}
@@ -1218,9 +1220,9 @@ export function OrderSection(props) {
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
                                     handleItemSelected={isAddingExtraItems ? 
-                                        (choice) => addItemToCart(choice, selectedSmallItemsExtra, 'small')
+                                        (choice) => addItemToCart(choice, selectedSmallItemsExtra, 'sidesExtra')
                                         :
-                                        (choice) => addItemToCart(choice, selectedSmallItems, 'small')}
+                                        (choice) => addItemToCart(choice, selectedSmallItems, 'sides')}
                                     handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => updateCurrentStep(3)}
                                     handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
