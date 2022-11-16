@@ -161,6 +161,7 @@ export function OrderSection(props) {
                 setIsAlreadyOrderedModalShowing(true);
             }
         } else {
+            removeGiftCard();
             setIsAlreadyOrderedModalShowing(false);
             if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
                 setIsRestoringCart(true);
@@ -1066,6 +1067,16 @@ export function OrderSection(props) {
 
         setCurrentStep(step);
         setIsAddingExtraItems(isAddingExtra);
+    }
+
+    const removeGiftCard = () => {
+        const linesToRemove = [];
+        cartLines.map(line => {
+            if (line.merchandise.product.title.includes("Gift Card"))
+                linesToRemove.push(line.id);
+        });
+
+        linesRemove(linesToRemove);
     }
 
     /* END Helpers */
