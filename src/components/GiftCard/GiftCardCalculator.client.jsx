@@ -23,12 +23,26 @@ export function GiftCardCalculator(props) {
     const [useMyEmail, setUseMyEmail] = useState(false);
     const [giftCardAmount, setGiftCardAmount] = useState(null);
     const [formErrors, setFormErrors] = useState({});
+    const [hasAddedCard, setHasAddedCard] = useState(false);
 
     const node = useRef(null);
 
     const customerEmail = props.email === null ? "" : props.email;
 
-    const { checkoutUrl, linesAdd, linesRemove, lines: cartLines } = useCart();
+    const { checkoutUrl, linesAdd, linesRemove, lines: cartLines, status:cartStatus } = useCart();
+
+    useEffect(() => {  
+        setTimeout(() => {
+            if (cartLines.length > 0 && !hasAddedCard && cartStatus == 'idle') {
+                const linesToRemove = [];
+                cartLines.map(line => {
+                    linesToRemove.push(line.id);
+                });
+    
+                linesRemove(linesToRemove);
+            }
+        }, 1000);
+    }, [cartLines])
 
     const handleFocus = useCallback(() => {
         if (node.current == null) {
@@ -108,6 +122,7 @@ export function GiftCardCalculator(props) {
                 const cardProduct = props.giftCards[cardProductIndex];
                 const variant = cardProduct.variants.edges[cardVariantIndex].node;
         
+                setHasAddedCard(true);
                 
                 linesAdd({
                     merchandiseId: variant.id,
@@ -167,7 +182,7 @@ export function GiftCardCalculator(props) {
             newFormErrors.firstName = "First name is too short.";
         if (lastName.length < 1)
             newFormErrors.lastName = "Last name is too short."
-        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)))
+        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) && !useMyEmail)
             newFormErrors.email = "Email is invalid."
         if (zipcode.length < 5)
             newFormErrors.zipcode = "Zipcode is too short."
@@ -196,11 +211,6 @@ export function GiftCardCalculator(props) {
     return (
         <Page>
             <Header />
-            <ul>
-                {cartLines.map(line => {
-                    return <li>{line.merchandise.product.title}</li>
-                })}
-            </ul>
 
             <div className="gc-wrapper">
                 <div className="gc-item-column">
