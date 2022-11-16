@@ -164,7 +164,7 @@ export default class MenuSection extends React.Component {
                             handleSelected={handleItemSelected}
                             initialQuantity={initialQuantity}
                             confirmed={this.getExistingQuantity(choice) > 0}
-                            maxQuantity={isAddingExtraItems ? choice.totalInventory : (freeQuantityLimit - getQuantityTotal(selected))}
+                            maxQuantity={isAddingExtraItems ? 50 : (freeQuantityLimit - getQuantityTotal(selected))}
                             showingExtra={isAddingExtraItems}
                             quantityTotal={getQuantityTotal(selected)}
                             // disables if returning to regular selection and item is not already selected
