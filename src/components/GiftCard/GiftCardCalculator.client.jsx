@@ -13,15 +13,6 @@ const REGULAR_RATE = 50;
 
 export function GiftCardCalculator(props) {
 
-    // useEffect(() => {
-    //     const linesToRemove = [];
-    //     cartLines.map(line => {
-    //         linesToRemove.push(line.id);
-    //     });
-
-    //     linesRemove(linesToRemove);
-    // },[])
-
     const [activeCalculator, setActiveCalculator] = useState(false);
     const [numberOfPeople, setNumberOfPeople] = useState("");
     const [numberOfWeeks, setNumberOfWeeks] = useState("");
@@ -29,11 +20,13 @@ export function GiftCardCalculator(props) {
     const [lastName, setLastName] = useState("");
     const [zipcode, setZipcode] = useState("");
     const [email, setEmail] = useState("");
+    const [useMyEmail, setUseMyEmail] = useState(false);
     const [giftCardAmount, setGiftCardAmount] = useState(null);
     const [formErrors, setFormErrors] = useState({});
 
     const node = useRef(null);
 
+    const customerEmail = props.email === null ? "" : props.email;
 
     const { checkoutUrl, linesAdd, linesRemove, lines: cartLines } = useCart();
 
@@ -249,17 +242,17 @@ export function GiftCardCalculator(props) {
                                 <div className="gc-col gc-col-method">
                                     <div className="gc-col-item">
                                     <label htmlFor="method">
-                                        <input type="radio" name="method" checked />
+                                        <input type="radio" name="method" checked={!useMyEmail} onClick={() => setUseMyEmail(false)} />
                                         Send to recipient’s email:</label>
                                     </div>
                                     <div className="gc-col-item">
                                     <label htmlFor="method">
-                                        <input type="radio" name="method" />
+                                        <input type="radio" name="method" checked={useMyEmail} onClick={() => setUseMyEmail(true)} />
                                        Send to your email:</label>
                                     </div>
                                 </div>
                                 <div className="gc-row gc-method-field">
-                                    <input type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
+                                    <input type="text" value={useMyEmail ? customerEmail : email} disabled={useMyEmail} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
                                 </div>
                                 <div className="gc-row">
                                     {errorSection}
