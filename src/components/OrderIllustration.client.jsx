@@ -86,14 +86,19 @@ export default function OrderIllustration(props){
         
         return (
             <div>
+                <div className="menu-top-row">
                 <div className='illustration-total'>${planPrice}</div>
+                <div className="menu--row-inner">
                 <div className='illustration-desc'>{activeScheme === 'traditional' ? 'Classic Order' : 'Flex Ordering'}-{setPeople(servingCount)}</div>
                 <div className='illustration-desc-sub'>{servingCount === '1' || servingCount === 0 ? "4-6 Meals" : "4-6 Meals Per Person"}</div>
                 <div className='illustration-desc-division'></div>
                 <div className='illustration-desc-underline'>
                     {servingCount === '1' || servingCount === 0 ? "Build your ideal menu!" : "Everyone will enjoy the same selections!"}
                 </div>
+                </div>
+                </div>
                 <div className='illustration-section'>
+                    <div className="illustration-inner-wrapper">
                     <div className='illustration-section-img'>
                         {activeScheme === 'traditional' && <img src={setPeopleImg(servingCount, activeScheme)} />}
                     </div>
@@ -112,6 +117,7 @@ export default function OrderIllustration(props){
                         :
                         <span className='illustration-section-text'>{servingCount === 0 ? 4:servingCount*4} Large Plates</span>
                         }
+                    </div>
                     </div>
                     {activeScheme === 'traditional' ? 
                     <div className="illustration-trad">
