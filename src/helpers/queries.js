@@ -51,6 +51,7 @@ export const GET_MENUS_QUERY = gql`
                         node {
                         id
                         title
+                        totalInventory
                         description
                         tags
                         images(first: 1) {
