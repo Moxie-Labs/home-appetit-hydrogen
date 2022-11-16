@@ -146,6 +146,7 @@ export function OrderSection(props) {
     const [choicesEntrees, setChoicesEntrees] = useState([]);
     const [choicesGreens, setChoicesGreens] = useState([]);
     const [choicesAddons, setChoicesAddons] = useState([]);
+    const [cardStatus, setCardStatus] = useState("");
 
     // used for deleting lineitems when multiple instances exist (Flex plan)
     const [lineIndexByVariantId, setLineIndexByVariantId] = useState([]);
@@ -1201,6 +1202,8 @@ export function OrderSection(props) {
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
                                     isRestoringCart={isRestoringCart}
+                                    cardStatus={cardStatus}
+                                    setCardStatus={setCardStatus}
                                 />
                             </div>
                             
@@ -1232,6 +1235,8 @@ export function OrderSection(props) {
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
                                     isRestoringCart={isRestoringCart}
+                                    cardStatus={cardStatus}
+                                    setCardStatus={setCardStatus}
                                 />
                             </div>
 
@@ -1260,6 +1265,8 @@ export function OrderSection(props) {
                                     isAddingExtraItems={isAddingExtraItems}
                                     handleChangePlan={() => queryChangeActiveScheme()}
                                     isRestoringCart={isRestoringCart}
+                                    cardStatus={cardStatus}
+                                    setCardStatus={setCardStatus}
                                 />
                             </div>
                             <section className="menu-section__actions">
@@ -1287,7 +1294,8 @@ export function OrderSection(props) {
                                 removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
                                 isAddingExtraItems={isAddingExtraItems}
                                 emptyCart={()=>emptyCart()}
-                                handleChangeCurrentStep={step => updateCurrentStep(step)}
+                                handleChangeCurrentStep={step => updateCurrentStep(step)}                             
+                                cardStatus={cardStatus}
                             />  
                         </LayoutSection>
 

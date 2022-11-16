@@ -14,16 +14,10 @@ export default class MenuSection extends React.Component {
 
     constructor(props) {  
         super(props);
-        this.setCardStatus.bind(this);
         this.state = {
             showingExtra: false,
-            modalDismissed: false,
-            cardStatus: ''
+            modalDismissed: false
         }
-    }  
-
-    setCardStatus = (status) => {
-        this.setState({cardStatus: status})
     }
 
     getChoicesByFilters(filters, choices) {
@@ -140,8 +134,8 @@ export default class MenuSection extends React.Component {
 
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart } = this.props;
-        const {modalDismissed, cardStatus} = this.state;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus } = this.props;
+        const {modalDismissed} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
         const mainSelected = selected;
@@ -158,7 +152,7 @@ export default class MenuSection extends React.Component {
                         <DishCard 
                             choice={choice}
                             cardStatus={cardStatus}
-                            setCardStatus={this.setCardStatus}
+                            setCardStatus={setCardStatus}
                             freeQuantityLimit={freeQuantityLimit} 
                             servingCount={servingCount}
                             handleSelected={handleItemSelected}
@@ -202,7 +196,7 @@ export default class MenuSection extends React.Component {
         <div className="suborder--summary-container">
 
             <div className={`suborder--summary-details summary-container ${isAddingExtraItems ? 'inactive' : 'active'}`}>
-                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; { isAddingExtraItems && cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; { isAddingExtraItems && this.props.cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
                 { mainSelected.map((item, index) => {
                     return ( 
                         <ul key={index} className="step--order-summary">
@@ -219,7 +213,7 @@ export default class MenuSection extends React.Component {
             { (isSectionFilled || selectedExtra.length > 0) &&
                 <div className={`suborder--summary-additional summary-container ${isAddingExtraItems ? 'active' : 'inactive'}`}>
                     <div className="summary--additional-wrapper">
-                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { !isAddingExtraItems && cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { !isAddingExtraItems && this.props.cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
                         {extraSelected.map((item, index) => {
                             return ( 
                                 <ul key={index} className="step--order-summary">
