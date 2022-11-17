@@ -39,7 +39,7 @@ export default class OrderSummary extends React.Component {
 
     orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal){
         
-        const { freeQuantityLimit, handleChangeCurrentStep, currentStep } = this.props;
+        const { freeQuantityLimit, handleChangeCurrentStep, currentStep, cardStatus } = this.props;
 
         return (
             <section className="order-summary--enlarged-items">
@@ -57,7 +57,7 @@ export default class OrderSummary extends React.Component {
                 </section>
                 
                 <section className="order-summary--items main-items">
-                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} of {freeQuantityLimit} Entrées { Object.keys(mainItemList).length !== 0 && currentStep > MAIN_ITEMS_STEP ? <span onClick={() => handleChangeCurrentStep(MAIN_ITEMS_STEP)}><img src={editIcon}/></span> : null }</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} of {freeQuantityLimit} Entrées { Object.keys(mainItemList).length !== 0 && currentStep > MAIN_ITEMS_STEP && cardStatus === "" ? <span onClick={() => handleChangeCurrentStep(MAIN_ITEMS_STEP)}><img src={editIcon}/></span> : null }</h4>
                     <ul>
                         {mainItemList} 
                     </ul>
@@ -69,7 +69,7 @@ export default class OrderSummary extends React.Component {
                 </section>      
 
                 <section className="order-summary--items small-items">
-                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of {freeQuantityLimit} Small Plates { Object.keys(smallItemList).length !== 0 && <span><img src={editIcon}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of {freeQuantityLimit} Small Plates { Object.keys(smallItemList).length !== 0 && cardStatus === "" && <span><img src={editIcon}/></span>}</h4>
                     <ul>
                         {smallItemList}
                     </ul>
@@ -81,7 +81,7 @@ export default class OrderSummary extends React.Component {
                 </section>     
 
                 <section className="order-summary--items addon-items">
-                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && <span><img src={editIcon}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && cardStatus === "" && <span><img src={editIcon}/></span>}</h4>
                     <ul>
                         {addonItemList}
                     </ul>
