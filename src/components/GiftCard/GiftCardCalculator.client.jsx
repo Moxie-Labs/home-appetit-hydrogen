@@ -41,7 +41,7 @@ export function GiftCardCalculator(props) {
     
                 linesRemove(linesToRemove);
             }
-        }, 1000);
+        }, 3000);
     }, [cartLines])
 
     const handleFocus = useCallback(() => {
