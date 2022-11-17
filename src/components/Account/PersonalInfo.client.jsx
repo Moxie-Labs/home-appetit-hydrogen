@@ -216,6 +216,23 @@ export default function PersonalInfo(props) {
         }
     });
 
+    const handlePlaceSelect = () => {
+        let addressObject = autocomplete.getPlace()
+        console.log('addressObject', addressObject);
+        let address = addressObject.address_components;
+        console.log('address', address);
+        setModalAddress1(addressObject.name);
+        setModalAddress2(address[0].long_name);
+        setModalCity(address[4].long_name);
+        setModalProvince(address[6].long_name);
+        setModalZip(address[8].short_name);
+      }
+
+    let autocomplete;
+
+    autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), {})
+    autocomplete.addListener("place_changed", handlePlaceSelect);
+
     let addressCount = 1;
 
     return (
@@ -348,7 +365,7 @@ export default function PersonalInfo(props) {
 
                     <div className="field">
                     <label>Address:</label>
-                    <input value={modalAddress1} onChange={e => setModalAddress1(e.target.value)}/>
+                    <input value={modalAddress1} id='autocomplete' onChange={e => setModalAddress1(e.target.value)}/>
                     </div>
                     
                     <div className="field">
