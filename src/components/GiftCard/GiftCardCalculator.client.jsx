@@ -91,11 +91,11 @@ export function GiftCardCalculator(props) {
 
                 let cardProductIndex;
                 if (giftCardAmount < 126) {
-                    cardProductIndex = 2;
-                } else if (giftCardAmount < 226) {
                     cardProductIndex = 0;
-                } else if (giftCardAmount < 326) {
+                } else if (giftCardAmount < 226) {
                     cardProductIndex = 1;
+                } else if (giftCardAmount < 326) {
+                    cardProductIndex = 2;
                 } else if (giftCardAmount < 426) {
                     cardProductIndex = 3;
                 } else if (giftCardAmount < 526) {
@@ -130,7 +130,7 @@ export function GiftCardCalculator(props) {
                 });
         
                 setTimeout(() => {
-                    window.location.href = checkoutUrl;
+                    window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}`;
                 }, 1000);
         
             }
