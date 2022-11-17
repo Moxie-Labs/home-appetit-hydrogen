@@ -125,7 +125,7 @@ export const GET_MENUS_QUERY = gql`
 export const GET_ALL_GIFT_CARDS_WITH_VARIANTS = gql`
    {
     collection(handle:"gift-cards") {
-      products(first:10, sortKey:TITLE) {
+      products(first:10, sortKey:PRICE) {
         edges {
           node {
             title
