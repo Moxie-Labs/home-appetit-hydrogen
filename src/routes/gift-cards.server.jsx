@@ -40,6 +40,7 @@ export default function GiftCards() {
   const {customerAccessToken} = useSession();
 
   let customer = null;
+  let defaultAddress = null;
 
   if (customerAccessToken) {
     const {data:customerData} = useShopQuery({
@@ -53,6 +54,23 @@ export default function GiftCards() {
     });
   
     customer = customerData.customer;
+    if (customer.addresses?.edges.length > 0) {
+      if (customer.defaultAddress === null) {
+        defaultAddress = customer.addresses.edges[0].node;
+      } else {
+        console.log("Searching for default address");
+        customer.addresses.edges.map(edge => {
+          if (defaultAddress === null) {
+            const addr = edge.node;
+            if (addr.id === customer.defaultAddress.id) {
+              defaultAddress = addr;
+              console.log("default found!")
+            }
+          }
+        });
+      }
+    }
+      
   }
   
 
@@ -72,6 +90,8 @@ export default function GiftCards() {
           giftCards={giftCards}
           zipcodeArr={zipcodeArr}
           email={customer === null ? null : customer.email}
+          customer={customer}
+          defaultAddress={defaultAddress === null ? null : defaultAddress}
         />
       </Suspense>
     </Layout>

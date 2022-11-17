@@ -130,7 +130,19 @@ export function GiftCardCalculator(props) {
                 });
         
                 setTimeout(() => {
-                    window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}`;
+                    const {defaultAddress} = props;
+                    if (defaultAddress === null)
+                        window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}`;
+                    else 
+                        window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}
+                        &checkout[shipping_address][first_name]=${defaultAddress.firstName}
+                        &checkout[shipping_address][last_name]=${defaultAddress.lastName}
+                        &checkout[shipping_address][address1]=${defaultAddress.address1}
+                        &checkout[shipping_address][address2]=${defaultAddress.address2 === null ? "" : defaultAddress.address2}
+                        &checkout[shipping_address][city]=${defaultAddress.city}
+                        &checkout[shipping_address][province]=${defaultAddress.deliveryState}
+                        &checkout[shipping_address][country]=${defaultAddress.country}
+                        &checkout[shipping_address][zip]=${defaultAddress.zip}`;
                 }, 1000);
         
             }
@@ -208,6 +220,8 @@ export function GiftCardCalculator(props) {
         })}
     </ul>
 
+    console.log("defaultAddress", props.customer);
+
     return (
         <Page>
             <Header />
@@ -262,7 +276,7 @@ export function GiftCardCalculator(props) {
                                     </div>
                                 </div>
                                 <div className="gc-row gc-method-field">
-                                    <input type="text" value={useMyEmail ? customerEmail : email} disabled={useMyEmail && customerEmail.length > 0} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
+                                    <input type="text" value={useMyEmail && customerEmail.length > 0 ? customerEmail : email} disabled={useMyEmail && customerEmail.length > 0} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
                                 </div>
                                 <div className="gc-row">
                                     {errorSection}
