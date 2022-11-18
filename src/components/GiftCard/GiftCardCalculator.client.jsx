@@ -49,11 +49,6 @@ export function GiftCardCalculator(props) {
         
     }, [cartLines]);
 
-    // useEffect(() => {
-    //     if (hasAddedCard)
-    //         proceedToCheckout();
-    // }, [checkoutUrl, hasAddedCard]);
-
     const handleFocus = useCallback(() => {
         if (node.current == null) {
             return;
@@ -138,12 +133,6 @@ export function GiftCardCalculator(props) {
                     merchandiseId: variant.id,
                     quantity: 1
                 });
-
-                // console.log("checkoutURL", checkoutUrl);
-
-                // setTimeout(() => {
-                    // proceedToCheckout();
-                // }, 2000)
         
             }
         }
