@@ -125,8 +125,12 @@ export async function api(request, {session, queryShop}) {
 
       const response = new Response(null, {
         status: 301,
-        headers: {Location: redirectDest},
+        headers: {
+          Location: redirectDest
+        },
       });
+
+      response.headers.append("Access-Control-Allow-Origin", "*");
 
       // response.addHeader("Access-Control-Allow-Origin", "*");
       return response;
