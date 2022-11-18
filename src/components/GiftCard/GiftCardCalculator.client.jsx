@@ -39,9 +39,14 @@ export function GiftCardCalculator(props) {
                 linesToRemove.push(line.id);
             });
 
+            console.log("isOrderCleared", isOrderCleared);
+
+            setIsOrderCleared(true);
+
             setTimeout(() => {
+                
                 linesRemove(linesToRemove);
-                setIsOrderCleared(true);
+                
             }, 2000);
             
         }
@@ -223,8 +228,6 @@ export function GiftCardCalculator(props) {
             return <li>{error}</li>;
         })}
     </ul>
-
-    console.log("defaultAddress", props.customer);
 
     return (
         <Page>
