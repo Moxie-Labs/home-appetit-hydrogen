@@ -70,7 +70,7 @@ hr.order-divider {
     margin: 0 !important;
 }
 
-.account-information input, .modal-new-payment input, .gift-card-information input, .new-address-wrapper .field input {
+.modal-address-field {
     padding: 14px 25px;
     border-radius: 10px;
     border: 2px solid #385F83;
@@ -78,6 +78,10 @@ hr.order-divider {
     font-size: 16px;
     color: #474442;
     display: block;
+}
+
+.input-error {
+    border: 1px solid red;
 }
 
 .modal-new-payment input:focus-visible, .account-information input:focus-visible {

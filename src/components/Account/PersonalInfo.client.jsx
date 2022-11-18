@@ -12,7 +12,8 @@ export default function PersonalInfo(props) {
     const [editingPersonal, setEditingPersonal] = useState(false);
 
     const { 
-        customer, 
+        customer,
+        zipcodeArr, 
         handleUpdatePersonal, 
         handleUpdateCommunication, 
         handleUpdateAddress,
@@ -52,6 +53,7 @@ export default function PersonalInfo(props) {
     const [newAddressModal, setNewAddressModal] = useState(false);
 
     const [fieldErrors, setFieldErrors] = useState(null);
+    const [validationErrors, setValidationErrors] = useState({});
 
     const formattedPhoneNumber = number => {
         let cleaned = ('' + number).replace(/\D/g, '');
@@ -70,6 +72,20 @@ export default function PersonalInfo(props) {
             retval += number.replace(/[^+\d]+/g, "");
         }
         return retval;
+    }
+
+    const modalFormattedPhoneNumber = number => {
+        if (number === null || number.length < 1)
+            return null;
+
+        let match = number.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+        if (match && number.length > 9) {
+            let intlCode = '+1';
+            return [intlCode, match[1], match[2], match[3]].join('')
+        } else {
+            return number;
+        }
     }
 
     const dismissModals = () => {
@@ -145,40 +161,55 @@ export default function PersonalInfo(props) {
     }
 
     const submitUpdateAddress = () => {
-        handleUpdateAddress({
-            id: modalAddress.id,
-            firstName: modalFirstName,
-            lastName: modalLastName,
-            address1: modalAddress1,
-            address2: modalAddress2,
-            province: modalProvince,
-            city: modalCity,
-            zip: modalZip,
-            country: modalAddress.country,
-            phone: modalPhone,
-            isDefaultAddress: modalAddressDefault,
-        });
-
-        setShowingAddressModal(false);
-        clearModalValues();
+        const errors = getFormErrors();
+        if (Object.keys(errors).length === 0) {
+            setShowingAddressModal(false);
+            clearModalValues();
+            setValidationErrors({});
+            handleUpdateAddress({
+                id: modalAddress.id,
+                firstName: modalFirstName,
+                lastName: modalLastName,
+                address1: modalAddress1,
+                address2: modalAddress2,
+                province: modalProvince,
+                city: modalCity,
+                zip: modalZip,
+                country: modalAddress.country,
+                phone: modalPhone,
+                isDefaultAddress: modalAddressDefault,
+            });
+        } else {
+            setValidationErrors(errors);
+        }
     }
 
     const submitNewAddress = () => {
-        handleNewAddress({
-            firstName: modalFirstName,
-            lastName: modalLastName,
-            address1: modalAddress1,
-            address2: modalAddress2,
-            province: modalProvince,
-            city: modalCity,
-            zip: modalZip,
-            country: "United States",
-            phone: modalPhone,
-            isDefaultAddress: modalAddressDefault,
-        });
+        const errors = getFormErrors();
+        if (Object.keys(errors).length === 0) {
+            setShowingAddressModal(false);
+            clearModalValues();
+            setValidationErrors({});
+            handleNewAddress({
+                firstName: modalFirstName,
+                lastName: modalLastName,
+                address1: modalAddress1,
+                address2: modalAddress2,
+                province: modalProvince,
+                city: modalCity,
+                zip: modalZip,
+                country: "United States",
+                phone: modalPhone,
+                isDefaultAddress: modalAddressDefault,
+            });
+        } else {
+            setValidationErrors(errors);
+        }
+    }
 
+    const handleCancel = () => {
         setShowingAddressModal(false);
-        clearModalValues();
+        setValidationErrors({});
     }
 
     const clearModalValues = () => {
@@ -204,6 +235,7 @@ export default function PersonalInfo(props) {
     const closeAddressModal = () => {
         setShowingAddressModal(false);
         clearModalValues();
+        setValidationErrors({});
     }
 
     const addresses = flattenConnection(customer?.addresses) || [];
@@ -216,24 +248,64 @@ export default function PersonalInfo(props) {
         }
     });
 
+    const listOfStates = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+
+    const stateOptions = listOfStates.map((state, i) => {
+        return <option key={i} value={state}>{state}</option>
+    });
+
     const handlePlaceSelect = () => {
         let addressObject = autocomplete.getPlace()
-        console.log('addressObject', addressObject);
         let address = addressObject.address_components;
-        console.log('address', address);
-        setModalAddress1(addressObject.name);
-        setModalAddress2(address[0].long_name);
-        setModalCity(address[4].long_name);
-        setModalProvince(address[6].long_name);
-        setModalZip(address[8].short_name);
-      }
+        setModalAddress1(`${address[0].long_name} ${address[1].long_name}`);
+        address.map(item => {
+            if(item.types[0] === 'locality')
+            setModalCity(item.long_name);
+            if(item.types[0] === 'administrative_area_level_1')
+            setModalProvince(item.long_name);
+            if(item.types[0] === 'postal_code')
+            setModalZip(item.long_name);
+        })
+    }
 
     let autocomplete;
 
-    autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), {})
-    autocomplete.addListener("place_changed", handlePlaceSelect);
+    const autocompleteFunc = () => {
+        autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), {})
+        autocomplete.addListener("place_changed", handlePlaceSelect);
+    };
 
     let addressCount = 1;
+
+    const zipcodeCheck = zipcodeArr.find(e => e.includes(modalZip));
+
+    const getFormErrors = () => {
+        const errors = {};
+        if (modalFirstName.length < 3)
+            errors.modalFirstName = "First Name is too short";
+        if (modalLastName.length < 3)
+            errors.modalLastName = "Last Name is too short.";
+        if (modalPhone.length < 10)
+            errors.modalPhone = "Phone Number is too short.";
+        if (modalAddress1.length < 5)
+            errors.modalAddress1 = "Address is too short.";
+        if (modalCity.length < 3)
+            errors.modalCity = "City Name is too short.";
+        if (modalProvince === "")
+            errors.modalProvince = "Please choose a state.";
+        if (modalZip.length < 5)
+            errors.modalZip = "ZIP Code is invalid.";
+        if (zipcodeCheck === undefined)
+            errors.modalZip = "This zipcode is not in our delivery zone.";
+
+        return errors;
+
+    }
+
+    const errorList = Object.values(validationErrors).map((error, i) => {
+        return <li key={i}>{error}</li>;
+    });
+
 
     return (
         <div className="account-information">
@@ -274,10 +346,10 @@ export default function PersonalInfo(props) {
                         }
                         <div className="info-row">
                             <label className="info-label-field">First Name:
-                              <input value={firstNameState} onChange={e => setFirstNameState(e.target.value)}/>
+                              <input value={firstNameState} className="modal-address-field" onChange={e => setFirstNameState(e.target.value)}/>
                             </label>
                             <label className="info-label-field">Last Name:
-                              <input value={lastNameState} onChange={e => setLastNameState(e.target.value)}/>
+                              <input value={lastNameState} className="modal-address-field" onChange={e => setLastNameState(e.target.value)}/>
                             </label>
                             {/* placeholder */}
                             <h2><span className="info-label">Birthdate:</span><br />  12/21/1982</h2>
@@ -285,11 +357,11 @@ export default function PersonalInfo(props) {
                         </div>
                     <div className="info-row row-2">
                         <label className="info-label-field email-label">Email:
-                           <input className="email-field" value={emailState} onChange={e => setEmailState(e.target.value)}/>
+                           <input className="modal-address-field" value={emailState} onChange={e => setEmailState(e.target.value)}/>
                         </label>
 
                         <label className="info-label-field phone-label">Phone Number:
-                            <input className="phone-field" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="14" value={formattedPhoneNumber(phoneState)} onChange={e => setPhoneState(e.target.value)}/>
+                            <input className="modal-address-field" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="14" value={formattedPhoneNumber(phoneState)} onChange={e => setPhoneState(e.target.value)}/>
                         </label>
                     </div>
 
@@ -340,6 +412,12 @@ export default function PersonalInfo(props) {
                     onRequestClose={() => closeAddressModal()}
                     className="modal-new-address"
                 >
+                    { Object.keys(validationErrors).length > 0 &&
+                        <ul>
+                            {errorList}
+                        </ul>
+
+                    }
                     <h4 className="ha-h4 text-uppercase text-center no-margin">Default Address</h4>
 
                     <div className="new-address-wrapper">
@@ -347,53 +425,56 @@ export default function PersonalInfo(props) {
                     <div className="field-row">
                         <div className="field">
                         <label>First Name:</label>
-                        <input value={modalFirstName} onChange={e => setModalFirstName(e.target.value)}/>
+                        <input className={`modal-address-field${validationErrors.modalFirstName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="firstname" value={modalFirstName} onChange={e => setModalFirstName(e.target.value)} placeholder={"First Name (Required)"}/>
                         </div>
 
                         <div className="field">
                         <label>Last Name:</label>
-                        <input value={modalLastName} onChange={e => setModalLastName(e.target.value)}/>
+                        <input className={`modal-address-field${validationErrors.modalLastName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="lastname" value={modalLastName} onChange={e => setModalLastName(e.target.value)} placeholder={"Last Name (Required)"}/>
                         </div>
                     </div>
 
                     <div className="field-row">
                     <div className="field">
                     <label>Phone:</label>
-                    <input value={modalPhone} onChange={e => setModalPhone(e.target.value)}/>
+                    <input className={`modal-address-field${validationErrors.modalPhone !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="12" type="phone" name="phone" value={modalFormattedPhoneNumber(modalPhone)} onChange={e => setModalPhone(e.target.value)} placeholder={"Phone Number (Required)"}/>
                     </div>
                     </div>
 
                     <div className="field">
                     <label>Address:</label>
-                    <input value={modalAddress1} id='autocomplete' onChange={e => setModalAddress1(e.target.value)}/>
+                    <input id='autocomplete' className={`modal-address-field${validationErrors.modalAddress1 !== undefined ? ' input-error' : ''}`} type="text" name="address" value={modalAddress1} onChange={e => setModalAddress1(e.target.value)} onFocus={autocompleteFunc} placeholder={"Address (Required)"}/>
                     </div>
                     
                     <div className="field">
                     <label>Address 2:</label>
-                    <input value={modalAddress2} onChange={e => setModalAddress2(e.target.value)}/>
+                    <input className="modal-address-field" type="text" name="address2" value={modalAddress2} onChange={e => setModalAddress2(e.target.value)} placeholder={"Address 2"}/>
                     </div>
 
                     <div className="field-row">
                     <div className="field">
                     <label>City:</label>
-                    <input value={modalCity} onChange={e => setModalCity(e.target.value)}/>
+                    <input className={`modal-address-field${validationErrors.modalCity !== undefined ? ' input-error' : ''}`} type="text" name="city" value={modalCity} onChange={e => setModalCity(e.target.value)} placeholder={"City (Required)"}/>
                     </div>
 
                     <div className="field">
                     <label>State:</label>
-                    <input value={modalProvince} onChange={e => setModalProvince(e.target.value)}/>
+                    <select value={modalProvince} className={`modal-address-field${validationErrors.modalProvince !== undefined ? ' input-error' : ''}`} onChange={e => setModalProvince(e.target.value)}>
+                        <option value="" disabled selected>Select State</option>
+                        {stateOptions}
+                    </select>
                     </div>
 
                     <div className="field">
                     <label>ZIP:</label>
-                    <input value={modalZip} onChange={e => setModalZip(e.target.value)}/>
+                    <input className={`modal-address-field${validationErrors.modalZip !== undefined ? ' input-error' : ''}`} type="text" name="zipcode" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={modalZip} onChange={e => setModalZip(e.target.value)} placeholder={"ZIP Code (Required)"}/>
                     </div>
                     </div>
 
                     <div className="modal-action">
                     { !newAddressModal && <button className="btn btn-primary-small" onClick={(modalAddressId) => submitUpdateAddress(modalAddressId)}>Update</button> }
                     { newAddressModal && <button className="btn btn-primary-small" onClick={() => submitNewAddress()}>Submit</button> }
-                    <button className="btn btn-address-cancel" onClick={() => setShowingAddressModal(false)}>Cancel</button>
+                    <button className="btn btn-address-cancel" onClick={() => handleCancel()}>Cancel</button>
                     </div>
                     </div>
                 </Modal>

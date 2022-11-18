@@ -16,7 +16,7 @@ import iconDropdownReverse from "../assets/icon-dropdown-reverse.png";
 
 export default function MyAccount(props) {
 
-    const { customer } = props;
+    const { customer, zipcodeArr } = props;
 
     const [activeTab, setActiveTab] = useState('info');
     const [agreeConsent, setAgreeConsent] = useState(false);
@@ -181,6 +181,7 @@ export default function MyAccount(props) {
         <section className='account-panel-body'>
         <PersonalInfo
             customer={customer}
+            zipcodeArr={zipcodeArr}
             acceptsMarketing={acceptsMarketing}
             handleUpdatePersonal={(firstName, lastName, email, phone) => updateCustomerInfo(firstName, lastName, email, phone)}
             handleUpdateCommunication={(value) => updateCommunicationPreferences(value)}

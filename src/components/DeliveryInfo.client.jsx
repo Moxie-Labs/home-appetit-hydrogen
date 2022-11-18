@@ -45,6 +45,7 @@ export default function DeliveryInfo(props) {
         isGuest,
         isEditing,
         setIsEditing,
+        autocompleteFunc
     } = props;
 
 
@@ -148,7 +149,7 @@ export default function DeliveryInfo(props) {
         return <li key={i}>{error}</li>;
     });
 
-
+    
     return (
         <div className={`checkout-section checkout--delivery-info ${currentStep === step ? '' : 'disabled'}`}>
 
@@ -250,7 +251,7 @@ export default function DeliveryInfo(props) {
                         <div className="checkout--form-container">
                             <div className="checkout--form-field-col">
                                 <label>Address:
-                                    <input className={`order_textfield${validationErrors.address !== undefined ? ' input-error' : ''}`} type="text" name="address" value={address} onChange={onAddressChange} placeholder={"Address (Required)"}/>
+                                    <input id='autocomplete' className={`order_textfield${validationErrors.address !== undefined ? ' input-error' : ''}`} type="text" name="address" value={address} onChange={onAddressChange} onFocus={autocompleteFunc} placeholder={"Address (Required)"}/>
                                 </label>
 
                                 <label>Address 2:
@@ -265,6 +266,7 @@ export default function DeliveryInfo(props) {
 
                                 <label>State:
                                     <select className="order_delivery__dropdown order_select dropdown_state" value={deliveryState} onChange={onDeliveryStateChange}>
+                                        <option value="" disabled selected>Select State</option>
                                         {stateOptions}
                                     </select>
                                 </label>
