@@ -128,7 +128,7 @@ export async function api(request, {session, queryShop}) {
         headers: {Location: redirectDest},
       });
 
-      response.addHeader("Access-Control-Allow-Origin", "*");
+      // response.addHeader("Access-Control-Allow-Origin", "*");
       return response;
     }
       
