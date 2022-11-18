@@ -24,6 +24,7 @@ export function GiftCardCalculator(props) {
     const [giftCardAmount, setGiftCardAmount] = useState(null);
     const [formErrors, setFormErrors] = useState({});
     const [hasAddedCard, setHasAddedCard] = useState(false);
+    const [isOrderCleared, setIsOrderCleared] = useState(false);
 
     const node = useRef(null);
 
@@ -32,16 +33,24 @@ export function GiftCardCalculator(props) {
     const { checkoutUrl, linesAdd, linesRemove, lines: cartLines, status:cartStatus } = useCart();
 
     useEffect(() => {  
-        setTimeout(() => {
-            if (cartLines.length > 0 && !hasAddedCard && cartStatus == 'idle') {
-                const linesToRemove = [];
-                cartLines.map(line => {
-                    linesToRemove.push(line.id);
-                });
-    
+        if (cartLines.length > 0 && !hasAddedCard && cartStatus == 'idle' && !isOrderCleared) {
+            const linesToRemove = [];
+            cartLines.map(line => {
+                linesToRemove.push(line.id);
+            });
+
+            console.log("isOrderCleared", isOrderCleared);
+
+            setIsOrderCleared(true);
+
+            setTimeout(() => {
+                
                 linesRemove(linesToRemove);
-            }
-        }, 3000);
+                
+            }, 2000);
+            
+        }
+        
     }, [cartLines])
 
     const handleFocus = useCallback(() => {
@@ -219,8 +228,6 @@ export function GiftCardCalculator(props) {
             return <li>{error}</li>;
         })}
     </ul>
-
-    console.log("defaultAddress", props.customer);
 
     return (
         <Page>
