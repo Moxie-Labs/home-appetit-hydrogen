@@ -131,15 +131,18 @@ export async function api(request, {session, queryShop}) {
       });
 
       response.headers.append("Access-Control-Allow-Origin", "*");
-
-      // response.addHeader("Access-Control-Allow-Origin", "*");
       return response;
     }
       
-    else
-      return new Response(null, {
+    else {
+      const response = new Response(null, {
         status: 200,
       });
+
+      response.headers.append("Access-Control-Allow-Origin", "*");
+      return response;
+    }
+    
   } else {
     return new Response(
       JSON.stringify({
