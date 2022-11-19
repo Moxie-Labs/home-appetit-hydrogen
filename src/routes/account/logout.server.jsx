@@ -24,4 +24,5 @@ export async function api(request, {session}) {
     response.headers.append("Access-Control-Allow-Origin", "*");
     return response;
   }
+
 }
