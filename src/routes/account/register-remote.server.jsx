@@ -58,6 +58,7 @@ export async function api(request, {session, queryShop}) {
     let strLast = strNames[1];
 
     strFirst = strFirst.split("customer%5Bfirst_name%5D=")[1];
+    strLast = strLast.split("&customer")[0];
 
     jsonBody = {
         email: strEmail,
