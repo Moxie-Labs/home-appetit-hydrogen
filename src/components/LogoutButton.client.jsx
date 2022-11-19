@@ -5,7 +5,8 @@ export function LogoutButton(props) {
     const logout = () => {
 
       console.log("deleting logged-in cookie", value);
-      deleteCookie();
+      updateCookie(false);
+      
       fetch('/account/logout', {method: 'POST'}).then(() => {
         if (typeof props?.onClick === 'function') {
           props.onClick();
