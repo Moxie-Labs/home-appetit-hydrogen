@@ -1,12 +1,12 @@
 export async function api(request, {session}) {
-    if (request.method !== 'POST') {
-      return new Response('Post required to logout', {
-        status: 405,
-        headers: {
-          Allow: 'POST',
-        },
-      });
-    }
+    // if (request.method !== 'POST') {
+    //   return new Response('Post required to logout', {
+    //     status: 405,
+    //     headers: {
+    //       Allow: 'POST',
+    //     },
+    //   });
+    // }
   
     if (!session) {
       return new Response('Session storage not available.', {
