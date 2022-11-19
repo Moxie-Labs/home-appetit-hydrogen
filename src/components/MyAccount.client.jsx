@@ -43,6 +43,11 @@ export default function MyAccount(props) {
         setActiveTab('orders')
     }, []);
 
+    useEffect(() => {
+      if (window.location.hash === '#referrals')
+        setActiveTab('gift_cards')
+    }, []);
+
     const updateCustomerInfo = async (firstName, lastName, email, phone) => {
 
         let updatePayload = {

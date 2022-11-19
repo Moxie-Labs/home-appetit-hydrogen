@@ -24,6 +24,7 @@ export function GiftCardCalculator(props) {
     const [giftCardAmount, setGiftCardAmount] = useState(null);
     const [formErrors, setFormErrors] = useState({});
     const [hasAddedCard, setHasAddedCard] = useState(false);
+    const [isOrderCleared, setIsOrderCleared] = useState(false);
 
     const node = useRef(null);
 
