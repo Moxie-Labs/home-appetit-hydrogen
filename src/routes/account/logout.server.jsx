@@ -1,4 +1,4 @@
-export async function api(request, {session, loggedIntoHydrogen}) {
+export async function api(request, {session}) {
 
   if (!session) {
     return new Response('Session storage not available.', {
