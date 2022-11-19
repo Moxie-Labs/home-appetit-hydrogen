@@ -60,6 +60,8 @@ export async function api(request, {session, queryShop}) {
     strFirst = strFirst.split("customer%5Bfirst_name%5D=")[1];
     strLast = strLast.split("&customer")[0];
 
+    strFirst = strFirst.replace(/\+/g, ' ');
+
     jsonBody = {
         email: strEmail,
         password: strPass,
