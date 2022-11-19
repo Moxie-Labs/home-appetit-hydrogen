@@ -120,7 +120,9 @@ export async function api(request, {session, queryShop}) {
 
   if (error) return new Response(JSON.stringify({error}), {status: 400});
 
-  return new Response(null);
+  const response = new Response(null);
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response;
 }
 
 const CUSTOMER_QUERY = gql`
