@@ -13,7 +13,6 @@ export default defineConfig({
     httpOnly: true,
     secure: import.meta.env.PROD,
     sameSite: 'Strict',
-    domain: '.homeappetitphilly.com',
     maxAge: 60 * 60 * 24 * 30,
   }),
 });
