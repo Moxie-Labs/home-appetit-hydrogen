@@ -1,18 +1,20 @@
 import { useCookie } from "react-use";
 
 export function LogoutButton(props) {
-   const [value, updateCookie, deleteCookie] = useCookie("logged-into-hydrogen", {sameSite: 'Lax'});
+   const [value, updateCookie, deleteCookie] = useCookie("logged-into-hydrogen", {sameSite: 'Lax', domain: '.homeappetitphilly.com'});
     const logout = () => {
 
-      console.log("deleting logged-in cookie", value);
+      console.log("updating logged-in cookie", value);
       updateCookie(false);
-      
-      fetch('/account/logout', {method: 'POST'}).then(() => {
-        if (typeof props?.onClick === 'function') {
-          props.onClick();
-        }
-        window.location.href = props.redirectUrl;
-      });
+
+      console.log("new value", value);
+
+      // fetch('/account/logout', {method: 'POST'}).then(() => {
+      //   if (typeof props?.onClick === 'function') {
+      //     props.onClick();
+      //   }
+      //   window.location.href = props.redirectUrl;
+      // });
     };
   
     return (
