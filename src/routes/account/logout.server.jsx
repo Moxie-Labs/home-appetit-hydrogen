@@ -10,7 +10,7 @@ export async function api(request, {session}) {
     const response = new Response(null, {
       status: 301,
       headers: {
-        Location: `${import.meta.env.VITE_STORE_DOMAIN}/`
+        Location: `https://${import.meta.env.VITE_STORE_DOMAIN}/`
       },
     });
 
