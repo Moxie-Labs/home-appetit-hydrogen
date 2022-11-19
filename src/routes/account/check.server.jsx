@@ -67,9 +67,9 @@ export async function api(request, {session, queryShop}) {
         email: strEmail,
         password: strPass
     }
-
-    redirect = true;
   }
+
+  return new Response("EENT", {status: 200});
 
   if (!jsonBody.email || !jsonBody.password) {
     const response = new Response(
