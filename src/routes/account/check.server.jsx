@@ -69,8 +69,6 @@ export async function api(request, {session, queryShop}) {
     }
   }
 
-  return new Response("EENT", {status: 200});
-
   if (!jsonBody.email || !jsonBody.password) {
     const response = new Response(
         JSON.stringify({error: 'Incorrect email or password.'}),
