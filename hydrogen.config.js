@@ -12,8 +12,7 @@ export default defineConfig({
     path: '/',
     httpOnly: true,
     secure: import.meta.env.PROD,
-    sameSite: 'Lax',
-    domain: '.homeappetitphilly.com',
+    sameSite: 'Strict',
     maxAge: 60 * 60 * 24 * 30,
   }),
 });
