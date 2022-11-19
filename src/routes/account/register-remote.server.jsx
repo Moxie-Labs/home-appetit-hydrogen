@@ -75,7 +75,7 @@ export async function api(request, {session, queryShop}) {
       JSON.stringify({error: 'Email and password are required'}),
       {status: 400},
     );
-    response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
+    response.headers.append("Access-Control-Allow-Origin", "*");
     return response; 
   }
 
@@ -127,8 +127,8 @@ export async function api(request, {session, queryShop}) {
           const response = new Response(null, {
             status: 200
           });
-          response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
-          return response; 
+          response.headers.append("Access-Control-Allow-Origin", "*");
+        return response;
           
       } else {
         const response = new Response(
@@ -137,7 +137,7 @@ export async function api(request, {session, queryShop}) {
           }),
           {status: 401},
         );
-        response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
+        response.headers.append("Access-Control-Allow-Origin", "*");
         return response; 
       }
 
@@ -147,7 +147,7 @@ export async function api(request, {session, queryShop}) {
         status: 200,
       });
 
-      response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
+      response.headers.append("Access-Control-Allow-Origin", "*");
       return response; 
     }
     
@@ -158,7 +158,7 @@ export async function api(request, {session, queryShop}) {
       }),
       {status: 401},
     );
-    response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
+    response.headers.append("Access-Control-Allow-Origin", "*");
     return response; 
   }
 
