@@ -1,13 +1,4 @@
 export async function api(request, {session}) {
-    // if (request.method !== 'POST') {
-    //   return new Response('Post required to logout', {
-    //     status: 405,
-    //     headers: {
-    //       Allow: 'POST',
-    //     },
-    //   });
-    // }
-  
     if (!session) {
       return new Response('Session storage not available.', {
         status: 400,
@@ -16,5 +7,13 @@ export async function api(request, {session}) {
   
     await session.set('customerAccessToken', '');
   
-    return new Response();
+    const response = new Response(null, {
+      status: 301,
+      headers: {
+        Location: `${import.meta.env.VITE_STORE_DOMAIN}/`
+      },
+    });
+
+    response.headers.append("Access-Control-Allow-Origin", "*");
+    return response;
   }
