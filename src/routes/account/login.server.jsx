@@ -130,7 +130,7 @@ export async function api(request, {session, queryShop}) {
         },
       });
 
-      response.headers.append("Access-Control-Allow-Origin", "*");
+      response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
       return response;
     }
       
@@ -139,7 +139,7 @@ export async function api(request, {session, queryShop}) {
         status: 200,
       });
 
-      response.headers.append("Access-Control-Allow-Origin", "*");
+      response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
       return response;
     }
     

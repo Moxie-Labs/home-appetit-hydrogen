@@ -74,7 +74,7 @@ export async function api(request, {session, queryShop}) {
         JSON.stringify({error: 'Incorrect email or password.'}),
         {status: 400},
     );
-    response.headers.append("Access-Control-Allow-Origin", "*");
+    response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
     return response; 
   }
 
@@ -106,7 +106,7 @@ export async function api(request, {session, queryShop}) {
         {status: 401},
     );
 
-    response.headers.append("Access-Control-Allow-Origin", "*");
+    response.headers.append("Access-Control-Allow-Origin", ".homeappetitphilly.com");
     return response;
   }
 
