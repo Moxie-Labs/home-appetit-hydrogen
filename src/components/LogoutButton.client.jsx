@@ -7,11 +7,11 @@ export function LogoutButton(props) {
     const logout = () => {
 
       console.log("updating logged-in cookie", cookies);
-      setCookie(false);
+      setCookie('logged-into-hydrogen', false);
 
       console.log("new value", cookies);
 
-      removeCookie();
+      removeCookie('logged-into-hydrogen');
 
       // fetch('/account/logout', {method: 'POST'}).then(() => {
       //   if (typeof props?.onClick === 'function') {
