@@ -16,6 +16,10 @@ export function LogoutButton(props) {
 
       console.log("cookies", cookies);
 
+      console.log("localStorage", localStorage.getItem('logged-into-hydrogen'));
+
+      localStorage.removeItem('logged-into-hydrogen');
+
       // fetch('/account/logout', {method: 'POST'}).then(() => {
       //   if (typeof props?.onClick === 'function') {
       //     props.onClick();
