@@ -1,15 +1,17 @@
-import { useCookie } from "react-use";
+// import { useCookie } from "react-use";
+import { useCookies } from 'react-cookie';
 
 export function LogoutButton(props) {
-   const [value, updateCookie, deleteCookie] = useCookie("logged-into-hydrogen", {sameSite: 'None', path: '/', domain: '.homeappetitphilly.com', secure: true});
+  const [cookies, setCookie, removeCookie] = useCookies(['logged-into-hydrogen']);
+  //  const [value, updateCookie, deleteCookie] = useCookie("logged-into-hydrogen", {sameSite: 'None', path: '/', domain: '.homeappetitphilly.com', secure: true});
     const logout = () => {
 
-      console.log("updating logged-in cookie", value);
-      updateCookie(false);
+      console.log("updating logged-in cookie", cookies);
+      setCookie(false);
 
       console.log("new value", value);
 
-      deleteCookie();
+      removeCookie();
 
       // fetch('/account/logout', {method: 'POST'}).then(() => {
       //   if (typeof props?.onClick === 'function') {
