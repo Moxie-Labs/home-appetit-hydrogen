@@ -6,10 +6,10 @@ export function LogoutButton(props) {
   //  const [value, updateCookie, deleteCookie] = useCookie("logged-into-hydrogen", {sameSite: 'None', path: '/', domain: '.homeappetitphilly.com', secure: true});
     const logout = () => {
 
-      console.log("updating logged-in cookie", cookies);
+      console.log("updating logged-in cookie", cookies['logged-into-hydrogen']);
       setCookie('logged-into-hydrogen', false, {path:'/'});
 
-      console.log("new value", cookies);
+      console.log("new value", cookies['logged-into-hydrogen']);
 
       removeCookie('logged-into-hydrogen', {path:'/'});
 
