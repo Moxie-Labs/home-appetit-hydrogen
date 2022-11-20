@@ -9,7 +9,7 @@ export function LogoutButton(props) {
       console.log("updating logged-in cookie", cookies);
       setCookie(false);
 
-      console.log("new value", value);
+      console.log("new value", cookies);
 
       removeCookie();
 
