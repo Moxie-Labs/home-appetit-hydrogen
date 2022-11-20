@@ -2,7 +2,7 @@
 import { useCookies } from 'react-cookie';
 
 export function LogoutButton(props) {
-  const [cookies, setCookie, removeCookie] = useCookies(['logged-into-hydrogen']);
+  const [cookies, setCookie, removeCookie] = useCookies();
   //  const [value, updateCookie, deleteCookie] = useCookie("logged-into-hydrogen", {sameSite: 'None', path: '/', domain: '.homeappetitphilly.com', secure: true});
     const logout = () => {
 
