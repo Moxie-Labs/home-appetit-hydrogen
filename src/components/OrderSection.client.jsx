@@ -78,6 +78,7 @@ export function OrderSection(props) {
     const [isChangePlanModalShowing, setChangePlanModalShowing] = useState(false);
     const [isAlreadyOrderedModalShowing, setIsAlreadyOrderedModalShowing] = useState(false);
     const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
+    const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -162,7 +163,8 @@ export function OrderSection(props) {
                 setIsAlreadyOrderedModalShowing(true);
             }
         } else {
-            removeGiftCard();
+            if (cartLines.length === 1 && isGiftCardRemoved)
+                removeGiftCard();
             setIsAlreadyOrderedModalShowing(false);
             if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
                 setIsRestoringCart(true);
@@ -1076,8 +1078,10 @@ export function OrderSection(props) {
             if (line.merchandise.product.title.includes("Gift Card"))
                 linesToRemove.push(line.id);
         });
-
-        linesRemove(linesToRemove);
+        setTimeout(() => {
+            linesRemove(linesToRemove);
+            setIsGiftCardRemoved(true);
+        }, 2000);
     }
 
     // Autocomplete functionality for Delivery Info section

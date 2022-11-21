@@ -24,25 +24,31 @@ export function GiftCardCalculator(props) {
     const [giftCardAmount, setGiftCardAmount] = useState(null);
     const [formErrors, setFormErrors] = useState({});
     const [hasAddedCard, setHasAddedCard] = useState(false);
+    const [isOrderCleared, setIsOrderCleared] = useState(false);
 
     const node = useRef(null);
 
     const customerEmail = props.email === null ? "" : props.email;
 
-    const { checkoutUrl, linesAdd, linesRemove, lines: cartLines, status:cartStatus } = useCart();
+    let { checkoutUrl, linesAdd, linesRemove, lines: cartLines, status:cartStatus } = useCart();
 
     useEffect(() => {  
-        setTimeout(() => {
-            if (cartLines.length > 0 && !hasAddedCard && cartStatus == 'idle') {
-                const linesToRemove = [];
-                cartLines.map(line => {
-                    linesToRemove.push(line.id);
-                });
-    
+        if (cartLines.length > 0 && !hasAddedCard && cartStatus == 'idle') {
+            const linesToRemove = [];
+            cartLines.map(line => {
+                linesToRemove.push(line.id);
+            });
+
+            setTimeout(() => {
                 linesRemove(linesToRemove);
+            }, 3000);  
+        } else {
+            if (hasAddedCard && cartLines.length > 0) {
+                proceedToCheckout();
             }
-        }, 3000);
-    }, [cartLines])
+        }
+        
+    }, [cartLines]);
 
     const handleFocus = useCallback(() => {
         if (node.current == null) {
@@ -129,22 +135,6 @@ export function GiftCardCalculator(props) {
                     quantity: 1
                 });
         
-                setTimeout(() => {
-                    const {defaultAddress} = props;
-                    if (defaultAddress === null)
-                        window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}`;
-                    else 
-                        window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}
-                        &checkout[shipping_address][first_name]=${defaultAddress.firstName}
-                        &checkout[shipping_address][last_name]=${defaultAddress.lastName}
-                        &checkout[shipping_address][address1]=${defaultAddress.address1}
-                        &checkout[shipping_address][address2]=${defaultAddress.address2 === null ? "" : defaultAddress.address2}
-                        &checkout[shipping_address][city]=${defaultAddress.city}
-                        &checkout[shipping_address][province]=${defaultAddress.deliveryState}
-                        &checkout[shipping_address][country]=${defaultAddress.country}
-                        &checkout[shipping_address][zip]=${defaultAddress.zip}`;
-                }, 1000);
-        
             }
         }
        
@@ -220,7 +210,29 @@ export function GiftCardCalculator(props) {
         })}
     </ul>
 
-    console.log("defaultAddress", props.customer);
+    const proceedToCheckout = () => {
+        console.log("Waiting...")
+        if (checkoutUrl === undefined) 
+            setTimeout(() => {
+                proceedToCheckout();
+            }, 1000);
+        else  {
+            console.log("done");
+            const {defaultAddress} = props;
+            if (defaultAddress === null)
+                window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}`;
+            else 
+                window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}
+                &checkout[billing_address][first_name]=${defaultAddress.firstName}
+                &checkout[billing_address][last_name]=${defaultAddress.lastName}
+                &checkout[billing_address][address1]=${defaultAddress.address1}
+                &checkout[billing_address][address2]=${defaultAddress.address2 === null ? "" : defaultAddress.address2}
+                &checkout[billing_address][city]=${defaultAddress.city}
+                &checkout[billing_address][province]=${defaultAddress.deliveryState}
+                &checkout[billing_address][country]=${defaultAddress.country}
+                &checkout[billing_address][zip]=${defaultAddress.zip}`;
+        }   
+    }
 
     return (
         <Page>
