@@ -269,6 +269,11 @@ section.modal--customize-inner {
     width: 100%;
 }
 
+.new-address-wrapper .field select {
+    background: #FFFCF5;
+    width: 100%;
+}
+
 .new-address-wrapper .field-row .field {
     flex: 1;
 }

@@ -1084,6 +1084,29 @@ export function OrderSection(props) {
         }, 2000);
     }
 
+    // Autocomplete functionality for Delivery Info section
+
+    const handlePlaceSelect = () => {
+        let addressObject = autocomplete.getPlace()
+        let address = addressObject.address_components;
+        setAddress(`${address[0].long_name} ${address[1].long_name}`);
+        address.map(item => {
+            if(item.types[0] === 'locality')
+            setCity(item.long_name);
+            if(item.types[0] === 'administrative_area_level_1')
+            setDeliveryState(item.long_name);
+            if(item.types[0] === 'postal_code')
+            setZipcode(item.long_name);
+        })
+    }
+
+    let autocomplete;
+
+    const autocompleteFunc = () => {
+        autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), {})
+        autocomplete.addListener("place_changed", handlePlaceSelect);
+    };
+
     /* END Helpers */
 
     /* Static Values */
@@ -1441,6 +1464,7 @@ export function OrderSection(props) {
                                 isGuest={isGuest}
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
+                                autocompleteFunc={autocompleteFunc}
                             />
 
                         </LayoutSection>
