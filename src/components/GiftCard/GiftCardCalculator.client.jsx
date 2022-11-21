@@ -265,7 +265,7 @@ export function GiftCardCalculator(props) {
                                 <div className="gc-col">
                                     <div className="gc-col-item"><input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First Name*' /></div>
                                     <div className="gc-col-item"><input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last Name*' /></div>
-                                    <div className="gc-col-item"><input type="text" vavlue={zipcode} onChange={e => setZipcode(e.target.value)} placeholder='Zip Code*' /></div>
+                                    <div className="gc-col-item"><input type="text" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={e => setZipcode(e.target.value)} placeholder='Zip Code*'/></div>
                                 </div>
                             </div>
                             <div className="gc-row">
