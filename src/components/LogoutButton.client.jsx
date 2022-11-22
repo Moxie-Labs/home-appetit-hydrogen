@@ -9,12 +9,12 @@ export function LogoutButton(props) {
 
       console.log("new value", value);
 
-      // fetch('/account/logout', {method: 'POST'}).then(() => {
-      //   if (typeof props?.onClick === 'function') {
-      //     props.onClick();
-      //   }
-      //   window.location.href = props.redirectUrl;
-      // });
+      fetch('/account/logout', {method: 'POST'}).then(() => {
+        if (typeof props?.onClick === 'function') {
+          props.onClick();
+        }
+        window.location.href = props.redirectUrl;
+      });
     };
   
     return (
