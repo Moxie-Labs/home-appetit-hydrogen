@@ -105,7 +105,7 @@ export async function api(request, {session, queryShop}) {
       data.customerAccessTokenCreate.customerAccessToken.accessToken,
     );
 
-    let redirectDest = '/account';
+    let redirectDest = `https://${import.meta.env.VITE_STORE_DOMAIN}/`;
     const today = new Date();
     if (redirect) {
      

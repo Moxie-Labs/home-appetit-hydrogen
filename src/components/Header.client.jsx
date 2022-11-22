@@ -72,7 +72,7 @@ export function Header(prop){
                     <ul>
                         <li><a href="/order" className="btn-order-cta mobile-order-cta">ORDER</a></li>
                         <li><a href="/order" className="btn-order-cta desktop-order-cta">ORDER NOW</a></li>
-                        <li><a href="/account" className="my-account-trigger nav-main" onMouseOver={handleMouseOver}>ACCOUNT &nbsp;<span> {isHovering && <img src={iconDropdownReverse} />}{!isHovering && <img src={iconDropdownArrow} />}</span></a>
+                        <li><a href="#" className="my-account-trigger nav-main" onMouseOver={handleMouseOver}>ACCOUNT &nbsp;<span> {isHovering && <img src={iconDropdownReverse} />}{!isHovering && <img src={iconDropdownArrow} />}</span></a>
                             
                         {isHovering && (
                             <ul className="account-dropdown">
