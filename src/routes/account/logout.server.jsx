@@ -14,15 +14,16 @@ export async function api(request, {session}) {
 
     // else: logging out from Marketing
   } else {
-    const response = new Response(null, {
-      status: 301,
-      headers: {
-        Location: `https://${import.meta.env.VITE_STORE_DOMAIN}/`
-      },
-    });
+    return new Response("EENT", {status: 200});
+    // const response = new Response(null, {
+    //   status: 301,
+    //   headers: {
+    //     Location: `https://${import.meta.env.VITE_STORE_DOMAIN}/`
+    //   },
+    // });
   
-    response.headers.append("Access-Control-Allow-Origin", "*");
-    return response;
+    // response.headers.append("Access-Control-Allow-Origin", "*");
+    // return response;
   }
 
 }
