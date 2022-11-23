@@ -1329,37 +1329,37 @@ export function OrderSection(props) {
                         <Modal
                             isOpen={isChangePlanModalShowing}
                             onRequestClose={() => setChangePlanModalShowing(!isChangePlanModalShowing)}
-                            className="modal--flexible-confirmaton"
+                            className="modal--flexible-confirmaton modal--change-type"
                         >
                             <div className='modal--flexible-inner'>
-                                <h2 className='ha-h4'>Change order type?</h2>
-                                <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
-                                <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
+                                <h2 className='ha-h4 text-center'>Change order type?</h2>
+                                {/* <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4> */}
+                                <p className='ha-body'>Our Flex ordering option allows you to choose and modify individual dishes. Note: This ordering type does increase the base cost. Previous selections will be removed from your cart. </p>
                                 <section className="card__actions">
-                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>Change Plan</button>
-                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Keep Current Plan</button>
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>Switch to flex plan</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Cancel</button>
                                 </section>   
                             </div>
                         </Modal>
 
                         <Modal
                             isOpen={isRestoringCart && !restoreCartModalDismissed}
-                            className="modal--flexible-confirmaton"
+                            className="modal--flexible-confirmaton modal--restore-cart"
                         >
                             <div className='modal--flexible-inner'>
-                                <h2 className='ha-h4'>Restore existing cart?</h2>
-                                <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4>
-                                <p className='ha-body'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam each.</p>
+                                <h2 className='ha-h4 text-center'>Continue with <br/> new order?</h2>
+                                <p className='ha-body'>It looks like you already placed an order for this week. You can view your existing order or contine placing a new one.</p>
+                                <p className='ha-body'>If you have any issues with your current order, please <a href="https://marketingbeta.homeappetitphilly.com/pages/contact-1">contact us.</a></p>
                                 <section className="card__actions">
                                     <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {
                                         setRestoreCartModalDismissed(true);
                                         restoreCart();
-                                    }}>Keep Cart</button>
+                                    }}>View existing order</button>
                                     <button className="btn ha-a btn-modal-cancel" onClick={() => {
                                         setRestoreCartModalDismissed(true);
                                         resetOrder();
                                         setIsRestoringCart(false);
-                                    }}>Start Over</button>
+                                    }}>Start new order</button>
                                 </section>   
                             </div>
                         </Modal>
