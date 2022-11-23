@@ -94,12 +94,14 @@ function AuthenticatedAccount({
 
 export async function api(request, {session, queryShop}) {
   if (request.method !== 'PATCH' && request.method !== 'DELETE') {
-    return new Response(null, {
+    const response = new Response(null, {
       status: 405,
       headers: {
         Allow: 'PATCH,DELETE',
       },
     });
+    response.headers.append("Access-Control-Allow-Origin", "*");
+    return response;
   }
 
   if (!session) {
