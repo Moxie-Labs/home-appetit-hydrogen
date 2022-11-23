@@ -1,6 +1,7 @@
 import {Suspense} from 'react';
 import {
   CacheNone,
+  CacheLong,
   flattenConnection,
   gql,
   Seo,
@@ -16,6 +17,7 @@ import MyAccount from '../../components/MyAccount.client';
 import { Page } from "../../components/Page.client";
 import {Header} from '../../components/Header.client';
 import {Footer} from '../../components/Footer.client';
+import { GET_ZIPCODES_QUERY } from '../../helpers/queries';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -42,17 +44,33 @@ export default function Account({response}) {
 
   if (!customer) return response.redirect('/account/login');
 
+  const {
+    data: zipcodeData,
+  } = useShopQuery({
+    query: GET_ZIPCODES_QUERY,
+    cache: CacheLong(),
+    preload: true,
+  });
+
+  const { inrangeZipcodes } = zipcodeData.page;
+  const validZipcodes = JSON.parse(inrangeZipcodes.value)
+  let zipcodeArr = [];
+  validZipcodes.forEach(validCode => {
+    zipcodeArr.push(validCode.zip_code);
+  });
+
   return (
     <Layout>
       <AuthenticatedAccount
         customer={customer}
+        zipcodeArr={zipcodeArr}
       />
     </Layout>
   );
 }
 
 function AuthenticatedAccount({
-  customer
+  customer, zipcodeArr
 }) {
   const orders = flattenConnection(customer?.orders) || [];
 
@@ -66,6 +84,7 @@ function AuthenticatedAccount({
       <MyAccount 
         customer={customer}
         orders={orders}
+        zipcodeArr={zipcodeArr}
       />
 
     </Layout>
@@ -75,12 +94,14 @@ function AuthenticatedAccount({
 
 export async function api(request, {session, queryShop}) {
   if (request.method !== 'PATCH' && request.method !== 'DELETE') {
-    return new Response(null, {
+    const response = new Response(null, {
       status: 405,
       headers: {
         Allow: 'PATCH,DELETE',
       },
     });
+    response.headers.append("Access-Control-Allow-Origin", "*");
+    return response;
   }
 
   if (!session) {

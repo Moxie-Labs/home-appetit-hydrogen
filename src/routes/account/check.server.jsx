@@ -1,12 +1,10 @@
 import {Suspense} from 'react';
-import {useShopQuery, CacheLong, CacheNone, Seo, gql, HydrogenRequest} from '@shopify/hydrogen';
+import {useShopQuery, CacheLong, CacheNone, Seo, gql} from '@shopify/hydrogen';
 
 import {AccountLoginForm} from '../../components/Account';
 import { Layout } from '../../components/Layout.client';
-import { GET_ORDER_WINDOW_DAYS_QUERY } from '../../helpers/queries';
-// import {Layout} from '~/components/index.server';
 
-export default function Login({response}) {
+export default function Check({response}) {
   response.cache(CacheNone());
 
   const {
@@ -45,8 +43,6 @@ export async function api(request, {session, queryShop}) {
   }
 
   let jsonBody = await request.text();
-  let redirect = false;
-
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
     console.log("Attempting login using JSON...");
@@ -71,21 +67,16 @@ export async function api(request, {session, queryShop}) {
         email: strEmail,
         password: strPass
     }
-
-    redirect = true;
   }
 
   if (!jsonBody.email || !jsonBody.password) {
-    return new Response(
-      JSON.stringify({error: 'Incorrect email or password.'}),
-      {status: 400},
+    const response = new Response(
+        JSON.stringify({error: 'Incorrect email or password.'}),
+        {status: 400},
     );
+    response.headers.append("Access-Control-Allow-Origin", "*");
+    return response; 
   }
-
-  const { data: windowData } = await queryShop({
-    query: GET_ORDER_WINDOW_DAYS_QUERY,
-    cache: CacheNone()  
-  });
 
   const {data, errors} = await queryShop({
     query: LOGIN_MUTATION,
@@ -100,56 +91,23 @@ export async function api(request, {session, queryShop}) {
   });
 
   if (data?.customerAccessTokenCreate?.customerAccessToken?.accessToken) {
-    await session.set(
-      'customerAccessToken',
-      data.customerAccessTokenCreate.customerAccessToken.accessToken,
-    );
 
-    let redirectDest = `https://${import.meta.env.VITE_STORE_DOMAIN}/`;
-    const today = new Date();
-    if (redirect) {
-     
-      // find latest active menu and associated window
-      windowData.collections.edges.map(edge => {
-        if (redirectDest !== '/order') {
-          const menu = edge.node;
-          const startDate = new Date(menu.orderWindowOpen?.value);
-          const endDate = new Date(menu.orderWindowClosed?.value);
-  
-          if (startDate === null || endDate === null) ;
-          else if (today > endDate) ;
-          else if (today <= endDate && today >= startDate)
-            redirectDest = '/order';
-        }
-      });
-
-      const response = new Response(null, {
-        status: 301,
-        headers: {
-          Location: redirectDest
-        },
-      });
-
-      response.headers.append("Access-Control-Allow-Origin", "*");
-      return response;
-    }
-      
-    else {
-      const response = new Response(null, {
+    const response = new Response(null, {
         status: 200,
-      });
-
-      response.headers.append("Access-Control-Allow-Origin", "*");
-      return response;
-    }
+    });
+    response.headers.append("Access-Control-Allow-Origin", "*");
+    return response;
     
   } else {
-    return new Response(
-      JSON.stringify({
-        error: data?.customerAccessTokenCreate?.customerUserErrors ?? errors,
-      }),
-      {status: 401},
+    const response = new Response(
+        JSON.stringify({
+            error: data?.customerAccessTokenCreate?.customerUserErrors ?? errors,
+        }),
+        {status: 401},
     );
+
+    response.headers.append("Access-Control-Allow-Origin", "*");
+    return response;
   }
 
   

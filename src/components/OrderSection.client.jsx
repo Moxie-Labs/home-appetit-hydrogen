@@ -78,6 +78,7 @@ export function OrderSection(props) {
     const [isChangePlanModalShowing, setChangePlanModalShowing] = useState(false);
     const [isAlreadyOrderedModalShowing, setIsAlreadyOrderedModalShowing] = useState(false);
     const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
+    const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -162,7 +163,8 @@ export function OrderSection(props) {
                 setIsAlreadyOrderedModalShowing(true);
             }
         } else {
-            removeGiftCard();
+            if (cartLines.length === 1 && isGiftCardRemoved)
+                removeGiftCard();
             setIsAlreadyOrderedModalShowing(false);
             if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
                 setIsRestoringCart(true);
@@ -1076,9 +1078,34 @@ export function OrderSection(props) {
             if (line.merchandise.product.title.includes("Gift Card"))
                 linesToRemove.push(line.id);
         });
-
-        linesRemove(linesToRemove);
+        setTimeout(() => {
+            linesRemove(linesToRemove);
+            setIsGiftCardRemoved(true);
+        }, 2000);
     }
+
+    // Autocomplete functionality for Delivery Info section
+
+    const handlePlaceSelect = () => {
+        let addressObject = autocomplete.getPlace()
+        let address = addressObject.address_components;
+        setAddress(`${address[0].long_name} ${address[1].long_name}`);
+        address.map(item => {
+            if(item.types[0] === 'locality')
+            setCity(item.long_name);
+            if(item.types[0] === 'administrative_area_level_1')
+            setDeliveryState(item.long_name);
+            if(item.types[0] === 'postal_code')
+            setZipcode(item.long_name);
+        })
+    }
+
+    let autocomplete;
+
+    const autocompleteFunc = () => {
+        autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), {})
+        autocomplete.addListener("place_changed", handlePlaceSelect);
+    };
 
     /* END Helpers */
 
@@ -1437,6 +1464,7 @@ export function OrderSection(props) {
                                 isGuest={isGuest}
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
+                                autocompleteFunc={autocompleteFunc}
                             />
 
                         </LayoutSection>
