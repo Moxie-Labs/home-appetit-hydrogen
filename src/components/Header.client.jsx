@@ -48,7 +48,7 @@ export function Header(prop){
                                 <li><a href="/account">My Account</a></li>
                                 <li><a href="#">Orders</a></li>
                                 <li><a href="#">Referrals</a></li>
-                                <li><LogoutButton onMouseOut={handleMouseOut}/></li>
+                                {/* <li><LogoutButton onMouseOut={handleMouseOut}/></li> */}
                             </ul>
                         </div>
                     </div>
@@ -79,7 +79,7 @@ export function Header(prop){
                                     <li><a href="#">My Account</a></li>
                                     <li><a href="#">Orders</a></li>
                                     <li><a href="#">Referrals</a></li>
-                                    <li><LogoutButton onMouseOut={handleMouseOut} redirectUrl={`https://${rootUrl}`}/></li>
+                                    {/* <li><LogoutButton onMouseOut={handleMouseOut} redirectUrl={`https://${rootUrl}`}/></li> */}
                                 </ul>
                             )}
                            

@@ -197,7 +197,7 @@ export default class MenuSection extends React.Component {
 
         // Render Sections
         const overviewSection = <section>
-        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
+        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
         { (selected.length + selectedExtra.length) !== 0 && 
         <div className="suborder--summary-container">
 
@@ -245,8 +245,34 @@ export default class MenuSection extends React.Component {
         
             { !isSectionFilled && 
                 <div>
-                    <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
-                    <p className="subheading order_prop__subheading p-subheading-width">{subheading}</p>
+                    <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
+                    {activeScheme === "traditional" && currentStep === 2 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Choose four entrées—in any combination. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
+                       </p>
+                    }
+
+                    {activeScheme === "flexible" && currentStep === 2 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Choose four entrées for each person you’re serving. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
+                       </p>
+                    } 
+
+                    {activeScheme === "traditional" && currentStep === 3 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Choose four small plates—in any combination. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
+
+                       </p>
+                    }
+
+                    {activeScheme === "flexible" && currentStep === 3 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Choose four small plates for each person you’re serving. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
+
+                       </p>
+                    } 
+
+                    {currentStep === 4 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Breakfasts, lunch salads, dishes from our partners, and more! All items priced ala cart and are single portions unless otherwise noted.
+                       </p>
+                    }
+                    
                     { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
                     { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
                 </div>
@@ -284,10 +310,19 @@ export default class MenuSection extends React.Component {
                     onRequestClose={() => this.setState({showingModal: false})}
                     className="modal-entree-complete"
                 >   
-                    <h1 className='uppercase text-center'>{title} Selection Complete!</h1>
+                    <h1 className='uppercase text-center'>{title} Selections Complete!</h1>
+                    
                     <h2 className='text-center'>Care to add extra {title}</h2>
-                    <p className='text-center'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. 
-                    Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam <b>$12.50</b> each.</p>
+                    {currentStep === 2 &&
+                       <p className="text-center">Round out your week with additional entrées (lunches, breakfast, etc.). Quick note: Each additional entrée serves one and costs $12. (Multiple portions of the same selection may be packed together.)
+                       </p>
+                    }
+
+                    {currentStep === 3 &&
+                       <p className="text-center">Round out your week with additional small plates. Quick note: Each additional small plate serves one and costs $7. (Multiple portions of the same selection may be packed together.)
+                       </p>
+                    } 
+                    {/* <p className='text-center'>Round out your week with additional entrées (lunches, breakfast, etc.). Quick note: Each additional entrée serves one and costs <b>$12</b>. (Multiple portions of the same selection may be packed together.)</p> */}
                     <button className='btn btn-primary-small' onClick={() => this.showSectionExtras()}><span><img src={iconPlus} width={65} className="icon-plus-alt"/></span> Add Extra {title}</button>
                     <button className='btn btn-secondary-small' onClick={() => this.skipSectionExtras()}>Continue to {title === 'Entrées' ? 'Small Plates' : 'Add-ons'} <span><img src={iconArrowRight} width={65} className="icon-arrow-alt"/></span></button>
 

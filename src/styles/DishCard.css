@@ -598,3 +598,76 @@ input[type="checkbox"] {
         opacity: 0.5;
     }
 }
+
+.modal--restore-cart .modal--flexible-inner {
+    border-radius: 0.75rem;
+}
+
+.modal--restore-cart button.btn.ha-a.btn-modal-cancel, .modal--restore-cart .btn-counter-confirm, .modal--change-type .btn-counter-confirm, .modal--change-type button.btn.ha-a.btn-modal-cancel {
+    padding: 0.75rem 2.5rem 0.75rem !important;
+    width: 100%;
+    color: #474442;
+}
+
+.modal--change-type .btn-counter-confirm{
+    line-height: 22px;
+}
+
+.modal--restore-cart .card__actions{
+    gap: 1rem !important;
+    flex-flow: column;
+}
+
+.modal--restore-cart button.btn.btn-primary-small.btn-counter-confirm {
+    font-family: 'ITC Avant Garde Gothic W03 Md';
+    font-size: 0.875rem;
+}
+
+.modal--restore-cart .modal--flexible-inner{
+    background-color: #FFFCF5 !important;
+}
+
+.modal--restore-cart {
+    max-width: 27.875rem;
+}
+
+.modal--flexible-confirmaton.modal--restore-cart a {
+    font-weight: bold;
+    color: #474442;
+    padding-bottom: 0px;
+    text-decoration: underline;
+}
+
+.modal--restore-cart h2.ha-h4.text-center, .modal--change-type h2.ha-h4.text-center {
+    text-transform: uppercase;
+    padding-bottom: 1.25rem;
+}
+
+.modal--restore-cart.modal--flexible-confirmaton .modal--flexible-inner p{
+   padding-bottom: 0;
+   font-style: normal;
+}
+
+.modal--change-type .modal--flexible-inner {
+    border-radius: 12px;
+}
+
+.modal--change-type p {
+    font-style: normal !important;
+    text-align: center;
+}
+
+.modal--change-type .card__actions{
+    gap: 1rem;
+    align-items: center;
+}
+
+.modal--change-type button.btn.ha-a.btn-modal-cancel {
+    background: #FFFCF5;
+}
+
+.modal--change-type .modal--flexible-inner {
+    border-radius: 12px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
