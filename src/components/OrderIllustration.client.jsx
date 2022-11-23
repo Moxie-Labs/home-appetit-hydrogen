@@ -86,6 +86,8 @@ export default function OrderIllustration(props){
         
         return (
             <div>
+                { servingCount > 0 ? 
+                <div>
                 <div className="menu-top-row">
                 <div className='illustration-total'>${planPrice}</div>
                 <div className="menu--row-inner">
@@ -180,6 +182,8 @@ export default function OrderIllustration(props){
                     </div>
                     }
                 </div>
+                </div> :
+                <div className="illustration-empty">Select number of people to view pricing information</div>}
             </div>
         );
 }
