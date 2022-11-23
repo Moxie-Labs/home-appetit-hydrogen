@@ -36,6 +36,16 @@ select.order_prop__dropdown:focus-visible {
     max-height: 800px;
 }
 
+.illustration-empty {
+    display: flex;
+    position: relative;
+    font-style: italic;
+    left: 9%;
+    font-weight: 400;
+    font-size: 18px;
+    color: #474442;
+}
+
 .illustration-total {
     font-family: 'ITCGaramondStdBkCond';
     height: fit-content;
