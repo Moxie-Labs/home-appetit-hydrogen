@@ -40,7 +40,8 @@ select.order_prop__dropdown:focus-visible {
     display: flex;
     position: relative;
     font-style: italic;
-    left: 9%;
+    margin-left: 35px;
+    margin-top: 153px;
     font-weight: 400;
     font-size: 18px;
     color: #474442;
