@@ -11,10 +11,7 @@ export function Footer(){
                 <div className="sub-heading">
                     Get Order Reminders
                 </div>
-                <form className="subscription-form">
-                    <input type="text" placeholder="Enter your email"/>
-                    <button type="submit">Sign Up</button>
-                </form>
+                <div class="_form_7"></div><script src="https://homeappetitphilly.activehosted.com/f/embed.php?id=7" type="text/javascript" charset="utf-8"></script>
                 <div className="copyright">
                 © {new Date().getFullYear()} HOME APPÉTIT
                 </div>
@@ -24,8 +21,8 @@ export function Footer(){
                     Connect with us
                 </div>
                 <div className="social-wrapper">
-                    <img src={ iconEmail } className="footer-logo"/>
-                    <img src={ iconInsta } className="footer-logo"/>
+                    <a href="mailto:contact@homeappetitphilly.com"><img src={ iconEmail } className="footer-logo"/></a>
+                    <a href="http://instagram.com/homeappetitphilly"><img src={ iconInsta } className="footer-logo"/></a>
                 </div>
             </div>
             <div className="footer-item">
@@ -33,10 +30,10 @@ export function Footer(){
                     &nbsp;
                 </div>
                 <ul className="footer-menu">
-                    <li><a href="#">HEATING INSTRUCTIONS</a></li>
-                    <li><a href="#">FAQS</a></li>
-                    <li><a href="#">GIFT CARDS</a></li>
-                    <li><a href="#">OUR REFERRAL PROGAM</a></li>
+                    <li><a href="https://marketingbeta.homeappetitphilly.com/blogs/blog/heating-instructions">HEATING INSTRUCTIONS</a></li>
+                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/faq">FAQS</a></li>
+                    <li><a href="/gift-cards">GIFT CARDS</a></li>
+                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/referrals">OUR REFERRAL PROGAM</a></li>
                 </ul>
             </div>
             <div className="footer-item">
@@ -44,10 +41,10 @@ export function Footer(){
                     &nbsp;
                 </div>
                 <ul className="footer-menu">
-                    <li><a href="#">ABOUT US</a></li>
-                    <li><a href="#">PRIVACY POLICY</a></li>
-                    <li><a href="#">TERMS OF USE</a></li>
-                    <li><a href="#">CONTACT US</a></li>
+                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/why-home-appetit">ABOUT US</a></li>
+                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/privacy-policy">PRIVACY POLICY</a></li>
+                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/terms-of-use">TERMS OF USE</a></li>
+                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/contact-1">CONTACT US</a></li>
                 </ul>
             </div>
             </div>
