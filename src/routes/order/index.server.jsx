@@ -122,9 +122,9 @@ export default function Order({response}) {
           }
         }
       });
-
+      
       if (latestMenu === null)
-        return response.redirect(`https://${import.meta.env.VITE_STORE_DOMAIN}/pages/order-now`);
+      return response.redirect(`https://${import.meta.env.VITE_STORE_DOMAIN}/pages/order-now`);
 
 
       // check if Customer already placed an Order during this Window
@@ -179,6 +179,7 @@ export default function Order({response}) {
             <Layout>
                 <OrderSection
                   collectionData={collectionData}
+                  latestMenu={latestMenu}
                   zipcodeData={null}
                   zipcodeArr={zipcodeArr}
                   collectionsById={collectionsById}

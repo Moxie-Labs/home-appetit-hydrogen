@@ -1,4 +1,4 @@
-import { useCart } from "@shopify/hydrogen";
+import { useCart, useNavigate} from "@shopify/hydrogen";
 import { Suspense, useEffect, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -855,9 +855,9 @@ export function OrderSection(props) {
         setCurrentStep(1);
     }
 
-    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered } = props;
+    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered, latestMenu } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
-    
+
     const setupCardsAndCollections = () => {
         const newChoicesEntrees = [];
         const newChoicesGreens = [];
@@ -1157,7 +1157,13 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
-    if (isCollectionsLoading)
+    if (latestMenu ===  null)
+        {
+            const navigate = useNavigate();
+            navigate(`https://${import.meta.env.VITE_STORE_DOMAIN}/pages/order-now`);
+        }
+
+    else if (latestMenu !==  null && isCollectionsLoading)
         return <Page>
             <Suspense>
                 <h1>One moment...</h1>
