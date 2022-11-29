@@ -86,6 +86,8 @@ export async function api(request, {session, queryShop}) {
     phone: phone
   }
 
+  return new Response(Object.values(jsonBody), {status: 200});
+
   redirect = true;
 
   if (!jsonBody.email || !jsonBody.password) {
