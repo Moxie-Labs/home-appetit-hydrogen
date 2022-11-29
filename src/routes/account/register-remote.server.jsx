@@ -87,6 +87,13 @@ export async function api(request, {session, queryShop}) {
     phone: phone
   }
 
+  const response = new Response(
+    JSON.stringify(jsonBody),
+    {status: 401},
+  );
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response; 
+
   redirect = true;
 
   if (!jsonBody.email || !jsonBody.password) {

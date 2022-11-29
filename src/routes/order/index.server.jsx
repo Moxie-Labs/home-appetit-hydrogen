@@ -151,6 +151,8 @@ export default function Order({response}) {
       });
 
       modData.collections.edges.forEach(collection => {
+        console.log("pushing collection", collection.node);
+        console.log(collection.node.products.edges)
         collectionsById.push(collection.node);
       });
 
