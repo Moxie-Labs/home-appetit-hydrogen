@@ -3,6 +3,7 @@ import footerLogo from '../assets/footer-logo.png';
 import iconEmail from '../assets/icon-email.png';
 import iconInsta from '../assets/icon-insta.png';
 export function Footer(){
+   let marketingSite = `https://${import.meta.env.VITE_STORE_DOMAIN}/`;
    return(
         <div className="footer">
             <img src={ footerLogo } className="footer-logo"/>
@@ -30,10 +31,10 @@ export function Footer(){
                     &nbsp;
                 </div>
                 <ul className="footer-menu">
-                    <li><a href="https://marketingbeta.homeappetitphilly.com/blogs/blog/heating-instructions">HEATING INSTRUCTIONS</a></li>
-                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/faq">FAQS</a></li>
+                    <li><a href={`${marketingSite}blogs/blog/heating-instructions`}>HEATING INSTRUCTIONS</a></li>
+                    <li><a href={`${marketingSite}pages/faq`}>FAQS</a></li>
                     <li><a href="/gift-cards">GIFT CARDS</a></li>
-                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/referrals">OUR REFERRAL PROGAM</a></li>
+                    <li><a href={`${marketingSite}pages/referrals`}>OUR REFERRAL PROGAM</a></li>
                 </ul>
             </div>
             <div className="footer-item">
@@ -41,10 +42,10 @@ export function Footer(){
                     &nbsp;
                 </div>
                 <ul className="footer-menu">
-                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/why-home-appetit">ABOUT US</a></li>
-                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/privacy-policy">PRIVACY POLICY</a></li>
-                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/terms-of-use">TERMS OF USE</a></li>
-                    <li><a href="https://marketingbeta.homeappetitphilly.com/pages/contact-1">CONTACT US</a></li>
+                    <li><a href={`${marketingSite}pages/why-home-appetit`}>ABOUT US</a></li>
+                    <li><a href={`${marketingSite}pages/privacy-policy`}>PRIVACY POLICY</a></li>
+                    <li><a href={`${marketingSite}pages/terms-of-use`}>TERMS OF USE</a></li>
+                    <li><a href={`${marketingSite}pages/contact-1`}>CONTACT US</a></li>
                 </ul>
             </div>
             </div>
