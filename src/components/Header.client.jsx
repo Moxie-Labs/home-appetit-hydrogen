@@ -46,9 +46,9 @@ export function Header(prop){
                         </div>
                         <div className="mobile-nav mobile-nav-account">
                             <ul>
-                                 <li><a href={`https://${rootOrderingUrl}/account`}>My Account</a></li> 
-                                 <li><a href={`https://${rootOrderingUrl}/account#orders`}>Orders</a></li>
-                                 <li><a href={`https://${rootOrderingUrl}/account#referrals`}>Referrals</a></li>
+                                 <li><a href={`${rootOrderingUrl}/account`}>My Account</a></li> 
+                                 <li><a href={`${rootOrderingUrl}/account#orders`}>Orders</a></li>
+                                 <li><a href={`${rootOrderingUrl}/account#referrals`}>Referrals</a></li>
                                 {/* <li><LogoutButton onMouseOut={handleMouseOut}/></li> */}
                             </ul>
                         </div>
