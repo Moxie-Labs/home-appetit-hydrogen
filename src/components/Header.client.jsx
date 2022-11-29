@@ -11,6 +11,7 @@ export function Header(prop){
     const [isHovering, setIsHovering] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const rootUrl = import.meta.env.VITE_STORE_DOMAIN;
+    const rootOrderingUrl = import.meta.env.VITE_ORDERING_SITE;
 
     const handleMouseOver = () => {
       setIsHovering(true);
@@ -45,9 +46,9 @@ export function Header(prop){
                         </div>
                         <div className="mobile-nav mobile-nav-account">
                             <ul>
-                                <li><a href="/account">My Account</a></li>
-                                <li><a href="#">Orders</a></li>
-                                <li><a href="#">Referrals</a></li>
+                                 <li><a href={`https://${rootOrderingUrl}/account`}>My Account</a></li> 
+                                 <li><a href={`https://${rootOrderingUrl}/account#orders`}>Orders</a></li>
+                                 <li><a href={`https://${rootOrderingUrl}/account#referrals`}>Referrals</a></li>
                                 {/* <li><LogoutButton onMouseOut={handleMouseOut}/></li> */}
                             </ul>
                         </div>
@@ -76,9 +77,9 @@ export function Header(prop){
                             
                         {isHovering && (
                             <ul className="account-dropdown">
-                                    <li><a href="#">My Account</a></li>
-                                    <li><a href="#">Orders</a></li>
-                                    <li><a href="#">Referrals</a></li>
+                                 <li><a href={`${rootOrderingUrl}/account`}>My Account</a></li> 
+                                 <li><a href={`${rootOrderingUrl}/account#orders`}>Orders</a></li>
+                                 <li><a href={`${rootOrderingUrl}/account#referrals`}>Referrals</a></li>
                                     {/* <li><LogoutButton onMouseOut={handleMouseOut} redirectUrl={`https://${rootUrl}`}/></li> */}
                                 </ul>
                             )}
