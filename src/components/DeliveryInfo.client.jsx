@@ -3,6 +3,7 @@ import React, {useCallback, useState} from 'react';
 import map from "../assets/map.png";
 import iconEdit from "../assets/icon-edit.png";
 import { Checkbox } from './Checkbox.client';
+import { useRenderServerComponents } from '~/lib/utils';
 
 export default function DeliveryInfo(props) {
 
@@ -45,11 +46,14 @@ export default function DeliveryInfo(props) {
         isGuest,
         isEditing,
         setIsEditing,
-        autocompleteFunc
+        autocompleteFunc,
+        addresses
     } = props;
 
+    const renderServerComponents = useRenderServerComponents();
 
     const [validationErrors, setValidationErrors] = useState({});
+    const [newAddress, setNewAddress] = useState(false);
 
     const listOfStates = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
@@ -122,6 +126,57 @@ export default function DeliveryInfo(props) {
         }
     }
 
+    async function handleAddAddress(newAddress) {
+        const {
+            firstName,
+            lastName,
+            phone,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            zip,
+        } = newAddress;
+
+        await callAddAddressApi({
+            firstName,
+            lastName,
+            phone,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            zip,
+        });
+
+        renderServerComponents();
+    }
+
+    const onClickSubmit = async (event) => {
+        const errors = getFormErrors();
+        if (Object.keys(errors).length === 0) {
+            setIsEditing(false);
+            setNewAddress(false);
+            setValidationErrors({});    
+            handleAddAddress({
+                firstName: firstName,
+                lastName: lastName,
+                email: emailAddress,
+                phone: phoneNumber,
+                address1: address,
+                address2: address2,
+                city: city,
+                province: deliveryState,
+                country: 'United States',
+                zip: zipcode,
+            });
+        } else {
+            setValidationErrors(errors);
+        }
+    }
+
     const getFormErrors = () => {
         const errors = {};
         if (firstName.length < 3)
@@ -149,6 +204,24 @@ export default function DeliveryInfo(props) {
         return <li key={i}>{error}</li>;
     });
 
+    const addressSelection = index => {
+        handleAddressChange(addresses[index].address1);
+        handleAddress2Change(addresses[index].address2);
+        handleCityChange(addresses[index].city);
+        handleStateChange(addresses[index].province);
+        handleZipcodeChange(addresses[index].zip);
+     };
+
+    const onClickAddNew = () => {
+        setIsEditing(true);
+        setNewAddress(true);
+        handleAddressChange();
+        handleAddress2Change();
+        handleCityChange();
+        handleStateChange();
+        handleZipcodeChange();
+    }
+
     
     return (
         <div className={`checkout-section checkout--delivery-info ${currentStep === step ? '' : 'disabled'}`}>
@@ -166,10 +239,25 @@ export default function DeliveryInfo(props) {
                         <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> <img src={iconEdit} width={65} className="iconEdit" /></span></h3>
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
-                            <p>{emailAddress}</p>
                             <p>{formattedPhoneNumber(phoneNumber)}</p>
-                            <p>{address}, {deliveryState} {zipcode}</p>
+                            {
+                            addresses.length > 1 ? 
+                            addresses.map((addr, index) => {
+                                    return <div key={addr.id} className="contact-info">
+                                            <label htmlFor="address">
+                                                <input type="radio" name="address" onClick={() => addressSelection(index)} />
+                                                {addr.address1}{addr.address2 !== "" && addr.address2} {addr.city}, {addr.provinceCode} {addr.zip}
+                                            </label>
+                                            </div>      
+                                        })
+                            :
+                            <div>
+                                <p>{emailAddress}</p>
+                                <p>{address}, {deliveryState} {zipcode}</p>
+                            </div>
+                            }
                         </div>
+                        {isGuest ? <></> : <button className="btn btn-default" onClick={onClickAddNew}>Add New Address</button>}
                     </section>
 
                     <label className="delivery-window_label">Delivery Instructions</label>
@@ -313,9 +401,14 @@ export default function DeliveryInfo(props) {
 
 
                     <section className="checkout--deliveryinfo-actions">
+                        {newAddress ? 
+                        <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickSubmit}>
+                            Submit
+                        </button> 
+                        : 
                         <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickContinue}>
                             UPDATE
-                        </button>
+                        </button>}
 
                         {/* <button className="btn btn-primary btn-app" onClick={handleCancel}>
                             Cancel
@@ -341,9 +434,23 @@ export default function DeliveryInfo(props) {
                         <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> {currentStep === step && <img src={iconEdit} width={65} className="iconEdit" />}</span></h3>
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
-                            <p>{emailAddress}</p>
                             <p>{formattedPhoneNumber(phoneNumber)}</p>
-                            <p>{address}, {deliveryState} {zipcode}</p>
+                            {
+                            addresses.length > 1 ? 
+                            addresses.map(addr => {
+                                    return <div key={addr.id} className="contact-info">
+                                            <label htmlFor="address">
+                                                <input type="radio" value={addr} name="address" onChange={addressSelection} />
+                                                {addr.address1}{addr.address2 !== "" && addr.address2} {addr.city}, {addr.provinceCode} {addr.zip}
+                                            </label>
+                                            </div>      
+                                        })
+                            :
+                            <div>
+                                <p>{emailAddress}</p>
+                                <p>{address}, {deliveryState} {zipcode}</p>
+                            </div>
+                            }
                         </div>
                     </section>
 
@@ -388,3 +495,49 @@ export default function DeliveryInfo(props) {
         </div>
     );
 }
+
+export async function callAddAddressApi({
+    id,
+    firstName,
+    lastName,
+    address1,
+    address2,
+    country,
+    province,
+    city,
+    phone,
+    zip,
+  }) {
+    try {
+      const res = await fetch(
+        id ? `/account/address/${encodeURIComponent(id)}` : '/account/address',
+        {
+          method: id ? 'PATCH' : 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            address1,
+            address2,
+            country,
+            province,
+            city,
+            phone,
+            zip,
+          }),
+        },
+      );
+      if (res.ok) {
+        return {};
+      } else {
+        return res.json();
+      }
+    } catch (_e) {
+      return {
+        error: 'Error saving address. Please try again.',
+      };
+    }
+  }

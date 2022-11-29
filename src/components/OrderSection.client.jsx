@@ -1,4 +1,4 @@
-import { useCart, useNavigate} from "@shopify/hydrogen";
+import { useCart, useNavigate, flattenConnection} from "@shopify/hydrogen";
 import { Suspense, useEffect, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -58,9 +58,11 @@ export function OrderSection(props) {
     let customer = null;
     if (customerData != null) 
          customer = customerData.customer;
-
+         
+    let addresses = [];
     let defaultAddress = null;
     if (customer != null) {
+        addresses = flattenConnection(customer?.addresses) || [];
         customer.addresses.edges.map(addr => {
             if (addr.node.id === customer.defaultAddress.id)
                 defaultAddress = addr.node;
@@ -1472,6 +1474,7 @@ export function OrderSection(props) {
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
                                 autocompleteFunc={autocompleteFunc}
+                                addresses={addresses}
                             />
 
                         </LayoutSection>
