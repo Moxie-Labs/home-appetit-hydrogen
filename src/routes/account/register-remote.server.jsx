@@ -62,9 +62,13 @@ export async function api(request, {session, queryShop}) {
   strFirst = strFirst.replace(/\+/g, ' ');
 
   let address = decodeURIComponent(strCustomer[1].split("address1%5D=")[1]);
+  address = address.replace(/\+/g, ' ');
   let address2 = decodeURIComponent(strCustomer[2].split("address2%5D=")[1]);
+  address2 = address2.replace(/\+/g, ' ');
   let city = decodeURIComponent(strCustomer[3].split("city%5D=")[1]);
+  city = city.replace(/\+/g, ' ');
   let state = decodeURIComponent(strCustomer[4].split("state%5D=")[1]);
+  state = state.replace(/\+/g, ' ');
   let zip = strCustomer[5].split("zip%5D=")[1];
   let phone = `+1${strCustomer[6].split("phone%5D=")[1]}`;
 
