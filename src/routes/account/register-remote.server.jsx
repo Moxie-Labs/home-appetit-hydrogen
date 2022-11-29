@@ -85,8 +85,10 @@ export async function api(request, {session, queryShop}) {
     zip: zip,
     phone: phone
   }
-
-  return new Response(Object.values(jsonBody), {status: 200});
+  
+  const response = new Response(Object.values(jsonBody), {status: 200});
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response; 
 
   redirect = true;
 
