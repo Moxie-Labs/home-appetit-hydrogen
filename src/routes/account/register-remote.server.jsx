@@ -48,7 +48,7 @@ export async function api(request, {session, queryShop}) {
   strEmail = decodeURIComponent(strEmail);
 
   strPass = strPass.split("&recaptcha-v3")[0];
-  // strPass = strPass.split("&opt-in")[0];
+  strPass = strPass.split("&opt-in")[0];
   strPass = decodeURIComponent(strPass);
 
   strNames = strNames.split("&customer%5Blast_name%5D=");
@@ -75,7 +75,7 @@ export async function api(request, {session, queryShop}) {
 
   jsonBody = {
     email: strEmail,
-    password: "JTBT7c1!",
+    password: strPass,
     firstName: strFirst,
     lastName: strLast,
     address1: address,
