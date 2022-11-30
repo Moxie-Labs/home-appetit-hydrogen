@@ -48,7 +48,7 @@ export async function api(request, {session, queryShop}) {
   strEmail = decodeURIComponent(strEmail);
 
   strPass = strPass.split("&recaptcha-v3")[0];
-  strPass = strPass.split("&opt-in")[0];
+  // strPass = strPass.split("&opt-in")[0];
   strPass = decodeURIComponent(strPass);
 
   strNames = strNames.split("&customer%5Blast_name%5D=");
@@ -102,8 +102,8 @@ export async function api(request, {session, queryShop}) {
     query: CUSTOMER_CREATE_MUTATION,
     variables: {
       input: {
-        email: strEmail,
-        password: strPass,
+        email: jsonBody.email,
+        password: jsonBody.password,
         firstName: jsonBody.firstName,
         lastName: jsonBody.lastName,
         phone: jsonBody.phone,
@@ -130,8 +130,8 @@ export async function api(request, {session, queryShop}) {
         query: LOGIN_MUTATION,
         variables: {
           input: {
-            email: strEmail,
-            password: strPass,
+            email: jsonBody.email,
+            password: jsonBody.password,
           },
         },
         // @ts-expect-error `queryShop.cache` is not yet supported but soon will be.
