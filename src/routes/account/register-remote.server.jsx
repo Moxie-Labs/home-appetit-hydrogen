@@ -23,15 +23,6 @@ export default function Register({response}) {
 
 export async function api(request, {session, queryShop}) {
 
-  let requestText = await request.text();
-
-  const response = new Response(
-    requestText,
-    {status: 401},
-  );
-  response.headers.append("Access-Control-Allow-Origin", "*");
-  return response; 
-
   if (!session) {
     return new Response('Session storage not available.', {status: 400});
   }
@@ -111,7 +102,7 @@ export async function api(request, {session, queryShop}) {
     query: CUSTOMER_CREATE_MUTATION,
     variables: {
       input: {
-        email: jsonBody.email,
+        email: strEmail,
         password: strPass,
         firstName: jsonBody.firstName,
         lastName: jsonBody.lastName,
@@ -139,7 +130,7 @@ export async function api(request, {session, queryShop}) {
         query: LOGIN_MUTATION,
         variables: {
           input: {
-            email: jsonBody.email,
+            email: strEmail,
             password: strPass,
           },
         },
