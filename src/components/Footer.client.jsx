@@ -4,6 +4,11 @@ import iconEmail from '../assets/icon-email.png';
 import iconInsta from '../assets/icon-insta.png';
 export function Footer(){
    let marketingSite = `https://${import.meta.env.VITE_STORE_DOMAIN}/`;
+   const activeFormScript = () => { 
+        return { __html: `<div class="_form_7"><script src="https://homeappetitphilly.activehosted.com/f/embed.php?id=7" type="text/javascript" charset="utf-8"></script></div>` } 
+    };
+
+   
    return(
         <div className="footer">
             <img src={ footerLogo } className="footer-logo"/>
@@ -12,7 +17,7 @@ export function Footer(){
                 <div className="sub-heading">
                     Get Order Reminders
                 </div>
-                <div class="_form_7"></div><script src="https://homeappetitphilly.activehosted.com/f/embed.php?id=7" type="text/javascript" charset="utf-8"></script>
+                <div dangerouslySetInnerHTML={activeFormScript()}></div>
                 <div className="copyright">
                 © {new Date().getFullYear()} HOME APPÉTIT
                 </div>
