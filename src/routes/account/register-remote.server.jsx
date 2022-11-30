@@ -75,7 +75,7 @@ export async function api(request, {session, queryShop}) {
 
   jsonBody = {
     email: strEmail,
-    password: 'JTBT7c1!',
+    password: "JTBT7c1!",
     firstName: strFirst,
     lastName: strLast,
     address1: address,
