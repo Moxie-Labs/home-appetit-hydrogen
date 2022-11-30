@@ -191,6 +191,7 @@ export default function DishCard(props) {
 
     return (
         <div className={`dish-card${isCardActive ? ' active' : (finalCardStatus)}${confirmed ? ' confirmed' : ''}`}>
+            {modifications.length}
             {!isCardActive && (initialQuantity + quantity > 0) && <p className="card__quantity-badge">{quantity}</p>}
 
             {isCardActive && !confirmed &&
