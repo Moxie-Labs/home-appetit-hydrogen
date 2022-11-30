@@ -23,6 +23,13 @@ export default function Register({response}) {
 
 export async function api(request, {session, queryShop}) {
 
+  const response = new Response(
+    request,
+    {status: 401},
+  );
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response; 
+
   if (!session) {
     return new Response('Session storage not available.', {status: 400});
   }
@@ -48,6 +55,7 @@ export async function api(request, {session, queryShop}) {
   strEmail = decodeURIComponent(strEmail);
 
   strPass = strPass.split("&recaptcha-v3")[0];
+  strPass = strPass.split("&opt-in")[0];
   strPass = decodeURIComponent(strPass);
 
   strNames = strNames.split("&customer%5Blast_name%5D=");
@@ -102,7 +110,7 @@ export async function api(request, {session, queryShop}) {
     variables: {
       input: {
         email: jsonBody.email,
-        password: jsonBody.password,
+        password: strPass,
         firstName: jsonBody.firstName,
         lastName: jsonBody.lastName,
         phone: jsonBody.phone,
@@ -130,7 +138,7 @@ export async function api(request, {session, queryShop}) {
         variables: {
           input: {
             email: jsonBody.email,
-            password: jsonBody.password,
+            password: strPass,
           },
         },
         // @ts-expect-error `queryShop.cache` is not yet supported but soon will be.
