@@ -54,6 +54,7 @@ export default function DeliveryInfo(props) {
 
     const [validationErrors, setValidationErrors] = useState({});
     const [newAddress, setNewAddress] = useState(false);
+    const [addressId, setAddressId] = useState();
 
     const listOfStates = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
@@ -115,19 +116,9 @@ export default function DeliveryInfo(props) {
         handleInstructionChange(event.target.value);
     }
 
-    const onClickContinue = (event) => {
-        const errors = getFormErrors();
-        if (Object.keys(errors).length === 0) {
-            setIsEditing(false);
-            setValidationErrors({});
-            handleContinue;
-        } else {
-            setValidationErrors(errors);
-        }
-    }
-
     async function handleAddAddress(newAddress) {
         const {
+            id,
             firstName,
             lastName,
             phone,
@@ -140,6 +131,7 @@ export default function DeliveryInfo(props) {
         } = newAddress;
 
         await callAddAddressApi({
+            id,
             firstName,
             lastName,
             phone,
@@ -152,6 +144,32 @@ export default function DeliveryInfo(props) {
         });
 
         renderServerComponents();
+    }
+
+    const onClickContinue = (event) => {
+        const errors = getFormErrors();
+        if (Object.keys(errors).length === 0) {
+            setIsEditing(false);
+            setValidationErrors({});
+            if (addresses.length > 1){
+                handleAddAddress({
+                    id: addressId,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: emailAddress,
+                    phone: phoneNumber,
+                    address1: address,
+                    address2: address2,
+                    city: city,
+                    province: deliveryState,
+                    country: 'United States',
+                    zip: zipcode,
+                });
+            }
+            handleContinue;
+        } else {
+            setValidationErrors(errors);
+        }
     }
 
     const onClickSubmit = async (event) => {
@@ -205,6 +223,7 @@ export default function DeliveryInfo(props) {
     });
 
     const addressSelection = index => {
+        setAddressId(addresses[index].id)
         handleAddressChange(addresses[index].address1);
         handleAddress2Change(addresses[index].address2);
         handleCityChange(addresses[index].city);
