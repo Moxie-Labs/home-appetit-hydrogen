@@ -23,8 +23,10 @@ export default function Register({response}) {
 
 export async function api(request, {session, queryShop}) {
 
+  let requestText = await request.text();
+
   const response = new Response(
-    request,
+    requestText,
     {status: 401},
   );
   response.headers.append("Access-Control-Allow-Origin", "*");
