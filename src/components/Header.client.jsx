@@ -10,6 +10,7 @@ export function Header(prop){
     const {isOrdering} = prop;
     const [isHovering, setIsHovering] = useState(false);
     const [isActive, setIsActive] = useState(false);
+    const [isDropdownActive, setIsDropdownActive] = useState(false);
     const rootUrl = import.meta.env.VITE_STORE_DOMAIN;
     const rootOrderingUrl = import.meta.env.VITE_ORDERING_SITE;
     var base_url = window.location.origin;
@@ -26,17 +27,21 @@ export function Header(prop){
         setIsActive(current => !current);
     };
 
+    const handleDropdownToggle = () => {
+        setIsDropdownActive(isDropdownActive => !isDropdownActive);
+    };
+
     const handleOrdersRedirect = (e) => {
         e.preventDefault();
-        window.location.replace(base_url+"/account#orders");
-        window.location.reload();
+        location.replace(base_url+"/account#orders");
+        location.reload();
         return false;
     };
 
     const handleReferralsRedirect = (e) => {
         e.preventDefault();
-        window.location.replace(base_url+"/account#referrals");
-        window.location.reload();
+        location.replace(base_url+"/account#referrals");
+        location.reload();
         return false;
     };
 
@@ -87,15 +92,17 @@ export function Header(prop){
                     <ul>
                         <li><a href="/order" className="btn-order-cta mobile-order-cta">ORDER</a></li>
                         <li><a href="/order" className="btn-order-cta desktop-order-cta">ORDER NOW</a></li>
-                        <li><a href="#" className="my-account-trigger nav-main" onMouseOver={handleMouseOver}>ACCOUNT &nbsp;<span> {isHovering && <img src={iconDropdownReverse} />}{!isHovering && <img src={iconDropdownArrow} />}</span></a>
+                        <li><a href="#" className="my-account-trigger nav-main" onClick={handleDropdownToggle}>ACCOUNT &nbsp;<span> {isDropdownActive && <img src={iconDropdownReverse} />}{!isDropdownActive && <img src={iconDropdownArrow} />}</span></a>
                             
-                        {isHovering && (
+                        {isDropdownActive && (
+                            <div className="dropdown-wrapper">
                             <ul className="account-dropdown">
                                  <li><a href="/account">My Account</a></li> 
                                  <li><a href="#" onClick={handleOrdersRedirect}>Orders</a></li>
-                                 <li><a href="javascript:void(0)" onMouseOut={handleMouseOut}>Referrals</a></li>
+                                 <li><a href="javascript:void(0)">Referrals</a></li>
                                     {/* <li><LogoutButton onMouseOut={handleMouseOut} redirectUrl={`https://${rootUrl}`}/></li> */}
                                 </ul>
+                            </div>
                             )}
                            
                         </li>
