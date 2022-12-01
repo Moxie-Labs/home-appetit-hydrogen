@@ -1,9 +1,5 @@
 export function ActiveForm(props) {
 
-    const formHTMLMin = `
-        <div class="_form_15"><script src="https://homeappetitphilly.activehosted.com/f/embed.php?id=15" type="text/javascript" charset="utf-8"></script></div>
-    `;
-
     const formHTML = `
         <form method="POST" action="https://homeappetitphilly.activehosted.com/proc.php" id="_form_15_" class="_form _form_15 _inline-form  _dark" novalidate>
             <input type="hidden" name="u" value="15" />
