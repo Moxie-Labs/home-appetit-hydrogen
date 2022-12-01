@@ -25,12 +25,13 @@ export function GiftCardCalculator(props) {
     const [formErrors, setFormErrors] = useState({});
     const [hasAddedCard, setHasAddedCard] = useState(false);
     const [isOrderCleared, setIsOrderCleared] = useState(false);
+    const [message, setMessage] = useState("");
 
     const node = useRef(null);
 
     const customerEmail = props.email === null ? "" : props.email;
 
-    let { checkoutUrl, linesAdd, linesRemove, lines: cartLines, status:cartStatus } = useCart();
+    let { id:cartId, checkoutUrl, linesAdd, linesRemove, lines: cartLines, status:cartStatus, noteUpdate } = useCart();
 
     useEffect(() => {  
         if (cartLines.length > 0 && !hasAddedCard && cartStatus == 'idle') {
@@ -218,19 +219,24 @@ export function GiftCardCalculator(props) {
             }, 1000);
         else  {
             console.log("done");
-            const {defaultAddress} = props;
-            if (defaultAddress === null)
-                window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}`;
-            else 
-                window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}
-                &checkout[billing_address][first_name]=${defaultAddress.firstName}
-                &checkout[billing_address][last_name]=${defaultAddress.lastName}
-                &checkout[billing_address][address1]=${defaultAddress.address1}
-                &checkout[billing_address][address2]=${defaultAddress.address2 === null ? "" : defaultAddress.address2}
-                &checkout[billing_address][city]=${defaultAddress.city}
-                &checkout[billing_address][province]=${defaultAddress.deliveryState}
-                &checkout[billing_address][country]=${defaultAddress.country}
-                &checkout[billing_address][zip]=${defaultAddress.zip}`;
+
+            noteUpdate(message);
+
+            setTimeout(() => {
+                const {defaultAddress} = props;
+                if (defaultAddress === null)
+                    window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}`;
+                else 
+                    window.location.href = `${checkoutUrl}?checkout[email]=${useMyEmail ? customerEmail : email}
+                    &checkout[billing_address][first_name]=${defaultAddress.firstName}
+                    &checkout[billing_address][last_name]=${defaultAddress.lastName}
+                    &checkout[billing_address][address1]=${defaultAddress.address1}
+                    &checkout[billing_address][address2]=${defaultAddress.address2 === null ? "" : defaultAddress.address2}
+                    &checkout[billing_address][city]=${defaultAddress.city}
+                    &checkout[billing_address][province]=${defaultAddress.deliveryState}
+                    &checkout[billing_address][country]=${defaultAddress.country}
+                    &checkout[billing_address][zip]=${defaultAddress.zip}`;
+            }, 2000);
         }   
     }
 
@@ -269,7 +275,7 @@ export function GiftCardCalculator(props) {
                                 </div>
                             </div>
                             <div className="gc-row">
-                                <textarea name="message" id="" width="100%" rows="10" placeholder='Enter a custom message to be included with gift email.'></textarea>
+                                <textarea name="message" id="" width="100%" rows="10" value={message} onChange={e => setMessage(e.target.value)} placeholder='Enter a custom message to be included with gift email.'></textarea>
                             </div>
                             <div className="gc-row">
                                 <label htmlFor="email-method">
