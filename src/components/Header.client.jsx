@@ -12,6 +12,7 @@ export function Header(prop){
     const [isActive, setIsActive] = useState(false);
     const rootUrl = import.meta.env.VITE_STORE_DOMAIN;
     const rootOrderingUrl = import.meta.env.VITE_ORDERING_SITE;
+    var base_url = window.location.origin;
 
     const handleMouseOver = () => {
       setIsHovering(true);
@@ -23,7 +24,20 @@ export function Header(prop){
 
     const handleClick = () => {
         setIsActive(current => !current);
-        console.log("hello world!")
+    };
+
+    const handleOrdersRedirect = (e) => {
+        e.preventDefault();
+        window.location.replace(base_url+"/account#orders");
+        window.location.reload();
+        return false;
+    };
+
+    const handleReferralsRedirect = (e) => {
+        e.preventDefault();
+        window.location.replace(base_url+"/account#referrals");
+        window.location.reload();
+        return false;
     };
 
    return(
@@ -46,9 +60,9 @@ export function Header(prop){
                         </div>
                         <div className="mobile-nav mobile-nav-account">
                             <ul>
-                                 <li><a href={`${rootOrderingUrl}/account`}>My Account</a></li> 
-                                 <li><a href={`${rootOrderingUrl}/account#orders`}>Orders</a></li>
-                                 <li><a href={`${rootOrderingUrl}/account#referrals`}>Referrals</a></li>
+                            <li><a href="/account">My Account</a></li> 
+                                 <li><a href={`${rootOrderingUrl}/account#orders`} onClick={handleOrdersRedirect}>Orders</a></li>
+                                 <li><a href={`${rootOrderingUrl}/account#referrals`} onClick={handleReferralsRedirect}>Referrals</a></li>
                                 {/* <li><LogoutButton onMouseOut={handleMouseOut}/></li> */}
                             </ul>
                         </div>
@@ -77,9 +91,9 @@ export function Header(prop){
                             
                         {isHovering && (
                             <ul className="account-dropdown">
-                                 <li><a href={`${rootOrderingUrl}/account`}>My Account</a></li> 
-                                 <li><a href={`${rootOrderingUrl}/account#orders`}>Orders</a></li>
-                                 <li><a href={`${rootOrderingUrl}/account#referrals`}>Referrals</a></li>
+                                 <li><a href="/account">My Account</a></li> 
+                                 <li><a href="#" onClick={handleOrdersRedirect}>Orders</a></li>
+                                 <li><a href="javascript:void(0)" onMouseOut={handleMouseOut}>Referrals</a></li>
                                     {/* <li><LogoutButton onMouseOut={handleMouseOut} redirectUrl={`https://${rootUrl}`}/></li> */}
                                 </ul>
                             )}
