@@ -31,7 +31,7 @@ export function GiftCardCalculator(props) {
 
     const customerEmail = props.email === null ? "" : props.email;
 
-    let { id:cartId, checkoutUrl, linesAdd, linesRemove, lines: cartLines, status:cartStatus, noteUpdate } = useCart();
+    let { checkoutUrl, linesAdd, linesRemove, lines: cartLines, status:cartStatus, noteUpdate } = useCart();
 
     useEffect(() => {  
         if (cartLines.length > 0 && !hasAddedCard && cartStatus == 'idle') {
