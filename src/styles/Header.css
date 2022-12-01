@@ -195,6 +195,9 @@ a.btn-order-cta.mobile-order-cta {
     }
 }
 
+.account-dropdown li:last-child {
+    opacity: 0.6;
+}
 
 
 
