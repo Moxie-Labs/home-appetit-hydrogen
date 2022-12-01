@@ -116,7 +116,7 @@ export default function DeliveryInfo(props) {
         handleInstructionChange(event.target.value);
     }
 
-    async function handleAddAddress(newAddress) {
+    function handleAddAddress(newAddress) {
         const {
             id,
             firstName,
@@ -130,7 +130,7 @@ export default function DeliveryInfo(props) {
             zip,
         } = newAddress;
 
-        await callAddAddressApi({
+        callAddAddressApi({
             id,
             firstName,
             lastName,
@@ -172,7 +172,7 @@ export default function DeliveryInfo(props) {
         }
     }
 
-    const onClickSubmit = async (event) => {
+    const onClickSubmit = (event) => {
         const errors = getFormErrors();
         if (Object.keys(errors).length === 0) {
             setIsEditing(false);
