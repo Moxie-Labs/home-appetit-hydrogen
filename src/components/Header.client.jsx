@@ -8,20 +8,11 @@ import { LogoutButton } from './LogoutButton.client';
 
 export function Header(prop){
     const {isOrdering} = prop;
-    const [isHovering, setIsHovering] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [isDropdownActive, setIsDropdownActive] = useState(false);
     const rootUrl = import.meta.env.VITE_STORE_DOMAIN;
     const rootOrderingUrl = import.meta.env.VITE_ORDERING_SITE;
     var base_url = window.location.origin;
-
-    const handleMouseOver = () => {
-      setIsHovering(true);
-    };
-  
-    const handleMouseOut = () => {
-      setIsHovering(false);
-    };
 
     const handleClick = () => {
         setIsActive(current => !current);
