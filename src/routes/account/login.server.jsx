@@ -65,6 +65,8 @@ export async function api(request, {session, queryShop}) {
     strEmail = decodeURIComponent(strEmail);
 
     strPass = strPass.split("&recaptcha-v3")[0];
+    if (strPass.includes("&opt-in"))
+      strPass = strPass.split("&opt-in")[0];
     strPass = decodeURIComponent(strPass);
 
     jsonBody = {

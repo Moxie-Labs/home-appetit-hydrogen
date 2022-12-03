@@ -17,6 +17,7 @@
 @import "./styles/Footer.css";
 @import "./styles/MyAccount.css";
 @import "./styles/GiftCard.css";
+@import "./styles/ActiveForm.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

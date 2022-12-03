@@ -4,11 +4,18 @@ import Modal from "react-modal/lib/components/Modal";
 export default function Orders(props) {
 
     const [showModal, setShowModal] = useState(false);
-    const { orders, customer, handleViewOrder } = props;
+    const [modalOrder, setModalOrder] = useState(null);
+    const { orders, customer } = props;
     const { payments, addresses } = customer;
     const currentOrders = [];
     const pastOrders = [];
     let orderID;
+
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2
+    })
 
     orders.forEach(order => {
         if (order.fulfillmentStatus === "UNFULFILLED")
@@ -17,13 +24,9 @@ export default function Orders(props) {
             pastOrders.push(order);
     });
 
-    const handleModal = (event) => {
-        orderID = event.currentTarget.textContent.replace("#", "").toString();
-        getOrderDate(orderID);
-        getOrderTotalDetails(orderID);
-        getOrderItems(orderID);
-        getshippingAddress(orderID);
-
+    const handleModal = order => {
+        console.log("Changing modalOrder to: ", order)
+        setModalOrder(order);
         setShowModal(true);
       }
 
@@ -48,19 +51,20 @@ export default function Orders(props) {
 
     const currentOrderList = currentOrders.map((order, i) => {
         return (<tr key={i}>
-            <td><a className="orders--order-number" onClick={handleViewOrder}>#{order.orderNumber}</a></td>
+            <td><a className="orders--order-number" onClick={() => handleModal(order)}>#{order.orderNumber}</a></td>
             <td>Ordered: {`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
             <td>{getOrderStatus(order.fulfillmentStatus)}</td>
-            <td><b>${parseFloat(order.currentTotalPrice.amount).toFixed(2)}</b></td>
+            <td><b>{formatter.format(parseFloat(order.currentTotalPrice.amount))}</b></td>
         </tr>);
     });
 
     const pastOrderList = pastOrders.map((order, i) => {
+        console.log("pastOrderList Order:", order);
         return (<tr key={i}>
-            <td><a className="orders--order-number" onClick={handleModal}>#{order.orderNumber}</a></td>
+            <td><a className="orders--order-number" onClick={() => handleModal(order)}>#{order.orderNumber}</a></td>
             <td>Ordered: {`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
             <td>{getOrderStatus(order.fulfillmentStatus)}</td>
-            <td><b>${parseFloat(order.currentTotalPrice.amount).toFixed(2)}</b></td>
+            <td><b>{formatter.format(order.currentTotalPrice.amount)}</b></td>
         </tr>);
     });
 
@@ -78,17 +82,6 @@ export default function Orders(props) {
         return month + ' ' + day + ', ' + year;
     }
 
-    const getOrderDate = (orderID) => {
-        let orderDate = "";
-        pastOrders.forEach(order => {
-            if (order.orderNumber == orderID){
-                orderDate = order.processedAt;
-            }
-        });
-
-        return getFormattedDate(orderDate);
-    }
-
     const getOrderTotalDetails = (orderID) => {
         const orderTotalDetails = pastOrders.map((order, i) => {
             if (order.orderNumber == orderID){
@@ -102,7 +95,7 @@ export default function Orders(props) {
                         </div>
                         <div className="table-column">
                             <div>${order.subtotalPrice.amount}</div>
-                            <div>${order.totalShippingPrice.amount}</div>
+                            <div>{formatter.format(order.totalShippingPrice.amount)}</div>
                             <div>${order.totalTax.amount}</div>
                             <div>${order.totalPrice.amount}</div>
                         </div>
@@ -114,47 +107,28 @@ export default function Orders(props) {
         return orderTotalDetails;
     }
 
-    const getOrderItems = (orderID) => {
-        let orderItemsArray = [];
-        pastOrders.map((order, i) => {
-            if (order.orderNumber == orderID){
-                orderItemsArray.push(order.lineItems);
-            }
-        });
-        
-        const orderItems = orderItemsArray.map((order, i) => {
+    const getOrderItems = () => {
+        return modalOrder.lineItems.edges.map(edge => {
+            const {node:item} = edge;
             return (
-            <div key={i}>
-                {order.edges.map(items => 
-                <div className="table-row">
-                    <div>{items.node.title}</div>
-                    <div>{items.node.currentQuantity}</div>
-                    <div>${items.node.variant.price.amount}</div>
-                    <div>${items.node.originalTotalPrice.amount}</div>
+                <div key={item.id} className="table-row">
+                    <div>{item.title}</div>
+                    <div>{item.currentQuantity}</div>
+                    <div>{formatter.format(item.variant?.price.amount)}</div>
+                    <div>{formatter.format(item.originalTotalPrice.amount)}</div>
                 </div>
-                )}
-            </div>
            );
         });
-
-        return orderItems;
     }
     
-    const getshippingAddress = (orderID) => {
-        const orderShippingAddress = pastOrders.map((order, i) => {
-            if (order.orderNumber == orderID){
-                return (
-                    <div key={i}>
-                        <p><b>Fulfillment Status: {order.fulfillmentStatus}</b></p>
-                        <p>{order.shippingAddress.address1}</p>
-                        {order.shippingAddress.address2 !== "" && <p>{order.shippingAddress.address2}</p>}
-                        <p>{order.shippingAddress.city}, {order.shippingAddress.province} {order.shippingAddress.zip}</p>
-                    </div>
-                );
-            }
-        });
-
-        return orderShippingAddress;
+    const getShippingAddress = () => {
+        return (
+            <div>
+                <p>{modalOrder.shippingAddress.address1}</p>
+                {modalOrder.shippingAddress.address2 !== "" && <p>{modalOrder.shippingAddress.address2}</p>}
+                <p>{modalOrder.shippingAddress.city}, {modalOrder.shippingAddress.province} {modalOrder.shippingAddress.zip}</p>
+            </div>
+        );
     }
 
     return (
@@ -192,37 +166,42 @@ export default function Orders(props) {
             }
 
             <Modal
-            isOpen={showModal}
-            className='order-details-modal'
+                isOpen={showModal}
+                onRequestClose={() => setShowModal(false)}
+                className='order-details-modal'
             >
-                <div className="order-details-wrapper">
-                    <div className="details--column">
-                        <h1>Order #{orderID}</h1>
-                        <p>Placed on {getOrderDate()}</p>
-                        <div className="product-table">
-                            <div className="table-header">
-                                <div className="table--title">PRODUCT</div>
-                                <div className="table--title">QUANTITY</div>
-                                <div className="table--title">PRICE</div>
-                                <div className="table--title">TOTAL</div>
-                            </div> 
-                            {getOrderItems()}
-                            {getOrderTotalDetails()}
+                { modalOrder !== null &&  
+                    <div className="order-details-wrapper">
+                        <div className="details--column">
+                            <h1>Order #{modalOrder.orderNumber}</h1>
+                            <h2>Status: {getOrderStatus(modalOrder.fulfillmentStatus)}</h2>
+                            <p>Placed on {getFormattedDate(modalOrder.processedAt)}</p>
+                            <div className="product-table">
+                                <div className="table-header">
+                                    <div className="table--title">PRODUCT</div>
+                                    <div className="table--title">QUANTITY</div>
+                                    <div className="table--title">PRICE</div>
+                                    <div className="table--title">TOTAL</div>
+                                </div> 
+                                {getOrderItems()}
+                                {getOrderTotalDetails()}
+                            </div>
+                        </div>
+                        <div className="details--column">
+                            <div className="address-container">
+                                <h2>Billing Address</h2>           
+                                <p>{addresses.edges[0].node.address1}</p>
+                                {addresses.edges[0].node.address2 !== "" && <p>{addresses.edges[0].node.address2}</p>}
+                                <p>{addresses.edges[0].node.city}, {addresses.edges[0].node.province} {addresses.edges[0].node.zip}</p>
+                            </div>
+                            <div className="address-container">
+                                <h2>Shipping Address</h2>
+                                {getShippingAddress()}
+                            </div>
                         </div>
                     </div>
-                    <div className="details--column">
-                        <div className="address-container">
-                            <h2>Billing Address</h2>           
-                            <p>{addresses.edges[0].node.address1}</p>
-                            {addresses.edges[0].node.address2 !== "" && <p>{addresses.edges[0].node.address2}</p>}
-                            <p>{addresses.edges[0].node.city}, {addresses.edges[0].node.province} {addresses.edges[0].node.zip}</p>
-                        </div>
-                        <div className="address-container">
-                            <h2>Shipping Address</h2>
-                            {getshippingAddress()}
-                        </div>
-                    </div>
-                </div>
+                }
+                
             </Modal>
             
 
