@@ -236,3 +236,7 @@ export function getProductInfoPlaceholder() {
 export function getProductPlaceholder() {
   return PLACEHOLDERS.PRODUCT;
 }
+
+export function getPlaceholderBlogImage() {
+  return "https://cdn.shopify.com/s/files/1/0616/6498/5248/articles/Image_14.png?v=1662565597";
+}
