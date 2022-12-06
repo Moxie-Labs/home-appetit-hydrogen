@@ -125,7 +125,7 @@ export default function Orders(props) {
         return (
             <div>
                 <p>{modalOrder.shippingAddress.address1}</p>
-                {modalOrder.shippingAddress.address2 !== "" && modalOrder.shippingAddress.address2 !== "null " && modalOrder.shippingAddress.address2 !== null && <p>{modalOrder.shippingAddress.address2}</p>}
+                {modalOrder.shippingAddress.address2 !== "" && !modalOrder.shippingAddress.address2.includes("null") && modalOrder.shippingAddress.address2 !== null && <p>{modalOrder.shippingAddress.address2}</p>}
                 <p>{modalOrder.shippingAddress.city}, {modalOrder.shippingAddress.province} {modalOrder.shippingAddress.zip}</p>
             </div>
         );
@@ -192,7 +192,7 @@ export default function Orders(props) {
                             <div className="address-container">
                                 <h2>Billing Address</h2>           
                                 <p>{addresses.edges[0].node.address1}</p>
-                                {addresses.edges[0].node.address2 !== "" && <p>{addresses.edges[0].node.address2}</p>}
+                                {addresses.edges[0].node.address2 !== "" && addresses.edges[0].node.address2 !== null && !addresses.edges[0].node.address2.includes("null") && <p>{addresses.edges[0].node.address2}</p>}
                                 <p>{addresses.edges[0].node.city}, {addresses.edges[0].node.province} {addresses.edges[0].node.zip}</p>
                             </div>
                             <div className="address-container">
