@@ -1,5 +1,5 @@
-import { gql, useCart } from "@shopify/hydrogen";
-import { Suspense, useState } from "react"
+import { useCart, useNavigate, flattenConnection} from "@shopify/hydrogen";
+import { Suspense, useEffect, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
 import MenuSection from "./MenuSection.client";
@@ -8,22 +8,25 @@ import OrderSummary from "./OrderSummary.client";
 import DeliveryWindow from "./DeliveryWindow.client";
 import { Page } from "./Page.client";
 import DeliveryInfo from "./DeliveryInfo.client";
-import PaymentInfo from "./PaymentInfo.client";
 import OrderConfirmation from "./OrderConfirmation.client";
 import { CompleteSignUp } from "./CompleteSignup.client";
 import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
-
+import DebugValues from "./DebugValues.client";
+import Modal from "react-modal/lib/components/Modal";
+import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME } from "../lib/const";
 
 // base configurations
+const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
 const FIRST_STEP = 1;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
-const CONFIRMATION_STEP = 8;
+const CONFIRMATION_STEP = 7;
 const FIRST_WINDOW_START = 8;
 const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
+const DEFAULT_PLAN = TRADITIONAL_PLAN_NAME;
 const DEFAULT_CARDS = [
     {
         brand: "Visa",
@@ -49,17 +52,43 @@ const DEFAULT_CARDS = [
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate } = useCart();
+    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
+    
+    const { customerData, zoneHours } = props;
+    let customer = null;
+    if (customerData != null) 
+         customer = customerData.customer;
+         
+    let addresses = [];
+    let defaultAddress = null;
+    if (customer != null) {
+        addresses = flattenConnection(customer?.addresses) || [];
+        customer.addresses.edges.map(addr => {
+            if (addr.node.id === customer.defaultAddress.id)
+                defaultAddress = addr.node;
+        });
+    }
+    
 
     const [totalPrice, setTotalPrice] = useState(100.0)
-    const [servingCount, setServingCount] = useState(1)
+    const [servingCount, setServingCount] = useState(0)
     const [selection, setSelections] = useState([])
-    const [activeScheme, setActiveScheme] = useState('traditional')
+    const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isChangePlanModalShowing, setChangePlanModalShowing] = useState(false);
+    const [isAlreadyOrderedModalShowing, setIsAlreadyOrderedModalShowing] = useState(false);
+    const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
+    const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
 
+    const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
+    const [selectedSmallItemsExtra, setSelectedSmallItemsExtra] = useState([])
+    
     const [selectedMainItems, setSelectedMainItems] = useState([])
+    const [selectedMainItemsExtra, setSelectedMainItemsExtra] = useState([])
+
     const [selectedAddonItems, setSelectedAddonItems] = useState([])
     const [selectedSmallFilters, setSelectedSmallFilters] = useState([])
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
@@ -68,19 +97,20 @@ export function OrderSection(props) {
     const [toastMessages, setToastMessages] = useState([]);
     const [showToast, setShowToast] = useState(false);
 
-    const [deliveryWindowStart, setDeliveryWindowStart] = useState(FIRST_WINDOW_START);
+    const [deliveryWindowStart, setDeliveryWindowStart] = useState(null);
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
-    const [deliveryWindowDay, setDeliveryWindowDay] = useState(6);
+    const [deliveryWindowDay, setDeliveryWindowDay] = useState(1);
 
-    let [firstName, setFirstName] = useState(isGuest ? null : "Jon Paul");
-    let [lastName, setLastName] = useState(isGuest ? null : "Simonelli");
-    let [emailAddress, setEmailAddress] = useState(isGuest ? null : "jpsimonelli@moxielabs.co");
-    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : "+12345678901");
-    let [address, setAddress] = useState(isGuest ? null : "121 Mayberry Road");
-    let [address2, setAddress2] = useState(isGuest ? null : "");
-    let [deliveryState, setDeliveryState] = useState(isGuest ? null : "Pennsylvania");
-    let [city, setCity] = useState(isGuest ? null : "Catawissa");
-    let [zipcode, setZipcode] = useState(isGuest ? null : "17820");    
+    let [firstName, setFirstName] = useState(isGuest ? '' : customer.firstName);
+    let [lastName, setLastName] = useState(isGuest ? '' : customer.lastName);
+    let [emailAddress, setEmailAddress] = useState(isGuest ? '' : customer.email);
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? '' : customer.phone);
+    let [address, setAddress] = useState(defaultAddress === null ? '' : defaultAddress.address1);
+    let [address2, setAddress2] = useState(defaultAddress === null ? '' : defaultAddress.address2);
+    let [deliveryState, setDeliveryState] = useState(defaultAddress === null ? '' : defaultAddress.province);
+    let [city, setCity] = useState(defaultAddress === null ? '' : defaultAddress.city);
+    let [zipcode, setZipcode] = useState(defaultAddress === null ? '' : defaultAddress.zip);    
+    let [country, setCountry] = useState("United States");
 
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
@@ -111,6 +141,44 @@ export function OrderSection(props) {
     const [promoTriggered, setPromoTriggered] = useState(false);
     const [referralTriggered, setReferralTriggered] = useState(false);
 
+    const [userAddedItem, setUserAddedItem] = useState(false);
+    const [isCollectionsLoading, setIsCollectionsLoading] = useState(true);
+    const [isRestoringCart, setIsRestoringCart] = useState(false);
+    const [cartWasRestored, setCartWasRestored] = useState(false);
+    const [restoreCartModalDismissed, setRestoreCartModalDismissed] = useState(false);
+    const [choicesEntrees, setChoicesEntrees] = useState([]);
+    const [choicesGreens, setChoicesGreens] = useState([]);
+    const [choicesAddons, setChoicesAddons] = useState([]);
+    const [cardStatus, setCardStatus] = useState("");
+
+    // used for deleting lineitems when multiple instances exist (Flex plan)
+    const [lineIndexByVariantId, setLineIndexByVariantId] = useState([]);
+
+    // runs necessary Storefront API calls only when needed
+    useEffect(() => {
+        setupCardsAndCollections();
+    }, []);
+
+    useEffect(() => {
+        if (cartLines.length < 1) {
+            if (props.customerAlreadyOrdered) {
+                setIsAlreadyOrderedModalShowing(true);
+            }
+        } else {
+            if (cartLines.length === 1 && isGiftCardRemoved)
+                removeGiftCard();
+            setIsAlreadyOrderedModalShowing(false);
+            if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
+                setIsRestoringCart(true);
+            }   
+        }
+    },[cartLines])
+
+    useEffect(() => {
+        if (cartWasRestored)
+            determineCurrentStep();
+    }, [cartWasRestored])
+
     /* Helpers */
     const convertTags = tags => {
         const newTags = [];
@@ -125,11 +193,6 @@ export function OrderSection(props) {
         return newTags;
     }
 
-    // let selectedMainItemsReadout = [];
-    // selectedMainItems.forEach(item => {
-    //     selectedMainItemsReadout.push(item.title);
-    // });
-
     const doesCartHaveItem = (choice, collection) => {
         let retval = false;
         collection.map(item => {
@@ -140,45 +203,155 @@ export function OrderSection(props) {
         return retval;
     }
 
-    const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true) => {
+    const findCartLineByItem = item => {
+        let retval = null;
+        cartLines.map(line => {
+            if (line.merchandise.id === item.selectedVariantId && retval === null) {
+                
+                // if: item has modifiers, then find item that has same modifiers
+                if (item.selectedMods?.length > 0) {
+                    line.attributes.map(attr => {
+                        if (attr.value === item.selectedModsStr) {
+                            retval = line;
+                        }
+                    });
+                } else {
+                    retval = line;
+                }
+            }
+        });
 
-        console.log("addItemToCard::choice", choice);
+        return retval;
+    }
 
-        // if: item was already added, then: update quantity (or remove)
-        if (doesCartHaveItem(choice, collection)) {
+    const findCartLineByVariantId = (variantId, index=0) => {
+        let retval = null;
+        cartLines.map(line => {
+            if (line.merchandise.id === variantId) 
+                if (index > 0)
+                    index -= 1;
+                else    
+                    retval = line;
+        });
+
+        return retval;
+    }
+
+    const findCollectionItemIndex = (item, collection) => {
+        let retval = -1;
+
+        collection.map((item, index) => {
+            if (item.choice.title === choice.choice.title)
+                retval = index;
+        });
+
+        return retval;
+    }
+
+    const addItemToCart = (choice, collection, collectionName, addToShopifyCart=true, isIce=false) => {
+
+        if (!userAddedItem)
+            setUserAddedItem(true);
+
+        const variantType = isIce ? 0 : getVariantType(collection);        
+
+        // if: item was already added in Traditional, then: update quantity and modifiers (or remove)
+        if (doesCartHaveItem(choice, collection) && activeScheme === 'traditional') {
             console.log("addItemToCart::already exists", choice);
+            console.log("collectionName: ", collectionName);
+            const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
+
             collection.map((item, i) => {
                 if (item.choice.title === choice.choice.title) {
-                    if (choice.quantity > 0) 
+                    if (choice.quantity > 0) {
                         item.quantity = choice.quantity;
-                    else 
-                        collection.splice(i, 1)
+                        const linesUpdatePayload = [];
+                        linesUpdatePayload.push({
+                            id: existingCartLine.id,
+                            quantity: choice.quantity
+                        });
+
+                        const modsAdded = [];
+                        choice.selectedMods.map(mod => {
+                            const modCartLine = findCartLineByVariantId(mod.variants.edges[0].node.id);
+                            
+                            // if: mods were added after parent item was already set, then: add them separately, else: just update
+                            if (modCartLine === null) 
+                                modsAdded.push(mod);
+                            else
+                                linesUpdatePayload.push({
+                                    id: modCartLine.id,
+                                    quantity: choice.quantity
+                                });
+                        });
+
+                        linesUpdate(linesUpdatePayload);
+
+                        if (modsAdded.length > 0) {
+                            console.log("modsAdded", modsAdded);
+                            const linesAddPayload = [];
+                                modsAdded.map(mod => {
+                                    linesAddPayload.push({ 
+                                        merchandiseId: mod.variants.edges[0].node.id,
+                                        quantity: choice.quantity
+                                    });
+                                }); 
+
+                            setTimeout(() => {
+                                linesAdd(linesAddPayload);
+                            }, 2000);
+                        }
+                    }
+                        
+                    else
+                        removeItem(item, i, collectionName);
+                        
                 }
             });
 
-            if (collectionName === 'main') 
-                setSelectedMainItems([...collection]);
+            if (collectionName === 'main')
+                if (isAddingExtraItems)
+                    setSelectedMainItemsExtra([...selectedMainItemsExtra]);
+                else
+                    setSelectedMainItems([...selectedMainItems]);
             else if (collectionName === 'small')
-                setSelectedSmallItems([...collection]);
+                if (isAddingExtraItems)
+                    setSelectedSmallItemsExtra([...selectedSmallItemsExtra]);
+                else
+                    setSelectedSmallItems([...selectedSmallItems]);
             else 
-                setSelectedAddonItems([...collection]);
-
-
-            linesRemove([choice.choice.productOptions[1].node.id])
+                setSelectedAddonItems([...selectedAddonItems]);
 
         }
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
-            console.log("addItemToCart::adding new item", choice);
-            const variantType = getVariantType(collection);
+            console.log("addItemToCart::adding new item", choice);    
 
-            if (collectionName === 'main') 
-                setSelectedMainItems([...collection, choice]);
-            else if (collectionName === 'small')
-                setSelectedSmallItems([...collection, choice]);
+            choice.selectedVariantId = choice.choice.productOptions[variantType].node.id;
+            console.log("choice.selectedVariantId", choice.selectedVariantId);
+
+            const lineIndex = addLineIndex(choice.choice.productOptions[variantType].node.id);
+            choice.lineIndex = lineIndex;
+            
+            let selectedModsAttr = [];
+            choice.selectedMods.map(mod => {
+                selectedModsAttr.push(mod.title);
+            });
+            choice.selectedModsStr = selectedModsAttr.join(", ");
+
+            if (collectionName.includes('main')) 
+                if (isAddingExtraItems)
+                    setSelectedMainItemsExtra([...selectedMainItemsExtra, choice]);
+                else
+                    setSelectedMainItems([...selectedMainItems, choice]);
+            else if (collectionName.includes('sides'))
+                if (isAddingExtraItems)
+                    setSelectedSmallItemsExtra([...selectedSmallItemsExtra, choice]);
+                else
+                    setSelectedSmallItems([...selectedSmallItems, choice]);
             else 
-                setSelectedAddonItems([...collection, choice]);
+                setSelectedAddonItems([...selectedAddonItems, choice]);
 
             setToastMessages([{item: `+${choice.quantity} ${choice.choice.title}`, cost: choice.choice.price}]);
             setShowToast(true);
@@ -186,41 +359,105 @@ export function OrderSection(props) {
                 setShowToast(false);
             }, TOAST_CLEAR_TIME);
 
-            if (getQuantityTotal([...collection, choice]) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP) {
-                // setCurrentStep(currentStep+1);
-            }
-
             if (addToShopifyCart) {
                 console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
-                // update Shopify Cart
-                linesAdd({ 
+                const linesAddPayload = [];
+                console.log("choice selectedMods", choice.selectedMods);
+                
+                choice.selectedMods.map(mod => {
+                    linesAddPayload.push({ 
+                        attributes: [
+                            { 
+                                key: "baseItemId",
+                                value: choice.choice.productOptions[variantType].node.id
+                            }
+                        ],
+                        merchandiseId: mod.variants.edges[0].node.id,
+                        quantity: choice.quantity
+                    });
+                }); 
+                
+                linesAddPayload.push({ 
                     merchandiseId: choice.choice.productOptions[variantType].node.id,
-                    quantity: choice.quantity
+                    quantity: choice.quantity,
+                    attributes: selectedModsAttr.length < 1 ? [] : [{key: "Modifier(s)", value: selectedModsAttr.join(", ")}]
                 });
+
+                console.log("linesAddPayload", linesAddPayload);
+
+                // update Shopify Cart
+                linesAdd(linesAddPayload);
             }
-            
         }
+
+    }
+
+    // returns what instance of a line item is being added (Flex plan only)
+    const addLineIndex = variantId => {
+        console.log("getLineIndex for ", variantId);
+        let newLineIndex = lineIndexByVariantId;
+        if (newLineIndex[variantId] === undefined || newLineIndex[variantId] === null) {
+            console.log("generating new cell")
+            newLineIndex[variantId] = 1;
+        }
+            
+        else {
+            console.log("Adding to existing cell");
+            newLineIndex[variantId] += 1;
+        }
+            
+        setLineIndexByVariantId(newLineIndex);
+        console.log("newLineIndex", newLineIndex);
+        return newLineIndex[variantId];
+    }
+
+    const shiftLineIndexes = (index, variantId, collection) => {
+        collection.map(item => {
+            if (item.selectedVariantId === variantId && item.lineIndex > index) 
+                item.lineIndex -= 1;
+        });
+
+        let newLineIndex = lineIndexByVariantId;
+        newLineIndex[variantId] -= 1;
+        setLineIndexByVariantId(newLineIndex);
+
+        return collection;
     }
 
     const isSectionFilled = (collection) => {
-        return ((activeScheme === 'traditional') && getQuantityTotal(collection) >= FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP)
+        return getQuantityTotal(collection) >= getFreeQuantityLimit() && currentStep !== ADD_ON_STEP;
     }
 
     const getOrderTotal = () => {
-        let total = parseFloat(planPricingMultiplier);
-        selectedSmallItems.forEach((item, index) => {
-            if (activeScheme === 'flexible' || index >= 4)
-                total += parseFloat(item.choice.price * item.quantity);
+        let total = parseFloat(getPlanPrice());
+        selectedSmallItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
         });
-        selectedMainItems.forEach((item, index) => {
-            if (activeScheme === 'flexible' || index >= 4)
-                total += parseFloat(item.choice.price * item.quantity);
-        });
-        selectedAddonItems.forEach(item => {
+        selectedSmallItemsExtra.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
             total += parseFloat(item.choice.price * item.quantity);
         });
-
-        console.log("getOrderTotal::total", total)
+        selectedMainItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+        });
+        selectedMainItemsExtra.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            total += parseFloat(item.choice.price * item.quantity);
+        });
+        selectedAddonItems.forEach(item => {
+            item.selectedMods?.map(mod => {
+                total += parseFloat(mod.priceRange.maxVariantPrice.amount * item.quantity);
+            });
+            total += parseFloat(item.choice.price * item.quantity);
+        });
 
         return total;
     }
@@ -232,7 +469,7 @@ export function OrderSection(props) {
                 total += item.quantity;
             });
         }
-
+           
         return total;
     }
 
@@ -284,24 +521,23 @@ export function OrderSection(props) {
         return daysOfWeek[dayNumber];
     }
 
-    // TODO: grab GUID dynamically
     const addExtraIce = value => {
         const iceItem = ICE_ITEM;
         const iceChoice = {
             title: iceItem.title,
             attributes: [],
-            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount/100),
+            price: parseFloat(iceItem.priceRange.maxVariantPrice.amount),
             description: "",
             imageURL: "",
-            productOptions: []
+            productOptions: iceItem.variants,
+            modifications: [],
+            substitutions: [],
         }
-        addItemToCart({choice: iceChoice, quantity: (value ? 1 : 0)}, selectedAddonItems, "addons");
+        addItemToCart({choice: iceChoice, quantity: (value ? 1 : 0), selectedMods: []}, selectedAddonItems, "addons", true, true);
         setExtraIce(value);
     }
 
-
     const attemptSubmitOrder = () => {
-
         const buyerIdentityObj = {
             email: emailAddress,
             phone: phoneNumber,
@@ -311,7 +547,7 @@ export function OrderSection(props) {
                         address1: address,
                         address2: address2,
                         city: city,
-                        country: "United States",
+                        country: country,
                         firstName: firstName,
                         lastName: lastName,
                         phone: phoneNumber,
@@ -327,7 +563,15 @@ export function OrderSection(props) {
 
         buyerIdentityUpdate(buyerIdentityObj);
 
-        window.location.href=`${checkoutUrl}`;
+        window.location.href=`${checkoutUrl}?checkout[email]=${emailAddress}
+        &checkout[shipping_address][first_name]=${firstName}
+        &checkout[shipping_address][last_name]=${lastName}
+        &checkout[shipping_address][address1]=${address}
+        &checkout[shipping_address][address2]=${address2 === null ? "" : address2}
+        &checkout[shipping_address][city]=${city}
+        &checkout[shipping_address][province]=${deliveryState}
+        &checkout[shipping_address][country]=${country}
+        &checkout[shipping_address][zip]=${zipcode}`;
     }
 
     const emptyCart = () => {
@@ -340,32 +584,99 @@ export function OrderSection(props) {
         setSelectedMainItems([]);
         setSelectedSmallItems([]);
         setSelectedAddonItems([]);
+        setSelectedMainItemsExtra([]);
+        setSelectedSmallItemsExtra([]);
+        setIsAddingExtraItems(false);
+        setCurrentStep(FIRST_STEP);
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    }
+
+    const removeItem = (item, index, collectionName) => {
+        console.log("removing Item: ", item);
+        console.log("collectionName: ", collectionName);
+        let linesToModify = [];
+        
+        // delete from internal Cart/OrderSummary
+        if (collectionName === 'main') {
+            let collection = selectedMainItems;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedMainItems([...collection]);
+        } else if (collectionName === 'mainExtra') {
+            let collection = selectedMainItemsExtra;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedMainItemsExtra([...collection]);
+        } else if (collectionName === 'sides') {
+            let collection = selectedSmallItems;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedSmallItems([...collection]);
+        } else if (collectionName === 'sidesExtra') {
+            let collection = selectedSmallItemsExtra;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedSmallItemsExtra([...collection]);
+        } else if (collectionName === 'addons') {
+            let collection = selectedAddonItems;
+            collection.splice(index, 1);
+            collection = shiftLineIndexes(item.lineIndex, item.selectedVariantId, collection);
+            setSelectedAddonItems([...collection]);
+        }
+
+        // delete from Shopify Cart
+        const baseLine = findCartLineByItem(item);
+        if (baseLine !== null)
+            linesToModify.push({
+                id: baseLine.id,
+                quantity: 0
+            });
+
+        cartLines.map(line => {          
+            // update associated mods quantities
+            item.selectedMods?.map(mod => {
+                const {id:modId} = line.merchandise;
+                const modVariantId = mod.variants.edges[0].node.id;
+                if (modId === modVariantId) {
+                    linesToModify.push({
+                        id: line.id,
+                        quantity: Math.max(0, (line.quantity - item.quantity))
+                    });
+                }
+            });
+        });
+        
+        if (linesToModify.length > 0)
+            linesUpdate(linesToModify);
+
+
     }
 
     const confirmPersonsCount = () => {
+        linesAdd({
+            merchandiseId: getSelectedPlan().id,
+            quantity: 1
+        });
 
-        if (activeScheme === 'traditional') {
-            const traditionalPlanVariantId = TRADITIONAL_PLAN_VARIANT_IDS[servingCount-1];
-
-            linesAdd({
-                merchandiseId: traditionalPlanVariantId,
-                quantity: 1
-            });
-        }
-
+        if (!userAddedItem)
+            setUserAddedItem(true);
         setCurrentStep(2);
     }
 
     // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
     const getVariantType = collection => {
-        if (activeScheme === 'traditional')
-            return collection.length < FREE_QUANTITY_LIMIT && currentStep !== ADD_ON_STEP ? 1 : 0;
-        else
+        if (currentStep === ADD_ON_STEP)
             return 0;
+        else 
+            return isAddingExtraItems ? 0 : 1;
     }
 
 
     const confirmDeliveryInfo = () => {
+
+        while(cartStatus !== 'idle') { ; }
+
+        const deliveryWindows = generateDeliveryWindowDateTimes();
 
         const cartAttributesObj = [
             {
@@ -373,141 +684,443 @@ export function OrderSection(props) {
                 value: activeScheme
             },
             {
-                key: 'Delivery Window',
-                value: `${deliveryWindowStart} - ${deliveryWindowEnd}`
+                key: 'Delivery Window Start',
+                value: deliveryWindows.startDateTime
+            },
+            {
+                key: 'Delivery Window End',
+                value: deliveryWindows.endDateTime
             },
             {
                 key: 'Delivery Day',
-                value: getDayOfWeekName(deliveryWindowDay)
+                value: deliveryWindows.deliveryDate
             }
         ];
+
+        if (isGift) {
+            cartAttributesObj.push({
+                key: 'Gift?',
+                value: 'Yes'
+            });
+
+            if (giftMessage.length > 0) {
+                cartAttributesObj.push({
+                    key: 'Gift Message',
+                    value: giftMessage
+                });
+            }
+            
+        }
         
         cartAttributesUpdate(cartAttributesObj);
 
-        setCurrentStep(7);
+        if (instructions.length > 0) {
+            requestCallbackRuntime(confirmNote, 1000);
+        }
     }
+
+    const confirmNote = () => {
+        noteUpdate(instructions);
+    }
+
+    const requestCallbackRuntime = (callback, timeoutTime=0) => {
+        setTimeout(() => {
+            console.log("cartStatus", cartStatus);
+            if (cartStatus !== 'idle') {
+                console.log("Still waiting");
+                requestCallbackRuntime(callback, timeoutTime+500);
+            } else {
+                console.log("Running callback");
+                callback();
+            }
+        }, timeoutTime)
+    }
+
+
+    const setupNextSection = nextStep => {
+        // setIsAddingExtraItems(false);
+        updateCurrentStep(nextStep); 
+        const step = document.querySelector(".step-active");
+        step.scrollIntoView({behavior: "smooth", block: "start"});
+    }
+
+    const findCollectionById = collectionId => {
+        let retval = null;
+        const { collectionsById } = props;
+        collectionsById.map(collection => {
+            if (collection.id === collectionId)
+                retval = collection;
+        });
+        return retval;
+    }
+
+    const getModifications = modifications => {
+        if (modifications === null)
+            return [];
+        else {
+            const { value:modifierId } = modifications;
+            const modCollection = findCollectionById(modifierId);
+            if (modCollection === null)
+                return [];
+            const collectionProducts = [];
+            modCollection.products.edges.map(edge => {
+                collectionProducts.push(edge.node);
+            });
+            console.log("modCollection.collectionProducts", collectionProducts);
+            return collectionProducts;
+        }
+    }
+
+    const getSubstitutions = substitutions => {
+        if (substitutions === null)
+            return [];
+        else {
+            const { value:substitutionId } = substitutions;
+            const subCollection = findCollectionById(substitutionId);
+            if (subCollection === null)
+                return [];
+            const collectionProducts = [];
+            subCollection.products.edges.map(edge => {
+                collectionProducts.push(edge.node);
+            });
+            console.log("subCollection.collectionProducts", collectionProducts);
+            return collectionProducts;
+        }
+        
+    }
+
+    const getFreeQuantityLimit = () => {
+        if (activeScheme === 'traditional')
+            return FREE_QUANTITY_LIMIT;
+        else
+            return FREE_QUANTITY_LIMIT * Math.max(1, servingCount);
+    }
+
+    
+    const queryChangeActiveScheme = (newScheme=null) => {
+        console.log("queryChangeActiveScheme");
+        if (newScheme === null)
+            newScheme = activeScheme === 'traditional' ? 'flexible' : 'traditional';
+        if (cartLines.length) 
+            setChangePlanModalShowing(true);
+        else
+            setActiveScheme(newScheme);
+    }
+
+    const changeActiveScheme = () => {
+        const newScheme = activeScheme === 'traditional' ? 'flexible' : 'traditional';
+        emptyCart();
+        setActiveScheme(newScheme);
+        setCurrentStep(FIRST_STEP);
+        setChangePlanModalShowing(false);
+    }
+    
+    const getSelectedPlan = () => {
+        const selectedPlan = activeScheme === 'traditional' ? props.traditionalPlanItem.variants.edges[Math.max(0,servingCount-1)].node : props.flexiblePlanItem.variants.edges[Math.max(0,servingCount-1)].node;
+        return selectedPlan;
+    }
+
+    const getPlanPrice = () => {
+        const selectedPlan = getSelectedPlan();
+        return parseFloat(selectedPlan.price.amount);
+    }
+
+    const generateDeliveryWindowDateTimes = () => {
+        const dayOfWeekName = getDayOfWeekName(deliveryWindowDay).toLowerCase();
+        const deliveryWindowDateTime = dayOfWeek("next", dayOfWeekName);
+        const deliveryWindowStartDateTime = new Date(deliveryWindowDateTime.getTime());
+        const deliveryWindowEndDateTime = new Date (deliveryWindowDateTime.getTime());
+        const startMinutes = deliveryWindowStart == Math.floor(deliveryWindowStart) ? 0 : 30;
+        const endMinutes = deliveryWindowEnd == Math.floor(deliveryWindowEnd) ? 0 : 30;
+        deliveryWindowStartDateTime.setHours(deliveryWindowStart, startMinutes, 0);
+        deliveryWindowEndDateTime.setHours(deliveryWindowEnd, endMinutes, 0);
+
+        const startDTString = `${(addLeadingZero(deliveryWindowStartDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowStartDateTime.getDate())}/${deliveryWindowStartDateTime.getFullYear()} ${addLeadingZero(deliveryWindowStartDateTime.getHours())}:${addLeadingZero(deliveryWindowStartDateTime.getMinutes())}`;
+        const endDTString = `${(addLeadingZero(deliveryWindowEndDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowEndDateTime.getDate())}/${deliveryWindowEndDateTime.getFullYear()} ${addLeadingZero(deliveryWindowEndDateTime.getHours())}:${addLeadingZero(deliveryWindowEndDateTime.getMinutes())}`;
+
+        return { 
+            deliveryDate: `${(addLeadingZero(deliveryWindowStartDateTime.getMonth()+1))}/${addLeadingZero(deliveryWindowStartDateTime.getDate())}/${addLeadingZero(deliveryWindowStartDateTime.getFullYear())}`, 
+            startDateTime: startDTString, 
+            endDateTime: endDTString
+        };
+    }
+
+    const addLeadingZero = number => {
+        if (number < 10)
+            number = '0' + number;
+
+        return number;
+    }
+
+    const resetOrder = () => {
+        emptyCart();
+        setCurrentStep(1);
+    }
+
+    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered, latestMenu } = props;
+    const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
+
+    const setupCardsAndCollections = () => {
+        const newChoicesEntrees = [];
+        const newChoicesGreens = [];
+        const newChoicesAddons = [];
+
+        entreeProducts.map(entree => {
+            const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
+            const attributes = convertTags(entree.node.tags);
+            const choice = {
+                title: entree.node.title,
+                attributes: attributes,
+                price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
+                description: entree.node.description,
+                totalInventory: entree.node.totalInventory,
+                imageURL: imgURL,
+                productOptions: entree.node.variants.edges,
+                modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
+                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions)),
+                baseCollection: 'main'
+            };
+            newChoicesEntrees.push(choice);
+        });
+
+        greensProducts.map(greens => {
+            const imgURL = greens.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : greens.node.images.edges[0].node.src;
+            const attributes = convertTags(greens.node.tags);
+            const choice = {
+                title: greens.node.title,
+                attributes: attributes,
+                price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
+                description: greens.node.description,
+                imageURL: imgURL,
+                productOptions: greens.node.variants.edges,
+                modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
+                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value),
+                baseCollection: 'sides'
+            }
+
+            newChoicesGreens.push(choice);
+        });
+    
+        addonProducts.map(addons => {
+            const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
+            const attributes = convertTags(addons.node.tags);
+            const choice = {
+                title: addons.node.title,
+                attributes: attributes,
+                price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
+                description: addons.node.description,
+                imageURL: imgURL,
+                productOptions: addons.node.variants.edges,
+                modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
+                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value),
+                baseCollection: 'addons'
+            };
+
+            newChoicesAddons.push(choice);
+        });
+
+        setChoicesEntrees(newChoicesEntrees);
+        setChoicesGreens(newChoicesGreens);
+        setChoicesAddons(newChoicesAddons);
+        setIsCollectionsLoading(false);
+    }
+
+    const restoreCart = () => {
+        const existingMainItems = [];
+        const existingMainItemsExtra = [];
+        const existingSmallItems = [];
+        const existingSmallItemsExtra = [];
+        const existingAddonItems = [];
+
+        entreeProducts.map(entree => {
+            // map cart items to pre-selected choices      
+            const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
+            const attributes = convertTags(entree.node.tags);
+            const choice = {
+                title: entree.node.title,
+                attributes: attributes,
+                price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
+                description: entree.node.description,
+                imageURL: imgURL,
+                productOptions: entree.node.variants.edges,
+                modifications: (entree.node.modifications === null ? [] : getModifications(entree.node.modifications)),
+                substitutions: (entree.node.substitutions === null ? [] : getSubstitutions(entree.node.substitutions)),
+                baseCollection: 'main'
+            };
+
+            cartLines.map(line => {
+                entree.node.variants.edges.forEach(variant => {
+                    if (line.merchandise.id === variant.node.id) {
+                        const item = {};
+                        item.selectedVariantId = line.merchandise.id;
+                        item.choice = choice;
+                        item.quantity = line.quantity;
+
+                        // if: variant is Included, then: add to MainItems, else: add to Extras
+                        if (variant.node.title === "Included")
+                            existingMainItems.push(item);
+                        else
+                            existingMainItemsExtra.push(item);
+                    }
+                });
+            });
+        });
+
+        if (existingMainItems.length > 0 && selectedMainItems.length < 1) 
+            setSelectedMainItems(existingMainItems);
+        if (existingMainItemsExtra.length > 0 && selectedMainItemsExtra.length < 1) 
+            setSelectedMainItemsExtra(existingMainItemsExtra);
+
+        greensProducts.map(greens => {
+            const imgURL = greens.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : greens.node.images.edges[0].node.src;
+            const attributes = convertTags(greens.node.tags);
+            const choice = {
+                title: greens.node.title,
+                attributes: attributes,
+                price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
+                description: greens.node.description,
+                imageURL: imgURL,
+                productOptions: greens.node.variants.edges,
+                modifications: greens.node.modifications === null ? [] : getModifications(greens.node.modifications.value),
+                substitutions: greens.node.substitutions === null ? [] : getSubstitutions(greens.node.substitutions.value),
+                baseCollection: 'sides'
+            }
+
+            cartLines.map(line => {
+                greens.node.variants.edges.forEach(variant => {
+                    if (line.merchandise.id === variant.node.id) {
+                        const item = {};
+                        item.selectedVariantId = line.merchandise.id;
+                        item.choice = choice;
+                        item.quantity = line.quantity;
+
+                        if (variant.node.title === "Included")
+                            existingSmallItems.push(item);
+                        else
+                            existingSmallItemsExtra.push(item);
+                    }
+                });
+            });
+        });
+
+        if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) 
+            setSelectedSmallItems(existingSmallItems);
+        if (existingSmallItemsExtra.length > 0 && selectedSmallItemsExtra.length < 1) 
+            setSelectedSmallItemsExtra(existingSmallItemsExtra);
+
+
+        addonProducts.map(addons => {
+            // map cart items to pre-selected choices  
+            const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
+            const attributes = convertTags(addons.node.tags);
+            const choice = {
+                title: addons.node.title,
+                attributes: attributes,
+                price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
+                description: addons.node.description,
+                imageURL: imgURL,
+                productOptions: addons.node.variants.edges,
+                modifications: addons.node.modifications === null ? [] : getModifications(addons.node.modifications.value),
+                substitutions: addons.node.substitutions === null ? [] : getSubstitutions(addons.node.substitutions.value),
+                baseCollection: 'addons'
+            };
+
+            cartLines.map(line => {
+                addons.node.variants.edges.forEach(variant => {
+                    const item = {};
+                    item.selectedVariantId = line.merchandise.id;
+                    item.choice = choice;
+                    item.quantity = line.quantity;
+                    if (line.merchandise.id === variant.node.id) {
+                        existingAddonItems.push(item);
+                    }
+                });
+            });
+        });
+
+        if (existingAddonItems.length > 0 && selectedAddonItems.length < 1) {
+            setSelectedAddonItems(existingAddonItems);
+        }
+
+        setCartWasRestored(true);
+        setIsRestoringCart(false);
+    }
+
+    const determineCurrentStep = () => {
+        let newCurrentStep = 1;
+
+        if (selectedAddonItems.length > 0)
+            newCurrentStep = 4;
+        else if (selectedSmallItems.length > 0)
+            newCurrentStep = 3;
+        else if (selectedMainItems.length > 0)
+            newCurrentStep = 2;
+        
+        if (newCurrentStep !== currentStep)
+            updateCurrentStep(newCurrentStep);
+
+    }
+
+    const updateCurrentStep = step => {
+        let isAddingExtra = false;
+
+        // if: Customer already picked 
+        if (step === MAIN_ITEMS_STEP && getQuantityTotal(selectedMainItems) >= getFreeQuantityLimit())
+            isAddingExtra = true;
+        else if (step === SIDE_ITEMS_STEP && getQuantityTotal(selectedSmallItems) >= getFreeQuantityLimit())
+            isAddingExtra = true;
+
+        setCurrentStep(step);
+        setIsAddingExtraItems(isAddingExtra);
+    }
+
+    const removeGiftCard = () => {
+        const linesToRemove = [];
+        cartLines.map(line => {
+            if (line.merchandise.product.title.includes("Gift Card"))
+                linesToRemove.push(line.id);
+        });
+        setTimeout(() => {
+            linesRemove(linesToRemove);
+            setIsGiftCardRemoved(true);
+        }, 2000);
+    }
+
+    // Autocomplete functionality for Delivery Info section
+
+    const handlePlaceSelect = () => {
+        let addressObject = autocomplete.getPlace()
+        let address = addressObject.address_components;
+        setAddress(`${address[0].long_name} ${address[1].long_name}`);
+        address.map(item => {
+            if(item.types[0] === 'locality')
+            setCity(item.long_name);
+            if(item.types[0] === 'administrative_area_level_1')
+            setDeliveryState(item.long_name);
+            if(item.types[0] === 'postal_code')
+            setZipcode(item.long_name);
+        })
+    }
+
+    let autocomplete;
+
+    const autocompleteFunc = () => {
+        autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), {})
+        autocomplete.addListener("place_changed", handlePlaceSelect);
+    };
 
     /* END Helpers */
 
-
-    /* GraphQL Setup */
-
-    const {collectionData} = props;
-
-    const collections = [];
-    collectionData.collections.edges.map(collection => {
-        collections[collection.node.handle] = collection.node;
-    });
-
-    const entreeProducts = collections['entrees'].products.edges;
-    const greensProducts = collections["greens-grains-small-plates"].products.edges;
-    const addonsProducts = collections['add-ons'].products.edges;
-
-    const existingMainItems = [];
-    const existingSmallItems = [];
-    const existingAddonItems = [];
-
-    const choicesEntrees = [];
-    entreeProducts.map(entree => {
-        const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
-        const attributes = convertTags(entree.node.tags);
-        const choice = {
-            title: entree.node.title,
-            attributes: attributes,
-            price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
-            description: entree.node.description,
-            imageURL: imgURL,
-            productOptions: entree.node.variants.edges
-        };
-        choicesEntrees.push(choice);
-
-        // map cart items to pre-selected choices        
-        cartLines.map(line => {
-            entree.node.variants.edges.forEach(variant => {
-                if (line.merchandise.id === variant.node.id) {
-                    console.log("Adding existing item", line.id)
-                    existingMainItems.push({choice: choice, quantity: line.quantity});
-                }
-            });
-        });
-    });
-
-    if (existingMainItems.length > 0 && selectedMainItems.length < 1) {
-        setSelectedMainItems(existingMainItems);
-    }
-
-    const choicesGreens = [];
-    greensProducts.map(greens => {
-        const imgURL = greens.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : greens.node.images.edges[0].node.src;
-        const attributes = convertTags(greens.node.tags);
-        const choice = {
-            title: greens.node.title,
-            attributes: attributes,
-            price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
-            description: greens.node.description,
-            imageURL: imgURL,
-            productOptions: greens.node.variants.edges
-        }
-
-        choicesGreens.push(choice);
-
-        // map cart items to pre-selected choices        
-        cartLines.map(line => {
-            greens.node.variants.edges.forEach(variant => {
-                if (line.merchandise.id === variant.node.id) {
-                    existingSmallItems.push({choice: choice, quantity: line.quantity});
-                }
-            });
-        });
-    });
-
-    if (existingSmallItems.length > 0 && selectedSmallItems.length < 1) {
-        setSelectedSmallItems(existingSmallItems);
-    }
-
-    const choicesAddons = [];
-    addonsProducts.map(addons => {
-        const imgURL = addons.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : addons.node.images.edges[0].node.src;
-        const attributes = convertTags(addons.node.tags);
-        const choice = {
-            title: addons.node.title,
-            attributes: attributes,
-            price: parseFloat(addons.node.priceRange.maxVariantPrice.amount/100),
-            description: addons.node.description,
-            imageURL: imgURL,
-            productOptions: addons.node.variants.edges
-        };
-
-        choicesAddons.push(choice);
-
-        // map cart items to pre-selected choices        
-        cartLines.map(line => {
-            addons.node.variants.edges.forEach(variant => {
-                if (line.merchandise.id === variant.node.id) {
-                    existingAddonItems.push({choice: choice, quantity: line.quantity});
-                }
-            });
-        });
-    });
-
-    if (existingAddonItems.length > 0 && selectedAddonItems.length < 1) {
-        setSelectedAddonItems(existingAddonItems);
-    }
-
-    /* END GraphQL Values */
-
-
-
     /* Static Values */
-    const TRADITIONAL_PLAN_VARIANT_IDS = [
-        "gid://shopify/ProductVariant/43314850169048", // one person
-        "gid://shopify/ProductVariant/43314850201816", // two people, etc.
-        "gid://shopify/ProductVariant/43314850234584",
-        "gid://shopify/ProductVariant/43314850267352",
-        "gid://shopify/ProductVariant/43314850300120"
-    ];
+    const TRADITIONAL_PLAN_VARIANT_IDS = [];
+    props.traditionalPlanItem.variants.edges.map(edge => {
+        TRADITIONAL_PLAN_VARIANT_IDS.push(edge.node.id);
+    });
 
-    const planPricingMultiplier = activeScheme === 'traditional' ? `${50 * servingCount + 50}` : 0.0;
+    const FLEXIBLE_PLAN_VARIANT_IDS = [];
+    props.flexiblePlanItem.variants.edges.map(edge => {
+        FLEXIBLE_PLAN_VARIANT_IDS.push(edge.node.id);
+    });
 
     const filterSmallOptions = [
         {label: 'All Options', value: 'ALL'},
@@ -517,16 +1130,8 @@ export function OrderSection(props) {
         {label: 'Dairy Free', value: 'DF'},
     ];
 
-    const availableDeliveryStarts = [
-        8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
-    ];
-
-    const availableDeliveryEnds = [
-       10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-    ];
-
     const ICE_ITEM = {
-        "id": "gid://shopify/Product/7834911965400",
+        "id": props.extraIceItem.variants.edges[0].node.id,
         "title": "Extra Ice",
         "description": "",
         "tags": [],
@@ -535,43 +1140,75 @@ export function OrderSection(props) {
         },
         "priceRange": {
             "minVariantPrice": {
-                "amount": "500.0"
+                "amount": props.extraIceItem.variants.edges[0].node.price.amount
             },
             "maxVariantPrice": {
-                "amount": "500.0"
+                "amount": props.extraIceItem.variants.edges[0].node.price.amount
             }
-        }
+        },
+        "variants": props.extraIceItem.variants.edges
     }
 
     /* END Static Values */
 
-    /* Debug Values */
+    if (latestMenu ===  null)
+        {
+            const navigate = useNavigate();
+            navigate(`https://${import.meta.env.VITE_STORE_DOMAIN}/pages/order-now`);
+        }
 
-    /* END Debug Values */
+    else if (latestMenu !==  null && isCollectionsLoading)
+        return <Page>
+            <Suspense>
+                <h1>One moment...</h1>
+            </Suspense>
+        </Page>;
 
-
-    return (
+    else return (
         <Page>
             <Suspense>
-            <Header />
+            <Header 
+            isOrdering = {true}/>
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
                 <div className="order-wrapper">
-
-                    <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
-
                     <Layout>
                         <LayoutSection>
 
-                            <div className="dish-card-wrapper order--properties">
+                        { SHOW_DEBUG && 
+                            <section>
+                                <button className={`btn btn-standard`} disabled={(cartLines.length < 1)} onClick={() => emptyCart()}>Empty Cart</button>
+                                <DebugValues
+                                    activeScheme={activeScheme}
+                                    servingCount={servingCount}
+                                    isAddingExtraItems={isAddingExtraItems}
+                                    selectedMainItems={selectedMainItems}
+                                    selectedMainItemsExtra={selectedMainItemsExtra}
+                                    traditionalPlanItem={props.traditionalPlanItem}
+                                    planPrice={getPlanPrice()}
+                                    flexiblePlanItems={props.flexiblePlanItems}
+                                    extraIceItem={props.extraIceItem}
+                                    cartLines={cartLines}
+                                    checkoutUrl={checkoutUrl}
+                                    currentStep={currentStep}
+                                    cartId={cartId}
+                                    userAddedItem={userAddedItem}
+                                />
+                            </section> 
+                        }
+
+                            <div className={`dish-card-wrapper order--properties ${currentStep === 1 ? "" : "dishcard--wrapper-inactive"}`}>
                                 <OrderProperties
                                     activeScheme={activeScheme}
-                                    handleSchemeChange={(value) => setActiveScheme(value)}
+                                    handleSchemeChange={(value) => queryChangeActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
-                                    handleCancel={() => console.log("Cancel clicked")}
+                                    handleCancel={() => setCurrentStep(1)}
+                                    planPrice={getPlanPrice()}
                                     step={1}
                                     currentStep={currentStep}
+                                    servingCount={servingCount}
+                                    deliveryWindowOne={dayOfWeek("next", "monday")}
                                 />
                             </div>
 
@@ -586,16 +1223,27 @@ export function OrderSection(props) {
                                     servingCount={servingCount}
                                     choices={choicesEntrees} 
                                     collection={selectedMainItems}
-                                    freeQuantityLimit={FREE_QUANTITY_LIMIT} 
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedMainFilters(filters)}
-                                    handleItemSelected={(choice) => addItemToCart(choice, selectedMainItems, 'main')}
-                                    handleConfirm={() => setCurrentStep(3)}
-                                    handleEdit={() => setCurrentStep(2)}
+                                    handleItemSelected={isAddingExtraItems ? 
+                                        (choice) => addItemToCart(choice, selectedMainItemsExtra, 'mainExtra')
+                                        :
+                                        (choice) => addItemToCart(choice, selectedMainItems, 'main')}
+                                    handleConfirm={() => setupNextSection(3)}
+                                    handleEdit={() => updateCurrentStep(2)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedMainItems}
+                                    selectedExtra={selectedMainItemsExtra}
                                     filters={selectedMainFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedMainItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
+                                    isRestoringCart={isRestoringCart}
+                                    cardStatus={cardStatus}
+                                    setCardStatus={setCardStatus}
                                 />
                             </div>
                             
@@ -608,16 +1256,27 @@ export function OrderSection(props) {
                                     servingCount={servingCount}
                                     choices={choicesGreens} 
                                     collection={selectedSmallItems}
-                                    freeQuantityLimit={FREE_QUANTITY_LIMIT}
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedSmallFilters(filters)}
-                                    handleItemSelected={(choice) => addItemToCart(choice, selectedSmallItems, 'small')}
-                                    handleConfirm={() => setCurrentStep(4)}
-                                    handleEdit={() => setCurrentStep(3)}
+                                    handleItemSelected={isAddingExtraItems ? 
+                                        (choice) => addItemToCart(choice, selectedSmallItemsExtra, 'sidesExtra')
+                                        :
+                                        (choice) => addItemToCart(choice, selectedSmallItems, 'sides')}
+                                    handleConfirm={() => setupNextSection(4)}
+                                    handleEdit={() => updateCurrentStep(3)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
                                     selected={selectedSmallItems}
+                                    selectedExtra={selectedSmallItemsExtra}
                                     filters={selectedSmallFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     isSectionFilled={isSectionFilled(selectedSmallItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
+                                    isRestoringCart={isRestoringCart}
+                                    cardStatus={cardStatus}
+                                    setCardStatus={setCardStatus}
                                 />
                             </div>
 
@@ -631,18 +1290,28 @@ export function OrderSection(props) {
                                     choices={choicesAddons} 
                                     collection={selectedAddonItems}
                                     freeQuantityLimit={99}
+                                    activeScheme={activeScheme}
                                     filterOptions={filterSmallOptions}
                                     handleFiltersUpdate={(filters) => setSelectedAddonFilters(filters)}
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
-                                    handleConfirm={() => setCurrentStep(5)}
-                                    handleEdit={() => setCurrentStep(4)}
+                                    handleConfirm={() => setupNextSection(5)}
+                                    handleEdit={() => updateCurrentStep(4)}
                                     selected={selectedAddonItems}
+                                    selectedExtra={[]}
                                     filters={selectedAddonFilters}    
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     noQuantityLimit={true}
                                     isSectionFilled={isSectionFilled(selectedAddonItems)}
+                                    isAddingExtraItems={isAddingExtraItems}
+                                    handleChangePlan={() => queryChangeActiveScheme()}
+                                    isRestoringCart={isRestoringCart}
+                                    cardStatus={cardStatus}
+                                    setCardStatus={setCardStatus}
                                 />
                             </div>
+                            <section className="menu-section__actions">
+                                <button className='btn btn-primary-small btn-app btn-disabled'>Place Order</button>
+                            </section>
 
                         </LayoutSection>
 
@@ -651,16 +1320,77 @@ export function OrderSection(props) {
                                 currentStep={currentStep}
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={planPricingMultiplier}
+                                pricingMultiplier={getPlanPrice()}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
+                                selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
+                                freeQuantityLimit={getFreeQuantityLimit()} 
+                                removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
+                                isAddingExtraItems={isAddingExtraItems}
+                                emptyCart={()=>emptyCart()}
+                                handleChangeCurrentStep={step => updateCurrentStep(step)}                             
+                                cardStatus={cardStatus}
                             />  
                         </LayoutSection>
+
+                        <Modal
+                            isOpen={isAlreadyOrderedModalShowing && !alreadyOrderedModalDismissed}
+                            className="modal--flexible-confirmaton"
+                        >
+                            <div className='modal--flexible-inner'>
+                                <h2 className='ha-h4'>Continue with New Order?</h2>
+                                <p className='ha-body'>It looks like you already placed an order for this week.  You can view your existing order or continue placing a new one.</p>
+                                <p>If you have any issues with your current order, please <a href="#">contact us</a></p>
+                                <section className="card__actions">
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {window.location.href = '/account#orders'}}>View Existing Order</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setAlreadyOrderedModalDismissed(true)}>Start New Order</button>
+                                </section>   
+                            </div>
+                        </Modal>
+
+                        <Modal
+                            isOpen={isChangePlanModalShowing}
+                            onRequestClose={() => setChangePlanModalShowing(!isChangePlanModalShowing)}
+                            className="modal--flexible-confirmaton modal--change-type"
+                        >
+                            <div className='modal--flexible-inner'>
+                                <h2 className='ha-h4 text-center'>Change order type?</h2>
+                                {/* <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4> */}
+                                <p className='ha-body'>Our Flex ordering option allows you to choose and modify individual dishes. Note: This ordering type does increase the base cost. Previous selections will be removed from your cart. </p>
+                                <section className="card__actions">
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>{activeScheme === 'traditional' ? "Switch to flexible order" : "Switch to classic order"}</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Cancel</button>
+                                </section>   
+                            </div>
+                        </Modal>
+
+                        <Modal
+                            isOpen={isRestoringCart && !restoreCartModalDismissed}
+                            className="modal--flexible-confirmaton modal--restore-cart"
+                        >
+                            <div className='modal--flexible-inner'>
+                                <h2 className='ha-h4 text-center'>Continue with <br/> new order?</h2>
+                                <p className='ha-body'>It looks like you already placed an order for this week. You can view your existing order or contine placing a new one.</p>
+                                <p className='ha-body'>If you have any issues with your current order, please <a href="https://marketingbeta.homeappetitphilly.com/pages/contact-1">contact us.</a></p>
+                                <section className="card__actions">
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {
+                                        setRestoreCartModalDismissed(true);
+                                        restoreCart();
+                                    }}>View existing order</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => {
+                                        setRestoreCartModalDismissed(true);
+                                        resetOrder();
+                                        setIsRestoringCart(false);
+                                    }}>Start new order</button>
+                                </section>   
+                            </div>
+                        </Modal>
                     </Layout>
                 </div>
                 }
@@ -671,20 +1401,21 @@ export function OrderSection(props) {
                         <LayoutSection>
 
                             <DeliveryWindow 
-                                availableDeliveryStarts={availableDeliveryStarts} 
-                                availableDeliveryEnds={availableDeliveryEnds}
+                                availableDeliveryStarts={zoneHours} 
                                 deliveryWindowStart={deliveryWindowStart}
                                 deliveryWindowEnd={deliveryWindowEnd}
                                 deliveryWindowDay={deliveryWindowDay}
-                                deliveryWindowSaturday={dayOfWeek("next", "monday")}
-                                deliveryWindowSunday={dayOfWeek("next", "tuesday")}
+                                deliveryWindowOne={dayOfWeek("next", "monday")}
+                                deliveryWindowTwo={dayOfWeek("next", "tuesday")}
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
-                                handleContinue={() => setCurrentStep(6)}
-                                handleCancel={() => {setCurrentStep(4)}}
+                                handleContinue={() => {setCurrentStep(6); setIsEditing(isGuest)}}
+                                handleCancel={() => {setCurrentStep(5)}}
                                 step={5}
                                 currentStep={currentStep}
+                                isEditing={isEditing}
+                                setIsEditing={setIsEditing}
                             />
 
                         </LayoutSection>
@@ -699,7 +1430,9 @@ export function OrderSection(props) {
                                 address={address}
                                 address2={address2}
                                 city={city}
+                                deliveryState={deliveryState}
                                 zipcode={zipcode}
+                                zipcodeCheck={zipcodeCheck}
                                 instructions={instructions}
                                 extraIce={extraIce}
                                 isGift={isGift}
@@ -721,63 +1454,22 @@ export function OrderSection(props) {
                                 handleGiftMessage={(value) => setGiftMessage(value)}
                                 handleAgreeToTerms={value => setAgreeToTerms(value)}
                                 handleReceiveTexts={value => setReceiveTexts(value)}
-                                handleContinue={() => confirmDeliveryInfo()}
+                                handleContinue={() => {
+                                    requestCallbackRuntime(confirmDeliveryInfo);
+                                    requestCallbackRuntime(attemptSubmitOrder, 2000);
+                                }}
                                 handleCancel={() => {setCurrentStep(5)}}
                                 step={6}
                                 currentStep={currentStep}
                                 isGuest={isGuest}
+                                isEditing={isEditing}
+                                setIsEditing={setIsEditing}
+                                autocompleteFunc={autocompleteFunc}
+                                addresses={addresses}
                             />
 
                         </LayoutSection>
 
-                        <LayoutSection>
-
-                            <PaymentInfo
-                                isGuest={isGuest}
-                                cardNumber={cardNumber}
-                                expiration={expiration} 
-                                securityCode={securityCode}
-                                zipcode={cardZipcode}
-                                firstName={billingFirstName}
-                                lastName={billingLastName}
-                                emailAddress={billingEmailAddress}
-                                phoneNumber={billingPhoneNumber}
-                                address={billingAddress}
-                                address2={billingAddress2}
-                                city={billingCity}
-                                billingZipcode={billingZipcode}
-                                sameAsBilling={sameAsBilling}
-                                creditCards={creditCards}
-                                giftCards={giftCards}
-                                giftCardTriggered={giftCardTriggered}
-                                promoTriggered={promoTriggered}
-                                referralTriggered={referralTriggered}
-                                handleCardNumberChange={(value) => setCardNumber(value)}
-                                handleExpirationChange={(value) => setExpiration(value)}
-                                handleSecurityCodeChange={(value) => setSecurityCode(value)}
-                                handleZipcodeChange={(value) => setCardZipcode(value)}
-                                handleSameAsBilling={(value) => setSameAsBilling(value)}
-                                handleStateChange={(value) => setBillingDeliveryState(value)}
-                                handleFirstNameChange={(value) => setBillingFirstName(value)}
-                                handleLastNameChange={(value) => setBillingLastName(value)}
-                                handleEmailChange={(value) => setBillingEmailAddress(value)}
-                                handlePhoneNumberChange={(value) => setBillingPhoneNumber(value)}
-                                handleAddressChange={(value) => setBillingAddress(value)}
-                                handleAddress2Change={(value) => setBillingAddress2(value)}
-                                handleCityChange={(value) => setBillingCity(value)}
-                                handleBillingZipcodeChange={(value) => setBillingZipcode(value)}
-                                handleGiftCardTrigger={() => setGiftCardTriggered(true)}
-                                handlePromoTrigger={() => setPromoTriggered(!promoTriggered)}
-                                handleReferralTrigger={() => setReferralTriggered(!referralTriggered)}
-                                handleCreditCardsChange={(value) => setCreditCards(value)}
-                                handleGiftCardsChange={(value) => setGiftCards(value)}
-                                handleContinue={() => attemptSubmitOrder()}
-                                handleCancel={() => {setCurrentStep(6)}}
-                                step={7}
-                                currentStep={currentStep}
-                            />
-
-                        </LayoutSection>
                     </Layout>
 
                     <Layout>
@@ -785,15 +1477,19 @@ export function OrderSection(props) {
                             <OrderSummary 
                                 activeScheme={activeScheme}
                                 servingCount={servingCount}
-                                pricingMultiplier={planPricingMultiplier}
+                                pricingMultiplier={getPlanPrice()}
                                 orderTotal={getOrderTotal()}
                                 selectedMainItems={[...selectedMainItems]} 
+                                selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                 selectedSmallItems={[...selectedSmallItems]}
+                                selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                 selectedAddonItems={[...selectedAddonItems]}
                                 toastMessages={toastMessages}
                                 showToast={showToast}
                                 getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                 getPhase={getPhase(currentStep)}
+                                freeQuantityLimit={getFreeQuantityLimit()} 
+                                isEditing={isEditing}
                             />  
                         </LayoutSection>
                     </Layout>
@@ -839,15 +1535,18 @@ export function OrderSection(props) {
                                 <OrderSummary 
                                     activeScheme={activeScheme}
                                     servingCount={servingCount}
-                                    pricingMultiplier={planPricingMultiplier}
+                                    pricingMultiplier={getPlanPrice()}
                                     orderTotal={getOrderTotal()}
                                     selectedMainItems={[...selectedMainItems]} 
+                                    selectedMainItemsExtra={[...selectedMainItemsExtra]} 
                                     selectedSmallItems={[...selectedSmallItems]}
+                                    selectedSmallItemsExtra={[...selectedSmallItemsExtra]}
                                     selectedAddonItems={[...selectedAddonItems]}
                                     toastMessages={toastMessages}
                                     showToast={showToast}
                                     getQuantityTotal={(itemGroup) => getQuantityTotal(itemGroup)}
                                     getPhase={getPhase(currentStep)}
+                                    freeQuantityLimit={getFreeQuantityLimit()} 
                                 />  
                             </LayoutSection>
                         </Layout>

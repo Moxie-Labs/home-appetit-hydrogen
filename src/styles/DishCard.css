@@ -14,12 +14,13 @@
 
     .dish-card.active, .dish-card.confirmed {
         /* border: 4px solid #2F80ED; */
-        opacity: 1 !important;
+        opacity: 1;
     }
 
     .dish-card.disabled {
         cursor: unset;
         opacity: 0.6;
+        transition: opacity 0.1s linear 0s;
         pointer-events: none;
     }
 
@@ -38,14 +39,14 @@
     padding: 20px;
     margin-top: -6px;
     border-radius: 0 0 20px 20px;
-    min-height: 181px;
+    min-height: 200px;
 }
 
 .card__quantity-section {
     clear: both;
     text-align: center;
     width: 225px;
-    margin: 0 auto 35px;
+    margin: 0 auto 25px;
 }
 
     .card__quantity-count {
@@ -93,6 +94,7 @@
     display: flex;
     justify-content: center;
     width: 345px;
+    margin-bottom: 10px;
 }
 
 .btn-card {
@@ -154,6 +156,12 @@
     background: #F8EFE0;
     border-radius: 20px;
     padding: 2em;
+    padding-top: 4em;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-around;
+    row-gap: 2.875rem;
 }
 
 .card__info-top-info{
@@ -173,10 +181,10 @@
 }
 
 .card__quantity-field-wrapper {
-    position: absolute;
-    left: 50%;
+    position: relative;
+    /* left: 50%;
     top: 75%;
-    transform: translate(-50%, -60%);
+    transform: translate(-50%, -60%); */
 }
 
 .dish-card.active{
@@ -218,6 +226,11 @@ p.card__code {
     border: none;
     cursor: pointer;
 }
+
+    .btn-counter-customize.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
 
 .btn-counter-confirm{
     padding: 16px 40px 12px !important;
@@ -341,7 +354,7 @@ section.modal--customize-inner .card__quantity-title {
     /* text-align: center; */
     position: relative;
     left: 0;
-    top: 70px;
+    top: 0;
 }
 
 .card__quantity-inner-container p.card__code {
@@ -373,13 +386,15 @@ h2.card__quantity-title {
     line-height: 25px;
 }
 
-.dish-card-blur {
-    opacity: 1;
+.modal--flexible-confirmaton *{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 
 .modal--flexible-confirmaton {
-    width: 620px;
-    padding: 2.5rem;
+    max-width: 620px;
+    padding: 0;
     background: #FFFCF5;
     position: absolute;
     left: 50%;
@@ -387,11 +402,14 @@ h2.card__quantity-title {
     transform: translate(-50%, -50%);
     border-radius: 12px;
     text-align: center;
+    width: 100%;
 }
 
-.modal--flexible-confirmaton .card__actions{
+.modal--flexible-confirmaton .card__actions {
     margin: auto;
     width: 100%;
+    gap: 5rem;
+    align-items: baseline;
 }
 
 .btn-counter-customize{
@@ -432,4 +450,224 @@ h2.card__quantity-title {
     padding: 7px 10px 3px;
     position: absolute;
     top: 25px;
+}
+
+.modal--flexible-confirmaton .card__quantity-field-wrapper {
+    position: relative;
+    left: unset;
+    top: unset;
+    transform: unset;
+}
+
+.modal--flexible-confirmaton .card__quantity-wrapper {
+    /* min-height: 284px; */
+    position: relative;
+    top: unset;
+    left: unset;
+    background: none;
+    padding: 0;
+    z-index: 999999999999999;
+}
+
+.modal--flexible-confirmaton .card__quantity-inner-container {
+    position: relative;
+    left: unset;
+    top: unset;
+}
+
+.modal--flexible-confirmaton .card__quantity-inner-wrapper {
+    padding: 1.875rem 1.875rem 0 1.875rem;
+    text-align: left;
+}
+
+.modal--flexible-confirmaton h2.card__quantity-title {
+    font-size: 1.125rem;
+    /* really need the !important here */
+    font-family: 'AvenirLTProBlack' !important; 
+}
+
+.modal--flexible-confirmaton .card__quantity-subtitle {
+    font-size: 1.125rem;
+    font-style: normal;
+}
+
+.modal--flexible-confirmaton .card__quantity-section{
+    margin: 1.875rem 0;
+}
+
+.modal--flexible-confirmaton .modal--flexible-inner {
+    padding: 1.875rem;
+    background: #F8EFE0;
+    text-align: left;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.modal--flexible-confirmaton .modal--flexible-inner p{
+    padding-bottom: 1.25rem;
+    font-size: 1rem;
+    font-style: italic;
+}
+
+h4.modal--flexible-heading {
+    /* really need the !important here */
+    font-family: 'AvenirLTProBlack' !important;
+    font-size: 1rem;
+    font-style: italic;
+    padding-bottom: 0.625rem;
+}
+
+.modal--flexible-container {
+    padding-bottom: 1.875rem;
+}
+
+.modal--flexible-confirmaton .modal--flexible-inner p.modal--flexible-price {
+    font-style: normal;
+    font-size: 1.125rem;
+}
+
+p.modal--flexible-price strong {
+    font-family: 'AvenirLTProBlack';
+}
+
+.modal--flexible-checkbox-wrapper {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1.125rem;
+}
+
+@media screen and (max-width: 960px){
+    .modal--flexible-checkbox-wrapper {
+        display: block;
+    }
+
+    .modal--flexible-checkbox-wrapper .checkbox-temp {
+        padding: 0.3rem 0;
+    }
+
+    section.card__actions {
+        display: block;
+        text-align: center;
+    }
+
+    .modal--flexible-confirmaton .card__actions * {
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .ReactModal__Content.ReactModal__Content--after-open.modal--flexible-confirmaton {
+        width: 95%;
+        height: auto;
+        overflow: auto;
+    }
+
+    .card__quantity-wrapper.wrapper-modal {
+        gap: 0;
+    }
+
+    .modal--flexible-container {
+        padding-bottom: 1rem;
+    }
+
+    ul.step--order-summary li {
+        font-size: 16px;
+        line-height: 23px;
+    }
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+    margin-right: 1em;
+    font: inherit;
+    width: 1.15em;
+    height: 1.15em;
+    transform: translateY(0.275em);
+    accent-color: #474447;
+}
+
+@media screen and (max-width: 960px){
+    .card__overlay {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        background: #474442;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        opacity: 0.5;
+    }
+}
+
+.modal--restore-cart .modal--flexible-inner {
+    border-radius: 0.75rem;
+}
+
+.modal--restore-cart button.btn.ha-a.btn-modal-cancel, .modal--restore-cart .btn-counter-confirm, .modal--change-type .btn-counter-confirm, .modal--change-type button.btn.ha-a.btn-modal-cancel {
+    padding: 0.75rem 2rem 0.75rem !important;
+    width: 100%;
+    color: #474442;
+}
+
+.modal--change-type .btn-counter-confirm{
+    line-height: 22px;
+}
+
+.modal--restore-cart .card__actions{
+    gap: 1rem !important;
+    flex-flow: column;
+}
+
+.modal--restore-cart button.btn.btn-primary-small.btn-counter-confirm {
+    font-family: 'ITC Avant Garde Gothic W03 Md';
+    font-size: 0.875rem;
+}
+
+.modal--restore-cart .modal--flexible-inner{
+    background-color: #FFFCF5 !important;
+}
+
+.modal--restore-cart {
+    max-width: 27.875rem;
+}
+
+.modal--flexible-confirmaton.modal--restore-cart a {
+    font-weight: bold;
+    color: #474442;
+    padding-bottom: 0px;
+    text-decoration: underline;
+}
+
+.modal--restore-cart h2.ha-h4.text-center, .modal--change-type h2.ha-h4.text-center {
+    text-transform: uppercase;
+    padding-bottom: 1.25rem;
+}
+
+.modal--restore-cart.modal--flexible-confirmaton .modal--flexible-inner p{
+   padding-bottom: 0;
+   font-style: normal;
+}
+
+.modal--change-type .modal--flexible-inner {
+    border-radius: 12px;
+}
+
+.modal--change-type p {
+    font-style: normal !important;
+    text-align: center;
+}
+
+.modal--change-type .card__actions{
+    gap: 1rem;
+    align-items: center;
+}
+
+.modal--change-type button.btn.ha-a.btn-modal-cancel {
+    background: #FFFCF5;
+}
+
+.modal--change-type .modal--flexible-inner {
+    border-radius: 12px;
+    padding-left: 40px;
+    padding-right: 40px;
 }

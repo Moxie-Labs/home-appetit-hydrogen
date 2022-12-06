@@ -251,7 +251,7 @@ h5,
 .ha-h4,
 .ha-h5,
 .ha-a {
-    font-family: 'ITCAvantGardeProDemi' !important;
+    font-family: "ITC Avant Garde Gothic W03 Md" !important;
 }
 
 .ha-p,
@@ -339,7 +339,7 @@ h5,
 }
 
 .btn-app {
-    padding: 8px 106px 6px !important;
+   width: 25.375rem;
 }
 
 .btn.btn-primary-large[aria-disabled='true'] {
@@ -540,6 +540,19 @@ section.step-section {
     margin-top: 10px;
 }
 
+.delivery-window-label{
+    font-size: 28px;
+    margin-right: 25px;
+    font-family: "ITCAvantGardeProDemi";
+}
+
+.delivery-window-label.disabled{
+    opacity: 0.5;
+    font-size: 28px;
+    margin-right: 25px;
+    font-family: "ITCAvantGardeProDemi";
+}
+
 .order_textarea::placeholder {
     font-family: 'AvenirLTProRoman';
     font-size: 16px;
@@ -550,4 +563,39 @@ section.step-section {
 .icon-span{
     vertical-align: top;
     margin-right: 5px;
+}
+
+.no-padding{
+    padding: 0;
+}
+.text-uppercase{
+    text-transform: uppercase;
+}
+
+.no-margin{
+    margin: 0;
+}
+
+.line-separator {
+    border-bottom: 1px solid #474442;
+    margin: 40px 0;
+    width: 100%;
+}
+.no-padding{
+    padding: 0;
+}
+
+.btn-order-cta {
+    width: 156px;
+    height: 35px;
+    background: #FFA877;
+    padding: 9px 24px;
+    border-radius: 24px;
+    font-size: 18px;
+    color: #474442;
+    text-decoration: none;
+    transition: background .2s;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'ITC Avant Garde Gothic W03 Md';
 }

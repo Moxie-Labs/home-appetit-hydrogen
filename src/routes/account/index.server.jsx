@@ -1,6 +1,7 @@
 import {Suspense} from 'react';
 import {
   CacheNone,
+  CacheLong,
   flattenConnection,
   gql,
   Seo,
@@ -13,6 +14,10 @@ import {PRODUCT_CARD_FRAGMENT} from '../../lib/fragments';
 import {getApiErrorMessage} from '../../lib/utils';
 import { Layout } from '../../components/Layout.client';
 import MyAccount from '../../components/MyAccount.client';
+import { Page } from "../../components/Page.client";
+import {Header} from '../../components/Header.client';
+import {Footer} from '../../components/Footer.client';
+import { GET_ZIPCODES_QUERY } from '../../helpers/queries';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -39,23 +44,39 @@ export default function Account({response}) {
 
   if (!customer) return response.redirect('/account/login');
 
+  const {
+    data: zipcodeData,
+  } = useShopQuery({
+    query: GET_ZIPCODES_QUERY,
+    cache: CacheLong(),
+    preload: true,
+  });
+
+  const { inrangeZipcodes } = zipcodeData.page;
+  const validZipcodes = JSON.parse(inrangeZipcodes.value)
+  let zipcodeArr = [];
+  validZipcodes.forEach(validCode => {
+    zipcodeArr.push(validCode.zip_code);
+  });
+
   return (
     <Layout>
       <AuthenticatedAccount
         customer={customer}
+        zipcodeArr={zipcodeArr}
       />
     </Layout>
   );
 }
 
 function AuthenticatedAccount({
-  customer
+  customer, zipcodeArr
 }) {
   const orders = flattenConnection(customer?.orders) || [];
 
   return (
+    <>
     <Layout>
-      <h1>Account Info</h1>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account details'}} />
       </Suspense>
@@ -63,20 +84,24 @@ function AuthenticatedAccount({
       <MyAccount 
         customer={customer}
         orders={orders}
+        zipcodeArr={zipcodeArr}
       />
 
     </Layout>
+    </>
   );
 }
 
 export async function api(request, {session, queryShop}) {
   if (request.method !== 'PATCH' && request.method !== 'DELETE') {
-    return new Response(null, {
+    const response = new Response(null, {
       status: 405,
       headers: {
         Allow: 'PATCH,DELETE',
       },
     });
+    response.headers.append("Access-Control-Allow-Origin", "*");
+    return response;
   }
 
   if (!session) {
@@ -165,7 +190,26 @@ const CUSTOMER_QUERY = gql`
               amount
               currencyCode
             }
-            lineItems(first: 2) {
+            subtotalPrice{
+              amount
+            }
+            totalShippingPrice{
+              amount
+            }
+            totalTax{
+              amount
+            }
+            totalPrice{
+              amount
+            }
+            shippingAddress{   
+                address1
+                address2
+                city
+                zip
+                province
+            }
+            lineItems(first: 15) {
               edges {
                 node {
                   variant {
@@ -175,8 +219,15 @@ const CUSTOMER_QUERY = gql`
                       height
                       width
                     }
+                    price{
+                      amount
+                    }
                   }
                   title
+                  currentQuantity
+                  originalTotalPrice{
+                    amount
+                  }
                 }
               }
             }

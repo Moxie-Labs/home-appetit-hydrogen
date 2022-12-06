@@ -1,4 +1,5 @@
 import React, {useState, useCallback} from 'react';
+import OrderIllustration from "./OrderIllustration.client";
 import SchemeSelector from "./SchemeSelector.client";
 import iconEdit from "../assets/icon-edit.png";
 import iconArrowDown from "../assets/arrow-down.png";
@@ -44,9 +45,14 @@ export default class OrderProperties extends React.Component {
         this.props.handleCancel();
     }
 
+    getDisplayDate(date) {
+        const retval = `${date.getMonth()+1}/${date.getDate()}`;
+        return retval;
+    }
+
     render() {   
 
-        const {activeScheme, step, currentStep} = this.props;
+        const {activeScheme, step, currentStep, servingCount, deliveryWindowOne, planPrice} = this.props;
 
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
@@ -59,9 +65,22 @@ export default class OrderProperties extends React.Component {
                         currentStep={currentStep}
                         step={1}
                     />
-                    { currentStep === step &&
-                        <p className="subheading order_prop__subheading ha-p">Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam molestie id. Quisque risus pellentesque aliquet donec. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam.</p>
+                    <div>
+                        <span className={`delivery-window-label ${currentStep !== step ? 'disabled' : ''}`}>Place order for {this.getDisplayDate(deliveryWindowOne)} delivery</span>
+                    </div>
+
+                    {activeScheme === "traditional" && currentStep === step &&
+                       <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates. If you’re feeding more than one person, we’ll portion up your selections accordingly. (Example: Enough pasta for three people.) Any dish customizations will impact all portions. If you need to customize specific portions or each person would like different selections, check out our Flex Order option</p>
                     }
+
+                    {activeScheme === "flexible" && currentStep === step &&
+                       <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates per person. Multiple selections of the same dish will come packed together, unless customizations are made to individual selections. (If everyone you’re ordering for will enjoy the same selections or customizations, consider placing a Classic Order—our most cost effective option.)
+                       </p>
+                    } 
+                    
+                    {/* { currentStep === step && 
+                        <p className="subheading order_prop__subheading ha-p"> Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam molestie id. Quisque risus pellentesque aliquet donec. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam.</p>
+                    } */}
                 </LayoutSection>
                 <LayoutSection>
                     {currentStep === step &&
@@ -69,18 +88,24 @@ export default class OrderProperties extends React.Component {
                     }
                     <div className="select-wrapper">
                         <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingsCount} onChange={this.handleChange} disabled={currentStep !== step}>
+                            <option selected disabled hidden>- Select Number of People -</option>
                             {servingOptions.map(option => {
                                 return (
                                     <option value={option.value}>{option.label}</option>
                                 )
                             })}
                         </select>
+                        {currentStep != step &&
+                        <div>
+                            <br />
+                            </div>
+                    }
                     </div>
                 </LayoutSection>
                 
                     <LayoutSection>
                     { currentStep === step &&
-                        <button className="btn btn-primary-small btn-app" onClick={this.handleContinue}>
+                        <button className={`btn btn-primary-small btn-app ${servingCount < 1 ? 'btn-disabled' : ''}`} onClick={this.handleContinue}>
                             Continue
                         </button>
                     }
@@ -96,7 +121,11 @@ export default class OrderProperties extends React.Component {
                 { currentStep === step &&
                 <div className="step-column">
                     <div className="illustration-placeholder">
-                         <img src={illustration} width="100%" />
+                        <OrderIllustration
+                            activeScheme={activeScheme}
+                            servingCount={servingCount}
+                            planPrice={planPrice}
+                        />
                     </div>
                 </div>
                 }

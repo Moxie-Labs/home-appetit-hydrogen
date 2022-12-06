@@ -1,6 +1,9 @@
-.footer {
+div.footer {
     width: 100%;
-    margin-top: 9.3rem;
+    max-width: 1440px;
+    position: relative;
+    bottom: -16rem;
+    padding-bottom: 2rem;
 }
 
 .footer-item-wrapper{
@@ -36,9 +39,10 @@ form.subscription-form input {
     padding: 14px;
     border: none;
     border-bottom: 2px solid #474442;
-    width: 407px;
+    max-width: 25.4375rem;
     background: transparent;
     font-family: 'AvenirLTProRoman';
+    min-width: 21.375rem;
 }
 
 .footer .subscription-form button {
@@ -54,4 +58,57 @@ form.subscription-form input {
 
 ul.footer-menu {
     margin-top: -0.5rem;
+}
+
+.copyright {
+    bottom: 30px;
+    position: absolute;
+    opacity: 0.5;
+}
+
+@media screen and (max-width: 960px){
+    .copyright{
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .footer-item-wrapper{
+        flex-flow: column;
+    }
+
+    .footer-item-wrapper {
+        flex-flow: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    img.footer-logo {
+        margin: auto;
+        text-align: center;
+        display: flex;
+        align-items: center;
+    }
+
+    .footer .sub-heading{
+        text-align: center;
+    }
+
+    ul.footer-menu {
+        text-align: center;
+        padding: 0;
+    }
+
+    .footer-item .spacer {
+        /* display: none; */
+        margin-bottom: -6.875rem;
+    }
+
+    .footer-item:nth-child(2) {
+        text-align: center;
+        padding-bottom: 3rem;
+    }
+
+    .footer .social-wrapper{
+        gap: 0;
+    }
 }

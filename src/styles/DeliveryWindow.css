@@ -48,10 +48,20 @@
     margin: 40px 0 30px;
 }
 
-.delivery-window_label{
+.checkout--deliveryinfo-top .delivery-window_label{
     font-family: AvenirLTProRoman;
     font-size: 14px;
     color: #1B1B1E;
+}
+
+.checkout--deliveryinfo-top .btn {
+    background: transparent;
+    border: 2px solid #474442;
+    color: #474442;
+    font-size: 18px;
+    font-family: 'ITCAvantGardeProDemi';
+    border-radius: 24px;
+    padding: 9px 24px 4px;
 }
 
 .delivery-window_disabled{

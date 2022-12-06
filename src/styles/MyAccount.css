@@ -1,18 +1,17 @@
 .myaccount-wrapper {
-    padding: 5rem;
+    margin: auto;
+    max-width: 1260px;
 }
 
 .myaccount-page {
-    width: 1440px;
-    padding: 0 5rem;
-    display: flex;
-    gap: 5%;
-    flex-wrap: wrap;
+    max-width: 1260px;
     justify-content: space-between;
+    display: flex;
+    gap: 3.1875rem;
 }
 
 .account-panel-switches {
-    width: 30%;
+    flex: 1;
 }
 
 section.account-panel-switches h2 {
@@ -25,11 +24,13 @@ section.account-panel-switches h2 {
 }
 
 .account-panel-body {
-    width: 65%;
+    width: auto;
     position: relative;
     padding: 40px;
     border-radius: 12px;
     background: #F8EFE0;
+    min-height: 25rem;
+    flex: 2;
 }
 
 .account-panel-switch {
@@ -69,14 +70,18 @@ hr.order-divider {
     margin: 0 !important;
 }
 
-.account-information input, .modal-new-payment input, .gift-card-information input {
+.modal-address-field {
     padding: 14px 25px;
     border-radius: 10px;
-    border: 2px solid #385F83 !important;
+    border: 2px solid #385F83;
     font-family: 'AvenirLTProRoman';
     font-size: 16px;
-    color: #474442 !important;
+    color: #474442;
     display: block;
+}
+
+.input-error {
+    border: 1px solid red;
 }
 
 .modal-new-payment input:focus-visible, .account-information input:focus-visible {
@@ -168,10 +173,10 @@ h1.address-title {
 }
 
 .account-information article p {
-    font-size: 24px !important;
+    font-size: 24px;
     line-height: 32px;
-    font-family: AvenirLTProBlack !important;
-    margin: 0 !important;
+    font-family: 'AvenirLTProBlack';
+    margin: 0;
 }
 
 .address {
@@ -198,6 +203,7 @@ h1.address-title {
     font-size: 16px;
     color: #474442;
     font-weight: 800;
+    display: inline-block;
 }
 
 .account-information .btn-primary-small {
@@ -369,6 +375,7 @@ button.btn.btn-default.btn-edit.btn-modal-edit {
     display: inline;
     margin-right: 1.25rem;
     width: 45%;
+    border: 1px solid #474442;
 }
 
 .myaccount-page .account-panel-body .gift-card-information .btn-submit {
@@ -398,10 +405,10 @@ label.check-balance-label {
     margin: 1.25rem 0;
 }
 
-.gift-card-row a{
-    color:#474442;
+.gift-card-row a {
+    color: #474442;
+    font-family: 'ITCAvantGardeProDemi' !important;
 }
-
 .gift-card-row h2 {
     text-transform: uppercase;
 }
@@ -419,11 +426,11 @@ label.check-balance-label {
     margin: 1.875rem 0;
 }
 
-.account__address {
+/* .account__address {
     float: left;
     margin: 2vw 0;
     width: 50%;
-}
+} */
 
 .account__address-title {
     font-size: 1.1em;
@@ -433,4 +440,182 @@ label.check-balance-label {
 .account__address-body {
     font-size: 1.2em;
     font-weight: bold;
+}
+
+.communication-information .field {
+    margin-top: 1.875rem;
+    display: flex;
+    align-items: center;
+    line-height: 0;
+}
+
+.communication-information .field label {
+    font-family: 'AvenirLTProBlack';
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.25rem;
+}
+
+.account-information input[type="checkbox"] {
+    margin-top: -1px;
+}
+
+.new-address-cta {
+    margin-top: 1.875rem;
+}
+
+p.address-action-cta a {
+    text-transform: uppercase;
+    font-size: 18px;
+    color: #474442;
+    text-decoration: none;
+    border-bottom: 1px solid #474442;
+}
+
+article.account__address.account__address--default {
+    margin-top: 1.875rem;
+}
+
+article p.account__address-title {
+    font-size: 14px;
+    font-family: 'AvenirLTProRoman';
+    font-weight: 100;
+}
+
+article p.address-action-cta {
+    margin-top: 0.625rem;
+}
+
+.order__no-history {
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.mobile-panel{
+    display: none;
+}
+
+@media screen and (max-width: 900px){
+    .desktop-panel{
+        display: none;
+    }
+
+    .mobile-panel{
+        display: block;
+    }
+}
+
+.mobile-panel .account-panel-switch {
+    border-bottom: none;
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.mobile-panel .account-panel-body{
+    border-radius: 0;
+    padding: 1rem;
+}
+
+.mobile-panel section.account-panel-switches h2{
+    font-size: 20px;
+    font-family: AvenirLTProBlack !important;
+    padding: 1rem;
+}
+
+.mobile-panel section.account-panel-switches .info-row h2{
+    text-transform: capitalize;
+}
+
+.mobile-panel .personal-info-wrapper .info-row{
+    flex-flow: column;
+}
+
+.mobile-panel .btn-reset{
+    width: 100%;
+}
+
+a.orders--order-number{
+    text-decoration: underline;
+}
+
+a.orders--order-number:hover{
+    cursor: pointer;
+}
+
+.details--column.items {
+    flex: 3
+}
+
+.details--column.addresses {
+    flex: 1
+}
+
+.details--column:first-child {
+    flex: 1;
+}
+
+.table-header, .table-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #0000001a;
+    padding: 0.7rem;
+}
+
+.table--title, .table-row div {
+    flex: 1;
+}
+
+table.order-table td {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+}
+
+.order-details-wrapper {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-around;
+    gap: 3rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #FFFCF5;
+    width: 100%;
+    max-width: 1300px;
+    border-radius: 10px;
+    padding: 1rem 2rem 3rem;
+}
+
+.order-details-wrapper .product-table {
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow: scroll;
+}
+
+.table-row-total {
+    justify-content: space-between;
+    display: flex;
+    padding: 0.7rem;
+}
+
+.table-row-total .table-column div {
+    padding-bottom: 12px;
+}
+
+.prev-order-modal--exit {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+    background: url(/src/assets/icon-close-btn.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
 }

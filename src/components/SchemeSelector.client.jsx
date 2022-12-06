@@ -18,10 +18,15 @@ class SchemeSelector extends React.Component {
         const {activeScheme, step, currentStep} = this.props;
         return (
             <section id="SchemeSelector" className={`${currentStep !== step ? 'scheme-inactive-padding' : ''}`}>
-                <span className={`schemeType ${activeScheme === 'traditional' ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme('traditional')}>Traditional Plan</span>
-                <span className={`schemeType ${activeScheme === 'flexible' ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme('flexible')}>Flexible Plan</span>
-                { currentStep === step && 
-                 <span><img src={badgeNew} width={42} className="badge"/></span>
+                {currentStep !== step && 
+                    <span className={`schemeType ${currentStep !== step ? 'ss-no-underline' : ''}`}>{activeScheme === 'traditional' ? 'Traditional' : 'Flexible'} Plan</span>
+                }
+                {currentStep === step &&
+                    <div>
+                        <span className={`schemeType ${activeScheme === 'traditional' ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme('traditional')}>Traditional Plan</span>
+                        <span className={`schemeType ${activeScheme === 'flexible' ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme('flexible')}>Flexible Plan</span>
+                        <span className="badge"><img src={badgeNew} width={42} /></span>
+                    </div>
                 }
             </section>
         );

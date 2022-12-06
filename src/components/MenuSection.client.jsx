@@ -1,14 +1,14 @@
 import React from 'react';
-// import CardFilters from "./CardFilters.client";
-// import DishCard from "./DishCard";
 import iconEdit from "../assets/icon-edit.png";
-import iconPlus from "../assets/icon-plus.png";
+import iconPlus from "../assets/icon-plus-alt.png";
+import iconArrowRight from "../assets/arrow-right.png"
 import { Frame } from './Frame.client';
 import { LayoutSection } from './LayoutSection.client';
 import { Layout } from './Layout.client';
 import CardFilters from './CardFilters.client';
-import DishCard from './DishCard.client';
 import Modal from 'react-modal/lib/components/Modal';
+import { prepModSubTitles } from '../lib/utils';
+import DishCard from './DishCard.client';
 
 export default class MenuSection extends React.Component {
 
@@ -18,7 +18,7 @@ export default class MenuSection extends React.Component {
             showingExtra: false,
             modalDismissed: false
         }
-    }  
+    }
 
     getChoicesByFilters(filters, choices) {
         const retval = [];
@@ -80,132 +80,104 @@ export default class MenuSection extends React.Component {
     }
 
     progressBarStatus(getQuantityTotal){
-        //switch case not working with > 4 (weird). I know looks ugly but 'if' works...
-        if(getQuantityTotal === 1) {
-              return (
-                <div className="progress-bar">
-                    <div className="progress-bar__order-item active"></div>
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                </div>
-              );
-          }
-
-       else if(getQuantityTotal === 2) {
-            return (
-              <div className="progress-bar">
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item"></div>
-                  <div className="progress-bar__order-item"></div>
-              </div>
-            );
-        }
-
-       else if(getQuantityTotal === 3) {
-            return (
-              <div className="progress-bar">
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item"></div>
-              </div>
-            );
-        }
-
-       else if(getQuantityTotal >= 4) {
-            return (
-              <div className="progress-bar">
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-                  <div className="progress-bar__order-item active"></div>
-              </div>
-            );
-        } else {
-            return (
-                <div className="progress-bar">
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                    <div className="progress-bar__order-item"></div>
-                </div>
-            );
-        }
+        return (
+            <div className="progress-bar">
+                <div className={`progress-bar__order-item ${getQuantityTotal > 0 ? 'active' : null}`}></div>
+                <div className={`progress-bar__order-item ${getQuantityTotal > 1 ? 'active' : null}`}></div>
+                <div className={`progress-bar__order-item ${getQuantityTotal > 2 ? 'active' : null}`}></div>
+                <div className={`progress-bar__order-item ${getQuantityTotal > 3 ? 'active' : null}`}></div>
+            </div>
+        );
     }
 
-    getExistingQuantity(dish) {
-        const { collection } = this.props;
-        let quantity = 0;
+    getExistingQuantity(choice) {
+        const { selected, selectedExtra, activeScheme, isAddingExtraItems} = this.props;
+        let existingQuantity = 0;
+
+        const activeCollection = isAddingExtraItems ? [...selectedExtra] : [...selected];
     
-        collection.map((item, i) => {
-            if (item.choice.title === dish.title) 
-                quantity = item.quantity;
+        activeCollection.map(item => {
+            if (existingQuantity === 0 && activeScheme === 'traditional') {
+                if (item.choice.title === choice.title)
+                    existingQuantity = item.quantity;
+            }
+            else if (item.choice.title === choice.title)
+                    existingQuantity += item.quantity;
+                
+                
         });
 
-        return quantity;
+        return parseInt(existingQuantity);
     }
 
     showSectionExtras() {
         this.setState({showingExtra: true, modalDismissed: true});
+        this.props.handleIsAddingExtraItems(true);
     }
 
     skipSectionExtras() {
         this.props.handleConfirm();
+        this.props.handleIsAddingExtraItems(false);
         this.setState({modalDismissed: true})
     }
 
-    getSplitSelections() {
-        const { selected, freeQuantityLimit } = this.props;
-        const mainSelections = [];
-        const extraSelections = [];
-        let totalQuantity = 0;
-        Object.keys(selected).map(key => {
-            if (totalQuantity < freeQuantityLimit) {
-                mainSelections.push(selected[key]);
-                totalQuantity += selected[key].quantity;
-            } else {
-                extraSelections.push(selected[key]);
-            }
-            
+    isInSelection(selection, choice) {
+        let retval = false;
+
+        if (typeof selection === 'undefined') return false;
+
+        selection.map(item => {
+            if (item.choice.title === choice.title)
+                retval = true; 
         });
-        return {
-            mainSelections: mainSelections,
-            extraSelections: extraSelections
-        };
+
+        return retval;
     }
 
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled} = this.props;
-        const {modalDismissed, showingExtra} = this.state;
-        const additionalEntrees = 0;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus } = this.props;
+        const {modalDismissed} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
-        const splitSelections = this.getSplitSelections();
-
-        const mainSelected = splitSelections.mainSelections;
-        const extraSelected = splitSelections.extraSelections;
-
-        console.log("mainSelected", mainSelected)
+        const mainSelected = selected;
+        const extraSelected = selectedExtra;
 
         let filteredChoicesSection;
         if (filteredChoices.length > 0) {
-            filteredChoicesSection = filteredChoices.map((choice) => {
-                const intialQuantity = collection
+            filteredChoicesSection = filteredChoices.map(choice => {
+
+                const initialQuantity = this.getExistingQuantity(choice);
 
                 return (
                     <div className="dish-card-item" key={choice.title}>
                         <DishCard 
-                            choice={choice} 
+                            choice={choice}
+                            cardStatus={cardStatus}
+                            setCardStatus={setCardStatus}
                             freeQuantityLimit={freeQuantityLimit} 
                             servingCount={servingCount}
                             handleSelected={handleItemSelected}
-                            initialQuantity={this.getExistingQuantity(choice)}
+                            initialQuantity={initialQuantity}
                             confirmed={this.getExistingQuantity(choice) > 0}
-                            maxQuantity={(freeQuantityLimit - getQuantityTotal(selected))}
-                            showingExtra={showingExtra}
+                            maxQuantity={isAddingExtraItems ? 50 : (freeQuantityLimit - getQuantityTotal(selected))}
+                            showingExtra={isAddingExtraItems}
+                            quantityTotal={getQuantityTotal(selected)}
+                            // disables if returning to regular selection and item is not already selected
+                            forceHidePrice={false}
+                            // forceHidePrice={(isAddingExtraItems && this.isInSelection(mainSelected, choice))}
+                            forceDisable={
+                                (isSectionFilled && initialQuantity < 1 && !isAddingExtraItems)
+                            }
+                            // forceDisable={
+                            //     ( 
+                            //         (!isAddingExtraItems && (isSectionFilled || this.isInSelection(extraSelected, choice)) && !this.isInSelection(mainSelected, choice) ) || 
+                            //         (isAddingExtraItems && this.isInSelection(mainSelected, choice))
+                            //     )
+                            // }
+                            // forceDisable={false}
+                            handleChangePlan={handleChangePlan}
+                            activeScheme={activeScheme}
                         />
                     </div>
                 )
@@ -225,28 +197,37 @@ export default class MenuSection extends React.Component {
 
         // Render Sections
         const overviewSection = <section>
-        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
-        { Object.keys(selected).length !== 0 && 
+        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
+        { (selected.length + selectedExtra.length) !== 0 && 
         <div className="suborder--summary-container">
-            <div className="suborder--summary-details">
-                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; <span><img onClick={handleEdit} src={iconEdit.src} className="icon-edit" width="65" /></span></h4>
-                {Object.keys(mainSelected).map(function(key) {
+
+            <div className={`suborder--summary-details summary-container ${isAddingExtraItems ? 'inactive' : 'active'}`}>
+                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; { isAddingExtraItems && this.props.cardStatus !== " disabled" && this.props.currentStep === this.props.step && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                { mainSelected.map((item, index) => {
                     return ( 
-                        <ul key={key} className="step--order-summary">
-                            <li>({mainSelected[key].quantity}) {mainSelected[key].choice.title} <span>{mainSelected[key].choice.description}</span></li>
+                        <ul key={index} className="step--order-summary">
+                            <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span>
+                                {item.selectedMods?.map(mod => {
+                                    return <li><span>→ {prepModSubTitles(mod.title)}</span></li>
+                                })}
+                            </li>
                         </ul>
                     )
-                })}
+                }) }
             </div>
             
-            { isSectionFilled &&
-                <div className="suborder--summary-additional">
+            { (isSectionFilled || selectedExtra.length > 0) &&
+                <div className={`suborder--summary-additional summary-container ${isAddingExtraItems ? 'active' : 'inactive'}`}>
                     <div className="summary--additional-wrapper">
-                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; <span><img src={iconEdit.src} className="icon-edit" width="65"/></span></h4>
-                        {Object.keys(extraSelected).map(function(key) {
+                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { !isAddingExtraItems && this.props.cardStatus !== " disabled" && this.props.currentStep === this.props.step && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                        {extraSelected.map((item, index) => {
                             return ( 
-                                <ul key={key} className="step--order-summary">
-                                    <li>({extraSelected[key].quantity}) {extraSelected[key].choice.title} <span>{extraSelected[key].choice.description}</span></li>
+                                <ul key={index} className="step--order-summary">
+                                   <li>({item.quantity}) {item.choice.title} <span>{item.choice.description}</span>
+                                        {item.selectedMods?.map(mod => {
+                                            return <li><span>→ {prepModSubTitles(mod.title)}</span></li>
+                                        })}
+                                    </li>
                                 </ul>
                             )
                         })}
@@ -264,14 +245,40 @@ export default class MenuSection extends React.Component {
         
             { !isSectionFilled && 
                 <div>
-                    <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
-                    <p className="subheading order_prop__subheading p-subheading-width">{subheading}</p>
+                    <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
+                    {activeScheme === "traditional" && currentStep === 2 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Choose four entrées—in any combination. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
+                       </p>
+                    }
+
+                    {activeScheme === "flexible" && currentStep === 2 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Choose four entrées for each person you’re serving. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
+                       </p>
+                    } 
+
+                    {activeScheme === "traditional" && currentStep === 3 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Choose four small plates—in any combination. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
+
+                       </p>
+                    }
+
+                    {activeScheme === "flexible" && currentStep === 3 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Choose four small plates for each person you’re serving. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
+
+                       </p>
+                    } 
+
+                    {currentStep === 4 &&
+                       <p className="subheading order_prop__subheading p-subheading-width">Breakfasts, lunch salads, dishes from our partners, and more! All items priced ala cart and are single portions unless otherwise noted.
+                       </p>
+                    }
+                    
                     { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
                     { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
                 </div>
             }
-                        <br></br>
-            {this.progressBarStatus(getQuantityTotal(selected))}  
+            <br></br>
+            { step !== 4 && this.progressBarStatus(getQuantityTotal(selected))}  
             
             <br></br>
             
@@ -290,7 +297,7 @@ export default class MenuSection extends React.Component {
         </Layout>
 
         <section className="menu-section__actions">
-            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm Selections</button>
+            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm and Continue</button>
         </section>
         
     </section>;
@@ -299,16 +306,25 @@ export default class MenuSection extends React.Component {
             <Frame>
 
                 <Modal
-                    isOpen={isSectionFilled && !modalDismissed}
+                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step}
                     onRequestClose={() => this.setState({showingModal: false})}
                     className="modal-entree-complete"
                 >   
-                    <h1 className='uppercase text-center'>{title} Selection Complete!</h1>
+                    <h1 className='uppercase text-center'>{title} Selections Complete!</h1>
+                    
                     <h2 className='text-center'>Care to add extra {title}</h2>
-                    <p className='text-center'>Esit est velit lore varius vel, ornare id aliquet sit. Varius vel, ornare id aliquet sit tristique sit nisl. 
-                    Amet vel sagittis null quam es. Digs nissim sit est velit lore varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis null quam <b>$12.50</b> each.</p>
-                    <button className='btn btn-primary-small' onClick={() => this.showSectionExtras()}>+ Add Extra {title}</button>
-                    <button className='btn btn-secondary-small' onClick={() => this.skipSectionExtras()}>Continue to {title === 'Entrées' ? 'Small Plates' : 'Add-ons'}</button>
+                    {currentStep === 2 &&
+                       <p className="text-center">Round out your week with additional entrées (lunches, breakfast, etc.). Quick note: Each additional entrée serves one and costs $12. (Multiple portions of the same selection may be packed together.)
+                       </p>
+                    }
+
+                    {currentStep === 3 &&
+                       <p className="text-center">Round out your week with additional small plates. Quick note: Each additional small plate serves one and costs $7. (Multiple portions of the same selection may be packed together.)
+                       </p>
+                    } 
+                    {/* <p className='text-center'>Round out your week with additional entrées (lunches, breakfast, etc.). Quick note: Each additional entrée serves one and costs <b>$12</b>. (Multiple portions of the same selection may be packed together.)</p> */}
+                    <button className='btn btn-primary-small' onClick={() => this.showSectionExtras()}><span><img src={iconPlus} width={65} className="icon-plus-alt"/></span> Add Extra {title}</button>
+                    <button className='btn btn-secondary-small' onClick={() => this.skipSectionExtras()}>Continue to {title === 'Entrées' ? 'Small Plates' : 'Add-ons'} <span><img src={iconArrowRight} width={65} className="icon-arrow-alt"/></span></button>
 
                 </Modal>
 

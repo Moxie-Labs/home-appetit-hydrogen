@@ -10,9 +10,11 @@ import {
   ShopifyAnalytics,
   ShopifyProvider,
   CartProvider,
+  useSession
 } from '@shopify/hydrogen';
 import {EventsListener} from '~/components';
 import {DefaultSeo} from '~/components/index.server';
+import Order from './routes/order/guest.server';
 
 function App({request}) {
   const pathname = new URL(request.normalizedUrl).pathname;
@@ -20,12 +22,16 @@ function App({request}) {
   const countryCode = localeMatch ? localeMatch[1] : undefined;
 
   const isHome = pathname === `/${countryCode ? countryCode + '/' : ''}`;
+  const { customerAccessToken } = useSession();
 
   return (
     <Suspense>
       <EventsListener />
       <ShopifyProvider countryCode={countryCode}>
-        <CartProvider countryCode={countryCode}>
+        <CartProvider 
+          countryCode={countryCode}
+          customerAccessToken={customerAccessToken}
+        >
           {/* <Suspense>
             <DefaultSeo />
           </Suspense> */}
@@ -33,6 +39,7 @@ function App({request}) {
             <FileRoutes
               basePath={countryCode ? `/${countryCode}/` : undefined}
             />
+            <Route path="/order/guest/:zipcode" page={<Order guest={true} />} />
             <Route path="*" />
           </Router>
         </CartProvider>

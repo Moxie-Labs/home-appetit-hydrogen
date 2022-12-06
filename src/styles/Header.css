@@ -9,11 +9,199 @@
     top: 0;
     text-align: center;
     line-height: 3.75rem;
-    z-index: 999;
+    z-index: 1;
+    padding: 3px;
 }
 
-.header img{
+.header-inner{
+    display: flex;
+    justify-content: space-between;
+    max-width: 1260px;
+    margin: auto;
+    position: relative;
+    align-items: center;
+}
+
+.header .logo img{
     width: 265px;
     margin: auto;
     vertical-align: middle;
+    margin-left: -4rem;
 }
+
+.nav-wrapper ul {
+    display: flex;
+    gap: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-wrapper ul li {
+    list-style: none;
+    padding-top: 0.5rem;
+}
+
+.nav-wrapper ul li a {
+    color: #474442;
+    text-decoration: none;
+    font-family: 'ITC Avant Garde Gothic W03 Md';
+}
+
+ul.account-dropdown {
+    display: flex;
+    flex-flow: column;
+    gap: 0;
+    width: 310px;
+    position: absolute;
+    right: -2.2rem;
+    background: #F8EFE0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-size: 1.125rem;
+    top: 4.5rem;
+}
+
+ul.account-dropdown li{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.mobile-menu{
+    display: none;
+}
+
+.mobile-menu img {
+    vertical-align: middle;
+}
+
+a.btn-order-cta.mobile-order-cta {
+    padding: 0.25rem 1.5rem;
+    display: none;
+}
+
+.logo {
+    margin: auto;
+}
+
+
+
+@media screen and (max-width: 960px){
+    .header{
+        height: 4rem;
+    }
+
+    .nav-wrapper ul li{
+        padding: 0;;
+    }
+
+    .nav-main{
+        display: none;
+    }
+
+    .mobile-menu {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-inner{
+        padding: 0 1rem;
+    }
+
+    a.btn-order-cta.mobile-order-cta{
+        display: inline-block;
+        line-height: 1.75rem;
+        font-size: 0.75rem;
+        width: auto;
+    }
+
+    .desktop-order-cta{
+        display: none;
+    }
+
+    .header .logo img{
+        width: 8.5625rem;
+        margin-left: 0;
+    }
+
+    .nav-wrapper ul{
+        gap: 0;
+    }
+
+    .mobile-nav-wrapper {
+        position: fixed;
+        background: #F8EFE0;
+        left: 0;
+        top: 4rem;
+        width: 100%;
+        height: 100vh;
+        display: block;
+    }
+    
+    .logo {
+        margin:-0.3rem 0 0 -4rem;
+    }
+}
+
+.mobile-nav-wrapper{
+    display: none;
+}
+
+.mobile-nav-wrapper.active{
+    display: block;
+}
+
+.mobile-nav.mobile-nav-main {
+    background: #FFFCF5;
+    margin-top: -1rem;
+}
+
+.mobile-nav ul {
+    padding: 0;
+}
+
+.mobile-nav ul li{
+    list-style: none;
+}
+
+.mobile-nav ul li a{
+    color: #474442;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+@media screen and (min-width: 961px){
+    .header .logo img{
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 960px) {
+    .mobile-menu.mobile-hide-menu {
+        display: none;
+    }
+
+    .header-inner-ordering{
+        justify-content: center;
+    }
+
+    .header-inner-ordering .logo.mobile-logo-margin{
+        margin: 0;
+    }
+
+    .logo.mobile-logo-margin {
+        margin-left: 2rem;
+    }
+}
+
+.account-dropdown li:last-child {
+    opacity: 0.6;
+}
+
+
+
+
+
+
+

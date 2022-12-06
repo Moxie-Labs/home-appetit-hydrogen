@@ -1,0 +1,215 @@
+.gc-wrapper {
+    display: flex;
+    gap: 5.937rem;
+    background: #F8EFE0;
+    padding: 8rem 0;
+    margin: -10rem auto 0;
+    justify-content: space-evenly;
+}
+
+.gc-row {
+    display: block;
+}
+
+.gc-col {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.gc-col-item label {
+    display: block;
+}
+
+.gc-wrapper textarea {
+    width: 100%;
+}
+
+.gc-col-method label {
+    display: inline;
+}
+
+.gc-wrapper p,
+.gc-wrapper h1,
+.gc-wrapper h2,
+.gc-wrapper h3,
+.gc-wrapper h4,
+.gc-wrapper h5{
+    padding: 0;
+    margin: 0;
+}
+
+.gc-wrapper input[type='text'], .gc-wrapper textarea, .gc-wrapper input[type='number'] {
+    width: 100%;
+    padding: 0.875rem 1.56rem;
+    border-radius: 10px;
+    border: 1px solid #474442;
+    color: #474442;
+    margin-bottom: 1.25rem;
+    font-family: 'AvenirLTProRoman';
+    font-size: 16px;
+    background-color: #FFFCF5;
+}
+
+.gc-wrapper input[type='text']::placeholder, .gc-wrapper textarea::placeholder {
+    color: #9E9694;
+}
+
+.gc-wrapper a.ha-a {
+    color: #474442;
+}
+
+.gc-col-item label {
+    display: block;
+    margin-bottom: 0.625rem;
+}
+
+.gc-col-item {
+    flex: 1;
+}
+
+.gc-item-column.form-column {
+    max-width: 39.0625rem;
+}
+
+.form-balance, .para-col{
+    flex: 2;
+}
+
+.gc-col-item.form-balance input {
+    width: 67%;
+    margin-right: 0.5rem;
+}
+
+.gc-row.faq-row .gc-col {
+    align-items: baseline;
+}
+
+.gc-wrapper h5{
+    text-transform: uppercase;
+}
+
+p.gc-subtitle {
+    margin: 0.625rem 0 1.25rem;
+}
+
+.calculator-field label, .calculator-field input {
+    font-family: 'AvenirLTProRoman';
+}
+
+.calculator-field input{
+    font-size: 16px;
+}
+
+.calculator-field label{
+    font-size: 14px;
+}
+
+.gc-wrapper .btn.btn-primary-small {
+    height: 40px;
+    padding: 6px 24px 4px;
+}
+
+.gc-row.gc-method-field input {
+    max-width: 78%;
+    margin-bottom: 2.5rem;
+}
+
+.blog-post-section {
+    background-color: #385F83;
+    padding: 8em 1em;
+}
+
+    .blog-post-section_title {
+        color: #fff;
+        font-size: 4em;
+        margin: 0;
+        text-align: center;
+    }
+
+    .blog-post-section_posts {
+        display: flex;
+        padding: 2em;
+    }
+
+    .blog-post {
+        border-radius: 14px;
+        flex: 1;
+        margin: 0 1em;
+        transition: all .1s ease-in;
+    }
+
+        .blog-post_text {
+            align-items: center;
+            background-color: #F8EFE0;
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            display: flex;
+            justify-content: center;
+            margin-top: -5px;
+            min-height: 150px;
+            padding: 0 2em;
+        }
+
+            .blog-post_title {
+                color: #474442;
+                margin: 0;
+                text-decoration: none;
+                font-weight: 500;
+            }
+    
+        .blog-post > a {
+            color: #474442;
+            text-decoration: none;
+        }
+
+        .blog-post_image {
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            min-height: 15rem;
+            width: 100%;
+        }
+
+    .blog-post-section_link {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+
+    @media screen and (max-width: 415px) {
+        .gc-col {
+            display: unset;
+        }
+
+        .gc-item-column_image {
+            display: none;
+        }
+
+        .blog-post-section_title {
+            font-size: 3em;
+        }
+
+        .blog-post-section {
+            padding: 2em 0 2em 1em;
+            margin: 0 -8px;
+        }
+
+        .blog-post-section_posts {
+            overflow-x: scroll;
+            padding: 0.5em;
+        }
+
+        .blog-post {
+            margin: 1em 1em 1em 0;
+            min-width: 250px;
+        }
+
+        .blog-post_text {
+            min-height: 125px;
+        }
+    }
+    

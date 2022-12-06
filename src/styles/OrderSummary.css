@@ -6,11 +6,16 @@
     z-index: 99;
 }
 
+@media screen and (max-width: 860px){
+    section.order-summary {
+        width: 100%;
+        left: 0;
+    }
+}
 
     .order-summary--inner {
         background-color: #fff;
         box-shadow: 1px 1px 10px #aaa;
-        cursor: pointer;
         border-radius: 10px 10px 0 0;
     }
 
@@ -57,6 +62,7 @@
 
     .order-summary--inner h3 {
         margin: 0 !important;
+        cursor: pointer;
     }
 
         .order-summary--item {
@@ -69,6 +75,10 @@
             .order-summary--item-value {
                 float: right;
             }
+
+        .order-summary--item-mod {
+            clear: both;
+        }
 
 
     .order-summary--total {
@@ -120,7 +130,12 @@ span.price--extra-addon {
 
 .icon-plus-alt {
     width: 15px;
-    /* margin-top: 2px; */
+    margin-left: 6px;
+    vertical-align: top;
+}
+
+.icon-arrow-alt {
+    width: 15px;
     margin-left: 6px;
     vertical-align: top;
 }
@@ -134,14 +149,39 @@ span.price--extra-addon {
     bottom: 0;
     position: relative;
     right: 0;
-    width: 407px;
+    width: 100%;
     z-index: 99;
     left: 0;
     cursor: default;
+    float: right;
+    max-width: 25.4375rem;
+    min-width: 10rem;
+}
+
+@media screen and (max-width: 860px){
+    .dishcard--wrapper-inactive .suborder--summary-container{
+        flex-flow: column;
+        gap: 0;
+    }
+
+    .summary-container {
+        max-width: 100%;
+    }
+}
+
+.payment-wrapper .order-summary.disabled{
+    cursor: unset;
+    opacity: 0.6;
+    transition: opacity 0.1s linear 0s;
+    pointer-events: none;
 }
 
 .payment-wrapper .order-summary--inner{
     box-shadow: none;
+}
+
+.payment-wrapper main:first-child {
+    flex: 2;
 }
 
 .payment-wrapper h3.order-summary__heading.order-summary__hidden {
@@ -151,6 +191,7 @@ span.price--extra-addon {
 
 .payment-wrapper section.order-summary--enlarged-items {
     cursor: default;
+    border-radius: 0 0 10px 10px;
 }
 
 .payment-wrapper .layout {
@@ -167,3 +208,47 @@ span.price--extra-addon {
 .payment-wrapper .layout-section {
     width: 100%;
 }
+
+@media screen and (max-width: 960px){
+
+    .payment-wrapper .order-summary{
+        max-width: 100%;
+    }
+    .page .payment-wrapper{
+        flex-flow: column;
+        width: 100%;
+    }
+
+    .delivery-date_container .delivery-date_item{
+        font-size: 20px;
+        line-height: 24px;
+    }
+
+    .checkout--delivery-window-actions button.btn.btn-primary-small.btn-app {
+        font-size: 14px;
+        height: 45px;
+    }
+
+    .checkout--delivery-window-selectors .order_delivery__dropdown{
+        width: 100%;
+        background-position: 98%;
+    }
+
+    div .delivery-date_container {
+        margin: 1.875rem 0 1.25rem;
+    }
+
+    div .checkout--delivery-window-selectors{
+        margin-bottom: 1.875rem;
+    }
+
+    div .contact-info p{
+        font-size: 20px;
+    }
+
+}
+
+section.checkout--deliveryinfo-top {
+    margin-top: 1.875rem;
+}
+
