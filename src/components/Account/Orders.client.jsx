@@ -114,8 +114,8 @@ export default function Orders(props) {
                 <div key={item.id} className="table-row">
                     <div>{item.title}</div>
                     <div>{item.currentQuantity}</div>
-                    <div>{formatter.format(item.variant?.price.amount)}</div>
-                    <div>{formatter.format(item.originalTotalPrice.amount)}</div>
+                    <div>{parseFloat(item.variant?.price.amount) > 0 ? formatter.format(item.variant?.price.amount) : "Included"}</div>
+                    <div>{parseFloat(item.variant?.price.amount) > 0 ? formatter.format(item.originalTotalPrice.amount) : "Included"}</div>
                 </div>
            );
         });
