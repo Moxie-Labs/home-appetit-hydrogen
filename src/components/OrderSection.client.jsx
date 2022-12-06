@@ -54,7 +54,7 @@ export function OrderSection(props) {
 
     const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
     
-    const { customerData } = props;
+    const { customerData, zoneHours } = props;
     let customer = null;
     if (customerData != null) 
          customer = customerData.customer;
@@ -1130,14 +1130,6 @@ export function OrderSection(props) {
         {label: 'Dairy Free', value: 'DF'},
     ];
 
-    const availableDeliveryStarts = [
-        8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
-    ];
-
-    const availableDeliveryEnds = [
-       10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-    ];
-
     const ICE_ITEM = {
         "id": props.extraIceItem.variants.edges[0].node.id,
         "title": "Extra Ice",
@@ -1409,8 +1401,7 @@ export function OrderSection(props) {
                         <LayoutSection>
 
                             <DeliveryWindow 
-                                availableDeliveryStarts={availableDeliveryStarts} 
-                                availableDeliveryEnds={availableDeliveryEnds}
+                                availableDeliveryStarts={zoneHours} 
                                 deliveryWindowStart={deliveryWindowStart}
                                 deliveryWindowEnd={deliveryWindowEnd}
                                 deliveryWindowDay={deliveryWindowDay}

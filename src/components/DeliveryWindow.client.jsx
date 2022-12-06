@@ -6,14 +6,11 @@ export default function DeliveryWindow(props) {
 
     const {
         deliveryWindowStart, 
-        deliveryWindowEnd, 
         deliveryWindowDay,
         deliveryWindowOne,
         deliveryWindowTwo,
         availableDeliveryStarts, 
-        availableDeliveryEnds, 
         handleChangeStart, 
-        handleChangeEnd, 
         handleChangeDay,
         handleContinue, 
         handleCancel,
@@ -24,36 +21,26 @@ export default function DeliveryWindow(props) {
 
     const [selection, setSelection] = useState(false);
 
-    const filteredEndOptions = availableDeliveryEnds.filter((option) => {
-        return (!(option <= deliveryWindowStart));
-    });
-
     const startOptions = availableDeliveryStarts.map((option, i) => {
-        let endOption = option + 2;
-        let optionText = option;
-        if (option < 13) {
-            optionText += "am";
-        } else {
-            optionText = parseInt(option) - 12;
-            optionText += "pm";
-        }
-        if (endOption < 13) {
-            optionText += ` - ${endOption}am`;
-        } else {
-            optionText += ` - ${parseInt(endOption) - 12}pm`;
-        }
-        return <option key={i} value={option}>{optionText}</option>
-    });
-
-    const endOptions = filteredEndOptions.map((option) => {
-        let optionText = option;
-        if (option < 13) {
-            optionText += "am";
-        } else {
-            optionText = parseInt(option) - 12;
-            optionText += "pm";
-        }
-        return <option value={option}>{optionText}</option>
+        const startOption = option.startHour;
+        const startOptionHalfHour = (startOption !== Math.ceil(startOption) ? ":30" : "");
+        const endOption = option.endHour;
+        const endOptionHalfHour = (endOption !== Math.ceil(endOption) ? ":30" : "");
+        let optionText;
+        if (startOption < 12)
+            optionText = Math.floor(startOption) + startOptionHalfHour + "am";
+        else if (startOption < 13)
+            optionText = Math.floor(startOption) + startOptionHalfHour + "pm";
+        else
+            optionText = Math.floor(startOption - 12) + startOptionHalfHour + "pm";
+        if (endOption < 12)
+            optionText += ` - ${Math.floor(endOption)}${endOptionHalfHour}am`;
+        else if (endOption < 13)
+            optionText += ` - ${Math.floor(endOption)}${endOptionHalfHour}pm`;
+        else
+            optionText += ` - ${Math.floor(endOption) - 12}${endOptionHalfHour}pm`;
+        
+        return <option key={i} value={Math.ceil(startOption)}>{optionText}</option>
     });
 
     const getDisplayDate = date => {
@@ -67,14 +54,18 @@ export default function DeliveryWindow(props) {
         return retval;
     }
 
+    console.log("availableDeliveryStarts",availableDeliveryStarts);
+
     return (
         <div className={`checkout-section checkout--delivery-window ${isEditing ? 'disabled' : ''}`}>
             
             <h2 className="order_delivery__window-title heading order_prop__heading ha-h3">Select Delivery Window  
-            { currentStep !== step && 
-                <span>
-                            <img src={iconEdit} width={65} className="iconEdit"  onClick={handleCancel} /></span>
-                            }</h2>
+                { currentStep !== step && 
+                    <span>
+                        <img src={iconEdit} width={65} className="iconEdit"  onClick={handleCancel} />
+                    </span>
+                }
+            </h2>
                 
             { currentStep === step && 
                 <div>
@@ -90,10 +81,6 @@ export default function DeliveryWindow(props) {
                             <option selected disabled>- Select a Window -</option>
                             {startOptions}
                         </select> 
-                        {/* -
-                        // <select className="order_delivery__dropdown right" style={{backgroundImage: `url(${iconArrowDown.src})`}} disabled={true} value={deliveryWindowEnd} onChange={handleChangeEnd}>
-                        //     {endOptions}
-                        // </select>  */}
                     </div>
 
                     <div className="checkout--delivery-window-actions">
@@ -105,7 +92,6 @@ export default function DeliveryWindow(props) {
             } 
 
             { currentStep !== step &&
-                // <div className="step-disabled">
                 <div>
                     <div className="delivery-date_container">
                         <h3 className="subheading delivery-date_item active">{getDisplayDate(deliveryWindowDay === 1 ? deliveryWindowOne : deliveryWindowTwo)}</h3>     
@@ -115,11 +101,6 @@ export default function DeliveryWindow(props) {
                         <select className="order_delivery__dropdown left delivery-window_disabled" style={{backgroundImage: `url(${iconArrowDown.src})`}} disabled={true} value={deliveryWindowStart} onChange={handleChangeStart}>
                             {startOptions}
                         </select> 
-                        {/* - */}
-                        {/* <select className="order_delivery__dropdown right" style={{backgroundImage: `url(${iconArrowDown.src})`}} disabled={true} value={deliveryWindowEnd} onChange={handleChangeEnd}> */}
-                        {/* <select className="order_delivery__dropdown right delivery-window_disabled" style={{backgroundImage: `url(${iconArrowDown.src})`}} disabled={true} value={deliveryWindowEnd} onChange={handleChangeEnd}>
-                            {endOptions}
-                        </select>  */}
                     </div>
 
                     <div className="checkout--delivery-window-actions">
@@ -128,10 +109,6 @@ export default function DeliveryWindow(props) {
                             Continue
                         </button>
                       }
-
-                        {/* <button className="btn btn-primary btn-app" onClick={handleCancel}>
-                            Cancel
-                        </button> */}
                     </div>
                 </div>
             }
