@@ -9,11 +9,12 @@ import {
   flattenConnection,
   useSession,
   gql,
-  CacheNone
+  CacheNone,
+  useShop
 } from '@shopify/hydrogen';
 import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';
-import { GET_BASE_COLLECTIONS_QUERY, GET_EXTRA_ICE_ITEM, GET_FLEXIBLE_PLAN_ITEM, GET_MENUS_QUERY, GET_MOD_COLLECTIONS_QUERY, GET_TRADITIONAL_PLAN_ITEM, GET_ZIPCODES_QUERY } from '../../helpers/queries';
+import { GET_BASE_COLLECTIONS_QUERY, GET_EXTRA_ICE_ITEM, GET_FLEXIBLE_PLAN_ITEM, GET_MENUS_QUERY, GET_MOD_COLLECTIONS_QUERY, GET_TRADITIONAL_PLAN_ITEM, GET_ZIPCODES_QUERY, GET_ZONE_HOURS } from '../../helpers/queries';
 import { PRODUCT_CARD_FRAGMENT } from '../../lib/fragments';
 
 export default function Order({response}) {
@@ -103,6 +104,14 @@ export default function Order({response}) {
         preload: true
       });
 
+      const {
+        data: hoursData
+      } = useShopQuery({
+        query: GET_ZONE_HOURS,
+        cache: CacheLong(),
+        preload: true
+      });
+
       const traditionalPlanItem = tradPlanData.product;
       const flexiblePlanItem = flexPlanData.product;
       const extraIceItem = extraIceData.product;
@@ -174,7 +183,25 @@ export default function Order({response}) {
           });
         } 
       });
-      
+
+      const zone1Hours = JSON.parse(hoursData.page.zone1Hours.value);
+      const zone2Hours = JSON.parse(hoursData.page.zone2Hours.value);
+      // const hourWindows = [];
+      // [...zone1Hours.hourWindows, ...zone2Hours.hourWindows].map(hourBlock => {
+      //   let hasBlock = false;
+      //   hourWindows.map(existingBlock => {
+      //     if (existingBlock.startHour === hourBlock.startHour && existingBlock.endHour === hourBlock.endHour)
+      //       hasBlock = true;
+      //   });
+      //   if (!hasBlock) {
+      //     console.log("Adding original block: ", hourBlock)
+      //     hourWindows.push(hourBlock);
+      //   }
+          
+      // });
+
+      // hourWindows.sort((a,b) => a.startHour - b.startHour);
+
     return (
         <>
         <Suspense>
@@ -194,6 +221,7 @@ export default function Order({response}) {
                   flexiblePlanItem={flexiblePlanItem}
                   extraIceItem={extraIceItem}
                   customerAlreadyOrdered={customerAlreadyOrdered}
+                  zoneHours={zone1Hours.hourWindows}
                 />
             </Layout>
         </Suspense>
