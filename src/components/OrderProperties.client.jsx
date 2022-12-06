@@ -5,13 +5,13 @@ import iconEdit from "../assets/icon-edit.png";
 import iconArrowDown from "../assets/arrow-down.png";
 import illustration from "../assets/ha-infographic-hd.png";
 import { LayoutSection } from './LayoutSection.client';
+import { FLEXIBLE_PLAN_NAME, TRADITIONAL_PLAN_NAME } from '../lib/const';
 
 const servingOptions = [
     {label: '1 Person', value: 1},
     {label: '2 People', value: 2},
     {label: '3 People', value: 3},
-    {label: '4 People', value: 4},
-    {label: '5 People', value: 5}
+    {label: '4 People', value: 4}
 ];
 
 // const [activeScheme, setActiveScheme] = useState('traditional');
@@ -54,6 +54,17 @@ export default class OrderProperties extends React.Component {
 
         const {activeScheme, step, currentStep, servingCount, deliveryWindowOne, planPrice} = this.props;
 
+        let effectiveServingOptions = [];
+        if (activeScheme === TRADITIONAL_PLAN_NAME)
+            effectiveServingOptions = [...servingOptions];
+        else {
+            servingOptions.map((option, i) => {
+                if (i > 0)
+                    effectiveServingOptions.push(option);
+            });
+        }
+
+
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
                 <div className="step-column">
@@ -89,7 +100,7 @@ export default class OrderProperties extends React.Component {
                     <div className="select-wrapper">
                         <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingsCount} onChange={this.handleChange} disabled={currentStep !== step}>
                             <option selected disabled hidden>- Select Number of People -</option>
-                            {servingOptions.map(option => {
+                            {effectiveServingOptions.map(option => {
                                 return (
                                     <option value={option.value}>{option.label}</option>
                                 )
