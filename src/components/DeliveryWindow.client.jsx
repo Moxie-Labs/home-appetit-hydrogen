@@ -27,15 +27,19 @@ export default function DeliveryWindow(props) {
         const endOption = option.endHour;
         const endOptionHalfHour = (endOption !== Math.ceil(endOption) ? ":30" : "");
         let optionText;
-        if (startOption < 13)
+        if (startOption < 12)
             optionText = Math.floor(startOption) + startOptionHalfHour + "am";
+        else if (startOption < 13)
+            optionText = Math.floor(startOption) + startOptionHalfHour + "pm";
         else
             optionText = Math.floor(startOption - 12) + startOptionHalfHour + "pm";
-        if (endOption < 13) {
+        if (endOption < 12)
             optionText += ` - ${Math.floor(endOption)}${endOptionHalfHour}am`;
-        } else {
+        else if (endOption < 13)
+            optionText += ` - ${Math.floor(endOption)}${endOptionHalfHour}pm`;
+        else
             optionText += ` - ${Math.floor(endOption) - 12}${endOptionHalfHour}pm`;
-        }
+        
         return <option key={i} value={Math.ceil(startOption)}>{optionText}</option>
     });
 

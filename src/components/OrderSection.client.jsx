@@ -1,4 +1,4 @@
-import { useCart, useNavigate} from "@shopify/hydrogen";
+import { useCart, useNavigate, flattenConnection} from "@shopify/hydrogen";
 import { Suspense, useEffect, useState } from "react"
 import { Layout } from "./Layout.client";
 import { LayoutSection } from "./LayoutSection.client";
@@ -20,7 +20,7 @@ import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
 const TOAST_CLEAR_TIME = 5000;
 const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 1;
+const FIRST_STEP = 5;
 const ADD_ON_STEP = 4;
 const FIRST_PAYMENT_STEP = 5;
 const CONFIRMATION_STEP = 7;
@@ -58,9 +58,11 @@ export function OrderSection(props) {
     let customer = null;
     if (customerData != null) 
          customer = customerData.customer;
-
+         
+    let addresses = [];
     let defaultAddress = null;
     if (customer != null) {
+        addresses = flattenConnection(customer?.addresses) || [];
         customer.addresses.edges.map(addr => {
             if (addr.node.id === customer.defaultAddress.id)
                 defaultAddress = addr.node;
@@ -1463,6 +1465,7 @@ export function OrderSection(props) {
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
                                 autocompleteFunc={autocompleteFunc}
+                                addresses={addresses}
                             />
 
                         </LayoutSection>

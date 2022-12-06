@@ -116,3 +116,98 @@ p.gc-subtitle {
     margin-bottom: 2.5rem;
 }
 
+.blog-post-section {
+    background-color: #385F83;
+    padding: 4em 3em;
+}
+
+    .blog-post-section_title {
+        color: #fff;
+        font-size: 4em;
+        margin: 0;
+        text-align: center;
+    }
+
+    .blog-post-section_posts {
+        display: flex;
+        padding: 2em;
+    }
+
+    .blog-post {
+        border-radius: 14px;
+        flex: 1;
+        margin: 0 1em;
+        transition: all .1s ease-in;
+    }
+
+    .blog-post:hover {
+        box-shadow: 10px 5px 10px rgba(0,0,0,0.5);
+    }
+
+        .blog-post_text {
+            align-items: center;
+            background-color: #F8EFE0;
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            display: flex;
+            justify-content: center;
+            margin-top: -5px;
+            min-height: 150px;
+            padding: 0 2em;
+        }
+
+            .blog-post_title {
+                color: #474442;
+                margin: 0;
+                text-decoration: none;
+                font-weight: 500;
+            }
+    
+        .blog-post > a {
+            color: #474442;
+            text-decoration: none;
+        }
+
+        .blog-post_image {
+            width: 100%;
+        }
+
+    .blog-post-section_link {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+
+    @media screen and (max-width: 415px) {
+        .gc-col {
+            display: unset;
+        }
+
+        .gc-item-column_image {
+            display: none;
+        }
+
+        .blog-post-section_title {
+            font-size: 3em;
+        }
+
+        .blog-post-section {
+            padding: 2em 0 2em 1em;
+            margin: 0 -8px;
+        }
+
+        .blog-post-section_posts {
+            overflow-x: scroll;
+            padding: 0.5em;
+        }
+
+        .blog-post {
+            margin: 1em 1em 1em 0;
+            min-width: 250px;
+        }
+
+        .blog-post_text {
+            min-height: 125px;
+        }
+    }
+    

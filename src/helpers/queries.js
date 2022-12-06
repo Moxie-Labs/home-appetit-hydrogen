@@ -359,3 +359,21 @@ export const GET_ZONE_HOURS = gql`
     }
   }
 `;
+
+export const GET_LATEST_BLOG_POSTS = gql`
+{
+  blog(handle:"blog") {
+    articles(first:3, reverse:false, sortKey: PUBLISHED_AT) {
+      edges {
+        node {
+          title
+          onlineStoreUrl
+          image {
+            url
+            altText
+          }
+        }
+      }
+    }
+  }
+}`;

@@ -13,7 +13,7 @@ import {
 } from '@shopify/hydrogen';
 import { Layout } from '../components/Layout.server';
 import { GiftCardCalculator } from '../components/GiftCard/GiftCardCalculator.client';
-import { GET_ALL_GIFT_CARDS_WITH_VARIANTS, GET_ZIPCODES_QUERY } from '../helpers/queries';
+import { GET_ALL_GIFT_CARDS_WITH_VARIANTS, GET_LATEST_BLOG_POSTS, GET_ZIPCODES_QUERY } from '../helpers/queries';
 import { PRODUCT_CARD_FRAGMENT } from '../lib/fragments';
 
 export default function GiftCards() {
@@ -83,6 +83,14 @@ export default function GiftCards() {
 
   const giftCards = flattenConnection(giftCardData.collection.products)
 
+  const {data:blogData} = useShopQuery({
+    query: GET_LATEST_BLOG_POSTS,
+    cache: CacheLong(),
+    preload: true
+  });
+
+  const blogPosts = flattenConnection(blogData.blog.articles) || [];
+
   return (
     <Layout>
       <Suspense>
@@ -92,6 +100,7 @@ export default function GiftCards() {
           email={customer === null ? null : customer.email}
           customer={customer}
           defaultAddress={defaultAddress === null ? null : defaultAddress}
+          blogPosts={blogPosts}
         />
       </Suspense>
     </Layout>

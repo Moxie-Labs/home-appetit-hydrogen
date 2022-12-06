@@ -5,11 +5,13 @@ import { Page } from '../Page.client';
 import { Header } from '../Header.client';
 import { Footer } from '../Footer.client';
 import gcImg from "../../assets/giftcard-img.png";
+import { getPlaceholderBlogImage } from '../../lib/placeholders';
 
 
 const PREMIUM_ZIPCODES = [];
 const PREMIUM_RATE = 50;
 const REGULAR_RATE = 50;
+const marketingSite = `https://${import.meta.env.VITE_STORE_DOMAIN}/`;
 
 export function GiftCardCalculator(props) {
 
@@ -240,12 +242,32 @@ export function GiftCardCalculator(props) {
         }   
     }
 
+    const blogArea = props.blogPosts.map(post => {
+        let imageUrl;
+        let imageAlt;
+        if (post.image === null) {
+            imageUrl = getPlaceholderBlogImage();
+            imageAlt = "Home Appetit Blog"
+        } else {
+            imageUrl = post.image.url;
+            imageAlt = post.image.alt;
+        }
+        return <article className='blog-post'>
+            <a href={post.onlineStoreUrl}>
+                <img className='blog-post_image' src={imageUrl} alt={imageAlt}></img>
+                <div className='blog-post_text'>
+                    <h2 className='blog-post_title'>{post.title}</h2>
+                </div>
+            </a>
+        </article>
+    });
+
     return (
         <Page>
             <Header />
 
             <div className="gc-wrapper">
-                <div className="gc-item-column">
+                <div className="gc-item-column gc-item-column_image">
                     <img src={gcImg} />
                 </div>
                 <div className="gc-item-column form-column">
@@ -336,6 +358,16 @@ export function GiftCardCalculator(props) {
                     </div>
                 </div>
             </div>
+
+            <section className='blog-post-section'>
+                <h1 className='blog-post-section_title'>The Latest from H.A.’s HQ</h1>
+                <div className='blog-post-section_posts'>
+                    {blogArea}
+                </div>
+                <div className='blog-post-section_link'>
+                    <a className='btn btn-tertiary-small' style={{paddingLeft: '4em', paddingRight: '4em'}} href={`${marketingSite}blogs/blog`}>View All</a>
+                </div>
+            </section>
 
             <Modal
                 activator={activator}
