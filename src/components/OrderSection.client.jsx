@@ -101,15 +101,15 @@ export function OrderSection(props) {
     const [deliveryWindowEnd, setDeliveryWindowEnd] = useState(FIRST_WINDOW_START + 2);
     const [deliveryWindowDay, setDeliveryWindowDay] = useState(1);
 
-    let [firstName, setFirstName] = useState(isGuest ? null : customer.firstName);
-    let [lastName, setLastName] = useState(isGuest ? null : customer.lastName);
-    let [emailAddress, setEmailAddress] = useState(isGuest ? null : customer.email);
-    let [phoneNumber, setPhoneNumber] = useState(isGuest ? null : customer.phone);
-    let [address, setAddress] = useState(defaultAddress === null ? null : defaultAddress.address1);
-    let [address2, setAddress2] = useState(defaultAddress === null ? null : defaultAddress.address2);
-    let [deliveryState, setDeliveryState] = useState(defaultAddress === null ? null : defaultAddress.province);
-    let [city, setCity] = useState(isGuest ? null : defaultAddress === null ? null : defaultAddress.city);
-    let [zipcode, setZipcode] = useState(defaultAddress === null ? null : defaultAddress.zip);    
+    let [firstName, setFirstName] = useState(isGuest ? '' : customer.firstName);
+    let [lastName, setLastName] = useState(isGuest ? '' : customer.lastName);
+    let [emailAddress, setEmailAddress] = useState(isGuest ? '' : customer.email);
+    let [phoneNumber, setPhoneNumber] = useState(isGuest ? '' : customer.phone);
+    let [address, setAddress] = useState(defaultAddress === null ? '' : defaultAddress.address1);
+    let [address2, setAddress2] = useState(defaultAddress === null ? '' : defaultAddress.address2);
+    let [deliveryState, setDeliveryState] = useState(defaultAddress === null ? '' : defaultAddress.province);
+    let [city, setCity] = useState(defaultAddress === null ? '' : defaultAddress.city);
+    let [zipcode, setZipcode] = useState(defaultAddress === null ? '' : defaultAddress.zip);    
     let [country, setCountry] = useState("United States");
 
     const [instructions, setInstructions] = useState("");
@@ -567,7 +567,7 @@ export function OrderSection(props) {
         &checkout[shipping_address][first_name]=${firstName}
         &checkout[shipping_address][last_name]=${lastName}
         &checkout[shipping_address][address1]=${address}
-        &checkout[shipping_address][address2]=${address2}
+        &checkout[shipping_address][address2]=${address2 === null ? "" : address2}
         &checkout[shipping_address][city]=${city}
         &checkout[shipping_address][province]=${deliveryState}
         &checkout[shipping_address][country]=${country}
@@ -1364,7 +1364,7 @@ export function OrderSection(props) {
                                 {/* <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4> */}
                                 <p className='ha-body'>Our Flex ordering option allows you to choose and modify individual dishes. Note: This ordering type does increase the base cost. Previous selections will be removed from your cart. </p>
                                 <section className="card__actions">
-                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>Switch to flex plan</button>
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>{activeScheme === 'traditional' ? "Switch to flexible order" : "Switch to classic order"}</button>
                                     <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Cancel</button>
                                 </section>   
                             </div>
