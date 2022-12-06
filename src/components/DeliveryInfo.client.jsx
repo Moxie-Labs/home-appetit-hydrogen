@@ -199,18 +199,36 @@ export default function DeliveryInfo(props) {
         const errors = {};
         if (firstName.length < 3)
             errors.firstName = "First Name is too short";
+        if (firstName.length < 1)
+            errors.firstName = "First Name is empty."
         if (lastName.length < 3)
             errors.lastName = "Last Name is too short.";
+        if (lastName.length < 1)
+            errors.lastName = "Last Name is empty."
         if (!emailAddress.includes("@"))
             errors.emailAddress = "Email Address is invalid.";
+        if (emailAddress.length < 1)
+            errors.emailAddress = "Email Address is empty."
         if (phoneNumber.length < 10)
             errors.phoneNumber = "Phone Number is too short.";
+        if (phoneNumber.length < 1)
+            errors.phoneNumber = "Phone number is empty."
         if (address.length < 5)
             errors.address = "Address is too short.";
+        if (address.length < 1)
+            errors.address = "Address is empty."
+        if (city.length < 3)
+            errors.city = "City is too short.";
+        if (city.length < 1)
+            errors.city = "City is empty."
         if (deliveryState === "")
             errors.deliveryState = "Please choose a state.";
+        if (deliveryState.length < 1)
+            errors.deliveryState = "Please choose a state."
         if (zipcode.length < 5)
             errors.zipcode = "ZIP Code is invalid.";
+        if (zipcode.length < 1)
+            errors.zipcode = "ZIP code is empty."
         if (zipcodeCheck === undefined)
             errors.zipcode = "This zipcode is not in our delivery zone.";
 
@@ -234,11 +252,11 @@ export default function DeliveryInfo(props) {
     const onClickAddNew = () => {
         setIsEditing(true);
         setNewAddress(true);
-        handleAddressChange();
-        handleAddress2Change();
-        handleCityChange();
-        handleStateChange();
-        handleZipcodeChange();
+        handleAddressChange('');
+        handleAddress2Change('');
+        handleCityChange('');
+        handleStateChange('');
+        handleZipcodeChange('');
     }
 
     
@@ -372,7 +390,7 @@ export default function DeliveryInfo(props) {
                                 </label>
 
                                 <label>State:
-                                    <select className="order_delivery__dropdown order_select dropdown_state" value={deliveryState} onChange={onDeliveryStateChange}>
+                                    <select className={`order_delivery__dropdown order_select dropdown_state${validationErrors.deliveryState !== undefined ? ' input-error' : ''}`} value={deliveryState} onChange={onDeliveryStateChange}>
                                         <option value="" disabled selected>Select State</option>
                                         {stateOptions}
                                     </select>
@@ -426,7 +444,7 @@ export default function DeliveryInfo(props) {
                         </button> 
                         : 
                         <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickContinue}>
-                            UPDATE
+                            CONTINUE
                         </button>}
 
                         {/* <button className="btn btn-primary btn-app" onClick={handleCancel}>
@@ -505,12 +523,12 @@ export default function DeliveryInfo(props) {
             <hr></hr>
 
             <div className="place-order-container">
-                <button className="btn btn-primary-small btn-place-order" onClick={handleContinue}>
+                <button className= {`btn btn-primary-small btn-place-order${isEditing ? ' disabled' : ''}`} onClick={handleContinue}>
                     CONTINUE TO PAYMENT
                 </button>
-            </div>
+            </div>    
 
-
+            
         </div>
     );
 }

@@ -254,7 +254,8 @@ export function GiftCardCalculator(props) {
         }
         return <article className='blog-post'>
             <a href={post.onlineStoreUrl}>
-                <img className='blog-post_image' src={imageUrl} alt={imageAlt}></img>
+                <div className='blog-post_image' style={{background: `url('${imageUrl}')`}}></div>
+                {/* <img className='blog-post_image' src={imageUrl} alt={imageAlt}></img> */}
                 <div className='blog-post_text'>
                     <h2 className='blog-post_title'>{post.title}</h2>
                 </div>

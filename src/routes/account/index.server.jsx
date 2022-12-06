@@ -209,7 +209,7 @@ const CUSTOMER_QUERY = gql`
                 zip
                 province
             }
-            lineItems(first: 2) {
+            lineItems(first: 15) {
               edges {
                 node {
                   variant {

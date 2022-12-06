@@ -347,10 +347,23 @@ export const GET_EXTRA_ICE_ITEM = gql`
   }
 `;
 
+export const GET_ZONE_HOURS = gql`
+  {
+    page(handle:"order-now") {
+      zone1Hours:metafield(namespace:"custom", key:"delivery_windows_area_1_") {
+        value
+      }
+      zone2Hours:metafield(namespace:"custom", key:"delivery_windows_area_2_") {
+        value
+      }
+    }
+  }
+`;
+
 export const GET_LATEST_BLOG_POSTS = gql`
 {
   blog(handle:"blog") {
-    articles(first:3, reverse:false, sortKey: PUBLISHED_AT) {
+    articles(first:3, reverse:true, sortKey: UPDATED_AT) {
       edges {
         node {
           title

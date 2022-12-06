@@ -118,7 +118,7 @@ p.gc-subtitle {
 
 .blog-post-section {
     background-color: #385F83;
-    padding: 4em 3em;
+    padding: 8em 1em;
 }
 
     .blog-post-section_title {
@@ -138,10 +138,6 @@ p.gc-subtitle {
         flex: 1;
         margin: 0 1em;
         transition: all .1s ease-in;
-    }
-
-    .blog-post:hover {
-        box-shadow: 10px 5px 10px rgba(0,0,0,0.5);
     }
 
         .blog-post_text {
@@ -169,6 +165,12 @@ p.gc-subtitle {
         }
 
         .blog-post_image {
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            min-height: 15rem;
             width: 100%;
         }
 
