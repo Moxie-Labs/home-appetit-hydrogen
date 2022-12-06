@@ -125,7 +125,7 @@ export default function Orders(props) {
         return (
             <div>
                 <p>{modalOrder.shippingAddress.address1}</p>
-                {modalOrder.shippingAddress.address2 !== "" && modalOrder.shippingAddress.address2 !== "null" && modalOrder.shippingAddress.address2 !== null && <p>{modalOrder.shippingAddress.address2}</p>}
+                {modalOrder.shippingAddress.address2 !== "" && modalOrder.shippingAddress.address2 !== "null " && modalOrder.shippingAddress.address2 !== null && <p>{modalOrder.shippingAddress.address2}</p>}
                 <p>{modalOrder.shippingAddress.city}, {modalOrder.shippingAddress.province} {modalOrder.shippingAddress.zip}</p>
             </div>
         );
