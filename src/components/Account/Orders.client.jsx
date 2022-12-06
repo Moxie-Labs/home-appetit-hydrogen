@@ -75,7 +75,7 @@ export default function Orders(props) {
         ];
 
         let year = formattedDate.getFullYear();
-        let month = monthNames[(1 + formattedDate.getMonth()).toString().padStart(2, '0')];
+        let month = monthNames[(formattedDate.getMonth()).toString().padStart(2, '0')];
         let day = formattedDate.getDate().toString().padStart(2, '0');
 
       
@@ -172,7 +172,8 @@ export default function Orders(props) {
             >
                 { modalOrder !== null &&  
                     <div className="order-details-wrapper">
-                        <div className="details--column">
+                        <button className="prev-order-modal--exit" onClick={() => setShowModal(false)}></button>
+                        <div className="details--column items">
                             <h1>Order #{modalOrder.orderNumber}</h1>
                             <h2>Status: {getOrderStatus(modalOrder.fulfillmentStatus)}</h2>
                             <p>Placed on {getFormattedDate(modalOrder.processedAt)}</p>
@@ -187,7 +188,7 @@ export default function Orders(props) {
                                 {getOrderTotalDetails()}
                             </div>
                         </div>
-                        <div className="details--column">
+                        <div className="details--column addresses">
                             <div className="address-container">
                                 <h2>Billing Address</h2>           
                                 <p>{addresses.edges[0].node.address1}</p>

@@ -546,6 +546,14 @@ a.orders--order-number:hover{
     cursor: pointer;
 }
 
+.details--column.items {
+    flex: 3
+}
+
+.details--column.addresses {
+    flex: 1
+}
+
 .details--column:first-child {
     flex: 1;
 }
@@ -585,6 +593,8 @@ table.order-table td {
 
 .order-details-wrapper .product-table {
     border: 1px solid #ccc;
+    max-height: 200px;
+    overflow: scroll;
 }
 
 .table-row-total {
@@ -597,3 +607,15 @@ table.order-table td {
     padding-bottom: 12px;
 }
 
+.prev-order-modal--exit {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+    background: url(/src/assets/icon-close-btn.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+}
