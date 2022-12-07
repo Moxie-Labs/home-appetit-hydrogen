@@ -92,7 +92,7 @@ export default function OrderIllustration(props){
                 <div className="menu-top-row">
                 <div className='illustration-total'>${planPrice}</div>
                 <div className="menu--row-inner">
-                <div className='illustration-desc'>{activeScheme === 'traditional' ? 'Classic Order' : 'Flex Ordering'}-{setPeople(servingCount)}</div>
+                <div className='illustration-desc'>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic Order' : 'Flex Ordering'}-{setPeople(servingCount)}</div>
                 <div className='illustration-desc-sub'>{servingCount === '1' || servingCount === 0 ? "4-6 Meals" : "4-6 Meals Per Person"}</div>
                 <div className='illustration-desc-division'></div>
                 <div className='illustration-desc-underline'>

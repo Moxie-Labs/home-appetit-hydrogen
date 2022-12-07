@@ -804,14 +804,16 @@ export function OrderSection(props) {
         if (cartLines.length) 
             setChangePlanModalShowing(true);
         else
-            setActiveScheme(newScheme);
+            changeActiveScheme(newScheme);
     }
 
     const changeActiveScheme = () => {
         const newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
+        const newServingCount = newScheme === FLEXIBLE_PLAN_NAME && servingCount < 2 ? 2 : servingCount;
         emptyCart();
         setActiveScheme(newScheme);
         setCurrentStep(FIRST_STEP);
+        setServingCount(newServingCount);
         setChangePlanModalShowing(false);
     }
     

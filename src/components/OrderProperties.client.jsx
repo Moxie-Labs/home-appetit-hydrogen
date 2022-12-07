@@ -14,6 +14,12 @@ const servingOptions = [
     {label: '4 People', value: 4}
 ];
 
+const flexServingOptions = [
+    {label: '2 People', value: 2},
+    {label: '3 People', value: 3},
+    {label: '4 People', value: 4}
+];
+
 // const [activeScheme, setActiveScheme] = useState('traditional');
 
 export default class OrderProperties extends React.Component {
@@ -64,7 +70,6 @@ export default class OrderProperties extends React.Component {
             });
         }
 
-
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
                 <div className="step-column">
@@ -98,8 +103,8 @@ export default class OrderProperties extends React.Component {
                         <label>Number of people:</label>
                     }
                     <div className="select-wrapper">
-                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingsCount} onChange={this.handleChange} disabled={currentStep !== step}>
-                            <option selected disabled hidden>- Select Number of People -</option>
+                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingCount} onChange={this.handleChange} disabled={currentStep !== step}>
+                            <option selected disabled hidden value={0}>- Select Number of People -</option>
                             {effectiveServingOptions.map(option => {
                                 return (
                                     <option value={option.value}>{option.label}</option>
