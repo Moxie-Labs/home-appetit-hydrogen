@@ -76,8 +76,8 @@ export default function DishCard(props) {
         setConfirmed(quantity > 0);
         updateIsCardActive(false);
         setIsModModalShowing(false);
-        updateQuantity(activeScheme === 'traditional' ? quantity : 0);
-        setSelectedMods(activeScheme === 'traditional' ? selectedMods : []);
+        updateQuantity(activeScheme === TRADITIONAL_PLAN_NAME ? quantity : 0);
+        setSelectedMods(activeScheme === TRADITIONAL_PLAN_NAME ? selectedMods : []);
 
         handleSelected({choice: choice, quantity: quantity, selectedMods: selectedMods});
 
@@ -266,13 +266,13 @@ export default function DishCard(props) {
                             </div>
 
                             <div className='modal--flexible-inner'>
-                                { activeScheme === 'traditional' && 
+                                { activeScheme === TRADITIONAL_PLAN_NAME && 
                                     <p>*Customizations will be applied to all portions of this dish. For more individualized customizations, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Flex</span> option.</p>
                                 }
 
 
-                                { activeScheme === 'flexible' && 
-                                    <p>*Customizations will not be applied to portions already in the cart. For customizations across all portions, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Traditional</span> option.</p>
+                                { activeScheme === FLEXIBLE_PLAN_NAME && 
+                                    <p>*Customizations will not be applied to portions already in the cart. For customizations across all portions, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Classic</span> option.</p>
                                 }
 
                             <div className="modal--flexible-container">
