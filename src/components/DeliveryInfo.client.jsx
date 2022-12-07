@@ -452,10 +452,10 @@ export default function DeliveryInfo(props) {
                         {newAddress ? 
                         <div className='add-new-address'>
                             <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickSubmit}>
-                                Submit
+                                CONTINUE
                             </button> 
                             <button className="btn btn-confirm btn-secondary-small btn-app" onClick={onClickCancel}>
-                                Cancel
+                                CANCEL
                             </button> 
                         </div>
                         : 
