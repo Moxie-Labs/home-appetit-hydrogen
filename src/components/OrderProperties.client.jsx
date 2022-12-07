@@ -5,6 +5,7 @@ import iconEdit from "../assets/icon-edit.png";
 import iconArrowDown from "../assets/arrow-down.png";
 import illustration from "../assets/ha-infographic-hd.png";
 import { LayoutSection } from './LayoutSection.client';
+import { FLEXIBLE_PLAN_NAME, TRADITIONAL_PLAN_NAME } from '../lib/const';
 
 const servingOptions = [
     {label: '1 Person', value: 1},
@@ -69,11 +70,11 @@ export default class OrderProperties extends React.Component {
                         <span className={`delivery-window-label ${currentStep !== step ? 'disabled' : ''}`}>Place order for {this.getDisplayDate(deliveryWindowOne)} delivery</span>
                     </div>
 
-                    {activeScheme === "traditional" && currentStep === step &&
+                    {activeScheme === TRADITIONAL_PLAN_NAME && currentStep === step &&
                        <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates. If you’re feeding more than one person, we’ll portion up your selections accordingly. (Example: Enough pasta for three people.) Any dish customizations will impact all portions. If you need to customize specific portions or each person would like different selections, check out our Flex Order option</p>
                     }
 
-                    {activeScheme === "flexible" && currentStep === step &&
+                    {activeScheme === FLEXIBLE_PLAN_NAME && currentStep === step &&
                        <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates per person. Multiple selections of the same dish will come packed together, unless customizations are made to individual selections. (If everyone you’re ordering for will enjoy the same selections or customizations, consider placing a Classic Order—our most cost effective option.)
                        </p>
                     } 

@@ -256,7 +256,7 @@ export function OrderSection(props) {
         const variantType = isIce ? 0 : getVariantType(collection);        
 
         // if: item was already added in Traditional, then: update quantity and modifiers (or remove)
-        if (doesCartHaveItem(choice, collection) && activeScheme === 'traditional') {
+        if (doesCartHaveItem(choice, collection) && activeScheme === TRADITIONAL_PLAN_NAME) {
             console.log("addItemToCart::already exists", choice);
             console.log("collectionName: ", collectionName);
             const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
@@ -790,7 +790,7 @@ export function OrderSection(props) {
     }
 
     const getFreeQuantityLimit = () => {
-        if (activeScheme === 'traditional')
+        if (activeScheme === TRADITIONAL_PLAN_NAME)
             return FREE_QUANTITY_LIMIT;
         else
             return FREE_QUANTITY_LIMIT * Math.max(1, servingCount);
@@ -800,7 +800,7 @@ export function OrderSection(props) {
     const queryChangeActiveScheme = (newScheme=null) => {
         console.log("queryChangeActiveScheme");
         if (newScheme === null)
-            newScheme = activeScheme === 'traditional' ? 'flexible' : 'traditional';
+            newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
         if (cartLines.length) 
             setChangePlanModalShowing(true);
         else
@@ -808,7 +808,7 @@ export function OrderSection(props) {
     }
 
     const changeActiveScheme = () => {
-        const newScheme = activeScheme === 'traditional' ? 'flexible' : 'traditional';
+        const newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
         emptyCart();
         setActiveScheme(newScheme);
         setCurrentStep(FIRST_STEP);
@@ -816,7 +816,7 @@ export function OrderSection(props) {
     }
     
     const getSelectedPlan = () => {
-        const selectedPlan = activeScheme === 'traditional' ? props.traditionalPlanItem.variants.edges[Math.max(0,servingCount-1)].node : props.flexiblePlanItem.variants.edges[Math.max(0,servingCount-1)].node;
+        const selectedPlan = activeScheme === TRADITIONAL_PLAN_NAME ? props.traditionalPlanItem.variants.edges[Math.max(0,servingCount-1)].node : props.flexiblePlanItem.variants.edges[Math.max(0,servingCount-1)].node;
         return selectedPlan;
     }
 
@@ -1364,7 +1364,7 @@ export function OrderSection(props) {
                                 {/* <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4> */}
                                 <p className='ha-body'>Our Flex ordering option allows you to choose and modify individual dishes. Note: This ordering type does increase the base cost. Previous selections will be removed from your cart. </p>
                                 <section className="card__actions">
-                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>{activeScheme === 'traditional' ? "Switch to flexible order" : "Switch to classic order"}</button>
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>{activeScheme === TRADITIONAL_PLAN_NAME ? "Switch to flexible order" : "Switch to classic order"}</button>
                                     <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Cancel</button>
                                 </section>   
                             </div>
