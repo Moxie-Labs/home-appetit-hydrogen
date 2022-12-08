@@ -1336,6 +1336,7 @@ export function OrderSection(props) {
                                 emptyCart={()=>emptyCart()}
                                 handleChangeCurrentStep={step => updateCurrentStep(step)}                             
                                 cardStatus={cardStatus}
+                                cartLinesLength={cartLines === undefined ? 0 : cartLines.length}
                             />  
                         </LayoutSection>
 

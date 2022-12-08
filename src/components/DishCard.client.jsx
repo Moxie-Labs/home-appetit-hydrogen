@@ -178,9 +178,11 @@ export default function DishCard(props) {
 
         let attributesDisplay = '';
         
-        attributes.forEach(attr => {
-            attributesDisplay += `[${attr}]  `;
-        });
+        // attributes.forEach(attr => {
+        //     attributesDisplay += `${attr}  `;
+        // });
+
+        attributesDisplay = attributes.join(" • ");
 
         const peoplePlural = servingCount > 1 ? 'people' : 'person';
         const disclaimerText =  isCardActive ? `*Each added dish serves ${servingCount} ${peoplePlural}` : `Serves ${servingCount} ${peoplePlural}`;

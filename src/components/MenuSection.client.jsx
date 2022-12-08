@@ -81,12 +81,17 @@ export default class MenuSection extends React.Component {
     }
 
     progressBarStatus(getQuantityTotal){
+        const progressPercentage = Math.max(0, parseFloat(getQuantityTotal) / parseFloat(this.props.freeQuantityLimit));
+
+        const progressBarSlots = [];
+        for(let i=0; i<this.props.freeQuantityLimit; i++) {
+            progressBarSlots.push(<div className={`progress-bar__order-item`}></div>);
+        }
+
         return (
             <div className="progress-bar">
-                <div className={`progress-bar__order-item ${getQuantityTotal > 0 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 1 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 2 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 3 ? 'active' : null}`}></div>
+                <div className={`progress-meter${progressPercentage >= 1.0 ? ' progress-meter--filled' : ''}`} style={{width: `${progressPercentage*100}%`}}></div>
+                {progressBarSlots}
             </div>
         );
     }
@@ -198,7 +203,7 @@ export default class MenuSection extends React.Component {
 
         // Render Sections
         const overviewSection = <section>
-        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
+        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
         { (selected.length + selectedExtra.length) !== 0 && 
         <div className="suborder--summary-container">
 

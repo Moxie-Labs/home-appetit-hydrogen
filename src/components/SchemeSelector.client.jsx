@@ -24,8 +24,8 @@ class SchemeSelector extends React.Component {
                 }
                 {currentStep === step &&
                     <div>
-                        <span className={`schemeType ${activeScheme === TRADITIONAL_PLAN_NAME ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme(TRADITIONAL_PLAN_NAME)}>Classic Plan</span>
-                        <span className={`schemeType ${activeScheme === FLEXIBLE_PLAN_NAME ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme(FLEXIBLE_PLAN_NAME)}>Flexible Plan</span>
+                        <span className={`schemeType ${activeScheme === TRADITIONAL_PLAN_NAME ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme(TRADITIONAL_PLAN_NAME)}>Classic Order</span>
+                        <span className={`schemeType ${activeScheme === FLEXIBLE_PLAN_NAME ? 'active' : ''} ${currentStep !== step ? 'ss-no-underline' : ''}`} onClick={() => this.changeScheme(FLEXIBLE_PLAN_NAME)}>Flex Order</span>
                         <span className="badge"><img src={badgeNew} width={42} /></span>
                     </div>
                 }

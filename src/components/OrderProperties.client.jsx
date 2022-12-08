@@ -71,7 +71,7 @@ export default class OrderProperties extends React.Component {
                     </div>
 
                     {activeScheme === TRADITIONAL_PLAN_NAME && currentStep === step &&
-                       <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates. If you’re feeding more than one person, we’ll portion up your selections accordingly. (Example: Enough pasta for three people.) Any dish customizations will impact all portions. If you need to customize specific portions or each person would like different selections, check out our Flex Order option</p>
+                       <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates. If you’re feeding more than one person, we’ll portion up your selections accordingly. (Example: Enough pasta for three people.) Any dish customizations will impact all portions. If you need to customize specific portions or each person would like different selections, check out our Flex Order option.</p>
                     }
 
                     {activeScheme === FLEXIBLE_PLAN_NAME && currentStep === step &&
@@ -89,7 +89,7 @@ export default class OrderProperties extends React.Component {
                     }
                     <div className="select-wrapper">
                         <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingsCount} onChange={this.handleChange} disabled={currentStep !== step}>
-                            <option selected disabled hidden>- Select Number of People -</option>
+                            <option selected disabled hidden>Select...</option>
                             {servingOptions.map(option => {
                                 return (
                                     <option value={option.value}>{option.label}</option>
