@@ -1165,7 +1165,9 @@ export function OrderSection(props) {
     else if (latestMenu !==  null && isCollectionsLoading)
         return <Page>
             <Suspense>
-                <h1>One moment...</h1>
+                <div className="loading-icon-container">
+                    <img src="/src/assets/loading-loading-forever.gif" width="50"/>
+                </div>
             </Suspense>
         </Page>;
 
