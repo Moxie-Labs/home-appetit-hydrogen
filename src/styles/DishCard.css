@@ -237,6 +237,24 @@ p.card__code {
     padding: 16px 40px 12px !important;
 }
 
+    .btn-counter-confirm:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .btn-counter-confirm:hover:disabled {
+        background: #FFA877;
+        color: #474442;
+    }
+
+img.btn-close-dish-card-modal {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 20px;
+    cursor: pointer;
+}
+
 .Polaris-Modal-Dialog__Modal {
     background: #FFFCF5;
     padding: 0em;
@@ -483,8 +501,13 @@ h2.card__quantity-title {
 }
 
 .modal--flexible-confirmaton .card__quantity-inner-wrapper {
-    padding: 1.875rem 1.875rem 0 1.875rem;
+    padding: 1.875rem;
+    padding-bottom: 0;
     text-align: left;
+}
+
+.wrapper-modal .card__quantity-inner-wrapper {
+    width: 100%;
 }
 
 .modal--flexible-confirmaton h2.card__quantity-title {
