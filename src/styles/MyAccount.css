@@ -81,7 +81,7 @@ hr.order-divider {
 }
 
 .input-error {
-    border: 1px solid red;
+    border: 1px solid red !important;
 }
 
 .modal-new-payment input:focus-visible, .account-information input:focus-visible {

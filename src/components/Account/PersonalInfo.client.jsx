@@ -52,7 +52,7 @@ export default function PersonalInfo(props) {
     // Modal will submit new address instead of sending an update request
     const [newAddressModal, setNewAddressModal] = useState(false);
 
-    const [fieldErrors, setFieldErrors] = useState(null);
+    const [fieldErrors, setFieldErrors] = useState({});
     const [validationErrors, setValidationErrors] = useState({});
 
     const formattedPhoneNumber = number => {
@@ -93,26 +93,36 @@ export default function PersonalInfo(props) {
     }
 
     const updateFields = () => {
-        if (validateFields()) {
+        const errors = validateFields();
+        if (Object.keys(errors).length === 0) {
             handleUpdatePersonal(firstNameState, lastNameState, emailState, compressPhoneNumber(phoneState));
             dismissModals();
+            setFieldErrors({})
+        } else {
+            setFieldErrors(errors);
         }
     }
 
     const validateFields = () => {
         let newFieldErrors = {};
-        if (firstNameState === null || firstNameState.length < 1)
-            newFieldErrors.firstName = "First Name is too short."
-        if (lastNameState === null || lastNameState.length < 1)
-            newFieldErrors.lastName = "Last Name is too short."
-        if (phoneState === null || formattedPhoneNumber(phoneState).length < 14)
-            newFieldErrors.phone = "Phone number is too short."
-        if (emailState === null || emailState.length < 3)
-            newFieldErrors.email = "Email is invalid.";
+        if (firstNameState.length < 3)
+            newFieldErrors.firstNameState = "Please enter a valid First Name.";
+        if (firstNameState.length < 1)
+            newFieldErrors.firstNameState = "Please enter First Name."
+        if (lastNameState.length < 3)
+            newFieldErrors.lastNameState = "Please enter a valid Last Name.";
+        if (lastNameState.length < 1)
+            newFieldErrors.lastNameState = "Please enter Last Name."
+        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)))
+            newFieldErrors.emailState = "Please enter a valid Email Address.";
+        if (emailState.length < 1)
+            newFieldErrors.emailState = "Please enter Email Address."
+        if (formattedPhoneNumber(phoneState).length < 14)
+            newFieldErrors.phoneState = "Please enter a valid Phone Number.";
+        if (phoneState.length < 1)
+            newFieldErrors.phoneState = "Please enter Phone number."
 
-        setFieldErrors(newFieldErrors);
-
-        return Object.keys(newFieldErrors).length < 1;
+        return newFieldErrors;
     }
 
     const addressesSection = customer.addresses.length > 0 ? <section>
@@ -282,30 +292,39 @@ export default function PersonalInfo(props) {
     const getFormErrors = () => {
         const errors = {};
         if (modalFirstName.length < 3)
-            errors.modalFirstName = "First Name is too short";
+            errors.modalFirstName = "Please enter a valid First Name.";
+        if (modalFirstName.length < 1)
+            errors.modalFirstName = "Please enter First Name."
         if (modalLastName.length < 3)
-            errors.modalLastName = "Last Name is too short.";
+            errors.modalLastName = "Please enter a valid Last Name.";
+        if (modalLastName.length < 1)
+            errors.modalLastName = "Please enter Last Name."
         if (modalPhone.length < 10)
-            errors.modalPhone = "Phone Number is too short.";
+            errors.modalPhone = "Please enter a valid Phone Number.";
+        if (modalPhone.length < 1)
+            errors.modalPhone = "Please enter Phone number."
         if (modalAddress1.length < 5)
-            errors.modalAddress1 = "Address is too short.";
+            errors.modalAddress1 = "Please enter a valid Address.";
+        if (modalAddress1.length < 1)
+            errors.modalAddress1 = "Please enter Address."
         if (modalCity.length < 3)
-            errors.modalCity = "City Name is too short.";
+            errors.modalCity = "Please enter a valid City.";
+        if (modalCity.length < 1)
+            errors.modalCity = "Please enter City."
         if (modalProvince === "")
-            errors.modalProvince = "Please choose a state.";
+            errors.modalProvince = "Please choose a State.";
+        if (modalProvince.length < 1)
+            errors.modalProvince = "Please choose a State."
         if (modalZip.length < 5)
-            errors.modalZip = "ZIP Code is invalid.";
+            errors.modalZip = "Please enter a valid ZIP Code.";
+        if (modalZip.length < 1)
+            errors.modalZip = "Please enter ZIP code."
         if (zipcodeCheck === undefined)
-            errors.modalZip = "This zipcode is not in our delivery zone.";
+            errors.modalZip = "This ZIP code is not in our delivery zone.";
 
         return errors;
 
     }
-
-    const errorList = Object.values(validationErrors).map((error, i) => {
-        return <li key={i}>{error}</li>;
-    });
-
 
     return (
         <div className="account-information">
@@ -337,19 +356,14 @@ export default function PersonalInfo(props) {
                 <section>
                      <div className="personal-info-wrapper edit-wrapper">
                      <h5 className="ha-h5 text-uppercase no-margin">Account information</h5>
-                        { fieldErrors !== null && Object.keys(fieldErrors).length > 0 && 
-                            <ul className="field-errors">
-                                {Object.values(fieldErrors).map(value => {
-                                    return <li>{value}</li> 
-                                })}
-                            </ul>
-                        }
                         <div className="info-row">
                             <label className="info-label-field">First Name:
-                              <input value={firstNameState} className="modal-address-field" onChange={e => setFirstNameState(e.target.value)}/>
+                              <input value={firstNameState} className={`modal-address-field${fieldErrors.firstNameState !== undefined ? ' input-error' : ''}`} onChange={e => setFirstNameState(e.target.value)}/>
+                              {fieldErrors.firstNameState !== undefined && <p className='form-errors'>{fieldErrors.firstNameState}</p>}
                             </label>
                             <label className="info-label-field">Last Name:
-                              <input value={lastNameState} className="modal-address-field" onChange={e => setLastNameState(e.target.value)}/>
+                              <input value={lastNameState} className={`modal-address-field${fieldErrors.lastNameState !== undefined ? ' input-error' : ''}`} onChange={e => setLastNameState(e.target.value)}/>
+                              {fieldErrors.lastNameState !== undefined && <p className='form-errors'>{fieldErrors.lastNameState}</p>}
                             </label>
                             {/* placeholder */}
                             <h2><span className="info-label">Birthdate:</span><br />  12/21/1982</h2>
@@ -357,11 +371,13 @@ export default function PersonalInfo(props) {
                         </div>
                     <div className="info-row row-2">
                         <label className="info-label-field email-label">Email:
-                           <input className="modal-address-field" value={emailState} onChange={e => setEmailState(e.target.value)}/>
+                           <input className={`modal-address-field${fieldErrors.emailState !== undefined ? ' input-error' : ''}`} value={emailState} onChange={e => setEmailState(e.target.value)}/>
+                           {fieldErrors.emailState !== undefined && <p className='form-errors'>{fieldErrors.emailState}</p>}
                         </label>
 
                         <label className="info-label-field phone-label">Phone Number:
-                            <input className="modal-address-field" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="14" value={formattedPhoneNumber(phoneState)} onChange={e => setPhoneState(e.target.value)}/>
+                            <input className={`modal-address-field${fieldErrors.phoneState !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="14" value={formattedPhoneNumber(phoneState)} onChange={e => setPhoneState(e.target.value)}/>
+                            {fieldErrors.phoneState !== undefined && <p className='form-errors'>{fieldErrors.phoneState}</p>}
                         </label>
                     </div>
 
@@ -412,12 +428,6 @@ export default function PersonalInfo(props) {
                     onRequestClose={() => closeAddressModal()}
                     className="modal-new-address"
                 >
-                    { Object.keys(validationErrors).length > 0 &&
-                        <ul>
-                            {errorList}
-                        </ul>
-
-                    }
                     <h4 className="ha-h4 text-uppercase text-center no-margin">Default Address</h4>
 
                     <div className="new-address-wrapper">
@@ -426,24 +436,28 @@ export default function PersonalInfo(props) {
                         <div className="field">
                         <label>First Name:</label>
                         <input className={`modal-address-field${validationErrors.modalFirstName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="firstname" value={modalFirstName} onChange={e => setModalFirstName(e.target.value)} placeholder={"First Name (Required)"}/>
+                        {validationErrors.modalFirstName !== undefined && <p className='form-errors'>{validationErrors.modalFirstName}</p>}
                         </div>
 
                         <div className="field">
                         <label>Last Name:</label>
                         <input className={`modal-address-field${validationErrors.modalLastName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="lastname" value={modalLastName} onChange={e => setModalLastName(e.target.value)} placeholder={"Last Name (Required)"}/>
+                        {validationErrors.modalLastName !== undefined && <p className='form-errors'>{validationErrors.modalLastName}</p>}
                         </div>
                     </div>
 
                     <div className="field-row">
                     <div className="field">
-                    <label>Phone:</label>
+                    <label>Phone Number:</label>
                     <input className={`modal-address-field${validationErrors.modalPhone !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="12" type="phone" name="phone" value={modalFormattedPhoneNumber(modalPhone)} onChange={e => setModalPhone(e.target.value)} placeholder={"Phone Number (Required)"}/>
+                    {validationErrors.modalPhone !== undefined && <p className='form-errors'>{validationErrors.modalPhone}</p>}
                     </div>
                     </div>
 
                     <div className="field">
                     <label>Address:</label>
                     <input id='autocomplete' className={`modal-address-field${validationErrors.modalAddress1 !== undefined ? ' input-error' : ''}`} type="text" name="address" value={modalAddress1} onChange={e => setModalAddress1(e.target.value)} onFocus={autocompleteFunc} placeholder={"Address (Required)"}/>
+                    {validationErrors.modalAddress1 !== undefined && <p className='form-errors'>{validationErrors.modalAddress1}</p>}
                     </div>
                     
                     <div className="field">
@@ -455,6 +469,7 @@ export default function PersonalInfo(props) {
                     <div className="field">
                     <label>City:</label>
                     <input className={`modal-address-field${validationErrors.modalCity !== undefined ? ' input-error' : ''}`} type="text" name="city" value={modalCity} onChange={e => setModalCity(e.target.value)} placeholder={"City (Required)"}/>
+                    {validationErrors.modalCity !== undefined && <p className='form-errors'>{validationErrors.modalCity}</p>}
                     </div>
 
                     <div className="field">
@@ -463,11 +478,13 @@ export default function PersonalInfo(props) {
                         <option value="" disabled selected>Select State</option>
                         {stateOptions}
                     </select>
+                    {validationErrors.modalProvince !== undefined && <p className='form-errors'>{validationErrors.modalProvince}</p>}
                     </div>
 
                     <div className="field">
                     <label>ZIP:</label>
                     <input className={`modal-address-field${validationErrors.modalZip !== undefined ? ' input-error' : ''}`} type="text" name="zipcode" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={modalZip} onChange={e => setModalZip(e.target.value)} placeholder={"ZIP Code (Required)"}/>
+                    {validationErrors.modalZip !== undefined && <p className='form-errors'>{validationErrors.modalZip}</p>}
                     </div>
                     </div>
 
