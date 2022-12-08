@@ -65,6 +65,11 @@ select.order_prop__dropdown:focus-visible {
     text-align: center;
 }
 
+.illustration-type--flexible {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .illustration-desc {
     text-transform: uppercase;
     /* position: relative; */
@@ -146,6 +151,14 @@ select.order_prop__dropdown:focus-visible {
     justify-content: space-evenly;
     align-items: center;
 }
+
+    .illustration-type--flexible .illustration-section {
+        padding-top: 2rem;
+    }
+
+    .illustration-type--flexible .illustration-inner-wrapper {
+        padding-top: 0;
+    }
 
 .illustration-image-section{
     display: flex;

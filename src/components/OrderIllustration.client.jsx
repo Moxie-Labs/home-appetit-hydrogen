@@ -86,7 +86,7 @@ export default function OrderIllustration(props){
     }
         
         return (
-            <div>
+            <div className={`illustration-type--${activeScheme}`}>
                 { servingCount > 0 ? 
                 <div>
                 <div className="menu-top-row">
