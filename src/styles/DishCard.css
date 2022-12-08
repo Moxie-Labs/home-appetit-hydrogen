@@ -422,6 +422,12 @@ h2.card__quantity-title {
     background: transparent;
     border-radius: 36px;
     border: 2px solid #474442;
+    transition: background 0.2s;
+}
+
+.modal--flexible-inner .card__actions  .btn-modal-cancel:hover {
+    background-color: #474442;
+    color: #fff !important;
 }
 
 .modal--flexible-inner .card__actions .btn{

@@ -81,6 +81,7 @@ export function OrderSection(props) {
     const [isAlreadyOrderedModalShowing, setIsAlreadyOrderedModalShowing] = useState(false);
     const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
     const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
+    const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -572,6 +573,10 @@ export function OrderSection(props) {
         &checkout[shipping_address][province]=${deliveryState}
         &checkout[shipping_address][country]=${country}
         &checkout[shipping_address][zip]=${zipcode}`;
+    }
+
+    const promptEmptyCart = () => {
+        setIsPromptingEmptyCart(true);
     }
 
     const emptyCart = () => {
@@ -1333,7 +1338,7 @@ export function OrderSection(props) {
                                 freeQuantityLimit={getFreeQuantityLimit()} 
                                 removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
                                 isAddingExtraItems={isAddingExtraItems}
-                                emptyCart={()=>emptyCart()}
+                                emptyCart={()=>promptEmptyCart()}
                                 handleChangeCurrentStep={step => updateCurrentStep(step)}                             
                                 cardStatus={cardStatus}
                                 cartLinesLength={cartLines === undefined ? 0 : cartLines.length}
@@ -1389,6 +1394,26 @@ export function OrderSection(props) {
                                         resetOrder();
                                         setIsRestoringCart(false);
                                     }}>Start new order</button>
+                                </section>   
+                            </div>
+                        </Modal>
+
+                        <Modal
+                            isOpen={isPromtingEmptyCart}
+                            onRequestClose={() => setIsPromptingEmptyCart(false)}
+                            className="modal--flexible-confirmaton modal--restore-cart"
+                        >
+                            <div className='modal--flexible-inner'>
+                                <h2 className='ha-h4 text-center'>Continue with <br/> clearing your cart?</h2>
+                                <p className='ha-body'>Do you want to continue clearing your cart? This will remove all added items, and you will have to start your order from the beginning.</p>
+                                <section className="card__actions">
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {
+                                        setIsPromptingEmptyCart(false);
+                                        emptyCart();
+                                    }}>Continue</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => {
+                                        setIsPromptingEmptyCart(false);
+                                    }}>Cancel</button>
                                 </section>   
                             </div>
                         </Modal>

@@ -85,7 +85,8 @@ export default class OrderSummary extends React.Component {
                 </section>      
 
                 <section className="order-summary--items small-items">
-                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of {freeQuantityLimit} Small Plates { Object.keys(smallItemList).length !== 0 && cardStatus === "" && <span><img src={editIcon}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of {freeQuantityLimit} Small Plates { Object.keys(smallItemList).length !== 0 && cardStatus === "" && <span  onClick={() => handleChangeCurrentStep(SIDE_ITEMS_STEP
+                        )}><img src={editIcon}/></span>}</h4>
                     <ul>
                         {smallItemList}
                     </ul>
@@ -97,7 +98,7 @@ export default class OrderSummary extends React.Component {
                 </section>     
 
                 <section className="order-summary--items addon-items">
-                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && cardStatus === "" && <span><img src={editIcon}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && cardStatus === "" && <span  onClick={() => handleChangeCurrentStep(ADDON_ITEMS_STEP)}><img src={editIcon}/></span>}</h4>
                     <ul>
                         {addonItemList}
                     </ul>
