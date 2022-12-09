@@ -60,15 +60,7 @@ export default class OrderProperties extends React.Component {
 
         const {activeScheme, step, currentStep, servingCount, deliveryWindowOne, planPrice} = this.props;
 
-        let effectiveServingOptions = [];
-        if (activeScheme === TRADITIONAL_PLAN_NAME)
-            effectiveServingOptions = [...servingOptions];
-        else {
-            servingOptions.map((option, i) => {
-                if (i > 0)
-                    effectiveServingOptions.push(option);
-            });
-        }
+        let effectiveServingOptions = activeScheme === TRADITIONAL_PLAN_NAME ? servingOptions : flexServingOptions;
 
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
@@ -93,19 +85,16 @@ export default class OrderProperties extends React.Component {
                        <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates per person. Multiple selections of the same dish will come packed together, unless customizations are made to individual selections. (If everyone you’re ordering for will enjoy the same selections or customizations, consider placing a Classic Order—our most cost effective option.)
                        </p>
                     } 
-                    
-                    {/* { currentStep === step && 
-                        <p className="subheading order_prop__subheading ha-p"> Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam molestie id. Quisque risus pellentesque aliquet donec. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam.</p>
-                    } */}
+                
                 </LayoutSection>
                 <LayoutSection>
                     {currentStep === step &&
                         <label>Number of people:</label>
                     }
                     <div className="select-wrapper">
-                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingsCount} onChange={this.handleChange} disabled={currentStep !== step}>
-                            <option selected disabled hidden>Select...</option>
-                            {servingOptions.map(option => {
+                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingCount} onChange={this.handleChange} disabled={currentStep !== step}>
+                            <option selected disabled hidden value={0}>Select...</option>
+                            {effectiveServingOptions.map(option => {
                                 return (
                                     <option value={option.value}>{option.label}</option>
                                 )

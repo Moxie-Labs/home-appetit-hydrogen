@@ -767,7 +767,7 @@ export function OrderSection(props) {
 
     const changeActiveScheme = () => {
         const newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
-        const newServingCount = newScheme === FLEXIBLE_PLAN_NAME && servingCount < 2 ? 2 : servingCount;
+        const newServingCount = newScheme === FLEXIBLE_PLAN_NAME && servingCount < 2 ? 0 : servingCount;
         emptyCart();
         setActiveScheme(newScheme);
         setCurrentStep(FIRST_STEP);
