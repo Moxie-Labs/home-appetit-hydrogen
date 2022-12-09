@@ -92,7 +92,7 @@ export default class OrderProperties extends React.Component {
                         <label>Number of people:</label>
                     }
                     <div className="select-wrapper">
-                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingCount} onChange={this.handleChange} disabled={currentStep !== step}>
+                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown})`}} value={this.props.servingCount} onChange={this.handleChange} disabled={currentStep !== step}>
                             <option selected disabled hidden value={0}>Select...</option>
                             {effectiveServingOptions.map(option => {
                                 return (
