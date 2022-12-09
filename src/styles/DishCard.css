@@ -370,7 +370,7 @@ section.modal--customize-inner .card__quantity-title {
 }
 
 .dish-card.active .card__quantity-inner-container{
-    /* text-align: center; */
+    width: 100%;
     position: relative;
     left: 0;
     top: 0;

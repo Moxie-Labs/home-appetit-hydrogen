@@ -28,7 +28,7 @@ export default function DishCard(props) {
     },[props.initialQuantity])
 
     const updateQuantity = newQuantity => {
-        const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity } = props;
+        const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity, activeScheme } = props;
         const currentQuantity = quantity;
 
         // if: decrementing, then: just check if above 0
@@ -41,7 +41,10 @@ export default function DishCard(props) {
             
         
         else if (!showingExtra)
-            newQuantity = Math.min(newQuantity, freeQuantityLimit);
+            if (activeScheme === TRADITIONAL_PLAN_NAME) 
+                newQuantity = Math.min(newQuantity, freeQuantityLimit);
+            else    
+                newQuantity = Math.min(newQuantity, maxQuantity);
 
         setQuantity(newQuantity);
         setHasBeenUpdated(true);
