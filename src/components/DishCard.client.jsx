@@ -22,6 +22,7 @@ export default function DishCard(props) {
     const [optionCost, setOptionCost] = useState(0.0);
     const [selectedMods, setSelectedMods] = useState([]);
     const [hasBeenUpdated, setHasBeenUpdated] = useState(false);
+    const [savedState, setSavedState] = useState({ quantity: props.initialQuantity, selectedMods:[] });
 
     useEffect(() => {
         setQuantity(props.initialQuantity);
@@ -78,13 +79,16 @@ export default function DishCard(props) {
         console.log("confirming...");
         props.setCardStatus("");
         const {choice, handleSelected, activeScheme} = props;
+
+        savedState.quantity = quantity;
+        savedState.selectedMods = [...selectedMods];
         
         setConfirmed(quantity > 0);
         updateIsCardActive(false);
         setIsModModalShowing(false);
         updateQuantity(activeScheme === TRADITIONAL_PLAN_NAME ? quantity : 0);
         setSelectedMods(activeScheme === TRADITIONAL_PLAN_NAME ? selectedMods : []);
-        setHasBeenUpdated(false);
+        setSavedState(savedState);
 
         handleSelected({choice: choice, quantity: quantity, selectedMods: selectedMods});
 
@@ -167,6 +171,13 @@ export default function DishCard(props) {
         props.handleChangePlan();
     }
 
+    const getCurrentState = () => {
+        return {
+            quantity: quantity,
+            selectedMods: selectedMods
+        };
+    }
+
         const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme, initialQuantity, cardStatus} = props;
         const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
 
@@ -187,10 +198,6 @@ export default function DishCard(props) {
 
         let attributesDisplay = '';
         
-        // attributes.forEach(attr => {
-        //     attributesDisplay += `${attr}  `;
-        // });
-
         attributesDisplay = attributes.join(" • ");
 
         const peoplePlural = servingCount > 1 ? 'people' : 'person';
@@ -199,6 +206,16 @@ export default function DishCard(props) {
         const optionCostText = optionCost > 0 ? `+${formatter.format(optionCost)} customizations` : null;
 
         const finalCardStatus = forceDisable ? " disabled" : cardStatus;
+
+        const disableConfirm = () => {
+            const currentState = getCurrentState();
+            if (JSON.stringify(savedState) === JSON.stringify(currentState))
+                return true;
+            else if (currentState.quantity === 0 && savedState.quantity === 0)
+                return true;
+            else
+                return false;
+        }
 
     return (
         <div className={`dish-card${isCardActive ? ' active' : (finalCardStatus)}${confirmed ? ' confirmed' : ''}`}>
@@ -302,7 +319,7 @@ export default function DishCard(props) {
                             </div>
 
                             <section className="card__actions">
-                                <button className="btn btn-primary-small btn-counter-confirm" disabled={!hasBeenUpdated || quantity < 1} onClick={() => handleConfirm()}>Confirm</button>
+                                <button className="btn btn-primary-small btn-counter-confirm" disabled={disableConfirm()} onClick={() => handleConfirm()}>Confirm</button>
                                 <p className='modal--flexible-price'><strong>+{formatter.format(calcuculateModTotalCost())}</strong> Customizations</p>
                             </section>    
                         </div>
