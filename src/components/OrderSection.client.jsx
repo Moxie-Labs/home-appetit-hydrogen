@@ -40,7 +40,7 @@ export function OrderSection(props) {
     }
     
 
-    const [servingCount, setServingCount] = useState(2)
+    const [servingCount, setServingCount] = useState(0)
     const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
