@@ -6,7 +6,7 @@ import iconTrash from "../assets/icon-trash.png";
 import iconTrashWhite from "../assets/icon-trash-white.png"
 
 import { prepModSubTitles } from '../lib/utils';
-import { ADDON_ITEMS_STEP, FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME } from '../lib/const';
+import { ADDON_ITEMS_STEP, FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, FIRST_PAYMENT_STEP } from '../lib/const';
 
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -73,7 +73,7 @@ export default class OrderSummary extends React.Component {
                 </section>
                 
                 <section className="order-summary--items main-items">
-                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} of {freeQuantityLimit} Entrées { Object.keys(mainItemList).length !== 0 && currentStep > MAIN_ITEMS_STEP && cardStatus === "" ? <span onClick={() => handleChangeCurrentStep(MAIN_ITEMS_STEP)}><img src={editIcon}/></span> : null }</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedMainItems)} of {freeQuantityLimit} Entrées { currentStep >= FIRST_PAYMENT_STEP || (Object.keys(mainItemList).length !== 0 && currentStep > MAIN_ITEMS_STEP && cardStatus === "") ? <span onClick={() => handleChangeCurrentStep(MAIN_ITEMS_STEP)}><img src={editIcon}/></span> : null }</h4>
                     <ul>
                         {mainItemList} 
                     </ul>
@@ -85,8 +85,7 @@ export default class OrderSummary extends React.Component {
                 </section>      
 
                 <section className="order-summary--items small-items">
-                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of {freeQuantityLimit} Small Plates { Object.keys(smallItemList).length !== 0 && cardStatus === "" && <span  onClick={() => handleChangeCurrentStep(SIDE_ITEMS_STEP
-                        )}><img src={editIcon}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedSmallItems)} of {freeQuantityLimit} Small Plates { currentStep >= FIRST_PAYMENT_STEP || (Object.keys(smallItemList).length !== 0 && cardStatus === "") ? <span onClick={() => handleChangeCurrentStep(SIDE_ITEMS_STEP)}><img src={editIcon}/></span> : null}</h4>
                     <ul>
                         {smallItemList}
                     </ul>
@@ -98,7 +97,7 @@ export default class OrderSummary extends React.Component {
                 </section>     
 
                 <section className="order-summary--items addon-items">
-                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { Object.keys(selectedAddonItems).length !== 0 && cardStatus === "" && <span  onClick={() => handleChangeCurrentStep(ADDON_ITEMS_STEP)}><img src={editIcon}/></span>}</h4>
+                    <h4 className="bold">{getQuantityTotal(selectedAddonItems)} Add Ons { currentStep >= FIRST_PAYMENT_STEP || (Object.keys(selectedAddonItems).length !== 0 && cardStatus === "") ? <span onClick={() => handleChangeCurrentStep(ADDON_ITEMS_STEP)}><img src={editIcon}/></span> : null}</h4>
                     <ul>
                         {addonItemList}
                     </ul>

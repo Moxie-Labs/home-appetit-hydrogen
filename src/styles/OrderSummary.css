@@ -57,6 +57,10 @@
         padding-inline-start: 20px;
     }
 
+        .order-summary--items img {
+            cursor: pointer;
+        }
+
         .remove-item-icon {
             background-image: url('/src/assets/icon-trash-blue.png');
             background-size: cover;
@@ -66,8 +70,8 @@
         }
 
     .order-summary--item-name.order-summary--item-product {
-        display: flex;
-        justify-content: space-between;
+        /* display: flex;
+        justify-content: space-between; */
     }
 
     .order-summary--items h4{

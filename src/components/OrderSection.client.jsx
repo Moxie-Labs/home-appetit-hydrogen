@@ -14,18 +14,10 @@ import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
-import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME } from "../lib/const";
+import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD } from "../lib/const";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
-const TOAST_CLEAR_TIME = 5000;
-const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 6;
-const ADD_ON_STEP = 4;
-const FIRST_PAYMENT_STEP = 5;
-const CONFIRMATION_STEP = 7;
-const FIRST_WINDOW_START = 8;
-const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
 const DEFAULT_PLAN = TRADITIONAL_PLAN_NAME;
 const DEFAULT_CARDS = [
     {
@@ -82,6 +74,7 @@ export function OrderSection(props) {
     const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
     const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
     const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
+    const [returnToPayment, setReturnToPayment] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -744,7 +737,10 @@ export function OrderSection(props) {
 
     const setupNextSection = nextStep => {
         // setIsAddingExtraItems(false);
-        updateCurrentStep(nextStep); 
+        if (returnToPayment)
+            updateCurrentStep(FIRST_PAYMENT_STEP)
+        else
+            updateCurrentStep(nextStep); 
         const step = document.querySelector(".step-active");
         step.scrollIntoView({behavior: "smooth", block: "start"});
     }
@@ -1077,6 +1073,9 @@ export function OrderSection(props) {
 
         setCurrentStep(step);
         setIsAddingExtraItems(isAddingExtra);
+
+        if (step >= FIRST_PAYMENT_STEP && !returnToPayment)
+            setReturnToPayment(true);
     }
 
     const removeGiftCard = () => {
@@ -1251,6 +1250,7 @@ export function OrderSection(props) {
                                     isRestoringCart={isRestoringCart}
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
+                                    returnToPayment={returnToPayment}
                                 />
                             </div>
                             
@@ -1284,6 +1284,7 @@ export function OrderSection(props) {
                                     isRestoringCart={isRestoringCart}
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
+                                    returnToPayment={returnToPayment}
                                 />
                             </div>
 
@@ -1314,6 +1315,7 @@ export function OrderSection(props) {
                                     isRestoringCart={isRestoringCart}
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
+                                    returnToPayment={returnToPayment}
                                 />
                             </div>
                             <section className="menu-section__actions">
@@ -1504,6 +1506,7 @@ export function OrderSection(props) {
                         <LayoutSection>
                             <OrderSummary 
                                 activeScheme={activeScheme}
+                                currentStep={currentStep}
                                 servingCount={servingCount}
                                 pricingMultiplier={getPlanPrice()}
                                 orderTotal={getOrderTotal()}
@@ -1518,6 +1521,7 @@ export function OrderSection(props) {
                                 getPhase={getPhase(currentStep)}
                                 freeQuantityLimit={getFreeQuantityLimit()} 
                                 isEditing={isEditing}
+                                handleChangeCurrentStep={step => updateCurrentStep(step)}
                             />  
                         </LayoutSection>
                     </Layout>

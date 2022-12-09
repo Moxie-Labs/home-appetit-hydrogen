@@ -14,3 +14,12 @@ export const SIDE_ITEMS_STEP = 3;
 export const ADDON_ITEMS_STEP = 4;
 export const TRADITIONAL_PLAN_NAME = 'classic';
 export const FLEXIBLE_PLAN_NAME = 'flexible';
+
+export const TOAST_CLEAR_TIME = 5000;
+export const FREE_QUANTITY_LIMIT = 4;
+export const FIRST_STEP = 1;
+export const ADD_ON_STEP = 4;
+export const FIRST_PAYMENT_STEP = 5;
+export const CONFIRMATION_STEP = 7;
+export const FIRST_WINDOW_START = 8;
+export const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;

@@ -142,7 +142,7 @@ export default class MenuSection extends React.Component {
 
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus } = this.props;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus, returnToPayment } = this.props;
         const {modalDismissed} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
@@ -312,7 +312,7 @@ export default class MenuSection extends React.Component {
             <Frame>
 
                 <Modal
-                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step}
+                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step && !returnToPayment}
                     onRequestClose={() => this.setState({showingModal: false})}
                     className="modal-entree-complete"
                 >   
