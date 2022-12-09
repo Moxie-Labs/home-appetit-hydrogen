@@ -207,8 +207,8 @@ export default class OrderSummary extends React.Component {
 
         let toastItemName = "";
         if (toastMessages.length > 0) {
-            toastItemName = toastMessages[0].item.slice(0,30);
-            if (toastMessages[0].item.length > 30)
+            toastItemName = toastMessages[0].item.slice(0,25);
+            if (toastMessages[0].item.length > 25)
                 toastItemName += "...";
         }
         
