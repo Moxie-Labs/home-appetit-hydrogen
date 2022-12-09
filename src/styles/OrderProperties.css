@@ -182,12 +182,13 @@ select.order_prop__dropdown:focus-visible {
 }
 
 .illustration-small-plate{
-    padding-right: 15px;
+    padding-left: 2px;
+    padding-right: 4px;
 }
 
 .illustration-large-plate{
-    padding-right: 15px;
-    margin-top: -1rem;
+    padding-right: 2px;
+    margin-top: 0rem;
 }
 
 .illustration-flex-person{
@@ -201,10 +202,6 @@ select.order_prop__dropdown:focus-visible {
     padding-bottom: 10px;
     /* left: 12%;
     top: 14%; */
-}
-
-.illustration-flex .illustration-large-plate {
-    margin: 5px 0;
 }
 
 .illustration-flex > div {
