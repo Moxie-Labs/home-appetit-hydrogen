@@ -19,32 +19,10 @@ import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
 const DEFAULT_PLAN = TRADITIONAL_PLAN_NAME;
-const DEFAULT_CARDS = [
-    {
-        brand: "Visa",
-        expiryMonth: "11",
-        expiryYear: "26",
-        firstDigits: 4111,
-        firstName: "Jon Paul",
-        lastDigits: 1111,
-        lastName: "Simonelli",
-        maskedNumber: "****1111"
-    },
-    {
-        brand: "Visa",
-        expiryMonth: "10",
-        expiryYear: "27",
-        firstDigits: 4112,
-        firstName: "Jon Paul",
-        lastDigits: 1112,
-        lastName: "Simonelli",
-        maskedNumber: "****1112"
-    }
-];
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
+    const { id: cartId, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
     
     const { customerData, zoneHours } = props;
     let customer = null;
@@ -62,9 +40,7 @@ export function OrderSection(props) {
     }
     
 
-    const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(0)
-    const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
@@ -113,27 +89,8 @@ export function OrderSection(props) {
     const [agreeToTerms, setAgreeToTerms] = useState(false);
     const [receiveTexts, setReceiveTexts] = useState(false);
 
-    const [cardNumber, setCardNumber] = useState("");
     const [expiration, setExpiration] = useState("");
     const [securityCode, setSecurityCode] = useState("");
-    const [cardZipcode, setCardZipcode] = useState("");
-    const [sameAsBilling, setSameAsBilling] = useState(true);
-
-    const [billingFirstName, setBillingFirstName] = useState("");
-    const [billingLastName, setBillingLastName] = useState("");
-    const [billingEmailAddress, setBillingEmailAddress] = useState("");
-    const [billingPhoneNumber, setBillingPhoneNumber] = useState("");
-    const [billingAddress, setBillingAddress] = useState("");
-    const [billingAddress2, setBillingAddress2] = useState("");
-    const [billingDeliveryState, setBillingDeliveryState] = useState("");
-    const [billingCity, setBillingCity] = useState("");
-    const [billingZipcode, setBillingZipcode] = useState("");
-
-    const [creditCards, setCreditCards] = useState(props.guest ? [] : DEFAULT_CARDS)
-    const [giftCards, setGiftCards] = useState([]);
-    const [giftCardTriggered, setGiftCardTriggered] = useState(false);
-    const [promoTriggered, setPromoTriggered] = useState(false);
-    const [referralTriggered, setReferralTriggered] = useState(false);
 
     const [userAddedItem, setUserAddedItem] = useState(false);
     const [isCollectionsLoading, setIsCollectionsLoading] = useState(true);
