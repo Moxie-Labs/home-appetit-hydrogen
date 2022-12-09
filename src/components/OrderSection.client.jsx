@@ -14,6 +14,7 @@ import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
+import iconLoading from "../assets/loading-loading-forever.gif";
 import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD } from "../lib/const";
 
 // base configurations
@@ -1114,17 +1115,17 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
-    if (latestMenu ===  null)
+    if (latestMenu === null)
         {
             const navigate = useNavigate();
             navigate(`https://${import.meta.env.VITE_STORE_DOMAIN}/pages/order-now`);
         }
 
-    else if (latestMenu !==  null && isCollectionsLoading)
+    else if (latestMenu !== null && isCollectionsLoading)
         return <Page>
             <Suspense>
                 <div className="loading-icon-container">
-                    <img src="/src/assets/loading-loading-forever.gif" width="50"/>
+                    <img src={iconLoading} width="50"/>
                 </div>
             </Suspense>
         </Page>;
