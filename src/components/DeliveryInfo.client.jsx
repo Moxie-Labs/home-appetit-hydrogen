@@ -92,6 +92,18 @@ export default function DeliveryInfo(props) {
         }
     }
 
+    const displayPhoneNumber = number => {
+        let cleaned = ('' + number).replace(/\D/g, '');
+        
+        let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+        if (match) {
+            return '(' + match[1] + ') ' + match[2] + '-' + match[3]
+        };
+
+        return null
+    }
+
     const onAddressChange = (event) => {
         handleAddressChange(event.target.value);
     }
@@ -276,7 +288,7 @@ export default function DeliveryInfo(props) {
                         <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> <img src={iconEdit} width={65} className="iconEdit" /></span></h3>
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
-                            <p>{formattedPhoneNumber(phoneNumber)}</p>
+                            <p>{displayPhoneNumber(phoneNumber)}</p>
                             {
                             addresses.length > 1 ? 
                             addresses.map((addr, index) => {
@@ -290,7 +302,7 @@ export default function DeliveryInfo(props) {
                             :
                             <div>
                                 <p>{emailAddress}</p>
-                                <p>{address}, {deliveryState} {zipcode}</p>
+                                { address.length > 0 && <p>{address}, {deliveryState} {zipcode}</p> }
                             </div>
                             }
                         </div>
@@ -457,21 +469,11 @@ export default function DeliveryInfo(props) {
 
             { currentStep !== step &&
                 <div>
-                    {/* <section className="checkout--deliveryinfo-top">
-                     <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}>Edit</span></h3>
-                     <p>{firstName} {lastName}</p>
-                     <p>{emailAddress}</p>
-                     <p>{phoneNumber}</p>
-                     <p>{address}, {deliveryState} {zipcode}</p>
-                 </section>  */}
-                    {/* <section className="checkout--deliveryinfo-top">
-                     <input className="order_textarea" type="textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Delivery Instructions"}/>
-                 </section> */}
                     <section className="checkout--deliveryinfo-top">
                         <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> {currentStep === step && <img src={iconEdit} width={65} className="iconEdit" />}</span></h3>
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
-                            <p>{formattedPhoneNumber(phoneNumber)}</p>
+                            <p>{displayPhoneNumber(phoneNumber)}</p>
                             {
                             addresses.length > 1 ? 
                             addresses.map(addr => {
@@ -523,7 +525,7 @@ export default function DeliveryInfo(props) {
             <hr></hr>
 
             <div className="place-order-container">
-                <button className= {`btn btn-primary-small btn-place-order${isEditing ? ' disabled' : ''}`} onClick={handleContinue}>
+                <button className= {`btn btn-primary-small btn-place-order${isEditing ? ' disabled' : ''}`} disabled={address.length === 0} onClick={handleContinue}>
                     CONTINUE TO PAYMENT
                 </button>
             </div>    
