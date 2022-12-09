@@ -8,7 +8,6 @@ import iconTrashWhite from "../assets/icon-trash-white.png"
 import { prepModSubTitles } from '../lib/utils';
 import { ADDON_ITEMS_STEP, FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, FIRST_PAYMENT_STEP } from '../lib/const';
 
-
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',

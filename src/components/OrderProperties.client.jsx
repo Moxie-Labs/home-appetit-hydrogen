@@ -11,8 +11,13 @@ const servingOptions = [
     {label: '1 Person', value: 1},
     {label: '2 People', value: 2},
     {label: '3 People', value: 3},
-    {label: '4 People', value: 4},
-    {label: '5 People', value: 5}
+    {label: '4 People', value: 4}
+];
+
+const flexServingOptions = [
+    {label: '2 People', value: 2},
+    {label: '3 People', value: 3},
+    {label: '4 People', value: 4}
 ];
 
 // const [activeScheme, setActiveScheme] = useState('traditional');
@@ -54,6 +59,16 @@ export default class OrderProperties extends React.Component {
     render() {   
 
         const {activeScheme, step, currentStep, servingCount, deliveryWindowOne, planPrice} = this.props;
+
+        let effectiveServingOptions = [];
+        if (activeScheme === TRADITIONAL_PLAN_NAME)
+            effectiveServingOptions = [...servingOptions];
+        else {
+            servingOptions.map((option, i) => {
+                if (i > 0)
+                    effectiveServingOptions.push(option);
+            });
+        }
 
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
