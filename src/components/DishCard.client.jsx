@@ -225,6 +225,7 @@ export default function DishCard(props) {
             <div>
                 <div className="card__overlay"></div>
                 <div className="card__quantity-wrapper">
+                    <img className='btn-close-dish-card-active' src={iconCloseBtn} width="24" onClick={() => handleCancel()}/>
                     <div className="card__quantity-inner-container">
                         <h2 className="card__quantity-title">{title}</h2>
                         {/* start placeholder */}
@@ -260,10 +261,15 @@ export default function DishCard(props) {
 
                 <section className="card__info-section ha-color-bg-cream-shadow">
                     <div onClick={() => updateIsCardActive(true)}>
-                        <h2>{title}</h2>
-                        <p className='dish-description'>{description}</p>
-                        <p className="card__code">{attributesDisplay}</p>
-                        <p className="card__servings-disclaimer">{disclaimerText}</p>
+                        <div className='cart-text-elements'>
+                            <h2>{title}</h2>
+                            <p className='dish-description'>{description}</p>
+                        </div>
+                        <div className='cart-meta-elements'>
+                            <p className="card__code">{attributesDisplay}</p>
+                            <p className="card__servings-disclaimer">{disclaimerText}</p>
+                        </div>
+                        
                     </div>
 
                     <Modal

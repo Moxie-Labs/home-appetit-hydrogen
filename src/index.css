@@ -18,6 +18,7 @@
 @import "./styles/MyAccount.css";
 @import "./styles/GiftCard.css";
 @import "./styles/ActiveForm.css";
+@import "./styles/MobileResponsive.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

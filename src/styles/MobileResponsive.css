@@ -1,0 +1,82 @@
+@media screen and (max-width: 960px) {
+
+    /* General */
+    body {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+
+    /* Step One */  
+    .illustration-empty {
+        font-size: 1.2em;
+        text-align: center;
+    }
+
+    .illustration-trad, .illustration-flex {
+        display: none;
+    }
+
+    .menu--row-inner {
+        margin: 5vw 2vw 0;
+    }
+
+    .illustration-section {
+        padding-bottom: 1rem;
+    }
+
+    .button-group {
+        margin-right: -1rem;
+    }
+
+    .dish-card-item .card__info-section {
+        position: relative;
+        height: 12rem;
+        min-height: unset;
+    }
+
+    .dish-card-item {
+        margin-bottom: 1rem;
+    }
+
+    .btn-modal-cancel {
+        margin-top: 1rem;
+    }
+
+    .cart-meta-elements {
+        position: absolute;
+        bottom: 0;
+    }
+
+    .dish-card-item .card__info-section p.card__servings-disclaimer {
+        display: unset;
+    }
+
+    .dish-description {
+        max-height: 65px;
+    }
+
+    img.btn-close-dish-card-active {
+        display: unset;
+    }
+
+    .menu-section__actions.actions--menu-section {
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        padding-left: 3rem;
+        padding-right: 3rem;
+        margin-bottom: 3.5rem;
+    }
+
+        button.btn.btn-primary-small.btn-app {
+            font-size: 1.1em;
+        }
+
+    .menu-section__actions.actions--submit-order {
+        display: none;
+    }
+
+    /* END Step One */
+
+}

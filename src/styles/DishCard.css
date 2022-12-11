@@ -247,12 +247,16 @@ p.card__code {
         color: #474442;
     }
 
-img.btn-close-dish-card-modal {
+img.btn-close-dish-card-modal, img.btn-close-dish-card-active {
     position: absolute;
     right: 0;
     top: 0;
     margin: 20px;
     cursor: pointer;
+}
+
+img.btn-close-dish-card-active {
+    display: none;
 }
 
 .Polaris-Modal-Dialog__Modal {
@@ -651,6 +655,7 @@ input[type="checkbox"] {
 .modal--restore-cart button.btn.btn-primary-small.btn-counter-confirm {
     font-family: 'ITC Avant Garde Gothic W03 Md';
     font-size: 0.875rem;
+    max-height: 45px;
 }
 
 .modal--restore-cart .modal--flexible-inner{
