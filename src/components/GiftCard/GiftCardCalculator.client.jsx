@@ -264,7 +264,7 @@ export function GiftCardCalculator(props) {
     });
 
     return (
-        <Page>
+        <Page id="page--gift-card">
             <Header />
 
             <div className="gc-wrapper">

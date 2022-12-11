@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 
-export function Page({ children }) {
+export function Page(props, { children }) {
 
     return (
-        <div className="page">
+        <div id={`${props.id}`} className="page">
             <Suspense>{children}</Suspense>
         </div>
     );

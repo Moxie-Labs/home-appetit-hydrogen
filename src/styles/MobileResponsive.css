@@ -1,8 +1,17 @@
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 415px) {
 
     /* General */
     body {
         margin-left: 1rem;
+        margin-right: 1rem;
+    }
+
+    .footer .social-wrapper {
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .button-group--item.filterButton:last-child {
         margin-right: 1rem;
     }
 
@@ -79,4 +88,42 @@
 
     /* END Step One */
 
+    /* Gift Card page */
+    #page--gift-card {
+        margin: 0 -1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        background: #F8EFE0 !important;
+    }
+
+    .gc-wrapper .btn.btn-primary-small {
+        width: 100%;
+    }
+
+    .gc-col-item.para-col {
+        padding-top: 1rem;
+    }
+    
+    .blog-post-section {
+        margin: 0 -1rem;
+    }
+
+    .blog-post {
+        min-width: 300px;
+        margin-right: 1.5rem;
+    }
+
+    .blog-post_image {
+        min-height: 12rem;
+    }
+
+    .blog-post-section_link > .btn.btn-tertiary-small {
+        padding: 0 3rem;
+        height: unset;
+    }
+
+    .blog-post-section_title {
+        font-size: 3.2em;
+    }
+    /* END Gift Card page */
 }
