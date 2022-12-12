@@ -3,8 +3,7 @@ import editIcon from "../assets/icon-edit-order-summary.png";
 import iconPlusAlt from "../assets/icon-plus-alt.png";
 import iconMinus from "../assets/icon-minus.png";
 import { prepModSubTitles } from '../lib/utils';
-import Modal from "react-modal/lib/components/Modal";
-import { ADDON_ITEMS_STEP, FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP } from '../lib/const';
+import { ADDON_ITEMS_STEP, FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME } from '../lib/const';
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -16,12 +15,10 @@ export default class OrderSummary extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            enlarged: false,
-            clearCartModal: false
+            enlarged: false
         }
 
         this.toggleEnlarge = this.toggleEnlarge.bind(this);
-        this.toggleClearCartModal = this.toggleClearCartModal.bind(this);
         this.showToastMessage = this.showToastMessage.bind(this);
     }
 
@@ -34,17 +31,6 @@ export default class OrderSummary extends React.Component {
     toggleEnlarge() {
         const {enlarged} = this.state;
         this.setState({enlarged: !enlarged})
-    }
-
-    toggleClearCartModal() {
-        const {clearCartModal} = this.state;
-        this.setState({clearCartModal: !clearCartModal})
-    }
-
-    onClickContinue() {
-        const { emptyCart } = this.props;
-        emptyCart();
-        this.toggleClearCartModal();
     }
 
     showToastMessage() {
@@ -109,8 +95,8 @@ export default class OrderSummary extends React.Component {
     }
 
     render() {
-        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing, removeItem, isAddingExtraItems} = this.props;
-        const {enlarged, clearCartModal} = this.state;
+        const {currentStep, activeScheme, servingCount, pricingMultiplier, selectedMainItems, selectedMainItemsExtra, selectedSmallItems, selectedSmallItemsExtra, selectedAddonItems, toastMessages, showToast, orderTotal, getQuantityTotal, getPhase, isEditing, emptyCart, removeItem, isAddingExtraItems} = this.props;
+        const {enlarged} = this.state;
 
         const mainItemList = selectedMainItems.map((item, i) => {
             return (
@@ -196,7 +182,7 @@ export default class OrderSummary extends React.Component {
             this.showToastMessage();
         }
 
-        const activeSchemeDisplay = activeScheme === 'traditional' ? 'Traditional Plan' : 'Flexible Plan';
+        const activeSchemeDisplay = activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic Plan' : 'Flexible Plan';
 
         let toastItemName = "";
         if (toastMessages.length > 0) {
@@ -205,7 +191,7 @@ export default class OrderSummary extends React.Component {
                 toastItemName += "...";
         }
         
-        const toastCostSection = (activeScheme !== 'traditional' || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0]?.cost.toFixed(2)}</span> : null;
+        const toastCostSection = (activeScheme !== TRADITIONAL_PLAN_NAME || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0]?.cost.toFixed(2)}</span> : null;
 
         const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 onClick={() => this.toggleEnlarge()} className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 onClick={() => this.toggleEnlarge()} className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt} className="icon-plus-alt" /> }</span></h3>
 
@@ -218,10 +204,10 @@ export default class OrderSummary extends React.Component {
                 
                 { enlarged && getPhase === undefined ?
                     <div>
-                        <div>
-                            {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)}
-                        </div>
-                        <button className={`btn btn-empty-cart`} onClick={() => this.toggleClearCartModal()}>Clear Cart</button>
+                    <div>
+                    {this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal, emptyCart)}
+                    </div>
+                    <button className={`btn btn-empty-cart`} onClick={emptyCart}>Clear Cart</button>
                     </div>
                     :
                     <></>
@@ -237,19 +223,6 @@ export default class OrderSummary extends React.Component {
                     this.orderSummary(activeScheme, activeSchemeDisplay, servingCount, pricingMultiplier, selectedMainItems, mainItemList, mainItemExtraList, selectedSmallItems, smallItemList, smallItemExtraList, addonItemList, selectedAddonItems, orderTotal, getQuantityTotal)
                  }
                 </section>
-                <Modal
-                    isOpen={clearCartModal}
-                    className="modal--flexible-confirmaton modal--change-type"
-                >
-                    <div className='modal--flexible-inner'>
-                        <h2 className='ha-h4'>Continue with clearing your cart?</h2>
-                        <p className='ha-body'>Do you want to continue clearing your cart? This will remove all the added items, and you will have to start your order from the beginning.</p>
-                        <section className="card__actions">
-                            <button className="btn btn-primary-small btn-counter-confirm" onClick={() => this.onClickContinue()}>Continue</button>
-                            <button className="btn ha-a btn-modal-cancel" onClick={() => this.toggleClearCartModal()}>Cancel</button>
-                        </section>   
-                    </div>
-                </Modal>
             </section>
         );
     }
