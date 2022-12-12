@@ -176,6 +176,7 @@
     }
 
     .modal--gift-card {
+        padding: 2rem 1rem;
         width: 100%;
     }
 
@@ -185,6 +186,20 @@
 
     .modal--gift-card .calculator-wrapper {
         flex-direction: column;
+    }
+
+    .modal--gift-card .gift-card-control {
+        flex-direction: column;
+    }
+
+    .modal--gift-card .gift-card-calculator--amount {
+        font-size: 1.2em;
+    }
+
+    .modal--gift-card .gift-card-control .btn, .modal--gift-card .gift-card-control button.btn.btn-secondary.btn-modal {
+        border-radius: 28px;
+        height: auto;
+        padding: 1rem;
     }
     /* END Gift Card page */
 }

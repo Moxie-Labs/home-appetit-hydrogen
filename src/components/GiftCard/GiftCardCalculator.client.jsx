@@ -278,7 +278,7 @@ export function GiftCardCalculator(props) {
                                 <input className={formErrors.giftCardAmount !== undefined ? 'input-error' : ''} type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
                                 {formErrors.giftCardAmount !== undefined ? <p className='form-errors-gc'>{formErrors.giftCardAmount}</p> : <p className='form-errors-gc'></p>}
                             </div>
-                            <div className="gc-col-item">
+                            <div className="gc-col-item container--calculator-activator">
                                 {activator}
                             </div>
                         </div>
