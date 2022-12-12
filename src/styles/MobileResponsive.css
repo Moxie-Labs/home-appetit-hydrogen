@@ -169,6 +169,23 @@
     .gc-item-column.gc-item-column_image > img {
         width: 100%;
     }
+
+    .container--calculator-activator {
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+
+    .modal--gift-card {
+        width: 100%;
+    }
+
+    .calculator-select {
+        width: 100%;
+    }
+
+    .modal--gift-card .calculator-wrapper {
+        flex-direction: column;
+    }
     /* END Gift Card page */
 }
 

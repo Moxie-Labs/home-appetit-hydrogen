@@ -284,7 +284,7 @@ export function GiftCardCalculator(props) {
                                     <label htmlFor="gc-amount">Gift card amount:</label>
                                     <input type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
                                 </div>
-                                <div className="gc-col-item">
+                                <div className="gc-col-item container--calculator-activator">
                                     {activator}
                                 </div>
                             </div>
