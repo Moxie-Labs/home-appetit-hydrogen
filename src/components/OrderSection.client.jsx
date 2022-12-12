@@ -1037,7 +1037,7 @@ export function OrderSection(props) {
         
 
         setTimeout(() => {
-            if (newStep < 5 && newStep > 1) {
+            if (newStep < 6 && newStep > 1) {
                 console.log("jumping to step #", newStep);
                 const stepElem = document.querySelector(`#anchor-step--${newStep}`);
                 stepElem.scrollIntoView({behavior: "smooth", block: "start"});
