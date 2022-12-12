@@ -184,15 +184,15 @@ export function GiftCardCalculator(props) {
         if (giftCardAmount > 1000)
             newFormErrors.giftCardAmount = "Amount cannot be over $1000.";
         if (firstName.length < 1)
-            newFormErrors.firstName = "First name is too short.";
+            newFormErrors.firstName = "Please enter First Name.";
         if (lastName.length < 1)
-            newFormErrors.lastName = "Last name is too short."
+            newFormErrors.lastName = "Please enter Last Name."
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) && !useMyEmail)
-            newFormErrors.email = "Email is invalid."
+            newFormErrors.email = "Please enter a valid Email Address."
         if (zipcode.length < 5)
-            newFormErrors.zipcode = "Zipcode is too short."
+            newFormErrors.zipcode = "Please enter a valid ZIP code."
         else if (!isZipcodePermitted())
-            newFormErrors.zipcode = "Zipcode is not in our delivery range."
+            newFormErrors.zipcode = "This ZIP code is not in our delivery zone."
         
         return newFormErrors;
 
@@ -205,13 +205,6 @@ export function GiftCardCalculator(props) {
         { label: '4 People', value: 4 },
         { label: '5 People', value: 5 }
     ];
-
-    const errorSection = Object.keys(formErrors).length < 1 ? null : <ul>
-        {Object.keys(formErrors).map(errKey => {
-            const error = formErrors[errKey];
-            return <li>{error}</li>;
-        })}
-    </ul>
 
     const proceedToCheckout = () => {
         console.log("Waiting...")
@@ -279,7 +272,8 @@ export function GiftCardCalculator(props) {
                         <div className="gc-col">
                             <div className="gc-col-item">
                                 <label htmlFor="gc-amount">Gift card amount:</label>
-                                <input type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
+                                <input className={formErrors.giftCardAmount !== undefined ? 'input-error' : ''} type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
+                                {formErrors.giftCardAmount !== undefined ? <p className='form-errors-gc'>{formErrors.giftCardAmount}</p> : <p className='form-errors-gc'></p>}
                             </div>
                             <div className="gc-col-item">
                                 {activator}
@@ -292,9 +286,18 @@ export function GiftCardCalculator(props) {
                             <label htmlFor="receipient-form">Recipient’s Information:</label>
                             <div className="gc-row">
                                 <div className="gc-col">
-                                    <div className="gc-col-item"><input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First Name*' /></div>
-                                    <div className="gc-col-item"><input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last Name*' /></div>
-                                    <div className="gc-col-item"><input type="text" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={e => setZipcode(e.target.value)} placeholder='Zip Code*'/></div>
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.firstName !== undefined ? 'input-error' : ''} type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First Name*' />
+                                        {formErrors.firstName !== undefined ? <p className='form-errors-gc'>{formErrors.firstName}</p> : <p className='form-errors-gc'></p>}
+                                    </div>
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.lastName !== undefined ? 'input-error' : ''} type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last Name*' />
+                                        {formErrors.lastName !== undefined ? <p className='form-errors-gc'>{formErrors.lastName}</p> : <p className='form-errors-gc'></p>}
+                                    </div>
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.zipcode !== undefined ? 'input-error' : ''} type="text" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={e => setZipcode(e.target.value)} placeholder='Zip Code*'/>
+                                        {formErrors.zipcode !== undefined ? <p className='form-errors-gc'>{formErrors.zipcode}</p> : <p className='form-errors-gc'></p>}
+                                    </div>
                                 </div>
                             </div>
                             <div className="gc-row">
@@ -317,10 +320,10 @@ export function GiftCardCalculator(props) {
                                     </div>
                                 </div>
                                 <div className="gc-row gc-method-field">
-                                    <input type="text" value={useMyEmail && customerEmail.length > 0 ? customerEmail : email} disabled={useMyEmail && customerEmail.length > 0} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
+                                    <input className={formErrors.email !== undefined ? 'input-error' : ''} type="text" value={useMyEmail && customerEmail.length > 0 ? customerEmail : email} disabled={useMyEmail && customerEmail.length > 0} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
+                                    {formErrors.email !== undefined ? <p className='form-errors-gc'>{formErrors.email}</p> : <p className='form-errors-gc'></p>}
                                 </div>
                                 <div className="gc-row">
-                                    {errorSection}
                                     <button className={`btn btn-primary-small ${isFormReady() ? '' : 'disabled'}`} onClick={() => attemptCheckout()}>Purchase Card</button>
                                 </div>
                             </div>

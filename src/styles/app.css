@@ -154,7 +154,7 @@
 
 .order_textfield, .order_select, .order_textarea{
     float: none;
-    margin-bottom: 30px;
+    margin-bottom: 0px;
 }
 
 .order_textarea{
@@ -162,7 +162,7 @@
 }
 
 .input-error {
-    border: 1px solid red;
+    border: 1px solid red !important;
 }
 
 .step-disabled {
@@ -173,7 +173,17 @@
     clear: both;
 }
 
+.form-errors {
+    color: red;
+    margin-top: 5px !important;
+    height: 30px;
+}
 
+.form-errors-gc {
+    color: red;
+    margin-top: 5px !important;
+    height: 40px;
+}
 
 /* Polaris Port */
 *, *::before, *::after {
