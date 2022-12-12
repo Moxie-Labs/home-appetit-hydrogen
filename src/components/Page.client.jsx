@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-export function Page(props, { children }) {
+export function Page({ children }, props) {
 
     return (
         <div id={`${props.id}`} className="page">
