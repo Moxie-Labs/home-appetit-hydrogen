@@ -119,6 +119,7 @@ section.order-summary--items ul {
 }
 
 section.order-summary--items ul li {
+    clear: both;
     color: #474442; 
     font-style: italic;
     padding: 3px;

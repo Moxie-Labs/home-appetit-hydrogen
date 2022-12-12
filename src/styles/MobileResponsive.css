@@ -127,3 +127,26 @@
     }
     /* END Gift Card page */
 }
+
+/* Tablet */
+@media screen and (max-width: 1270px) and (min-width: 416px) {
+
+    .btn-modal-cancel {
+        margin-top: 1rem;
+    }
+
+    main#mainContent .dish-card-wrapper .layout {
+        grid-template-columns: 1fr 1fr;
+        justify-content: center;
+        align-items: center;;
+    }   
+
+    .dish-card {
+        width: unset;
+        max-width: 350px;
+    }
+
+    .dish-card-item:nth-child(odd) .dish-card {
+        float: right;
+    }
+}
