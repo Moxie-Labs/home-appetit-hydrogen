@@ -185,15 +185,15 @@ export function GiftCardCalculator(props) {
         if (giftCardAmount > 1000)
             newFormErrors.giftCardAmount = "Amount cannot be over $1000.";
         if (firstName.length < 1)
-            newFormErrors.firstName = "First name is too short.";
+            newFormErrors.firstName = "Please enter First Name.";
         if (lastName.length < 1)
-            newFormErrors.lastName = "Last name is too short."
+            newFormErrors.lastName = "Please enter Last Name."
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) && !useMyEmail)
-            newFormErrors.email = "Email is invalid."
+            newFormErrors.email = "Please enter a valid Email Address."
         if (zipcode.length < 5)
-            newFormErrors.zipcode = "Zipcode is too short."
+            newFormErrors.zipcode = "Please enter a valid ZIP code."
         else if (!isZipcodePermitted())
-            newFormErrors.zipcode = "Zipcode is not in our delivery range."
+            newFormErrors.zipcode = "This ZIP code is not in our delivery zone."
         
         return newFormErrors;
 
@@ -206,13 +206,6 @@ export function GiftCardCalculator(props) {
         { label: '4 People', value: 4 },
         { label: '5 People', value: 5 }
     ];
-
-    const errorSection = Object.keys(formErrors).length < 1 ? null : <ul>
-        {Object.keys(formErrors).map(errKey => {
-            const error = formErrors[errKey];
-            return <li>{error}</li>;
-        })}
-    </ul>
 
     const proceedToCheckout = () => {
         console.log("Waiting...")
@@ -269,79 +262,72 @@ export function GiftCardCalculator(props) {
             <Page>
                 <Header />
 
-                <div className="gc-wrapper">
-                    <div className="gc-item-column gc-item-column_image">
-                        <img className='desktop-only' src={gcImg} />
-                        <img className='mobile-only' src={gcImgMobile} />
-                    </div>
-                    <div className="gc-item-column form-column">
-                        <h2 className='ha-h2 no-margin no-padding'>Home Appétit Gift Card</h2>
-                        
-                        <p className='gc-subtitle ha-body'>Purchase a gift card for any amount or use our calculator below to determine the ideal gift. <u>Note: All gift cards are digital.</u></p>
-                        <div className="gc-row">
-                            <div className="gc-col">
-                                <div className="gc-col-item">
-                                    <label htmlFor="gc-amount">Gift card amount:</label>
-                                    <input type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
-                                </div>
-                                <div className="gc-col-item container--calculator-activator">
-                                    {activator}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="gc-row">
-                            
+            <div className="gc-wrapper">
+                <div className="gc-item-column gc-item-column_image">
+                    <img className='desktop-only' src={gcImg} />
+                    <img className='mobile-only' src={gcImgMobile} />
+                </div>
+                <div className="gc-item-column form-column">
+                    <h2 className='ha-h2 no-margin no-padding'>Home Appétit Gift Card</h2>
+                    
+                    <p className='gc-subtitle ha-body'>Purchase a gift card for any amount or use our calculator below to determine the ideal gift. <u>Note: All gift cards are digital.</u></p>
+                    <div className="gc-row">
+                        <div className="gc-col">
                             <div className="gc-col-item">
-                                <label htmlFor="receipient-form">Recipient’s Information:</label>
-                                <div className="gc-row">
-                                    <div className="gc-col">
-                                        <div className="gc-col-item"><input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First Name*' /></div>
-                                        <div className="gc-col-item"><input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last Name*' /></div>
-                                        <div className="gc-col-item"><input type="text" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={e => setZipcode(e.target.value)} placeholder='Zip Code*'/></div>
+                                <label htmlFor="gc-amount">Gift card amount:</label>
+                                <input className={formErrors.giftCardAmount !== undefined ? 'input-error' : ''} type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
+                                {formErrors.giftCardAmount !== undefined ? <p className='form-errors-gc'>{formErrors.giftCardAmount}</p> : <p className='form-errors-gc'></p>}
+                            </div>
+                            <div className="gc-col-item">
+                                {activator}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="gc-row">
+                        
+                        <div className="gc-col-item">
+                            <label htmlFor="receipient-form">Recipient’s Information:</label>
+                            <div className="gc-row">
+                                <div className="gc-col">
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.firstName !== undefined ? 'input-error' : ''} type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First Name*' />
+                                        {formErrors.firstName !== undefined ? <p className='form-errors-gc'>{formErrors.firstName}</p> : <p className='form-errors-gc'></p>}
                                     </div>
-                                </div>
-                                <div className="gc-row">
-                                    <textarea name="message" id="" width="100%" rows="10" value={message} onChange={e => setMessage(e.target.value)} placeholder='Enter a custom message to be included with gift email.'></textarea>
-                                </div>
-                                <div className="gc-row">
-                                    <label htmlFor="email-method">
-                                        Email Method:
-                                    </label>
-                                    <div className="gc-col gc-col-method">
-                                        <div className="gc-col-item">
-                                        <label htmlFor="method">
-                                            <input type="radio" name="method" checked={!useMyEmail} onClick={() => setUseMyEmail(false)} />
-                                            Send to recipient’s email:</label>
-                                        </div>
-                                        <div className="gc-col-item">
-                                        <label htmlFor="method">
-                                            <input type="radio" name="method" checked={useMyEmail} onClick={() => setUseMyEmail(true)} />
-                                        Send to your email:</label>
-                                        </div>
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.lastName !== undefined ? 'input-error' : ''} type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last Name*' />
+                                        {formErrors.lastName !== undefined ? <p className='form-errors-gc'>{formErrors.lastName}</p> : <p className='form-errors-gc'></p>}
                                     </div>
-                                    <div className="gc-row gc-method-field">
-                                        <input type="text" value={useMyEmail && customerEmail.length > 0 ? customerEmail : email} disabled={useMyEmail && customerEmail.length > 0} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
-                                    </div>
-                                    <div className="gc-row">
-                                        {errorSection}
-                                        <button className={`btn btn-primary-small ${isFormReady() ? '' : 'disabled'}`} onClick={() => attemptCheckout()}>Purchase Card</button>
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.zipcode !== undefined ? 'input-error' : ''} type="text" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={e => setZipcode(e.target.value)} placeholder='Zip Code*'/>
+                                        {formErrors.zipcode !== undefined ? <p className='form-errors-gc'>{formErrors.zipcode}</p> : <p className='form-errors-gc'></p>}
                                     </div>
                                 </div>
                             </div>
-                            
-                        </div>
-                        <div className="gc-row">
-                            <div className="gc-col">
-                                <div className="line-separator"></div>
+                            <div className="gc-row">
+                                <textarea name="message" id="" width="100%" rows="10" value={message} onChange={e => setMessage(e.target.value)} placeholder='Enter a custom message to be included with gift email.'></textarea>
                             </div>
-                        </div>
-                        <div className="gc-row faq-row">
-                            <div className="gc-col">
-                                <div className="gc-col-item">
-                                    <h5 className="ha-h5">What will your recipient get?</h5>
+                            <div className="gc-row">
+                                <label htmlFor="email-method">
+                                    Email Method:
+                                </label>
+                                <div className="gc-col gc-col-method">
+                                    <div className="gc-col-item">
+                                    <label htmlFor="method">
+                                        <input type="radio" name="method" checked={!useMyEmail} onClick={() => setUseMyEmail(false)} />
+                                        Send to recipient’s email:</label>
+                                    </div>
+                                    <div className="gc-col-item">
+                                    <label htmlFor="method">
+                                        <input type="radio" name="method" checked={useMyEmail} onClick={() => setUseMyEmail(true)} />
+                                       Send to your email:</label>
+                                    </div>
                                 </div>
-                                <div className="gc-col-item para-col">
-                                    <p className='ha-body'>A digital gift card—along with your note and instructions to purchase meals. Prefer to send the gift card yourself? Put your own address in the email field and you can forward along the card. PS: Gift cards never expire. Questions? Contact us here.</p>
+                                <div className="gc-row gc-method-field">
+                                    <input className={formErrors.email !== undefined ? 'input-error' : ''} type="text" value={useMyEmail && customerEmail.length > 0 ? customerEmail : email} disabled={useMyEmail && customerEmail.length > 0} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
+                                    {formErrors.email !== undefined ? <p className='form-errors-gc'>{formErrors.email}</p> : <p className='form-errors-gc'></p>}
+                                </div>
+                                <div className="gc-row">
+                                    <button className={`btn btn-primary-small ${isFormReady() ? '' : 'disabled'}`} onClick={() => attemptCheckout()}>Purchase Card</button>
                                 </div>
                             </div>
                         </div>
@@ -361,6 +347,7 @@ export function GiftCardCalculator(props) {
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
 
                 <section className='blog-post-section'>

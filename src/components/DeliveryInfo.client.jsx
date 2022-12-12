@@ -210,39 +210,39 @@ export default function DeliveryInfo(props) {
     const getFormErrors = () => {
         const errors = {};
         if (firstName.length < 3)
-            errors.firstName = "First Name is too short";
+            errors.firstName = "Please enter a valid First Name.";
         if (firstName.length < 1)
-            errors.firstName = "First Name is empty."
+            errors.firstName = "Please enter First Name."
         if (lastName.length < 3)
-            errors.lastName = "Last Name is too short.";
+            errors.lastName = "Please enter a valid Last Name.";
         if (lastName.length < 1)
-            errors.lastName = "Last Name is empty."
-        if (!emailAddress.includes("@"))
-            errors.emailAddress = "Email Address is invalid.";
+            errors.lastName = "Please enter Last Name."
+        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailAddress)))
+            errors.emailAddress = "Please enter a valid Email Address.";
         if (emailAddress.length < 1)
-            errors.emailAddress = "Email Address is empty."
+            errors.emailAddress = "Please enter Email Address."
         if (phoneNumber.length < 10)
-            errors.phoneNumber = "Phone Number is too short.";
+            errors.phoneNumber = "Please enter a valid Phone Number.";
         if (phoneNumber.length < 1)
-            errors.phoneNumber = "Phone number is empty."
+            errors.phoneNumber = "Please enter Phone number."
         if (address.length < 5)
-            errors.address = "Address is too short.";
+            errors.address = "Please enter a valid Address.";
         if (address.length < 1)
-            errors.address = "Address is empty."
+            errors.address = "Please enter Address."
         if (city.length < 3)
-            errors.city = "City is too short.";
+            errors.city = "Please enter a valid City.";
         if (city.length < 1)
-            errors.city = "City is empty."
+            errors.city = "Please enter City."
         if (deliveryState === "")
-            errors.deliveryState = "Please choose a state.";
+            errors.deliveryState = "Please choose a State.";
         if (deliveryState.length < 1)
-            errors.deliveryState = "Please choose a state."
+            errors.deliveryState = "Please choose a State."
         if (zipcode.length < 5)
-            errors.zipcode = "ZIP Code is invalid.";
+            errors.zipcode = "Please enter a valid Zip Code.";
         if (zipcode.length < 1)
-            errors.zipcode = "ZIP code is empty."
+            errors.zipcode = "Please enter ZIP code."
         if (zipcodeCheck === undefined)
-            errors.zipcode = "This zipcode is not in our delivery zone.";
+            errors.zipcode = "This ZIP code is not in our delivery zone.";
 
         return errors;
 
@@ -274,14 +274,6 @@ export default function DeliveryInfo(props) {
     
     return (
         <div className={`checkout-section checkout--delivery-info ${currentStep === step ? '' : 'disabled'}`}>
-
-            { Object.keys(validationErrors).length > 0 &&
-                <ul>
-                    {errorList}
-                </ul>
-
-            }
-
             { currentStep === step && !isEditing &&
                 <div>
                     <section className="checkout--deliveryinfo-top">
@@ -350,20 +342,23 @@ export default function DeliveryInfo(props) {
                             <div className="checkout--form-field-col">
                                 <label>First Name:
                                     <input className={`order_textfield${validationErrors.firstName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="firstname" value={firstName} onChange={onFirstNameChange} placeholder={"First Name (Required)"}/>
+                                    {validationErrors.firstName !== undefined ? <p className='form-errors'>{validationErrors.firstName}</p> : <p className='form-errors'></p>}
                                 </label>
-
                                 <label>Last Name:
                                     <input className={`order_textfield${validationErrors.lastName !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[A-Za-z'-]/.test(e.key) && e.preventDefault()} type="text" name="lastname" value={lastName} onChange={onLastNameChange} placeholder={"Last Name (Required)"}/>
+                                    {validationErrors.lastName !== undefined ? <p className='form-errors'>{validationErrors.lastName}</p> : <p className='form-errors'></p>}
                                 </label>
                             </div>
 
                             <div className="checkout--form-field-col">
                                 <label>Email:
                                     <input className={`order_textfield${validationErrors.emailAddress !== undefined ? ' input-error' : ''}`} type="text" name="email" value={emailAddress} onChange={onEmailChange} placeholder={"Email Address (Required)"}/>
+                                    {validationErrors.emailAddress !== undefined ? <p className='form-errors'>{validationErrors.emailAddress}</p> : <p className='form-errors'></p>}
                                 </label>
 
-                                <label>Mobile Number:
+                                <label>Phone Number:
                                     <input className={`order_textfield${validationErrors.phoneNumber !== undefined ? ' input-error' : ''}`} onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxlength="12" type="phone" name="phone" value={formattedPhoneNumber(phoneNumber)} onChange={onPhoneNumberChange} placeholder={"Phone Number (Required)"}/>
+                                    {validationErrors.phoneNumber !== undefined ? <p className='form-errors'>{validationErrors.phoneNumber}</p> : <p className='form-errors'></p>}
                                 </label>
                             </div>
                         </div>
@@ -389,6 +384,7 @@ export default function DeliveryInfo(props) {
                             <div className="checkout--form-field-col">
                                 <label>Address:
                                     <input id='autocomplete' className={`order_textfield${validationErrors.address !== undefined ? ' input-error' : ''}`} type="text" name="address" value={address} onChange={onAddressChange} onFocus={autocompleteFunc} placeholder={"Address (Required)"}/>
+                                    {validationErrors.address !== undefined ? <p className='form-errors'>{validationErrors.address}</p> : <p className='form-errors'></p>}
                                 </label>
 
                                 <label>Address 2:
@@ -399,6 +395,7 @@ export default function DeliveryInfo(props) {
                             <div className="checkout--form-field-col">
                                 <label>City:
                                     <input className={`order_textfield${validationErrors.city !== undefined ? ' input-error' : ''}`} type="text" name="city" value={city} onChange={onCityChange} placeholder={"City (Required)"}/>
+                                    {validationErrors.city !== undefined ? <p className='form-errors'>{validationErrors.city}</p> : <p className='form-errors'></p>}
                                 </label>
 
                                 <label>State:
@@ -406,6 +403,7 @@ export default function DeliveryInfo(props) {
                                         <option value="" disabled selected>Select State</option>
                                         {stateOptions}
                                     </select>
+                                    {validationErrors.deliveryState !== undefined ? <p className='form-errors'>{validationErrors.deliveryState}</p> : <p className='form-errors'></p>}
                                 </label>
                             </div>
                         </div>
@@ -414,6 +412,7 @@ export default function DeliveryInfo(props) {
                             <div className="checkout--form-field-col">
                                 <label>ZIP:
                                     <input className={`order_textfield textfield_zip${validationErrors.zipcode !== undefined ? ' input-error' : ''}`} type="text" name="zipcode" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={onZipcodeChange} placeholder={"ZIP Code (Required)"}/>
+                                    {validationErrors.zipcode !== undefined ? <p className='form-errors'>{validationErrors.zipcode}</p> : <p className='form-errors'></p>}
                                 </label>
                             </div>
                         </div>
