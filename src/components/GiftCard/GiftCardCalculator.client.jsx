@@ -5,6 +5,7 @@ import { Page } from '../Page.client';
 import { Header } from '../Header.client';
 import { Footer } from '../Footer.client';
 import gcImg from "../../assets/giftcard-img.png";
+import gcImgMobile from "../../assets/giftcard-img-mobile.png";
 import { getPlaceholderBlogImage } from '../../lib/placeholders';
 
 
@@ -184,15 +185,15 @@ export function GiftCardCalculator(props) {
         if (giftCardAmount > 1000)
             newFormErrors.giftCardAmount = "Amount cannot be over $1000.";
         if (firstName.length < 1)
-            newFormErrors.firstName = "First name is too short.";
+            newFormErrors.firstName = "Please enter First Name.";
         if (lastName.length < 1)
-            newFormErrors.lastName = "Last name is too short."
+            newFormErrors.lastName = "Please enter Last Name."
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) && !useMyEmail)
-            newFormErrors.email = "Email is invalid."
+            newFormErrors.email = "Please enter a valid Email Address."
         if (zipcode.length < 5)
-            newFormErrors.zipcode = "Zipcode is too short."
+            newFormErrors.zipcode = "Please enter a valid ZIP code."
         else if (!isZipcodePermitted())
-            newFormErrors.zipcode = "Zipcode is not in our delivery range."
+            newFormErrors.zipcode = "This ZIP code is not in our delivery zone."
         
         return newFormErrors;
 
@@ -205,13 +206,6 @@ export function GiftCardCalculator(props) {
         { label: '4 People', value: 4 },
         { label: '5 People', value: 5 }
     ];
-
-    const errorSection = Object.keys(formErrors).length < 1 ? null : <ul>
-        {Object.keys(formErrors).map(errKey => {
-            const error = formErrors[errKey];
-            return <li>{error}</li>;
-        })}
-    </ul>
 
     const proceedToCheckout = () => {
         console.log("Waiting...")
@@ -264,12 +258,14 @@ export function GiftCardCalculator(props) {
     });
 
     return (
-        <Page>
-            <Header />
+        <div id="container--gift-card">
+            <Page>
+                <Header />
 
             <div className="gc-wrapper">
                 <div className="gc-item-column gc-item-column_image">
-                    <img src={gcImg} />
+                    <img className='desktop-only' src={gcImg} />
+                    <img className='mobile-only' src={gcImgMobile} />
                 </div>
                 <div className="gc-item-column form-column">
                     <h2 className='ha-h2 no-margin no-padding'>Home Appétit Gift Card</h2>
@@ -279,7 +275,8 @@ export function GiftCardCalculator(props) {
                         <div className="gc-col">
                             <div className="gc-col-item">
                                 <label htmlFor="gc-amount">Gift card amount:</label>
-                                <input type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
+                                <input className={formErrors.giftCardAmount !== undefined ? 'input-error' : ''} type="number" min={25} value={giftCardAmount} onChange={e => onGiftCardAmountChange(e.target.value)} placeholder={`From $25 to $1000`} />
+                                {formErrors.giftCardAmount !== undefined ? <p className='form-errors-gc'>{formErrors.giftCardAmount}</p> : <p className='form-errors-gc'></p>}
                             </div>
                             <div className="gc-col-item">
                                 {activator}
@@ -292,9 +289,18 @@ export function GiftCardCalculator(props) {
                             <label htmlFor="receipient-form">Recipient’s Information:</label>
                             <div className="gc-row">
                                 <div className="gc-col">
-                                    <div className="gc-col-item"><input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First Name*' /></div>
-                                    <div className="gc-col-item"><input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last Name*' /></div>
-                                    <div className="gc-col-item"><input type="text" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={e => setZipcode(e.target.value)} placeholder='Zip Code*'/></div>
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.firstName !== undefined ? 'input-error' : ''} type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder='First Name*' />
+                                        {formErrors.firstName !== undefined ? <p className='form-errors-gc'>{formErrors.firstName}</p> : <p className='form-errors-gc'></p>}
+                                    </div>
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.lastName !== undefined ? 'input-error' : ''} type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder='Last Name*' />
+                                        {formErrors.lastName !== undefined ? <p className='form-errors-gc'>{formErrors.lastName}</p> : <p className='form-errors-gc'></p>}
+                                    </div>
+                                    <div className="gc-col-item">
+                                        <input className={formErrors.zipcode !== undefined ? 'input-error' : ''} type="text" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={e => setZipcode(e.target.value)} placeholder='Zip Code*'/>
+                                        {formErrors.zipcode !== undefined ? <p className='form-errors-gc'>{formErrors.zipcode}</p> : <p className='form-errors-gc'></p>}
+                                    </div>
                                 </div>
                             </div>
                             <div className="gc-row">
@@ -317,107 +323,92 @@ export function GiftCardCalculator(props) {
                                     </div>
                                 </div>
                                 <div className="gc-row gc-method-field">
-                                    <input type="text" value={useMyEmail && customerEmail.length > 0 ? customerEmail : email} disabled={useMyEmail && customerEmail.length > 0} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
+                                    <input className={formErrors.email !== undefined ? 'input-error' : ''} type="text" value={useMyEmail && customerEmail.length > 0 ? customerEmail : email} disabled={useMyEmail && customerEmail.length > 0} onChange={e => setEmail(e.target.value)} placeholder='Email Address*' />
+                                    {formErrors.email !== undefined ? <p className='form-errors-gc'>{formErrors.email}</p> : <p className='form-errors-gc'></p>}
                                 </div>
                                 <div className="gc-row">
-                                    {errorSection}
                                     <button className={`btn btn-primary-small ${isFormReady() ? '' : 'disabled'}`} onClick={() => attemptCheckout()}>Purchase Card</button>
                                 </div>
                             </div>
                         </div>
-                        
-                    </div>
-                    <div className="gc-row">
-                        <div className="gc-col">
-                            <div className="line-separator"></div>
-                        </div>
-                    </div>
-                    <div className="gc-row faq-row">
-                        <div className="gc-col">
-                            <div className="gc-col-item">
-                                <h5 className="ha-h5">What will your recipient get?</h5>
-                            </div>
-                            <div className="gc-col-item para-col">
-                                <p className='ha-body'>A digital gift card—along with your note and instructions to purchase meals. Prefer to send the gift card yourself? Put your own address in the email field and you can forward along the card. PS: Gift cards never expire. Questions? Contact us here.</p>
+                        <div className="gc-row">
+                            <div className="gc-col">
+                                <div className="line-separator"></div>
                             </div>
                         </div>
-                    </div>
-                    <div className="gc-row">
-                        <div className="gc-col">
-                            <div className="line-separator"></div>
-                        </div>
-                    </div>
-                    <div className="gc-row faq-row">
-                        <div className="gc-col">
-                            <div className="gc-col-item">
-                                <h5 className="ha-h5">What gift card amount should you buy?</h5>
-                            </div>
-                            <div className="gc-col-item para-col">
-                                <p className='ha-body'>Our deliveries start at $100 a person (only $50 for each additional person), which includes enough selections for 4-6 meals per person. Consider adding a little something extra, so the recipient can try a few of our sweets, salads and soups—and don’t forget that delivery costs $5 in Philadelphia and $15 for the suburbs. Still have questions? Use our gift card calculator above or Contact us here.</p>
+                        <div className="gc-row faq-row">
+                            <div className="gc-col">
+                                <div className="gc-col-item">
+                                    <h5 className="ha-h5">What gift card amount should you buy?</h5>
+                                </div>
+                                <div className="gc-col-item para-col">
+                                    <p className='ha-body'>Our deliveries start at $100 a person (only $50 for each additional person), which includes enough selections for 4-6 meals per person. Consider adding a little something extra, so the recipient can try a few of our sweets, salads and soups—and don’t forget that delivery costs $5 in Philadelphia and $15 for the suburbs. Still have questions? Use our gift card calculator above or Contact us here.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <section className='blog-post-section'>
-                <h1 className='blog-post-section_title'>The Latest from H.A.’s HQ</h1>
-                <div className='blog-post-section_posts'>
-                    {blogArea}
                 </div>
-                <div className='blog-post-section_link'>
-                    <a className='btn btn-tertiary-small' style={{paddingLeft: '4em', paddingRight: '4em'}} href={`${marketingSite}blogs/blog`}>View All</a>
-                </div>
-            </section>
 
-            <Modal
-                activator={activator}
-                isOpen={activeCalculator}
-                onRequestClose={dismissModals}
-                className="modal--gift-card"
-            >
-                <h1 className='title'>Calculate Gift Amount</h1>
-
-                <div className='calculator-wrapper'>
-                    <div className='calculator-field'>
-                        <label># of People:</label>
-                        <select className='calculator-select' value={numberOfPeople} onChange={(e) => setNumberOfPeople(e.target.value)}>
-                            {servingOptions.map(option => {
-                                return (
-                                    <option value={option.value}>{option.label}</option>
-                                )
-                            })}
-                        </select>
+                <section className='blog-post-section'>
+                    <h1 className='blog-post-section_title'>The Latest from<span className='mobile-only'><br></br></span> H.A.’s HQ</h1>
+                    <div className='blog-post-section_posts'>
+                        {blogArea}
                     </div>
-                    <div className='calculator-field'>
-                        <label># of Weeks:</label>
-                        <input type='text' placeholder='(up to 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
+                    <div className='blog-post-section_link'>
+                        <a className='btn btn-tertiary-small' style={{paddingLeft: '4em', paddingRight: '4em'}} href={`${marketingSite}blogs/blog`}>View All</a>
                     </div>
-                    <div className='calculator-field'>
-                        <label>ZIP Code:</label>
-                        <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
+                </section>
+
+                <Modal
+                    activator={activator}
+                    isOpen={activeCalculator}
+                    onRequestClose={dismissModals}
+                    className="modal--gift-card"
+                >
+                    <h1 className='title'>Calculate Gift Amount</h1>
+
+                    <div className='calculator-wrapper'>
+                        <div className='calculator-field'>
+                            <label># of People:</label>
+                            <select className='calculator-select' value={numberOfPeople} onChange={(e) => setNumberOfPeople(e.target.value)}>
+                                {servingOptions.map(option => {
+                                    return (
+                                        <option value={option.value}>{option.label}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                        <div className='calculator-field'>
+                            <label># of Weeks:</label>
+                            <input type='text' placeholder='(up to 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
+                        </div>
+                        <div className='calculator-field'>
+                            <label>ZIP Code:</label>
+                            <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
+                        </div>
                     </div>
-                </div>
 
-                <p className='gift-card-calculator--amount text-center'>{suggestedAmountText()}</p>
+                    <p className='gift-card-calculator--amount text-center'>{suggestedAmountText()}</p>
 
-                <div className="text-center gift-card-control">
-                    <button className={`btn btn-primary-small btn-confirm btn-modal${isModalFormReady() && isZipcodePermitted() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={!isModalFormReady} onClick={() => onConfirmCalculatedAmount(calculateSuggestedAmount())}>
-                        {addButtonText}
-                    </button>
+                    <div className="text-center gift-card-control">
+                        <button className={`btn btn-primary-small btn-confirm btn-modal${isModalFormReady() && isZipcodePermitted() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={!isModalFormReady} onClick={() => onConfirmCalculatedAmount(calculateSuggestedAmount())}>
+                            {addButtonText}
+                        </button>
 
-                    <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
-                        Cancel
-                    </button>
-                </div>
+                        <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
+                            Cancel
+                        </button>
+                    </div>
 
-                </Modal>
+                    </Modal>
 
-                { cartLines.length > 0 && <button className={`btn btn-secondary btn-modal`} onClick={() => onAddGift()}>
-                    Checkout
-                </button>}
+                    { cartLines.length > 0 && <button className={`btn btn-secondary btn-modal`} onClick={() => onAddGift()}>
+                        Checkout
+                    </button>}
 
-                <Footer />
-        </Page>        
+                    <Footer />
+            </Page>        
+        </div>
     );
 }

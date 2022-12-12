@@ -14,45 +14,16 @@ import {Header} from "./Header.client";
 import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
-import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME } from "../lib/const";
+import iconLoading from "../assets/loading-loading-forever.gif";
+import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD } from "../lib/const";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
-const TOAST_CLEAR_TIME = 5000;
-const FREE_QUANTITY_LIMIT = 4;
-const FIRST_STEP = 1;
-const ADD_ON_STEP = 4;
-const FIRST_PAYMENT_STEP = 5;
-const CONFIRMATION_STEP = 7;
-const FIRST_WINDOW_START = 8;
-const PLACEHOLDER_SALAD = `https://cdn.shopify.com/s/files/1/0624/5738/1080/products/mixed_greens.png?v=1646182911`;
 const DEFAULT_PLAN = TRADITIONAL_PLAN_NAME;
-const DEFAULT_CARDS = [
-    {
-        brand: "Visa",
-        expiryMonth: "11",
-        expiryYear: "26",
-        firstDigits: 4111,
-        firstName: "Jon Paul",
-        lastDigits: 1111,
-        lastName: "Simonelli",
-        maskedNumber: "****1111"
-    },
-    {
-        brand: "Visa",
-        expiryMonth: "10",
-        expiryYear: "27",
-        firstDigits: 4112,
-        firstName: "Jon Paul",
-        lastDigits: 1112,
-        lastName: "Simonelli",
-        maskedNumber: "****1112"
-    }
-];
 
 export function OrderSection(props) {
 
-    const { id: cartId, cartCreate, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
+    const { id: cartId, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
     
     const { customerData, zoneHours } = props;
     let customer = null;
@@ -70,9 +41,7 @@ export function OrderSection(props) {
     }
     
 
-    const [totalPrice, setTotalPrice] = useState(100.0)
     const [servingCount, setServingCount] = useState(0)
-    const [selection, setSelections] = useState([])
     const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
@@ -81,6 +50,8 @@ export function OrderSection(props) {
     const [isAlreadyOrderedModalShowing, setIsAlreadyOrderedModalShowing] = useState(false);
     const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
     const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
+    const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
+    const [returnToPayment, setReturnToPayment] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -119,27 +90,8 @@ export function OrderSection(props) {
     const [agreeToTerms, setAgreeToTerms] = useState(false);
     const [receiveTexts, setReceiveTexts] = useState(false);
 
-    const [cardNumber, setCardNumber] = useState("");
     const [expiration, setExpiration] = useState("");
     const [securityCode, setSecurityCode] = useState("");
-    const [cardZipcode, setCardZipcode] = useState("");
-    const [sameAsBilling, setSameAsBilling] = useState(true);
-
-    const [billingFirstName, setBillingFirstName] = useState("");
-    const [billingLastName, setBillingLastName] = useState("");
-    const [billingEmailAddress, setBillingEmailAddress] = useState("");
-    const [billingPhoneNumber, setBillingPhoneNumber] = useState("");
-    const [billingAddress, setBillingAddress] = useState("");
-    const [billingAddress2, setBillingAddress2] = useState("");
-    const [billingDeliveryState, setBillingDeliveryState] = useState("");
-    const [billingCity, setBillingCity] = useState("");
-    const [billingZipcode, setBillingZipcode] = useState("");
-
-    const [creditCards, setCreditCards] = useState(props.guest ? [] : DEFAULT_CARDS)
-    const [giftCards, setGiftCards] = useState([]);
-    const [giftCardTriggered, setGiftCardTriggered] = useState(false);
-    const [promoTriggered, setPromoTriggered] = useState(false);
-    const [referralTriggered, setReferralTriggered] = useState(false);
 
     const [userAddedItem, setUserAddedItem] = useState(false);
     const [isCollectionsLoading, setIsCollectionsLoading] = useState(true);
@@ -574,6 +526,10 @@ export function OrderSection(props) {
         &checkout[shipping_address][zip]=${zipcode}`;
     }
 
+    const promptEmptyCart = () => {
+        setIsPromptingEmptyCart(true);
+    }
+
     const emptyCart = () => {
         const linesToRemove = [];
         cartLines.map(line => {
@@ -739,7 +695,10 @@ export function OrderSection(props) {
 
     const setupNextSection = nextStep => {
         // setIsAddingExtraItems(false);
-        updateCurrentStep(nextStep); 
+        if (returnToPayment)
+            updateCurrentStep(FIRST_PAYMENT_STEP)
+        else
+            updateCurrentStep(nextStep); 
         const step = document.querySelector(".step-active");
         step.scrollIntoView({behavior: "smooth", block: "start"});
     }
@@ -804,14 +763,16 @@ export function OrderSection(props) {
         if (cartLines.length) 
             setChangePlanModalShowing(true);
         else
-            setActiveScheme(newScheme);
+            changeActiveScheme(newScheme);
     }
 
     const changeActiveScheme = () => {
         const newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
+        const newServingCount = newScheme === FLEXIBLE_PLAN_NAME && servingCount < 2 ? 0 : servingCount;
         emptyCart();
         setActiveScheme(newScheme);
         setCurrentStep(FIRST_STEP);
+        setServingCount(newServingCount);
         setChangePlanModalShowing(false);
     }
     
@@ -1072,6 +1033,9 @@ export function OrderSection(props) {
 
         setCurrentStep(step);
         setIsAddingExtraItems(isAddingExtra);
+
+        if (step >= FIRST_PAYMENT_STEP && !returnToPayment)
+            setReturnToPayment(true);
     }
 
     const removeGiftCard = () => {
@@ -1151,16 +1115,18 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
-    if (latestMenu ===  null)
+    if (latestMenu === null)
         {
             const navigate = useNavigate();
             navigate(`https://${import.meta.env.VITE_STORE_DOMAIN}/pages/order-now`);
         }
 
-    else if (latestMenu !==  null && isCollectionsLoading)
+    else if (latestMenu !== null && isCollectionsLoading)
         return <Page>
             <Suspense>
-                <h1>One moment...</h1>
+                <div className="loading-icon-container">
+                    <img src={iconLoading} width="50"/>
+                </div>
             </Suspense>
         </Page>;
 
@@ -1244,6 +1210,7 @@ export function OrderSection(props) {
                                     isRestoringCart={isRestoringCart}
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
+                                    returnToPayment={returnToPayment}
                                 />
                             </div>
                             
@@ -1277,6 +1244,7 @@ export function OrderSection(props) {
                                     isRestoringCart={isRestoringCart}
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
+                                    returnToPayment={returnToPayment}
                                 />
                             </div>
 
@@ -1307,9 +1275,10 @@ export function OrderSection(props) {
                                     isRestoringCart={isRestoringCart}
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
+                                    returnToPayment={returnToPayment}
                                 />
                             </div>
-                            <section className="menu-section__actions">
+                            <section className={`menu-section__actions actions--submit-order`}>
                                 <button className='btn btn-primary-small btn-app btn-disabled'>Place Order</button>
                             </section>
 
@@ -1333,9 +1302,10 @@ export function OrderSection(props) {
                                 freeQuantityLimit={getFreeQuantityLimit()} 
                                 removeItem={(item, index, collectionName) => removeItem(item, index, collectionName)}
                                 isAddingExtraItems={isAddingExtraItems}
-                                emptyCart={()=>emptyCart()}
+                                emptyCart={()=>promptEmptyCart()}
                                 handleChangeCurrentStep={step => updateCurrentStep(step)}                             
                                 cardStatus={cardStatus}
+                                cartLinesLength={cartLines === undefined ? 0 : cartLines.length}
                             />  
                         </LayoutSection>
 
@@ -1388,6 +1358,26 @@ export function OrderSection(props) {
                                         resetOrder();
                                         setIsRestoringCart(false);
                                     }}>Start new order</button>
+                                </section>   
+                            </div>
+                        </Modal>
+
+                        <Modal
+                            isOpen={isPromtingEmptyCart}
+                            onRequestClose={() => setIsPromptingEmptyCart(false)}
+                            className="modal--flexible-confirmaton modal--restore-cart"
+                        >
+                            <div className='modal--flexible-inner'>
+                                <h2 className='ha-h4 text-center'>Continue with <br/> clearing your cart?</h2>
+                                <p className='ha-body'>Do you want to continue clearing your cart? This will remove all added items, and you will have to start your order from the beginning.</p>
+                                <section className="card__actions">
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {
+                                        setIsPromptingEmptyCart(false);
+                                        emptyCart();
+                                    }}>Continue</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => {
+                                        setIsPromptingEmptyCart(false);
+                                    }}>Cancel</button>
                                 </section>   
                             </div>
                         </Modal>
@@ -1476,6 +1466,7 @@ export function OrderSection(props) {
                         <LayoutSection>
                             <OrderSummary 
                                 activeScheme={activeScheme}
+                                currentStep={currentStep}
                                 servingCount={servingCount}
                                 pricingMultiplier={getPlanPrice()}
                                 orderTotal={getOrderTotal()}
@@ -1490,6 +1481,7 @@ export function OrderSection(props) {
                                 getPhase={getPhase(currentStep)}
                                 freeQuantityLimit={getFreeQuantityLimit()} 
                                 isEditing={isEditing}
+                                handleChangeCurrentStep={step => updateCurrentStep(step)}
                             />  
                         </LayoutSection>
                     </Layout>

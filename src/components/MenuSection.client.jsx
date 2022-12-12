@@ -81,12 +81,17 @@ export default class MenuSection extends React.Component {
     }
 
     progressBarStatus(getQuantityTotal){
+        const progressPercentage = Math.max(0, parseFloat(getQuantityTotal) / parseFloat(this.props.freeQuantityLimit));
+
+        const progressBarSlots = [];
+        for(let i=0; i<this.props.freeQuantityLimit; i++) {
+            progressBarSlots.push(<div className={`progress-bar__order-item`}></div>);
+        }
+
         return (
             <div className="progress-bar">
-                <div className={`progress-bar__order-item ${getQuantityTotal > 0 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 1 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 2 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 3 ? 'active' : null}`}></div>
+                <div className={`progress-meter${progressPercentage >= 1.0 ? ' progress-meter--filled' : ''}`} style={{width: `${progressPercentage*100}%`}}></div>
+                {progressBarSlots}
             </div>
         );
     }
@@ -137,7 +142,7 @@ export default class MenuSection extends React.Component {
 
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus } = this.props;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus, returnToPayment } = this.props;
         const {modalDismissed} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
@@ -198,7 +203,7 @@ export default class MenuSection extends React.Component {
 
         // Render Sections
         const overviewSection = <section>
-        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
+        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
         { (selected.length + selectedExtra.length) !== 0 && 
         <div className="suborder--summary-container">
 
@@ -297,8 +302,8 @@ export default class MenuSection extends React.Component {
             {filteredChoicesSection}
         </Layout>
 
-        <section className="menu-section__actions">
-            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm and Continue</button>
+        <section className="menu-section__actions actions--menu-section">
+            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm & Continue</button>
         </section>
         
     </section>;
@@ -307,7 +312,7 @@ export default class MenuSection extends React.Component {
             <Frame>
 
                 <Modal
-                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step}
+                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step && !returnToPayment}
                     onRequestClose={() => this.setState({showingModal: false})}
                     className="modal-entree-complete"
                 >   

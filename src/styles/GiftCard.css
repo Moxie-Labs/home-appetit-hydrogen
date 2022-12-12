@@ -46,7 +46,6 @@
     border-radius: 10px;
     border: 1px solid #474442;
     color: #474442;
-    margin-bottom: 1.25rem;
     font-family: 'AvenirLTProRoman';
     font-size: 16px;
     background-color: #FFFCF5;
@@ -113,7 +112,6 @@ p.gc-subtitle {
 
 .gc-row.gc-method-field input {
     max-width: 78%;
-    margin-bottom: 2.5rem;
 }
 
 .blog-post-section {
@@ -205,7 +203,7 @@ p.gc-subtitle {
 
         .blog-post {
             margin: 1em 1em 1em 0;
-            min-width: 250px;
+            /* min-width: 250px; */
         }
 
         .blog-post_text {
@@ -213,3 +211,8 @@ p.gc-subtitle {
         }
     }
     
+
+    #page--gift-card div.footer {
+        bottom: unset;
+        margin-top: 3rem; 
+    }

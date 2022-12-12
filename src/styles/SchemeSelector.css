@@ -43,6 +43,7 @@ span.badge {
     }
 
     .order_prop__dropdown{
+        background-position-x: 95%;
         width: 100%;
     }
 
