@@ -315,6 +315,18 @@ h5,
     cursor: pointer;
 }
 
+.btn.btn-primary-huge {
+    background: #FFA877;
+    padding: 24px 32px 17px 32px;
+    border-radius: 36px;
+    font-size: 24px;
+    color: #474442;
+    text-decoration: none;
+    transition: background 0.2s;
+    height: 70px;
+    width: 400px;
+}
+
 .btn.btn-primary-large {
     background: #FFA877;
     padding: 24px 32px 17px 32px;
@@ -339,7 +351,7 @@ h5,
 }
 
 .btn-app {
-   width: 25.375rem;
+   width: 18rem;
 }
 
 .btn.btn-primary-large[aria-disabled='true'] {

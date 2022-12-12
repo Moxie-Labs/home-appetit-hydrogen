@@ -23,9 +23,9 @@ export default function DeliveryWindow(props) {
 
     const startOptions = availableDeliveryStarts.map((option, i) => {
         const startOption = option.startHour;
-        const startOptionHalfHour = (startOption !== Math.ceil(startOption) ? ":30" : "");
+        const startOptionHalfHour = (startOption !== Math.ceil(startOption) ? ":30" : ":00");
         const endOption = option.endHour;
-        const endOptionHalfHour = (endOption !== Math.ceil(endOption) ? ":30" : "");
+        const endOptionHalfHour = (endOption !== Math.ceil(endOption) ? ":30" : ":00");
         let optionText;
         if (startOption < 12)
             optionText = Math.floor(startOption) + startOptionHalfHour + "am";

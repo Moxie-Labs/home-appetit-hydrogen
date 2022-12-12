@@ -38,19 +38,40 @@
 
     .order-summary__heading {
         background-color: #385F83;
-        font-weight: 700;
+        font-weight: 500;
         font-size: 18px;
-        padding: 24px 20px;
+        padding: 12px 20px;
         color: #FFFCF5;
         font-family: 'AvenirLTProBlack' !important;
         border-radius: 10px 10px 0 0;
     }
 
+    .order-summary__body {
+        background-color: #F8EFE0;
+    }
+
     .order-summary--items {
         border-bottom: 2px solid #474442;
         margin: 5px 0 0 0;
-        padding: 20px 0 !important;
+        padding: 13px 0 0 0 !important;
         padding-inline-start: 20px;
+    }
+
+        .order-summary--items img {
+            cursor: pointer;
+        }
+
+        .remove-item-icon {
+            background-image: url('/src/assets/icon-trash-blue.png');
+            background-size: cover;
+            cursor: pointer;
+            height: 18px;
+            width: 18px;
+        }
+
+    .order-summary--item-name.order-summary--item-product {
+        display: flex;
+        justify-content: space-between;
     }
 
     .order-summary--items h4{
@@ -88,7 +109,8 @@
     }
 
 section.order-summary--enlarged-items {
-    padding: 20px;
+    padding: 10px 20px;
+    padding-bottom: 0;
     background: #F8EFE0;
 }
  
@@ -249,6 +271,7 @@ span.price--extra-addon {
 }
 
 section.checkout--deliveryinfo-top {
-    margin-top: 1.875rem;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
 }
 

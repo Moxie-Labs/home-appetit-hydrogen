@@ -60,15 +60,7 @@ export default class OrderProperties extends React.Component {
 
         const {activeScheme, step, currentStep, servingCount, deliveryWindowOne, planPrice} = this.props;
 
-        let effectiveServingOptions = [];
-        if (activeScheme === TRADITIONAL_PLAN_NAME)
-            effectiveServingOptions = [...servingOptions];
-        else {
-            servingOptions.map((option, i) => {
-                if (i > 0)
-                    effectiveServingOptions.push(option);
-            });
-        }
+        let effectiveServingOptions = activeScheme === TRADITIONAL_PLAN_NAME ? servingOptions : flexServingOptions;
 
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
@@ -86,25 +78,22 @@ export default class OrderProperties extends React.Component {
                     </div>
 
                     {activeScheme === TRADITIONAL_PLAN_NAME && currentStep === step &&
-                       <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates. If you’re feeding more than one person, we’ll portion up your selections accordingly. (Example: Enough pasta for three people.) Any dish customizations will impact all portions. If you need to customize specific portions or each person would like different selections, check out our Flex Order option</p>
+                       <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates. If you’re feeding more than one person, we’ll portion up your selections accordingly. (Example: Enough pasta for three people.) Any dish customizations will impact all portions. If you need to customize specific portions or each person would like different selections, check out our Flex Order option.</p>
                     }
 
                     {activeScheme === FLEXIBLE_PLAN_NAME && currentStep === step &&
                        <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates per person. Multiple selections of the same dish will come packed together, unless customizations are made to individual selections. (If everyone you’re ordering for will enjoy the same selections or customizations, consider placing a Classic Order—our most cost effective option.)
                        </p>
                     } 
-                    
-                    {/* { currentStep === step && 
-                        <p className="subheading order_prop__subheading ha-p"> Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam molestie id. Quisque risus pellentesque aliquet donec. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam.</p>
-                    } */}
+                
                 </LayoutSection>
                 <LayoutSection>
                     {currentStep === step &&
                         <label>Number of people:</label>
                     }
                     <div className="select-wrapper">
-                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingCount} onChange={this.handleChange} disabled={currentStep !== step}>
-                            <option selected disabled hidden value={0}>- Select Number of People -</option>
+                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown})`}} value={this.props.servingCount} onChange={this.handleChange} disabled={currentStep !== step}>
+                            <option selected disabled hidden value={0}>Select...</option>
                             {effectiveServingOptions.map(option => {
                                 return (
                                     <option value={option.value}>{option.label}</option>

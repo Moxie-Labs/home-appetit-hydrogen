@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import quantityPlus from "../assets/quantity-plus.png";
 import quantityMinus from "../assets/quantity-minus.png";
+import iconCloseBtn from "../assets/icon-close-btn.png";
 import { Checkbox } from './Checkbox.client';
 import Modal from 'react-modal/lib/components/Modal';
 import { FLEXIBLE_PLAN_NAME, TRADITIONAL_PLAN_NAME } from '../lib/const';
@@ -20,13 +21,15 @@ export default function DishCard(props) {
     ]);
     const [optionCost, setOptionCost] = useState(0.0);
     const [selectedMods, setSelectedMods] = useState([]);
+    const [hasBeenUpdated, setHasBeenUpdated] = useState(false);
+    const [savedState, setSavedState] = useState({ quantity: props.initialQuantity, selectedMods:[] });
 
     useEffect(() => {
         setQuantity(props.initialQuantity);
     },[props.initialQuantity])
 
     const updateQuantity = newQuantity => {
-        const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity } = props;
+        const { maxQuantity, showingExtra, freeQuantityLimit, quantityTotal, initialQuantity, activeScheme } = props;
         const currentQuantity = quantity;
 
         // if: decrementing, then: just check if above 0
@@ -39,9 +42,13 @@ export default function DishCard(props) {
             
         
         else if (!showingExtra)
-            newQuantity = Math.min(newQuantity, freeQuantityLimit);
+            if (activeScheme === TRADITIONAL_PLAN_NAME) 
+                newQuantity = Math.min(newQuantity, freeQuantityLimit);
+            else    
+                newQuantity = Math.min(newQuantity, maxQuantity);
 
         setQuantity(newQuantity);
+        setHasBeenUpdated(true);
     }
 
     const calculateItemTotal = () => {
@@ -72,12 +79,16 @@ export default function DishCard(props) {
         console.log("confirming...");
         props.setCardStatus("");
         const {choice, handleSelected, activeScheme} = props;
+
+        savedState.quantity = quantity;
+        savedState.selectedMods = [...selectedMods];
         
         setConfirmed(quantity > 0);
         updateIsCardActive(false);
         setIsModModalShowing(false);
         updateQuantity(activeScheme === TRADITIONAL_PLAN_NAME ? quantity : 0);
         setSelectedMods(activeScheme === TRADITIONAL_PLAN_NAME ? selectedMods : []);
+        setSavedState(savedState);
 
         handleSelected({choice: choice, quantity: quantity, selectedMods: selectedMods});
 
@@ -118,6 +129,8 @@ export default function DishCard(props) {
         }
         else
             setSelectedMods([...selectedMods, mod]);
+
+        setHasBeenUpdated(true);
     }
 
     const prepModSubTitles = title => {
@@ -158,6 +171,13 @@ export default function DishCard(props) {
         props.handleChangePlan();
     }
 
+    const getCurrentState = () => {
+        return {
+            quantity: quantity,
+            selectedMods: selectedMods
+        };
+    }
+
         const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme, initialQuantity, cardStatus} = props;
         const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
 
@@ -178,9 +198,7 @@ export default function DishCard(props) {
 
         let attributesDisplay = '';
         
-        attributes.forEach(attr => {
-            attributesDisplay += `[${attr}]  `;
-        });
+        attributesDisplay = attributes.join(" • ");
 
         const peoplePlural = servingCount > 1 ? 'people' : 'person';
         const disclaimerText =  isCardActive ? `*Each added dish serves ${servingCount} ${peoplePlural}` : `Serves ${servingCount} ${peoplePlural}`;
@@ -188,6 +206,16 @@ export default function DishCard(props) {
         const optionCostText = optionCost > 0 ? `+${formatter.format(optionCost)} customizations` : null;
 
         const finalCardStatus = forceDisable ? " disabled" : cardStatus;
+
+        const disableConfirm = () => {
+            const currentState = getCurrentState();
+            if (JSON.stringify(savedState) === JSON.stringify(currentState))
+                return true;
+            else if (currentState.quantity === 0 && savedState.quantity === 0)
+                return true;
+            else
+                return false;
+        }
 
     return (
         <div className={`dish-card${isCardActive ? ' active' : (finalCardStatus)}${confirmed ? ' confirmed' : ''}`}>
@@ -203,7 +231,7 @@ export default function DishCard(props) {
                         <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
                         <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
                         {/* end placeholder */}
-                        <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
+                        {attributes.length > 0 && <p className="card__code"><strong>Details: </strong>{attributesDisplay}</p>}
                     </div>
 
                     <div className="card__quantity-field-wrapper">
@@ -253,7 +281,7 @@ export default function DishCard(props) {
                                     <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
                                     <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
                                     {/* end placeholder */}
-                                    <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>
+                                    {attributes.length > 0 && <p className="card__code"><strong>Details: </strong>{attributesDisplay}</p>}
                                 </div>
 
                                 <div className="card__quantity-field-wrapper">
@@ -263,6 +291,7 @@ export default function DishCard(props) {
                                         <img className="card__quantity-img plus" src={quantityPlus} onClick={() => updateQuantity(quantity+1)}/>
                                     </section>
                                 </div>
+                                <img className='btn-close-dish-card-modal' src={iconCloseBtn} width="24" onClick={() => toggleModal()}/>
                             </div>
 
                             <div className='modal--flexible-inner'>
@@ -290,7 +319,7 @@ export default function DishCard(props) {
                             </div>
 
                             <section className="card__actions">
-                                <button className="btn btn-primary-small btn-counter-confirm" onClick={() => handleConfirm()}>Confirm</button>
+                                <button className="btn btn-primary-small btn-counter-confirm" disabled={disableConfirm()} onClick={() => handleConfirm()}>Confirm</button>
                                 <p className='modal--flexible-price'><strong>+{formatter.format(calcuculateModTotalCost())}</strong> Customizations</p>
                             </section>    
                         </div>

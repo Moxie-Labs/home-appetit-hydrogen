@@ -28,7 +28,7 @@
     width: 100%;
     height: 250px;
     object-fit: cover;
-    border-radius: 20px 20px 0 0;
+    border-radius: 17px 17px 0 0;
 }
 
 .card__quantity-img  {
@@ -70,9 +70,9 @@
     }
 
 .card__info-section h2, .card__quantity-title {
-    font-size: 26px;
+    font-size: 1.3em;
     font-family: 'ITCGaramondBold' !important;
-    line-height: 26px;
+    line-height: 1.3em;
     text-transform: uppercase;
     font-weight: bold;
     margin: 0;
@@ -86,6 +86,7 @@
     position: relative;
     margin: 0;
     line-height: 25px;
+    padding-top: 5px;
 }
     
 
@@ -154,7 +155,7 @@
     top: 0;
     left: 0;
     background: #F8EFE0;
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 2em;
     padding-top: 4em;
     display: flex;
@@ -234,6 +235,24 @@ p.card__code {
 
 .btn-counter-confirm{
     padding: 16px 40px 12px !important;
+}
+
+    .btn-counter-confirm:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .btn-counter-confirm:hover:disabled {
+        background: #FFA877;
+        color: #474442;
+    }
+
+img.btn-close-dish-card-modal {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 20px;
+    cursor: pointer;
 }
 
 .Polaris-Modal-Dialog__Modal {
@@ -351,7 +370,7 @@ section.modal--customize-inner .card__quantity-title {
 }
 
 .dish-card.active .card__quantity-inner-container{
-    /* text-align: center; */
+    width: 100%;
     position: relative;
     left: 0;
     top: 0;
@@ -421,6 +440,12 @@ h2.card__quantity-title {
     background: transparent;
     border-radius: 36px;
     border: 2px solid #474442;
+    transition: background 0.2s;
+}
+
+.modal--flexible-inner .card__actions  .btn-modal-cancel:hover {
+    background-color: #474442;
+    color: #fff !important;
 }
 
 .modal--flexible-inner .card__actions .btn{
@@ -476,8 +501,13 @@ h2.card__quantity-title {
 }
 
 .modal--flexible-confirmaton .card__quantity-inner-wrapper {
-    padding: 1.875rem 1.875rem 0 1.875rem;
+    padding: 1.875rem;
+    padding-bottom: 0;
     text-align: left;
+}
+
+.wrapper-modal .card__quantity-inner-wrapper {
+    width: 100%;
 }
 
 .modal--flexible-confirmaton h2.card__quantity-title {
