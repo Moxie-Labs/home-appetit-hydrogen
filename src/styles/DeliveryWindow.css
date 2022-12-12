@@ -28,7 +28,8 @@
     margin-bottom: 35px;
 }
 
-.delivery-date_item{
+.delivery-date_item {
+    cursor: pointer;
     font-size: 28px;
     line-height: 34px;
     color: #474442;
@@ -36,7 +37,12 @@
     text-transform: uppercase;
 }
 
-.delivery-date_item.active{
+.delivery-date_item:hover {
+    border-bottom: 3px solid;
+}
+
+.delivery-date_item.active {
+    cursor: unset;
     border-bottom: 3px solid;
     font-family: ITCAvantGardeGothicDemiBold !important;
 }

@@ -1,0 +1,228 @@
+.mobile-only {
+    display: none;
+}
+
+.copyright-mobile {
+    display: none;
+}
+
+@media screen and (max-width: 415px) {
+
+    /* General */
+    body {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+
+    .mobile-only {
+        display: unset;;
+    }
+
+    .desktop-only {
+        display: none;
+    }
+
+    div.footer {
+        position: unset;
+        bottom: unset;
+        margin-top: 4rem;
+    }
+
+    .copyright {
+        display: none;
+    }
+
+    .copyright-mobile {
+        display: unset;
+    }
+
+    .footer .social-wrapper {
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .button-group--item.filterButton:last-child {
+        margin-right: 1rem;
+    }
+
+    /* Step One */  
+    .illustration-empty {
+        font-size: 1.2em;
+        text-align: center;
+    }
+
+    .illustration-trad, .illustration-flex {
+        display: none;
+    }
+
+    .menu--row-inner {
+        margin: 5vw 2vw 0;
+    }
+
+    .illustration-section {
+        padding-bottom: 1rem;
+    }
+
+    .button-group {
+        margin-right: -1rem;
+    }
+
+    .dish-card-item .card__info-section {
+        position: relative;
+        height: 12rem;
+        min-height: unset;
+    }
+
+    .dish-card-item {
+        margin-bottom: 1rem;
+    }
+
+    .btn-modal-cancel {
+        margin-top: 1rem;
+    }
+
+    .cart-meta-elements {
+        position: absolute;
+        bottom: 0;
+    }
+
+    .dish-card-item .card__info-section p.card__servings-disclaimer {
+        display: unset;
+    }
+
+    .dish-description {
+        max-height: 65px;
+    }
+
+    img.btn-close-dish-card-active {
+        display: unset;
+    }
+
+    .menu-section__actions.actions--menu-section {
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        padding-left: 3rem;
+        padding-right: 3rem;
+        margin-bottom: 3.5rem;
+    }
+
+        button.btn.btn-primary-small.btn-app {
+            font-size: 1.1em;
+        }
+
+    .menu-section__actions.actions--submit-order {
+        display: none;
+    }
+
+    /* END Step One */
+
+    /* Gift Card page */
+    #container--gift-card > .page {
+        margin: 0 -1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        background: #F8EFE0 !important;
+    }
+    
+    .gc-wrapper {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .gc-wrapper .btn.btn-primary-small {
+        width: 100%;
+    }
+
+    .gc-col-item.para-col {
+        padding-top: 1rem;
+    }
+    
+    .blog-post-section {
+        margin: 0 -1rem;
+    }
+
+    .blog-post {
+        min-width: 300px;
+        margin-right: 1.5rem;
+    }
+
+    .blog-post_image {
+        min-height: 12rem;
+    }
+
+    .blog-post-section_link > .btn.btn-tertiary-small {
+        padding: 0.5rem 3rem;
+        height: unset;
+    }
+
+    .blog-post-section_title {
+        font-size: 3.2em;
+    }
+
+    .gc-item-column_image {
+        display: unset;
+        flex: 1;
+    }
+
+    .gc-item-column.gc-item-column_image > img {
+        width: 100%;
+    }
+
+    .container--calculator-activator {
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+
+    .modal--gift-card {
+        padding: 2rem 1rem;
+        width: 100%;
+    }
+
+    .calculator-select {
+        width: 100%;
+    }
+
+    .modal--gift-card .calculator-wrapper {
+        flex-direction: column;
+    }
+
+    .modal--gift-card .gift-card-control {
+        flex-direction: column;
+    }
+
+    .modal--gift-card .gift-card-calculator--amount {
+        font-size: 1.2em;
+    }
+
+    .modal--gift-card .gift-card-control .btn, .modal--gift-card .gift-card-control button.btn.btn-secondary.btn-modal {
+        border-radius: 28px;
+        height: auto;
+        padding: 1rem;
+    }
+    /* END Gift Card page */
+}
+
+/* Tablet */
+@media screen and (max-width: 1270px) and (min-width: 416px) {
+
+    .btn-modal-cancel {
+        margin-top: 1rem;
+    }
+
+    main#mainContent .dish-card-wrapper .layout {
+        grid-template-columns: 1fr 1fr;
+        justify-content: center;
+        align-items: center;;
+    }   
+
+    .dish-card {
+        width: unset;
+        max-width: 350px;
+    }
+
+    .dish-card-item:nth-child(odd) .dish-card {
+        float: right;
+    }
+}

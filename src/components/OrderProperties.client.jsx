@@ -5,13 +5,19 @@ import iconEdit from "../assets/icon-edit.png";
 import iconArrowDown from "../assets/arrow-down.png";
 import illustration from "../assets/ha-infographic-hd.png";
 import { LayoutSection } from './LayoutSection.client';
+import { FLEXIBLE_PLAN_NAME, TRADITIONAL_PLAN_NAME } from '../lib/const';
 
 const servingOptions = [
     {label: '1 Person', value: 1},
     {label: '2 People', value: 2},
     {label: '3 People', value: 3},
-    {label: '4 People', value: 4},
-    {label: '5 People', value: 5}
+    {label: '4 People', value: 4}
+];
+
+const flexServingOptions = [
+    {label: '2 People', value: 2},
+    {label: '3 People', value: 3},
+    {label: '4 People', value: 4}
 ];
 
 // const [activeScheme, setActiveScheme] = useState('traditional');
@@ -54,6 +60,8 @@ export default class OrderProperties extends React.Component {
 
         const {activeScheme, step, currentStep, servingCount, deliveryWindowOne, planPrice} = this.props;
 
+        let effectiveServingOptions = activeScheme === TRADITIONAL_PLAN_NAME ? servingOptions : flexServingOptions;
+
         return(
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
                 <div className="step-column">
@@ -69,27 +77,24 @@ export default class OrderProperties extends React.Component {
                         <span className={`delivery-window-label ${currentStep !== step ? 'disabled' : ''}`}>Place order for {this.getDisplayDate(deliveryWindowOne)} delivery</span>
                     </div>
 
-                    {activeScheme === "traditional" && currentStep === step &&
-                       <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates. If you’re feeding more than one person, we’ll portion up your selections accordingly. (Example: Enough pasta for three people.) Any dish customizations will impact all portions. If you need to customize specific portions or each person would like different selections, check out our Flex Order option</p>
+                    {activeScheme === TRADITIONAL_PLAN_NAME && currentStep === step &&
+                       <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates. If you’re feeding more than one person, we’ll portion up your selections accordingly. (Example: Enough pasta for three people.) Any dish customizations will impact all portions. If you need to customize specific portions or each person would like different selections, check out our Flex Order option.</p>
                     }
 
-                    {activeScheme === "flexible" && currentStep === step &&
+                    {activeScheme === FLEXIBLE_PLAN_NAME && currentStep === step &&
                        <p className="subheading order_prop__subheading ha-p"> Select four entrees and four small plates per person. Multiple selections of the same dish will come packed together, unless customizations are made to individual selections. (If everyone you’re ordering for will enjoy the same selections or customizations, consider placing a Classic Order—our most cost effective option.)
                        </p>
                     } 
-                    
-                    {/* { currentStep === step && 
-                        <p className="subheading order_prop__subheading ha-p"> Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam molestie id. Quisque risus pellentesque aliquet donec. Varius vel, ornare id aliquet sit tristique sit nisl. Amet vel sagittis nulla quam.</p>
-                    } */}
+                
                 </LayoutSection>
                 <LayoutSection>
                     {currentStep === step &&
                         <label>Number of people:</label>
                     }
                     <div className="select-wrapper">
-                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown.src})`}} value={this.props.servingsCount} onChange={this.handleChange} disabled={currentStep !== step}>
-                            <option selected disabled hidden>- Select Number of People -</option>
-                            {servingOptions.map(option => {
+                        <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown})`}} value={this.props.servingCount} onChange={this.handleChange} disabled={currentStep !== step}>
+                            <option selected disabled hidden value={0}>Select...</option>
+                            {effectiveServingOptions.map(option => {
                                 return (
                                     <option value={option.value}>{option.label}</option>
                                 )

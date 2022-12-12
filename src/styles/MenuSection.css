@@ -192,7 +192,8 @@ button.btn-small-plates span img {
 .progress-bar {
     background: transparent;
     height: 27px;
-    width: 407px;
+    width: 30%;
+    max-width: 400px;
     position: absolute;
     right: 0;
     margin-top: -27px;
@@ -224,17 +225,29 @@ button.btn-small-plates span img {
     border-right: none !important;
 }
 
-.progress-bar__order-item.active{
+/* .progress-bar__order-item.active{
     background-color: rgba(56, 95, 131, 0.75);
-} 
+}  */
+
+.progress-meter {
+    width: 25%;
+    position: absolute;
+    background-color: rgba(56, 95, 131, 0.75);
+    height: 23px;
+    border-radius: 10px 0 0 10px;
+}
+
+.progress-meter--filled {
+    border-radius: 10px;
+}
 
 .progress-bar__order-item.active:first-child{ 
     border-radius: 9px 0 0 12px;
 }
 
-.progress-bar__order-item.active:nth-child(4){
+/* .progress-bar__order-item.active:nth-child(4){
     border-radius: 0 9px 12px 0;
-}
+} */
  
 
 

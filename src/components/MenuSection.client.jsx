@@ -9,6 +9,7 @@ import CardFilters from './CardFilters.client';
 import Modal from 'react-modal/lib/components/Modal';
 import { prepModSubTitles } from '../lib/utils';
 import DishCard from './DishCard.client';
+import { TRADITIONAL_PLAN_NAME, FLEXIBLE_PLAN_NAME } from '../lib/const';
 
 export default class MenuSection extends React.Component {
 
@@ -80,12 +81,17 @@ export default class MenuSection extends React.Component {
     }
 
     progressBarStatus(getQuantityTotal){
+        const progressPercentage = Math.max(0, parseFloat(getQuantityTotal) / parseFloat(this.props.freeQuantityLimit));
+
+        const progressBarSlots = [];
+        for(let i=0; i<this.props.freeQuantityLimit; i++) {
+            progressBarSlots.push(<div className={`progress-bar__order-item`}></div>);
+        }
+
         return (
             <div className="progress-bar">
-                <div className={`progress-bar__order-item ${getQuantityTotal > 0 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 1 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 2 ? 'active' : null}`}></div>
-                <div className={`progress-bar__order-item ${getQuantityTotal > 3 ? 'active' : null}`}></div>
+                <div className={`progress-meter${progressPercentage >= 1.0 ? ' progress-meter--filled' : ''}`} style={{width: `${progressPercentage*100}%`}}></div>
+                {progressBarSlots}
             </div>
         );
     }
@@ -97,7 +103,7 @@ export default class MenuSection extends React.Component {
         const activeCollection = isAddingExtraItems ? [...selectedExtra] : [...selected];
     
         activeCollection.map(item => {
-            if (existingQuantity === 0 && activeScheme === 'traditional') {
+            if (existingQuantity === 0 && activeScheme === TRADITIONAL_PLAN_NAME) {
                 if (item.choice.title === choice.title)
                     existingQuantity = item.quantity;
             }
@@ -136,7 +142,7 @@ export default class MenuSection extends React.Component {
 
     render() { 
 
-        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus } = this.props;
+        const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus, returnToPayment } = this.props;
         const {modalDismissed} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
@@ -197,7 +203,7 @@ export default class MenuSection extends React.Component {
 
         // Render Sections
         const overviewSection = <section>
-        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
+        <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: {title}</h2>
         { (selected.length + selectedExtra.length) !== 0 && 
         <div className="suborder--summary-container">
 
@@ -246,23 +252,23 @@ export default class MenuSection extends React.Component {
             { !isSectionFilled && 
                 <div>
                     <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
-                    {activeScheme === "traditional" && currentStep === 2 &&
+                    {activeScheme === TRADITIONAL_PLAN_NAME && currentStep === 2 &&
                        <p className="subheading order_prop__subheading p-subheading-width">Choose four entrées—in any combination. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
                        </p>
                     }
 
-                    {activeScheme === "flexible" && currentStep === 2 &&
+                    {activeScheme === FLEXIBLE_PLAN_NAME && currentStep === 2 &&
                        <p className="subheading order_prop__subheading p-subheading-width">Choose four entrées for each person you’re serving. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
                        </p>
                     } 
 
-                    {activeScheme === "traditional" && currentStep === 3 &&
+                    {activeScheme === TRADITIONAL_PLAN_NAME && currentStep === 3 &&
                        <p className="subheading order_prop__subheading p-subheading-width">Choose four small plates—in any combination. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
 
                        </p>
                     }
 
-                    {activeScheme === "flexible" && currentStep === 3 &&
+                    {activeScheme === FLEXIBLE_PLAN_NAME && currentStep === 3 &&
                        <p className="subheading order_prop__subheading p-subheading-width">Choose four small plates for each person you’re serving. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
 
                        </p>
@@ -296,8 +302,8 @@ export default class MenuSection extends React.Component {
             {filteredChoicesSection}
         </Layout>
 
-        <section className="menu-section__actions">
-            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm and Continue</button>
+        <section className="menu-section__actions actions--menu-section">
+            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm & Continue</button>
         </section>
         
     </section>;
@@ -306,7 +312,7 @@ export default class MenuSection extends React.Component {
             <Frame>
 
                 <Modal
-                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step}
+                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step && !returnToPayment}
                     onRequestClose={() => this.setState({showingModal: false})}
                     className="modal-entree-complete"
                 >   

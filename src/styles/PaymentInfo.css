@@ -69,7 +69,7 @@
         display: flex;
         max-width: 1260px;
         margin: auto;
-        padding: 0;
+        padding: 4vw 0 0 0;
         gap: 40px;
         justify-content: space-between;
     }
@@ -146,7 +146,18 @@
 
 .btn-place-order {
     width: 295px;
+    transition: opacity 0.1s linear 0s;
 }
+
+    .btn-place-order:disabled {
+        opacity: 0.6;
+    }
+
+    .btn-place-order:hover:disabled {
+        background: #FFA877;
+        color: #474442;
+        cursor: not-allowed;
+    }
 
 .btn-place-order.disabled{
     cursor: unset;
