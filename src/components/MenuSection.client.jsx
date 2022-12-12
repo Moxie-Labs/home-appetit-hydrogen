@@ -302,8 +302,8 @@ export default class MenuSection extends React.Component {
             {filteredChoicesSection}
         </Layout>
 
-        <section className="menu-section__actions">
-            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm and Continue</button>
+        <section className="menu-section__actions actions--menu-section">
+            <button className={`btn btn-primary-small btn-app${(getQuantityTotal(selected) < freeQuantityLimit && currentStep !== 4) ? ' btn-disabled' : ''}`} onClick={handleConfirm}>Confirm & Continue</button>
         </section>
         
     </section>;

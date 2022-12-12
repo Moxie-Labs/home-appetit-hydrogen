@@ -1278,7 +1278,7 @@ export function OrderSection(props) {
                                     returnToPayment={returnToPayment}
                                 />
                             </div>
-                            <section className="menu-section__actions">
+                            <section className={`menu-section__actions actions--submit-order`}>
                                 <button className='btn btn-primary-small btn-app btn-disabled'>Place Order</button>
                             </section>
 

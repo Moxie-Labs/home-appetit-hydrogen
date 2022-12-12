@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-export function Page({ children }) {
+export function Page({children}) {
 
     return (
         <div className="page">

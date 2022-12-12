@@ -50,6 +50,9 @@ export function Footer(){
                     <li><a href={`${marketingSite}pages/contact-1`}>CONTACT US</a></li>
                 </ul>
             </div>
+            <div className="copyright-mobile">
+                © {new Date().getFullYear()} HOME APPÉTIT
+                </div>
             </div>
         </div>
    );

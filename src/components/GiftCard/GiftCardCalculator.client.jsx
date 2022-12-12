@@ -5,6 +5,7 @@ import { Page } from '../Page.client';
 import { Header } from '../Header.client';
 import { Footer } from '../Footer.client';
 import gcImg from "../../assets/giftcard-img.png";
+import gcImgMobile from "../../assets/giftcard-img-mobile.png";
 import { getPlaceholderBlogImage } from '../../lib/placeholders';
 
 
@@ -257,12 +258,14 @@ export function GiftCardCalculator(props) {
     });
 
     return (
-        <Page>
-            <Header />
+        <div id="container--gift-card">
+            <Page>
+                <Header />
 
             <div className="gc-wrapper">
                 <div className="gc-item-column gc-item-column_image">
-                    <img src={gcImg} />
+                    <img className='desktop-only' src={gcImg} />
+                    <img className='mobile-only' src={gcImgMobile} />
                 </div>
                 <div className="gc-item-column form-column">
                     <h2 className='ha-h2 no-margin no-padding'>Home Appétit Gift Card</h2>
@@ -328,99 +331,84 @@ export function GiftCardCalculator(props) {
                                 </div>
                             </div>
                         </div>
-                        
-                    </div>
-                    <div className="gc-row">
-                        <div className="gc-col">
-                            <div className="line-separator"></div>
-                        </div>
-                    </div>
-                    <div className="gc-row faq-row">
-                        <div className="gc-col">
-                            <div className="gc-col-item">
-                                <h5 className="ha-h5">What will your recipient get?</h5>
-                            </div>
-                            <div className="gc-col-item para-col">
-                                <p className='ha-body'>A digital gift card—along with your note and instructions to purchase meals. Prefer to send the gift card yourself? Put your own address in the email field and you can forward along the card. PS: Gift cards never expire. Questions? Contact us here.</p>
+                        <div className="gc-row">
+                            <div className="gc-col">
+                                <div className="line-separator"></div>
                             </div>
                         </div>
-                    </div>
-                    <div className="gc-row">
-                        <div className="gc-col">
-                            <div className="line-separator"></div>
-                        </div>
-                    </div>
-                    <div className="gc-row faq-row">
-                        <div className="gc-col">
-                            <div className="gc-col-item">
-                                <h5 className="ha-h5">What gift card amount should you buy?</h5>
-                            </div>
-                            <div className="gc-col-item para-col">
-                                <p className='ha-body'>Our deliveries start at $100 a person (only $50 for each additional person), which includes enough selections for 4-6 meals per person. Consider adding a little something extra, so the recipient can try a few of our sweets, salads and soups—and don’t forget that delivery costs $5 in Philadelphia and $15 for the suburbs. Still have questions? Use our gift card calculator above or Contact us here.</p>
+                        <div className="gc-row faq-row">
+                            <div className="gc-col">
+                                <div className="gc-col-item">
+                                    <h5 className="ha-h5">What gift card amount should you buy?</h5>
+                                </div>
+                                <div className="gc-col-item para-col">
+                                    <p className='ha-body'>Our deliveries start at $100 a person (only $50 for each additional person), which includes enough selections for 4-6 meals per person. Consider adding a little something extra, so the recipient can try a few of our sweets, salads and soups—and don’t forget that delivery costs $5 in Philadelphia and $15 for the suburbs. Still have questions? Use our gift card calculator above or Contact us here.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <section className='blog-post-section'>
-                <h1 className='blog-post-section_title'>The Latest from H.A.’s HQ</h1>
-                <div className='blog-post-section_posts'>
-                    {blogArea}
                 </div>
-                <div className='blog-post-section_link'>
-                    <a className='btn btn-tertiary-small' style={{paddingLeft: '4em', paddingRight: '4em'}} href={`${marketingSite}blogs/blog`}>View All</a>
-                </div>
-            </section>
 
-            <Modal
-                activator={activator}
-                isOpen={activeCalculator}
-                onRequestClose={dismissModals}
-                className="modal--gift-card"
-            >
-                <h1 className='title'>Calculate Gift Amount</h1>
-
-                <div className='calculator-wrapper'>
-                    <div className='calculator-field'>
-                        <label># of People:</label>
-                        <select className='calculator-select' value={numberOfPeople} onChange={(e) => setNumberOfPeople(e.target.value)}>
-                            {servingOptions.map(option => {
-                                return (
-                                    <option value={option.value}>{option.label}</option>
-                                )
-                            })}
-                        </select>
+                <section className='blog-post-section'>
+                    <h1 className='blog-post-section_title'>The Latest from<span className='mobile-only'><br></br></span> H.A.’s HQ</h1>
+                    <div className='blog-post-section_posts'>
+                        {blogArea}
                     </div>
-                    <div className='calculator-field'>
-                        <label># of Weeks:</label>
-                        <input type='text' placeholder='(up to 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
+                    <div className='blog-post-section_link'>
+                        <a className='btn btn-tertiary-small' style={{paddingLeft: '4em', paddingRight: '4em'}} href={`${marketingSite}blogs/blog`}>View All</a>
                     </div>
-                    <div className='calculator-field'>
-                        <label>ZIP Code:</label>
-                        <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
+                </section>
+
+                <Modal
+                    activator={activator}
+                    isOpen={activeCalculator}
+                    onRequestClose={dismissModals}
+                    className="modal--gift-card"
+                >
+                    <h1 className='title'>Calculate Gift Amount</h1>
+
+                    <div className='calculator-wrapper'>
+                        <div className='calculator-field'>
+                            <label># of People:</label>
+                            <select className='calculator-select' value={numberOfPeople} onChange={(e) => setNumberOfPeople(e.target.value)}>
+                                {servingOptions.map(option => {
+                                    return (
+                                        <option value={option.value}>{option.label}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                        <div className='calculator-field'>
+                            <label># of Weeks:</label>
+                            <input type='text' placeholder='(up to 8)' onKeyPress={(e) => !/[1-8]/.test(e.key) && e.preventDefault()} maxLength={1} value={numberOfWeeks} onChange={(e) => setNumberOfWeeks(e.target.value)} />
+                        </div>
+                        <div className='calculator-field'>
+                            <label>ZIP Code:</label>
+                            <input type='text' placeholder='Enter ZIP' onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} maxLength={5} value={zipcode} onChange={(e) => setZipcode(e.target.value)} />
+                        </div>
                     </div>
-                </div>
 
-                <p className='gift-card-calculator--amount text-center'>{suggestedAmountText()}</p>
+                    <p className='gift-card-calculator--amount text-center'>{suggestedAmountText()}</p>
 
-                <div className="text-center gift-card-control">
-                    <button className={`btn btn-primary-small btn-confirm btn-modal${isModalFormReady() && isZipcodePermitted() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={!isModalFormReady} onClick={() => onConfirmCalculatedAmount(calculateSuggestedAmount())}>
-                        {addButtonText}
-                    </button>
+                    <div className="text-center gift-card-control">
+                        <button className={`btn btn-primary-small btn-confirm btn-modal${isModalFormReady() && isZipcodePermitted() ? '' : ' btn-disabled btn-primary-small-disable'}`} primary disabled={!isModalFormReady} onClick={() => onConfirmCalculatedAmount(calculateSuggestedAmount())}>
+                            {addButtonText}
+                        </button>
 
-                    <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
-                        Cancel
-                    </button>
-                </div>
+                        <button className={`btn btn-secondary btn-modal`} onClick={() => dismissModals()}>
+                            Cancel
+                        </button>
+                    </div>
 
-                </Modal>
+                    </Modal>
 
-                { cartLines.length > 0 && <button className={`btn btn-secondary btn-modal`} onClick={() => onAddGift()}>
-                    Checkout
-                </button>}
+                    { cartLines.length > 0 && <button className={`btn btn-secondary btn-modal`} onClick={() => onAddGift()}>
+                        Checkout
+                    </button>}
 
-                <Footer />
-        </Page>        
+                    <Footer />
+            </Page>        
+        </div>
     );
 }
