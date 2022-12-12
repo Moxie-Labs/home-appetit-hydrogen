@@ -3,7 +3,7 @@ import editIcon from "../assets/icon-edit-order-summary.png";
 import iconPlusAlt from "../assets/icon-plus-alt.png";
 import iconMinus from "../assets/icon-minus.png";
 import { prepModSubTitles } from '../lib/utils';
-import { ADDON_ITEMS_STEP, FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME } from '../lib/const';
+import { ADDON_ITEMS_STEP, FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP } from '../lib/const';
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -182,7 +182,7 @@ export default class OrderSummary extends React.Component {
             this.showToastMessage();
         }
 
-        const activeSchemeDisplay = activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic Plan' : 'Flexible Plan';
+        const activeSchemeDisplay = activeScheme === 'traditional' ? 'Traditional Plan' : 'Flexible Plan';
 
         let toastItemName = "";
         if (toastMessages.length > 0) {
@@ -191,7 +191,7 @@ export default class OrderSummary extends React.Component {
                 toastItemName += "...";
         }
         
-        const toastCostSection = (activeScheme !== TRADITIONAL_PLAN_NAME || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0]?.cost.toFixed(2)}</span> : null;
+        const toastCostSection = (activeScheme !== 'traditional' || currentStep === 4) ? <span className="text-right pull-right">+ ${toastMessages[0]?.cost.toFixed(2)}</span> : null;
 
         const summaryHeading = (toastMessages.length > 0 && showToast &&  !enlarged) ? <h3 onClick={() => this.toggleEnlarge()} className={"order-summary__heading order-summary__hidden show-toast"}>{toastItemName}{toastCostSection}</h3> : <h3 onClick={() => this.toggleEnlarge()} className={"order-summary__heading " + (enlarged ? '' : 'order-summary__hidden')}>Order Summary<span className="text-right pull-right"> {enlarged ? '—' : this.calculateItemTotal(orderTotal) + ' '} {enlarged !== true && getPhase !== "payment" && <img src={iconPlusAlt} className="icon-plus-alt" /> }</span></h3>
 
