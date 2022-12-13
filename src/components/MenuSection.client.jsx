@@ -17,7 +17,8 @@ export default class MenuSection extends React.Component {
         super(props);
         this.state = {
             showingExtra: false,
-            modalDismissed: false
+            modalDismissed: false,
+            dismissedUnderScheme: null   // stamped when Modal dismissed under current Scheme; used when activeScheme is switch after Modal is dismissed
         }
     }
 
@@ -117,14 +118,14 @@ export default class MenuSection extends React.Component {
     }
 
     showSectionExtras() {
-        this.setState({showingExtra: true, modalDismissed: true});
+        this.setState({showingExtra: true, dismissedUnderScheme: this.props.activeScheme});
         this.props.handleIsAddingExtraItems(true);
     }
 
     skipSectionExtras() {
         this.props.handleConfirm();
         this.props.handleIsAddingExtraItems(false);
-        this.setState({modalDismissed: true})
+        this.dismissModal();
     }
 
     isInSelection(selection, choice) {
@@ -140,10 +141,19 @@ export default class MenuSection extends React.Component {
         return retval;
     }
 
+    dismissModal() {
+        const {activeScheme} = this.props;
+
+        this.setState({
+            showingModal: false,
+            dismissedUnderScheme: activeScheme
+        });
+    }
+
     render() { 
 
         const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus, returnToPayment } = this.props;
-        const {modalDismissed} = this.state;
+        const {dismissedUnderScheme} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
         const mainSelected = selected;
@@ -316,8 +326,8 @@ export default class MenuSection extends React.Component {
                 <a id={`anchor-step--${step}`}/>
 
                 <Modal
-                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step && !returnToPayment}
-                    onRequestClose={() => this.setState({showingModal: false})}
+                    isOpen={isSectionFilled && dismissedUnderScheme !== activeScheme && !isRestoringCart && currentStep === step && !returnToPayment}
+                    onRequestClose={() => dismissModal()}
                     className="modal-entree-complete"
                 >   
                     <h1 className='uppercase text-center'>{title} Selections Complete!</h1>
