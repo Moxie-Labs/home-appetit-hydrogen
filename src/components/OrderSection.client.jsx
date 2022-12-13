@@ -1035,9 +1035,11 @@ export function OrderSection(props) {
 
         setCurrentStep(step);
         setIsAddingExtraItems(isAddingExtra);
+        setCardStatus("");
 
         if (step >= FIRST_PAYMENT_STEP && !returnToPayment)
             setReturnToPayment(true);
+
     }
 
     const removeGiftCard = () => {
@@ -1171,7 +1173,7 @@ export function OrderSection(props) {
                                     handleSchemeChange={(value) => queryChangeActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
-                                    handleCancel={() => setCurrentStep(1)}
+                                    handleCancel={() => updateCurrentStep(1)}
                                     planPrice={getPlanPrice()}
                                     step={1}
                                     currentStep={currentStep}
