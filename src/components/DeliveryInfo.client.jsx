@@ -207,6 +207,17 @@ export default function DeliveryInfo(props) {
         }
     }
 
+    const onClickCancel = () => {
+            setIsEditing(false);
+            setNewAddress(false);
+            setValidationErrors({});
+            handleAddressChange(addresses[0].address1);
+            handleAddress2Change(addresses[0].address2);
+            handleCityChange(addresses[0].city);
+            handleStateChange(addresses[0].province);
+            handleZipcodeChange(addresses[0].zip);
+        }
+
     const getFormErrors = () => {
         const errors = {};
         if (firstName.length < 3)
@@ -450,9 +461,14 @@ export default function DeliveryInfo(props) {
 
                     <section className="checkout--deliveryinfo-actions">
                         {newAddress ? 
-                        <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickSubmit}>
-                            Submit
-                        </button> 
+                        <div className='add-new-address'>
+                            <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickSubmit}>
+                                CONTINUE
+                            </button> 
+                            <button className="btn btn-confirm btn-secondary-small btn-app" onClick={onClickCancel}>
+                                CANCEL
+                            </button> 
+                        </div>
                         : 
                         <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickContinue}>
                             CONTINUE
