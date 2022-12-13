@@ -699,8 +699,6 @@ export function OrderSection(props) {
             updateCurrentStep(FIRST_PAYMENT_STEP)
         else
             updateCurrentStep(nextStep); 
-        const step = document.querySelector(".step-active");
-        step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     const findCollectionById = collectionId => {
@@ -1022,20 +1020,30 @@ export function OrderSection(props) {
 
     }
 
-    const updateCurrentStep = step => {
+    const updateCurrentStep = newStep => {
         let isAddingExtra = false;
 
         // if: Customer already picked 
-        if (step === MAIN_ITEMS_STEP && getQuantityTotal(selectedMainItems) >= getFreeQuantityLimit())
+        if (newStep === MAIN_ITEMS_STEP && getQuantityTotal(selectedMainItems) >= getFreeQuantityLimit())
             isAddingExtra = true;
-        else if (step === SIDE_ITEMS_STEP && getQuantityTotal(selectedSmallItems) >= getFreeQuantityLimit())
+        else if (newStep === SIDE_ITEMS_STEP && getQuantityTotal(selectedSmallItems) >= getFreeQuantityLimit())
             isAddingExtra = true;
 
-        setCurrentStep(step);
-        setIsAddingExtraItems(isAddingExtra);
-
-        if (step >= FIRST_PAYMENT_STEP && !returnToPayment)
+        if (newStep >= FIRST_PAYMENT_STEP && !returnToPayment)
             setReturnToPayment(true);
+
+        setCurrentStep(newStep);
+        setIsAddingExtraItems(isAddingExtra);
+        
+
+        setTimeout(() => {
+            if (newStep < 6 && newStep > 1) {
+                console.log("jumping to step #", newStep);
+                const stepElem = document.querySelector(`#anchor-step--${newStep}`);
+                stepElem.scrollIntoView({behavior: "smooth", block: "start"});
+            }
+        }, 100);
+        
     }
 
     const removeGiftCard = () => {

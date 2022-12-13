@@ -58,6 +58,7 @@ export default function DeliveryWindow(props) {
 
     return (
         <div className={`checkout-section checkout--delivery-window ${isEditing ? 'disabled' : ''}`}>
+            <a id={`anchor-step--${step}`}/>
             
             <h2 className="order_delivery__window-title heading order_prop__heading ha-h3">Select Delivery Window  
                 { currentStep !== step && 
