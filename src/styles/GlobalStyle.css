@@ -559,7 +559,7 @@ section.step-section {
 }
 
 .delivery-window-label.disabled{
-    opacity: 0.5;
+    opacity: 1;
     font-size: 28px;
     margin-right: 25px;
     font-family: "ITCAvantGardeProDemi";

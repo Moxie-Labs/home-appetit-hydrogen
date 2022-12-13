@@ -1116,6 +1116,31 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
+    // Classes for individual Steps
+    let menuSectionEntreeClasses = "dish-card-wrapper";
+    if (currentStep === MAIN_ITEMS_STEP)
+        menuSectionEntreeClasses += " step-active"
+    else if (currentStep < MAIN_ITEMS_STEP)
+        menuSectionEntreeClasses += " dishcard--wrapper-inactive";
+    else 
+        menuSectionEntreeClasses += " dishcard--wrapper-complete";
+
+    let menuSectionSideClasses = "dish-card-wrapper";
+    if (currentStep === SIDE_ITEMS_STEP)
+        menuSectionSideClasses += " step-active"
+    else if (currentStep < SIDE_ITEMS_STEP)
+        menuSectionSideClasses += " dishcard--wrapper-inactive";
+    else 
+        menuSectionSideClasses += " dishcard--wrapper-complete";
+
+    let menuSectionAddonClasses = "dish-card-wrapper";
+        if (currentStep === ADD_ON_STEP)
+            menuSectionAddonClasses += " step-active"
+        else if (currentStep < ADD_ON_STEP)
+            menuSectionAddonClasses += " dishcard--wrapper-inactive";
+        else 
+            menuSectionAddonClasses += " dishcard--wrapper-complete"
+
     if (latestMenu === null)
         {
             const navigate = useNavigate();
@@ -1181,7 +1206,7 @@ export function OrderSection(props) {
 
                             {/* Menu Sections */}
                     
-                            <div className={`dish-card-wrapper ${currentStep === 2 ? "step-active" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionEntreeClasses}>
                                 <MenuSection 
                                     step={2} 
                                     currentStep={currentStep}
@@ -1200,7 +1225,10 @@ export function OrderSection(props) {
                                         (choice) => addItemToCart(choice, selectedMainItems, 'main')}
                                     handleConfirm={() => setupNextSection(3)}
                                     handleEdit={() => updateCurrentStep(2)}
-                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 2) { updateCurrentStep(2); }
+                                        setIsAddingExtraItems(isAddingExtraItems);
+                                    }}
                                     selected={selectedMainItems}
                                     selectedExtra={selectedMainItemsExtra}
                                     filters={selectedMainFilters}    
@@ -1215,7 +1243,7 @@ export function OrderSection(props) {
                                 />
                             </div>
                             
-                            <div className={`dish-card-wrapper ${currentStep === 3 ? "step-active" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionSideClasses}>
                                 <MenuSection 
                                     step={3} 
                                     currentStep={currentStep}
@@ -1234,7 +1262,10 @@ export function OrderSection(props) {
                                         (choice) => addItemToCart(choice, selectedSmallItems, 'sides')}
                                     handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => updateCurrentStep(3)}
-                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 3) { updateCurrentStep(3); }
+                                        setIsAddingExtraItems(isAddingExtraItems);
+                                    }}
                                     selected={selectedSmallItems}
                                     selectedExtra={selectedSmallItemsExtra}
                                     filters={selectedSmallFilters}    
@@ -1249,7 +1280,7 @@ export function OrderSection(props) {
                                 />
                             </div>
 
-                            <div className={`dish-card-wrapper ${currentStep === 4 ? "step-active-final" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionAddonClasses}>
                                 <MenuSection 
                                     step={4} 
                                     currentStep={currentStep}
@@ -1265,6 +1296,10 @@ export function OrderSection(props) {
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
                                     handleConfirm={() => setupNextSection(5)}
                                     handleEdit={() => updateCurrentStep(4)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 4) { updateCurrentStep(4); }
+                                        setIsAddingExtraItems(false);
+                                    }}
                                     selected={selectedAddonItems}
                                     selectedExtra={[]}
                                     filters={selectedAddonFilters}    

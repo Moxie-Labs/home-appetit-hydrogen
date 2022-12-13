@@ -210,7 +210,7 @@ export default class MenuSection extends React.Component {
 
             <div className={`suborder--summary-details summary-container ${isAddingExtraItems ? 'inactive' : 'active'}`}>
                 
-                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}{quantityLimitText} SELECTED &nbsp; { isAddingExtraItems && this.props.cardStatus !== " disabled" && this.props.currentStep === this.props.step && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}{quantityLimitText} SELECTED &nbsp; { ((currentStep === step && isAddingExtraItems) || currentStep > step)  && this.props.cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
                 
                 { mainSelected.map((item, index) => {
                     return ( 
@@ -228,7 +228,7 @@ export default class MenuSection extends React.Component {
             { (isSectionFilled || selectedExtra.length > 0) &&
                 <div className={`suborder--summary-additional summary-container ${isAddingExtraItems ? 'active' : 'inactive'}`}>
                     <div className="summary--additional-wrapper">
-                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { !isAddingExtraItems && this.props.cardStatus !== " disabled" && this.props.currentStep === this.props.step && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { ((currentStep === step && !isAddingExtraItems) || currentStep > step) && this.props.cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
                         {extraSelected.map((item, index) => {
                             return ( 
                                 <ul key={index} className="step--order-summary">
@@ -282,8 +282,8 @@ export default class MenuSection extends React.Component {
                        </p>
                     }
                     
-                    { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
-                    { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
+                    { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit} className="icon-edit" width="65" /></span>}</h4>}
+                    { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65" /></span>}</h4>}
                 </div>
             }
             <br></br>

@@ -122,6 +122,10 @@ ul.step--order-summary li span {
         opacity: 0.6;
     }
 
+    .dishcard--wrapper-complete .summary-container.inactive li {
+        opacity: 1;
+    }
+
 
 .suborder--summary-details, .suborder--summary-additional {
     flex: 40%;
@@ -135,6 +139,10 @@ ul.step--order-summary li span {
 .dish-card-wrapper.dishcard--wrapper-inactive h2 {
     margin-top: 20px;
     opacity: 0.5;
+}
+
+.dish-card-wrapper.dishcard--wrapper-inactive h2.order_prop__heading {
+    opacity: 1;
 }
 
 .small-plates {
