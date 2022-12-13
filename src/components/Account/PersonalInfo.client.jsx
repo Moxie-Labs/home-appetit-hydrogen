@@ -407,7 +407,7 @@ export default function PersonalInfo(props) {
                 {addresses.map(addr => {
                     if (addr.id !== defaultAddr.id) {
                         return <article key={addr.id} className="account__address">
-                        <p><b>Address {++addressCount}</b></p>
+                        <p className="account__address-title"><b>Address {++addressCount}</b></p>
                         <p>{addr.name}</p>
                         <p>{addr.address1}</p>
                         {addr.address2 !== "" && <p>{addr.address2}</p>}

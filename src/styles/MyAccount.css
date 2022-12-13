@@ -472,7 +472,7 @@ p.address-action-cta a {
     border-bottom: 1px solid #474442;
 }
 
-article.account__address.account__address--default {
+article.account__address {
     margin-top: 1.875rem;
 }
 
@@ -618,4 +618,9 @@ table.order-table td {
     background-repeat: no-repeat;
     border: none;
     cursor: pointer;
+}
+
+.account__address-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
