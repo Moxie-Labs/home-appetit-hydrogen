@@ -52,6 +52,7 @@ export function OrderSection(props) {
     const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
     const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
     const [returnToPayment, setReturnToPayment] = useState(false);
+    const [planAlreadySelected, setIsPlanAlreadySelected] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -816,7 +817,7 @@ export function OrderSection(props) {
         setCurrentStep(1);
     }
 
-    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered, latestMenu } = props;
+    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered, latestMenu, traditionalPlanItem, flexiblePlanItem } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
 
     const setupCardsAndCollections = () => {
@@ -890,6 +891,32 @@ export function OrderSection(props) {
         const existingSmallItems = [];
         const existingSmallItemsExtra = [];
         const existingAddonItems = [];
+
+        // get existing PersonCount
+        cartLines.map(line => {
+            traditionalPlanItem.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    const {sku} = variant.node;
+                    const newServingCount = parseInt(sku.split("-")[1]); 
+                    setServingCount(newServingCount);
+                    setActiveScheme(TRADITIONAL_PLAN_NAME);
+                    setIsPlanAlreadySelected(true);
+                }
+            });
+
+            if (servingCount < 1) {
+                flexiblePlanItem.variants.edges.forEach(variant => {
+                    if (line.merchandise.id === variant.node.id) {
+                        const {sku} = variant.node;
+                        const newServingCount = parseInt(sku.split("-")[1]); 
+                        setServingCount(newServingCount);
+                        setActiveScheme(FLEXIBLE_PLAN_NAME);
+                        setIsPlanAlreadySelected(true);
+                    }
+                });
+            }
+            
+        });
 
         entreeProducts.map(entree => {
             // map cart items to pre-selected choices      
@@ -1007,6 +1034,9 @@ export function OrderSection(props) {
 
     const determineCurrentStep = () => {
         let newCurrentStep = 1;
+
+        if (planAlreadySelected)
+            newCurrentStep = 2;
 
         if (selectedAddonItems.length > 0)
             newCurrentStep = 4;
