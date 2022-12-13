@@ -112,6 +112,16 @@ export function OrderSection(props) {
     // runs necessary Storefront API calls only when needed
     useEffect(() => {
         setupCardsAndCollections();
+        history.pushState(null, null, location.pathname + location.search);
+        window.onpopstate = function() {
+            const hash = window.location.hash;
+            if (hash.includes("step")) {
+                const hashStep = hash.split("-")[1];
+                updateCurrentStep(parseInt(hashStep));
+            } else {
+                updateCurrentStep(1);
+            }       
+        }
     }, []);
 
     useEffect(() => {
@@ -619,7 +629,7 @@ export function OrderSection(props) {
 
         if (!userAddedItem)
             setUserAddedItem(true);
-        setCurrentStep(2);
+        updateCurrentStep(2);
     }
 
     // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
@@ -1065,18 +1075,7 @@ export function OrderSection(props) {
         if (newStep >= FIRST_PAYMENT_STEP && !returnToPayment)
             setReturnToPayment(true);
 
-        setCurrentStep(newStep);
-        setIsAddingExtraItems(isAddingExtra);
-        setCardStatus("");
-
-        setTimeout(() => {
-            if (newStep < 6 && newStep > 1) {
-                console.log("jumping to step #", newStep);
-                const stepElem = document.querySelector(`#anchor-step--${newStep}`);
-                stepElem.scrollIntoView({behavior: "smooth", block: "start"});
-            }
-        }, 100);
-        
+        window.location.hash = '#step-'+step;
     }
 
     const removeGiftCard = () => {
