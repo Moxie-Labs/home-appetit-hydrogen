@@ -43,8 +43,8 @@ export default class OrderProperties extends React.Component {
     
     handleContinue(event) {
         this.props.handleContinue();
-        const step = document.querySelector(".step-active");
-        step.scrollIntoView({behavior: "smooth", block: "start"});
+        // const step = document.querySelector(".step-active");
+        // step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     handleCancel(event) {

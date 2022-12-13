@@ -238,7 +238,7 @@ export default function DishCard(props) {
 
                     <div className="card__quantity-field-wrapper">
                         <section className="card__quantity-section">
-                            <img className="card__quantity-img minus" src={quantityMinus} onClick={() => updateQuantity(quantity-1)}/>
+                            <img className={`card__quantity-img minus${quantity < 1 ? ' disabled' : ''}`} src={quantityMinus} onClick={() => updateQuantity(quantity-1)}/>
                             <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
                             <img className="card__quantity-img plus" src={quantityPlus} onClick={() => updateQuantity(quantity+1)}/>
                         </section>
@@ -247,8 +247,8 @@ export default function DishCard(props) {
                             <button className="btn btn-primary-small btn-counter-confirm" onClick={() => handleConfirm()}>Confirm</button>
                             <button className={`ha-a btn-counter-customize ${ substitutions.length + modifications.length > 0 ? 'enabled' : 'disabled' }`} onClick={() => handleCustomize()}>Customize</button>
                         </section>
-                        <section className="card__actions">
-                            <button className="ha-a btn-counter-customize enabled" onClick={() => handleCancel()}>Cancel</button>
+                        <section className="card__actions cancel">
+                            <button className="ha-a btn-counter-customize cancel enabled" onClick={() => handleCancel()}>Cancel</button>
                         </section>     
                     </div>
                 </div>

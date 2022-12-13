@@ -1075,7 +1075,21 @@ export function OrderSection(props) {
         if (newStep >= FIRST_PAYMENT_STEP && !returnToPayment)
             setReturnToPayment(true);
 
-        window.location.hash = '#step-'+step;
+        setCurrentStep(newStep);
+        setIsAddingExtraItems(isAddingExtra);
+        setCardStatus("");
+
+        setTimeout(() => {
+            if (newStep < 6 && newStep > 1) {
+                console.log("jumping to step #", newStep);
+                const stepElem = document.querySelector(`#anchor-step--${newStep}`);
+                stepElem.scrollIntoView({behavior: "smooth", block: "start"});
+            }
+        }, 100);
+
+        window.location.hash = '#step-'+newStep;
+
+        
     }
 
     const removeGiftCard = () => {
