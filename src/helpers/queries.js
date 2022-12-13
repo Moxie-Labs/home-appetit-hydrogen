@@ -304,6 +304,7 @@ export const GET_TRADITIONAL_PLAN_ITEM = gql`
         edges {
           node {
             id
+            sku
             price {
               amount
             }
@@ -321,6 +322,7 @@ export const GET_FLEXIBLE_PLAN_ITEM = gql`
         edges {
           node {
             id
+            sku
             price {
               amount
             }

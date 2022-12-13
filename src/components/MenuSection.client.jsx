@@ -250,11 +250,11 @@ export default class MenuSection extends React.Component {
 
     const dishSection = <section className={`step-section ha-color-bg-body`}>   
         <LayoutSection>
-            
         
             { !isSectionFilled && 
                 <div>
                     <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
+                    
                     {activeScheme === TRADITIONAL_PLAN_NAME && currentStep === 2 &&
                        <p className="subheading order_prop__subheading p-subheading-width">Choose four entrées—in any combination. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
                        </p>
@@ -313,6 +313,7 @@ export default class MenuSection extends React.Component {
     
         return (
             <Frame>
+                <a id={`anchor-step--${step}`}/>
 
                 <Modal
                     isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step && !returnToPayment}
