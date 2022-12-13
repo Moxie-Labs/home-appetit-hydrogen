@@ -17,7 +17,7 @@ export const FLEXIBLE_PLAN_NAME = 'flexible';
 
 export const TOAST_CLEAR_TIME = 5000;
 export const FREE_QUANTITY_LIMIT = 4;
-export const FIRST_STEP = 2;
+export const FIRST_STEP = 1;
 export const ADD_ON_STEP = 4;
 export const READY_FOR_PAYMENT_STEP = 5;
 export const FIRST_PAYMENT_STEP = 6;
