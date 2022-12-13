@@ -5,13 +5,15 @@ import fourPeople from "../assets/four-people.svg";
 import smallPlate from "../assets/small-plate.svg";
 import largePlate from "../assets/large-plate.svg";
 import { TRADITIONAL_PLAN_NAME } from "../lib/const";
+import { useEffect } from "react";
 
 export default function OrderIllustration(props){
 
     const {activeScheme, servingCount, planPrice} = props;
 
     const setPeople = (servingCount) => {
-        switch(servingCount) {
+        const servingCountStr = String(servingCount);
+        switch(servingCountStr) {
             case '2':
             return 'Two People';
             case '3':
