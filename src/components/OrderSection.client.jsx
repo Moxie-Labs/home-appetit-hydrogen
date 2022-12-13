@@ -109,6 +109,7 @@ export function OrderSection(props) {
     // runs necessary Storefront API calls only when needed
     useEffect(() => {
         setupCardsAndCollections();
+        history.pushState(null, null, location.pathname + location.search);
         window.onpopstate = function() {
             const hash = window.location.hash;
             if (hash.includes("step")) {
