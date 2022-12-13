@@ -168,6 +168,7 @@ export default function DishCard(props) {
 
     const handleChangePlan = () => {
         setIsModModalShowing(false);
+        setIsCardActive(false);
         props.handleChangePlan();
     }
 
