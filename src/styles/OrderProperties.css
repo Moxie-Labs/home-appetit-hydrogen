@@ -292,7 +292,7 @@ select {
 
 .scheme-inactive-padding{
     margin: 40px 0 0 !important;
-    opacity: 0.5;
+    opacity: 1;
 }
 
 div .order-wrapper {

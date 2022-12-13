@@ -15,7 +15,7 @@ import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
 import iconLoading from "../assets/loading-loading-forever.gif";
-import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD } from "../lib/const";
+import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD, READY_FOR_PAYMENT_STEP } from "../lib/const";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
@@ -52,6 +52,7 @@ export function OrderSection(props) {
     const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
     const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
     const [returnToPayment, setReturnToPayment] = useState(false);
+    const [readyForPayment, setReadyForPayment] = useState(false);
     const [planAlreadySelected, setIsPlanAlreadySelected] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
@@ -1153,6 +1154,31 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
+    // Classes for individual Steps
+    let menuSectionEntreeClasses = "dish-card-wrapper";
+    if (currentStep === MAIN_ITEMS_STEP)
+        menuSectionEntreeClasses += " step-active"
+    else if (currentStep < MAIN_ITEMS_STEP)
+        menuSectionEntreeClasses += " dishcard--wrapper-inactive";
+    else 
+        menuSectionEntreeClasses += " dishcard--wrapper-complete";
+
+    let menuSectionSideClasses = "dish-card-wrapper";
+    if (currentStep === SIDE_ITEMS_STEP)
+        menuSectionSideClasses += " step-active"
+    else if (currentStep < SIDE_ITEMS_STEP)
+        menuSectionSideClasses += " dishcard--wrapper-inactive";
+    else 
+        menuSectionSideClasses += " dishcard--wrapper-complete";
+
+    let menuSectionAddonClasses = "dish-card-wrapper";
+        if (currentStep === ADD_ON_STEP)
+            menuSectionAddonClasses += " step-active"
+        else if (currentStep < ADD_ON_STEP)
+            menuSectionAddonClasses += " dishcard--wrapper-inactive";
+        else 
+            menuSectionAddonClasses += " dishcard--wrapper-complete"
+
     if (latestMenu === null)
         {
             const navigate = useNavigate();
@@ -1218,7 +1244,7 @@ export function OrderSection(props) {
 
                             {/* Menu Sections */}
                     
-                            <div className={`dish-card-wrapper ${currentStep === 2 ? "step-active" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionEntreeClasses}>
                                 <MenuSection 
                                     step={2} 
                                     currentStep={currentStep}
@@ -1237,7 +1263,10 @@ export function OrderSection(props) {
                                         (choice) => addItemToCart(choice, selectedMainItems, 'main')}
                                     handleConfirm={() => setupNextSection(3)}
                                     handleEdit={() => updateCurrentStep(2)}
-                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 2) { updateCurrentStep(2); }
+                                        setIsAddingExtraItems(isAddingExtraItems);
+                                    }}
                                     selected={selectedMainItems}
                                     selectedExtra={selectedMainItemsExtra}
                                     filters={selectedMainFilters}    
@@ -1252,7 +1281,7 @@ export function OrderSection(props) {
                                 />
                             </div>
                             
-                            <div className={`dish-card-wrapper ${currentStep === 3 ? "step-active" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionSideClasses}>
                                 <MenuSection 
                                     step={3} 
                                     currentStep={currentStep}
@@ -1271,7 +1300,10 @@ export function OrderSection(props) {
                                         (choice) => addItemToCart(choice, selectedSmallItems, 'sides')}
                                     handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => updateCurrentStep(3)}
-                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 3) { updateCurrentStep(3); }
+                                        setIsAddingExtraItems(isAddingExtraItems);
+                                    }}
                                     selected={selectedSmallItems}
                                     selectedExtra={selectedSmallItemsExtra}
                                     filters={selectedSmallFilters}    
@@ -1286,7 +1318,7 @@ export function OrderSection(props) {
                                 />
                             </div>
 
-                            <div className={`dish-card-wrapper ${currentStep === 4 ? "step-active-final" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionAddonClasses}>
                                 <MenuSection 
                                     step={4} 
                                     currentStep={currentStep}
@@ -1302,6 +1334,10 @@ export function OrderSection(props) {
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
                                     handleConfirm={() => setupNextSection(5)}
                                     handleEdit={() => updateCurrentStep(4)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 4) { updateCurrentStep(4); }
+                                        setIsAddingExtraItems(false);
+                                    }}
                                     selected={selectedAddonItems}
                                     selectedExtra={[]}
                                     filters={selectedAddonFilters}    
@@ -1316,8 +1352,9 @@ export function OrderSection(props) {
                                     returnToPayment={returnToPayment}
                                 />
                             </div>
+
                             <section className={`menu-section__actions actions--submit-order`}>
-                                <button className='btn btn-primary-small btn-app btn-disabled'>Place Order</button>
+                                <button className={`btn btn-primary-small btn-app${ currentStep === READY_FOR_PAYMENT_STEP ? '' : ' btn-disabled'}`} onClick={() => setupNextSection(6)}>Place Order</button>
                             </section>
 
                         </LayoutSection>
@@ -1438,9 +1475,9 @@ export function OrderSection(props) {
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
-                                handleContinue={() => {setCurrentStep(6); setIsEditing(isGuest)}}
-                                handleCancel={() => {setCurrentStep(5)}}
-                                step={5}
+                                handleContinue={() => {setCurrentStep(7); setIsEditing(isGuest)}}
+                                handleCancel={() => {setCurrentStep(6)}}
+                                step={6}
                                 currentStep={currentStep}
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
@@ -1486,8 +1523,8 @@ export function OrderSection(props) {
                                     requestCallbackRuntime(confirmDeliveryInfo);
                                     requestCallbackRuntime(attemptSubmitOrder, 2000);
                                 }}
-                                handleCancel={() => {setCurrentStep(5)}}
-                                step={6}
+                                handleCancel={() => {setCurrentStep(6)}}
+                                step={7}
                                 currentStep={currentStep}
                                 isGuest={isGuest}
                                 isEditing={isEditing}
