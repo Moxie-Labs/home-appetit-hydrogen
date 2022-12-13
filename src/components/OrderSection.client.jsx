@@ -116,8 +116,10 @@ export function OrderSection(props) {
         window.onpopstate = function() {
             const hash = window.location.hash;
             if (hash.includes("step")) {
-                const hashStep = hash.split("-")[1];
-                updateCurrentStep(parseInt(hashStep));
+                let hashStep = parseInt(hash.split("-")[1]);
+                if (hashStep === 5)
+                    hashStep = 4;
+                updateCurrentStep(hashStep);
             } else {
                 updateCurrentStep(1);
             }       
@@ -1075,6 +1077,9 @@ export function OrderSection(props) {
         if (newStep >= FIRST_PAYMENT_STEP && !returnToPayment)
             setReturnToPayment(true);
 
+        if (fromBrowserEvent && newStep === 5)
+            newStep = 4;
+
         setCurrentStep(newStep);
         setIsAddingExtraItems(isAddingExtra);
         
@@ -1087,7 +1092,8 @@ export function OrderSection(props) {
             }
         }, 100);
         
-        window.location.hash = '#step-'+step;
+        if (newStep !== 5)
+            window.location.hash = '#step-'+newStep;
     }
 
     const decrementCurrentStep = () => {
