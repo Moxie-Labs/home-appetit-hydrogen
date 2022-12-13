@@ -4,6 +4,19 @@ div.footer {
     position: relative;
     bottom: -16rem;
     padding-bottom: 2rem;
+    padding-left: 5em;
+    padding-right: 5em;
+}
+
+@media screen and (min-width: 800px){
+    .footer-item:first-child {
+        margin-right: 10rem;
+        width: 350px;
+    }
+
+    div #_form_15_{
+        padding: 0;
+    }
 }
 
 .footer-item-wrapper{
@@ -18,7 +31,7 @@ div.footer {
 }
 
 .footer .social-wrapper {
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: 10px;
     display: flex;
 }
