@@ -93,6 +93,9 @@ export const GET_MENUS_QUERY = gql`
                         substitutions: metafield(namespace: "custom", key: "substitutions") {
                             value
                         }
+                        contains: metafield(namespace: "custom", key: "contains") {
+                          value
+                        }
                         }
                     }
                     }

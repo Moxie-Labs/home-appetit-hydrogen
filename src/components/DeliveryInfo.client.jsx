@@ -288,7 +288,7 @@ export default function DeliveryInfo(props) {
             { currentStep === step && !isEditing &&
                 <div>
                     <section className="checkout--deliveryinfo-top">
-                        <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> <img src={iconEdit} width={65} className="iconEdit" /></span></h3>
+                        <h3 className="subheading ha-h3">Contact & Delivery Information { currentStep !== step && <span onClick={() => setIsEditing(true)}> <img src={iconEdit} width={65} className="iconEdit" /></span>}</h3>
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{displayPhoneNumber(phoneNumber)}</p>
@@ -309,7 +309,7 @@ export default function DeliveryInfo(props) {
                             </div>
                             }
                         </div>
-                        {isGuest ? <></> : <button className="btn btn-default" onClick={onClickAddNew}>Add New Address</button>}
+                        {isGuest ? <></> : <button className="btn btn-default" onClick={onClickAddNew}><img className='img-add-address' src={"/src/assets/icon-plus-alt.png"}/>Add New Address</button>}
                     </section>
 
                     <label className="delivery-window_label">Delivery Instructions</label>

@@ -180,7 +180,7 @@ export default function DishCard(props) {
     }
 
         const {choice, freeQuantityLimit, handleChange, servingCount, maxQuantity, showingExtra, forceDisable, forceHidePrice, activeScheme, initialQuantity, cardStatus} = props;
-        const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions} = choice;
+        const {title, description, price, attributes, imageURL, productOptions, modifications, substitutions, contains} = choice;
 
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -189,12 +189,12 @@ export default function DishCard(props) {
         })
 
         const modifiersSection = modifications === null ? null : modifications.map((mod, index) => {
-            return <Checkbox key={index} label={`${prepModSubTitles(mod.title)} ${mod.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(mod.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(mod.id)} onChange={() => handleOptionChoice(mod, index)}/>;
+            return <Checkbox key={index} label={`${prepModSubTitles(mod.title)}`} price={`${parseFloat(mod.priceRange.maxVariantPrice.amount) > 0.0 ? formatter.format(mod.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(mod.id)} onChange={() => handleOptionChoice(mod, index)}/>;
         });
 
         const substitutionSection = substitutions === null ? null : substitutions.map((sub, index) => {
             console.log(`sub: ${sub}, sub.maxVariantPrice: ${sub.maxVariantPrice}`)
-            return <Checkbox key={index} label={prepModSubTitles(sub.title)} price={`${sub.priceRange.maxVariantPrice.amount > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(sub.id)} onChange={() => handleOptionChoice(sub, index)}/>;
+            return <Checkbox key={index} label={prepModSubTitles(sub.title)} price={`${parseFloat(sub.priceRange.maxVariantPrice.amount) > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(sub.id)} onChange={() => handleOptionChoice(sub, index)}/>;
         });
 
         let attributesDisplay = '';
@@ -230,8 +230,8 @@ export default function DishCard(props) {
                     <div className="card__quantity-inner-container">
                         <h2 className="card__quantity-title">{title}</h2>
                         {/* start placeholder */}
-                        <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
-                        <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
+                        {contains?.length > 0 && <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>} 
+                        <p className='card__quantity-serving'><strong>Serves:</strong> {servingCount} {servingCount > 1 ? 'people' : 'person'}</p>
                         {/* end placeholder */}
                         {attributes.length > 0 && <p className="card__code"><strong>Details: </strong>{attributesDisplay}</p>}
                     </div>
@@ -244,7 +244,7 @@ export default function DishCard(props) {
                         </section>
 
                         <section className="card__actions">
-                            <button className="btn btn-primary-small btn-counter-confirm" onClick={() => handleConfirm()}>Confirm</button>
+                            <button className="btn btn-primary-small btn-counter-confirm" onClick={() => handleConfirm()}>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Confirm' : 'Add'}</button>
                             <button className={`ha-a btn-counter-customize ${ substitutions.length + modifications.length > 0 ? 'enabled' : 'disabled' }`} onClick={() => handleCustomize()}>Customize</button>
                         </section>
                         <section className="card__actions cancel">
@@ -283,17 +283,17 @@ export default function DishCard(props) {
                                 <div className="card__quantity-inner-container">
                                     <h2 className="card__quantity-title">{title}</h2>
                                     {/* start placeholder */}
-                                    <p className='card__quantity-subtitle'>urna fermentum, sed id dolor ac donec egestas ut sted es</p>
+                                    <p className='card__quantity-subtitle'>{description}</p>
                                     <br></br>
-                                    <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>
-                                    <p className='card__quantity-serving'><strong>Serves:</strong> 3 people </p>
+                                    { contains?.length > 0 && <p className='card__quantity-contains'><strong>Contains:</strong> {contains}</p> }
+                                    <p className='card__quantity-serving'><strong>Serves:</strong> {servingCount} {servingCount > 1 ? 'people' : 'person'}</p>
                                     {/* end placeholder */}
                                     {attributes.length > 0 && <p className="card__code"><strong>Details: </strong>{attributesDisplay}</p>}
                                 </div>
 
                                 <div className="card__quantity-field-wrapper">
                                     <section className="card__quantity-section">
-                                        <img className="card__quantity-img minus" src={quantityMinus} onClick={() => updateQuantity(quantity-1)}/>
+                                        <img className={`card__quantity-img minus${quantity < 1 ? ' disabled' : ''}`} src={quantityMinus} onClick={() => updateQuantity(quantity-1)}/>
                                         <span className={`card__quantity-count${quantity < 1 ? ' zero' : ''}`}>{quantity}</span>
                                         <img className="card__quantity-img plus" src={quantityPlus} onClick={() => updateQuantity(quantity+1)}/>
                                     </section>
@@ -311,23 +311,23 @@ export default function DishCard(props) {
                                     <p>*Customizations will not be applied to portions already in the cart. For customizations across all portions, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Classic</span> option.</p>
                                 }
 
-                            <div className="modal--flexible-container">
+                            {substitutions?.length > 0 && <div className="modal--flexible-container">
                                 <h4 className='modal--flexible-heading'>Substitutions</h4>
                                 <div className="modal--flexible-checkbox-wrapper">
                                     {substitutionSection}
                                 </div>
-                            </div>
+                            </div>}
 
-                            <div className="modal--flexible-container">
-                            <h4 className='modal--flexible-heading'>Customizations</h4>
-                            <div className="modal--flexible-checkbox-wrapper">
-                                {modifiersSection}
-                            </div>
-                            </div>
+                            {modifications?.length > 0 && <div className="modal--flexible-container">
+                                <h4 className='modal--flexible-heading'>Customizations</h4>
+                                <div className="modal--flexible-checkbox-wrapper">
+                                    {modifiersSection}
+                                </div>
+                            </div>}
 
                             <section className="card__actions">
-                                <button className="btn btn-primary-small btn-counter-confirm" disabled={disableConfirm()} onClick={() => handleConfirm()}>Confirm</button>
-                                <p className='modal--flexible-price'><strong>+{formatter.format(calcuculateModTotalCost())}</strong> Customizations</p>
+                                <button className="btn btn-primary-small btn-counter-confirm" disabled={disableConfirm()} onClick={() => handleConfirm()}>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Confirm' : 'Add'}</button>
+                                <p className='modal--flexible-price'>+{formatter.format(calcuculateModTotalCost())} Customizations</p>
                             </section>    
                         </div>
                         </div>

@@ -173,6 +173,10 @@
     row-gap: 2.875rem;
 }
 
+    .card__quantity-wrapper.wrapper-modal {
+        gap: 0;
+    }
+
 .card__info-top-info{
     position: absolute;
     top: 30px;
@@ -243,6 +247,7 @@ p.card__code {
 
     .btn-counter-customize.cancel {
         font-size: 0.9em !important;
+        padding-left: 0 !important;
     }
 
 .btn-counter-confirm{
@@ -263,7 +268,7 @@ img.btn-close-dish-card-modal, img.btn-close-dish-card-active {
     position: absolute;
     right: 0;
     top: 0;
-    margin: 20px;
+    margin: 25px;
     cursor: pointer;
 }
 
@@ -466,7 +471,7 @@ h2.card__quantity-title {
 }
 
 .modal--flexible-inner .card__actions .btn{
-    font-size: 14px;
+    font-size: 1.2em;
     flex: 1;
 }
 
@@ -543,7 +548,7 @@ h2.card__quantity-title {
 }
 
 .modal--flexible-confirmaton .modal--flexible-inner {
-    padding: 1.875rem;
+    padding: 1.5rem 1.875rem;
     background: #F8EFE0;
     text-align: left;
     border-bottom-left-radius: 12px;
