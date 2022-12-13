@@ -1077,9 +1077,6 @@ export function OrderSection(props) {
         if (newStep >= FIRST_PAYMENT_STEP && !returnToPayment)
             setReturnToPayment(true);
 
-        if (fromBrowserEvent && newStep === 5)
-            newStep = 4;
-
         setCurrentStep(newStep);
         setIsAddingExtraItems(isAddingExtra);
         
