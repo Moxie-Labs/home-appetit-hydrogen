@@ -15,7 +15,7 @@ import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
 import iconLoading from "../assets/loading-loading-forever.gif";
-import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD } from "../lib/const";
+import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD, READY_FOR_PAYMENT_STEP } from "../lib/const";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
@@ -53,6 +53,7 @@ export function OrderSection(props) {
     const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
     const [returnToPayment, setReturnToPayment] = useState(false);
     const [planAlreadySelected, setIsPlanAlreadySelected] = useState(false);
+    const [readyForPayment, setReadyForPayment] = useState(false);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -1316,8 +1317,9 @@ export function OrderSection(props) {
                                     returnToPayment={returnToPayment}
                                 />
                             </div>
+
                             <section className={`menu-section__actions actions--submit-order`}>
-                                <button className='btn btn-primary-small btn-app btn-disabled'>Place Order</button>
+                                <button className={`btn btn-primary-small btn-app${ currentStep === READY_FOR_PAYMENT_STEP ? '' : ' btn-disabled'}`} onClick={() => setupNextSection(6)}>Place Order</button>
                             </section>
 
                         </LayoutSection>
@@ -1438,9 +1440,9 @@ export function OrderSection(props) {
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}
-                                handleContinue={() => {setCurrentStep(6); setIsEditing(isGuest)}}
-                                handleCancel={() => {setCurrentStep(5)}}
-                                step={5}
+                                handleContinue={() => {setCurrentStep(7); setIsEditing(isGuest)}}
+                                handleCancel={() => {setCurrentStep(6)}}
+                                step={6}
                                 currentStep={currentStep}
                                 isEditing={isEditing}
                                 setIsEditing={setIsEditing}
@@ -1486,8 +1488,8 @@ export function OrderSection(props) {
                                     requestCallbackRuntime(confirmDeliveryInfo);
                                     requestCallbackRuntime(attemptSubmitOrder, 2000);
                                 }}
-                                handleCancel={() => {setCurrentStep(5)}}
-                                step={6}
+                                handleCancel={() => {setCurrentStep(6)}}
+                                step={7}
                                 currentStep={currentStep}
                                 isGuest={isGuest}
                                 isEditing={isEditing}

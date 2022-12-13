@@ -200,6 +200,7 @@ export default class MenuSection extends React.Component {
             optionCounts[filter.label] = this.getChoicesByFilters([filter.value], filteredChoices).length;
         });
 
+        const quantityLimitText = freeQuantityLimit < 99 ? `/${freeQuantityLimit}` : ``;
 
         // Render Sections
         const overviewSection = <section>
@@ -208,7 +209,9 @@ export default class MenuSection extends React.Component {
         <div className="suborder--summary-container">
 
             <div className={`suborder--summary-details summary-container ${isAddingExtraItems ? 'inactive' : 'active'}`}>
-                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; { isAddingExtraItems && this.props.cardStatus !== " disabled" && this.props.currentStep === this.props.step && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                
+                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}{quantityLimitText} SELECTED &nbsp; { isAddingExtraItems && this.props.cardStatus !== " disabled" && this.props.currentStep === this.props.step && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                
                 { mainSelected.map((item, index) => {
                     return ( 
                         <ul key={index} className="step--order-summary">
