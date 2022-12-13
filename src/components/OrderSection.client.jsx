@@ -41,6 +41,7 @@ export function OrderSection(props) {
     }
     
 
+    const [orderSectionKey, setOrderSectionKey] = useState(`${new Date().getTime()}`);
     const [servingCount, setServingCount] = useState(0)
     const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
@@ -774,6 +775,7 @@ export function OrderSection(props) {
         setCurrentStep(FIRST_STEP);
         setServingCount(newServingCount);
         setChangePlanModalShowing(false);
+        setCardStatus("");
     }
     
     const getSelectedPlan = () => {
@@ -1065,7 +1067,7 @@ export function OrderSection(props) {
 
         setCurrentStep(newStep);
         setIsAddingExtraItems(isAddingExtra);
-        
+        setCardStatus("");
 
         setTimeout(() => {
             if (newStep < 6 && newStep > 1) {
@@ -1201,7 +1203,7 @@ export function OrderSection(props) {
             isOrdering = {true}/>
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
-                <div className="order-wrapper">
+                <div key={orderSectionKey} className="order-wrapper">
                     <Layout>
                         <LayoutSection>
 
@@ -1233,7 +1235,7 @@ export function OrderSection(props) {
                                     handleSchemeChange={(value) => queryChangeActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
-                                    handleCancel={() => setCurrentStep(1)}
+                                    handleCancel={() => updateCurrentStep(1)}
                                     planPrice={getPlanPrice()}
                                     step={1}
                                     currentStep={currentStep}
