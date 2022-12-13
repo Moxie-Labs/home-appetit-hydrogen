@@ -17,7 +17,8 @@ export default class MenuSection extends React.Component {
         super(props);
         this.state = {
             showingExtra: false,
-            modalDismissed: false
+            modalDismissed: false,
+            dismissedUnderScheme: null   // stamped when Modal dismissed under current Scheme; used when activeScheme is switch after Modal is dismissed
         }
     }
 
@@ -117,14 +118,14 @@ export default class MenuSection extends React.Component {
     }
 
     showSectionExtras() {
-        this.setState({showingExtra: true, modalDismissed: true});
+        this.setState({showingExtra: true, dismissedUnderScheme: this.props.activeScheme});
         this.props.handleIsAddingExtraItems(true);
     }
 
     skipSectionExtras() {
         this.props.handleConfirm();
         this.props.handleIsAddingExtraItems(false);
-        this.setState({modalDismissed: true})
+        this.dismissModal();
     }
 
     isInSelection(selection, choice) {
@@ -140,10 +141,19 @@ export default class MenuSection extends React.Component {
         return retval;
     }
 
+    dismissModal() {
+        const {activeScheme} = this.props;
+
+        this.setState({
+            showingModal: false,
+            dismissedUnderScheme: activeScheme
+        });
+    }
+
     render() { 
 
         const {step, currentStep, title, subheading, freeQuantityLimit, selected, selectedExtra, collection, filters, filterOptions, handleFiltersUpdate, handleConfirm, handleEdit, servingCount, choices, handleItemSelected, getQuantityTotal, noQuantityLimit, isSectionFilled, isAddingExtraItems, handleIsAddingExtraItems, handleChangePlan, activeScheme, isRestoringCart, cardStatus, setCardStatus, returnToPayment } = this.props;
-        const {modalDismissed} = this.state;
+        const {dismissedUnderScheme} = this.state;
         const filteredChoices = this.filterChoices(selected);
 
         const mainSelected = selected;
@@ -200,6 +210,7 @@ export default class MenuSection extends React.Component {
             optionCounts[filter.label] = this.getChoicesByFilters([filter.value], filteredChoices).length;
         });
 
+        const quantityLimitText = freeQuantityLimit < 99 ? `/${freeQuantityLimit}` : ``;
 
         // Render Sections
         const overviewSection = <section>
@@ -208,7 +219,9 @@ export default class MenuSection extends React.Component {
         <div className="suborder--summary-container">
 
             <div className={`suborder--summary-details summary-container ${isAddingExtraItems ? 'inactive' : 'active'}`}>
-                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}/{freeQuantityLimit} SELECTED &nbsp; { isAddingExtraItems && this.props.cardStatus !== " disabled" && this.props.currentStep === this.props.step && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                
+                <h4 className="ha-h4">{Math.min(getQuantityTotal(selected), freeQuantityLimit)}{quantityLimitText} SELECTED &nbsp; { ((currentStep === step && isAddingExtraItems) || currentStep > step)  && this.props.cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                
                 { mainSelected.map((item, index) => {
                     return ( 
                         <ul key={index} className="step--order-summary">
@@ -225,7 +238,7 @@ export default class MenuSection extends React.Component {
             { (isSectionFilled || selectedExtra.length > 0) &&
                 <div className={`suborder--summary-additional summary-container ${isAddingExtraItems ? 'active' : 'inactive'}`}>
                     <div className="summary--additional-wrapper">
-                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { !isAddingExtraItems && this.props.cardStatus !== " disabled" && this.props.currentStep === this.props.step && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { ((currentStep === step && !isAddingExtraItems) || currentStep > step) && this.props.cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
                         {extraSelected.map((item, index) => {
                             return ( 
                                 <ul key={index} className="step--order-summary">
@@ -247,11 +260,11 @@ export default class MenuSection extends React.Component {
 
     const dishSection = <section className={`step-section ha-color-bg-body`}>   
         <LayoutSection>
-            
         
             { !isSectionFilled && 
                 <div>
                     <h2 sectioned className="heading order_prop__heading ha-h3">Step {step}: Select your {title}</h2>
+                    
                     {activeScheme === TRADITIONAL_PLAN_NAME && currentStep === 2 &&
                        <p className="subheading order_prop__subheading p-subheading-width">Choose four entrées—in any combination. Have allergen concerns? Dish customizations are available. Have additional questions? Click here to contact us now.
                        </p>
@@ -279,8 +292,8 @@ export default class MenuSection extends React.Component {
                        </p>
                     }
                     
-                    { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
-                    { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit.src} className="icon-edit" width="65" /></span>}</h4>}
+                    { !noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)}/{freeQuantityLimit} SELECTED &nbsp; { currentStep !== step && <span><img src={iconEdit} className="icon-edit" width="65" /></span>}</h4>}
+                    { noQuantityLimit && <h4 className="ha-h4 quantity-indicator">{getQuantityTotal(selected)} SELECTED &nbsp; { currentStep !== step && <span><img onClick={() => handleIsAddingExtraItems(false)} src={iconEdit} className="icon-edit" width="65" /></span>}</h4>}
                 </div>
             }
             <br></br>
@@ -310,10 +323,11 @@ export default class MenuSection extends React.Component {
     
         return (
             <Frame>
+                <a id={`anchor-step--${step}`}/>
 
                 <Modal
-                    isOpen={isSectionFilled && !modalDismissed && !isRestoringCart && currentStep === step && !returnToPayment}
-                    onRequestClose={() => this.setState({showingModal: false})}
+                    isOpen={isSectionFilled && dismissedUnderScheme !== activeScheme && !isRestoringCart && currentStep === step && !returnToPayment}
+                    onRequestClose={() => dismissModal()}
                     className="modal-entree-complete"
                 >   
                     <h1 className='uppercase text-center'>{title} Selections Complete!</h1>
