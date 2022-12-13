@@ -112,6 +112,16 @@ export function OrderSection(props) {
     // runs necessary Storefront API calls only when needed
     useEffect(() => {
         setupCardsAndCollections();
+        history.pushState(null, null, location.pathname + location.search);
+        window.onpopstate = function() {
+            const hash = window.location.hash;
+            if (hash.includes("step")) {
+                const hashStep = hash.split("-")[1];
+                updateCurrentStep(parseInt(hashStep));
+            } else {
+                updateCurrentStep(1);
+            }       
+        }
     }, []);
 
     useEffect(() => {
@@ -619,7 +629,7 @@ export function OrderSection(props) {
 
         if (!userAddedItem)
             setUserAddedItem(true);
-        setCurrentStep(2);
+        updateCurrentStep(2);
     }
 
     // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
@@ -1077,6 +1087,13 @@ export function OrderSection(props) {
             }
         }, 100);
         
+        window.location.hash = '#step-'+step;
+    }
+
+    const decrementCurrentStep = () => {
+        const newCurrentStep = Math.max(currentStep-1, 1);
+        console.log("currentStep-1: ", currentStep-1);
+        updateCurrentStep(newCurrentStep);
     }
 
     const removeGiftCard = () => {
