@@ -20,7 +20,7 @@ class SchemeSelector extends React.Component {
         return (
             <section id="SchemeSelector" className={`${currentStep !== step ? 'scheme-inactive-padding' : ''}`}>
                 {currentStep !== step && 
-                    <span className={`schemeType ${currentStep !== step ? 'ss-no-underline' : ''}`}>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic' : 'Flexible'} Plan</span>
+                    <span className={`schemeType ${currentStep !== step ? 'ss-no-underline' : ''}`}>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic' : 'Flex'} Order</span>
                 }
                 {currentStep === step &&
                     <div>

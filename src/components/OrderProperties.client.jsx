@@ -66,7 +66,9 @@ export default class OrderProperties extends React.Component {
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
                 <div className="step-column">
                 <LayoutSection>
-                    <h2 sectioned className="heading order_prop__heading ha-h3">Step 1: Order Type</h2>
+                    <h2 sectioned className="heading order_prop__heading ha-h3">Step 1: Order Type 
+                        { currentStep === step && <span className='order-date-label'>For {this.getDisplayDate(deliveryWindowOne)} Delivery</span> }
+                    </h2>
                     <SchemeSelector
                         activeScheme={activeScheme}
                         handleSchemeChange={(activeScheme) => this.handleSchemeChange(activeScheme)}

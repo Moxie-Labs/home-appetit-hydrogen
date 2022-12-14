@@ -273,6 +273,7 @@
 
 
 .clickable {
+    color: #385F83;
     text-decoration: underline;
     cursor: pointer;
 }

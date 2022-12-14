@@ -785,6 +785,8 @@ export function OrderSection(props) {
         setCurrentStep(FIRST_STEP);
         setServingCount(newServingCount);
         setChangePlanModalShowing(false);
+        setIsAddingExtraItems(false);
+        returnToPayment(false);
         setCardStatus("");
     }
     
@@ -1083,7 +1085,7 @@ export function OrderSection(props) {
         setCardStatus("");
 
         setTimeout(() => {
-            if (newStep < 6 && newStep > 1) {
+            if (newStep < 7 && newStep > 1) {
                 console.log("jumping to step #", newStep);
                 const stepElem = document.querySelector(`#anchor-step--${newStep}`);
                 stepElem.scrollIntoView({behavior: "smooth", block: "start"});
@@ -1427,8 +1429,13 @@ export function OrderSection(props) {
                                 {/* <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4> */}
                                 <p className='ha-body'>Our Flex ordering option allows you to choose and modify individual dishes. Note: This ordering type does increase the base cost. Previous selections will be removed from your cart. </p>
                                 <section className="card__actions">
-                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>{activeScheme === TRADITIONAL_PLAN_NAME ? "Switch to flexible order" : "Switch to classic order"}</button>
-                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Cancel</button>
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>{activeScheme === TRADITIONAL_PLAN_NAME ? "Switch to flex order" : "Switch to classic order"}</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => 
+                                        {
+                                            setCardStatus("");
+                                            setChangePlanModalShowing(false);
+                                        }
+                                    }>Cancel</button>
                                 </section>   
                             </div>
                         </Modal>

@@ -2,6 +2,7 @@
 import React, {useCallback, useState} from 'react';
 import map from "../assets/map.png";
 import iconEdit from "../assets/icon-edit.png";
+import plusIcon from "../assets/icon-plus-alt.png";
 import { Checkbox } from './Checkbox.client';
 import { useRenderServerComponents } from '~/lib/utils';
 
@@ -309,7 +310,7 @@ export default function DeliveryInfo(props) {
                             </div>
                             }
                         </div>
-                        {isGuest ? <></> : <button className="btn btn-default" onClick={onClickAddNew}><img className='img-add-address' src={"/src/assets/icon-plus-alt.png"}/>Add New Address</button>}
+                        {isGuest ? <></> : <button className="btn btn-default" onClick={onClickAddNew}><img className='img-add-address' src={plusIcon}/>Add New Address</button>}
                     </section>
 
                     <label className="delivery-window_label">Delivery Instructions</label>

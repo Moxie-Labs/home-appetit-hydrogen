@@ -210,7 +210,9 @@ export default function DishCard(props) {
 
         const disableConfirm = () => {
             const currentState = getCurrentState();
-            if (JSON.stringify(savedState) === JSON.stringify(currentState))
+            if (activeScheme === FLEXIBLE_PLAN_NAME && quantity < 1)
+                return true;
+            else if (JSON.stringify(savedState) === JSON.stringify(currentState))
                 return true;
             else if (currentState.quantity === 0 && savedState.quantity === 0)
                 return true;
@@ -244,7 +246,7 @@ export default function DishCard(props) {
                         </section>
 
                         <section className="card__actions">
-                            <button className="btn btn-primary-small btn-counter-confirm" onClick={() => handleConfirm()}>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Confirm' : 'Add'}</button>
+                            <button className="btn btn-primary-small btn-counter-confirm" disabled={disableConfirm()} onClick={() => handleConfirm()}>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Confirm' : 'Add'}</button>
                             <button className={`ha-a btn-counter-customize ${ substitutions.length + modifications.length > 0 ? 'enabled' : 'disabled' }`} onClick={() => handleCustomize()}>Customize</button>
                         </section>
                         <section className="card__actions cancel">
@@ -303,12 +305,12 @@ export default function DishCard(props) {
 
                             <div className='modal--flexible-inner'>
                                 { activeScheme === TRADITIONAL_PLAN_NAME && 
-                                    <p>*Customizations will be applied to all portions of this dish. For more individualized customizations, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Flex</span> option.</p>
+                                    <p>*Customizations will be applied to all portions of this dish. For more individualized customizations, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Flex option</span>.</p>
                                 }
 
 
                                 { activeScheme === FLEXIBLE_PLAN_NAME && 
-                                    <p>*Customizations will not be applied to portions already in the cart. For customizations across all portions, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Classic</span> option.</p>
+                                    <p>*Customizations will not be applied to portions already in the cart. For customizations across all portions, please check out our <span className='underline clickable' onClick={() => handleChangePlan()}>Classic option</span>.</p>
                                 }
 
                             {substitutions?.length > 0 && <div className="modal--flexible-container">
