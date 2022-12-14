@@ -222,7 +222,7 @@ export default function DishCard(props) {
 
     return (
         <div className={`dish-card${isCardActive ? ' active' : (finalCardStatus)}${confirmed ? ' confirmed' : ''}`}>
-            {!isCardActive && (initialQuantity + quantity > 0) && <p className="card__quantity-badge">{quantity}</p>}
+            {!isCardActive && (initialQuantity + quantity > 0) && <p className={`card__quantity-badge${quantity > 9 ? ' double-digit' : ''}`}>{quantity}</p>}
 
             {isCardActive && !confirmed &&
             <div>

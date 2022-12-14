@@ -140,6 +140,10 @@
     font-weight: bold;
 }
 
+    .card__quantity-badge.double-digit {
+        padding: 9px 8px;
+    }
+
 .card__servings-disclaimer {
     clear: both;
     font-style: italic;
