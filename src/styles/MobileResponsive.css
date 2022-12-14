@@ -69,6 +69,14 @@
         font-size: 0.9em;
     }
 
+    .dish-card-wrapper {
+        padding: 1rem;
+    }
+
+    .dish-card-wrapper:after {
+        top: 30px;
+    }
+
     /* END General */
 
     /* Step One */  
