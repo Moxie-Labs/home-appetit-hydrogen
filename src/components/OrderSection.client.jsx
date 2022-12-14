@@ -940,7 +940,7 @@ export function OrderSection(props) {
             const choice = {
                 title: entree.node.title,
                 attributes: attributes,
-                contains: contains,
+                contains: entree.node.contains,
                 price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
                 description: entree.node.description,
                 imageURL: imgURL,
@@ -979,7 +979,7 @@ export function OrderSection(props) {
             const choice = {
                 title: greens.node.title,
                 attributes: attributes,
-                contains: contains,
+                contains: greens.node.contains,
                 price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
                 description: greens.node.description,
                 imageURL: imgURL,
@@ -1019,7 +1019,7 @@ export function OrderSection(props) {
             const choice = {
                 title: addons.node.title,
                 attributes: attributes,
-                contains: contains,
+                contains: addons.node.contains,
                 price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
                 description: addons.node.description,
                 imageURL: imgURL,
