@@ -273,6 +273,7 @@
 
 
 .clickable {
+    color: #385F83;
     text-decoration: underline;
     cursor: pointer;
 }
@@ -290,4 +291,8 @@
     position: absolute;
     top: 0;
     left: 0;
+}
+
+img {
+    image-rendering: auto !important;
 }

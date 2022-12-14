@@ -74,6 +74,11 @@ section.checkout--deliveryinfo-top .ha-h5 {
     padding-top: 1rem;
 }
 
+.img-add-address {
+    margin-right: 5px;
+    width: 15px;
+}
+
 @media screen and (max-width: 960px) {
     /* .place-order-container {
         position: absolute;

@@ -203,7 +203,7 @@ export default class OrderSummary extends React.Component {
             this.showToastMessage();
         }
 
-        const activeSchemeDisplay = activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic Plan' : 'Flex Plan';
+        const activeSchemeDisplay = activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic Order' : 'Flex Order';
 
         let toastItemName = "";
         if (toastMessages.length > 0) {
