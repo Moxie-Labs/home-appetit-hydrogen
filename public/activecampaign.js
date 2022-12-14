@@ -392,7 +392,7 @@ window.addEventListener('load',() => {
         };
         addEvent(form_to_submit, 'submit', form_submit);
         })();
-    }, 1000);
+    }, 2000);
    
 
     

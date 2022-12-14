@@ -7,6 +7,7 @@ import {getApiErrorMessage} from '~/lib/utils';
 import { callLoginApi } from '../../components/Account/AccountLoginForm.client';
 import { LOGIN_MUTATION } from './login.server';
 import { setDefaultAddress } from './address/[addressId].server';
+import { logToConsole } from '../../helpers/logger';
 
 export default function Register({response}) {
   response.cache(CacheNone());
@@ -32,7 +33,7 @@ export async function api(request, {session, queryShop}) {
   let redirect = false;
 
   // try: logging in using JSON notation; catch: if the request is form-data
-  console.log("received form-data.  Converting...");
+  logToConsole("received form-data.  Converting...");
   let strArr = jsonBody;
 
   strArr = strArr.split("&customer%5Bpassword%5D=");

@@ -5,6 +5,7 @@ import iconCloseBtn from "../assets/icon-close-btn.png";
 import { Checkbox } from './Checkbox.client';
 import Modal from 'react-modal/lib/components/Modal';
 import { FLEXIBLE_PLAN_NAME, TRADITIONAL_PLAN_NAME } from '../lib/const';
+import { logToConsole } from '../helpers/logger';
 
 export default function DishCard(props) {
 
@@ -76,7 +77,7 @@ export default function DishCard(props) {
     }
 
     const handleConfirm = () => {
-        console.log("confirming...");
+        logToConsole("confirming...");
         props.setCardStatus("");
         const {choice, handleSelected, activeScheme} = props;
 
@@ -193,7 +194,7 @@ export default function DishCard(props) {
         });
 
         const substitutionSection = substitutions === null ? null : substitutions.map((sub, index) => {
-            console.log(`sub: ${sub}, sub.maxVariantPrice: ${sub.maxVariantPrice}`)
+            logToConsole(`sub: ${sub}, sub.maxVariantPrice: ${sub.maxVariantPrice}`)
             return <Checkbox key={index} label={prepModSubTitles(sub.title)} price={`${parseFloat(sub.priceRange.maxVariantPrice.amount) > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(sub.id)} onChange={() => handleOptionChoice(sub, index)}/>;
         });
 

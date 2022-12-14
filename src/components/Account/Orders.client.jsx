@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import Modal from "react-modal/lib/components/Modal";
+import { logToConsole } from "../../helpers/logger";
 export default function Orders(props) {
 
     const [showModal, setShowModal] = useState(false);
@@ -25,7 +26,7 @@ export default function Orders(props) {
     });
 
     const handleModal = order => {
-        console.log("Changing modalOrder to: ", order)
+        logToConsole("Changing modalOrder to: ", order)
         setModalOrder(order);
         setShowModal(true);
       }
@@ -59,7 +60,7 @@ export default function Orders(props) {
     });
 
     const pastOrderList = pastOrders.map((order, i) => {
-        console.log("pastOrderList Order:", order);
+        logToConsole("pastOrderList Order:", order);
         return (<tr key={i}>
             <td><a className="orders--order-number" onClick={() => handleModal(order)}>#{order.orderNumber}</a></td>
             <td>Ordered: {`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>

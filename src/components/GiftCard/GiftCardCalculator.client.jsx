@@ -7,6 +7,7 @@ import { Footer } from '../Footer.client';
 import gcImg from "../../assets/giftcard-img.png";
 import gcImgMobile from "../../assets/giftcard-img-mobile.png";
 import { getPlaceholderBlogImage } from '../../lib/placeholders';
+import { logToConsole } from '../../helpers/logger';
 
 
 const PREMIUM_ZIPCODES = [];
@@ -177,7 +178,7 @@ export function GiftCardCalculator(props) {
     }
 
     const validateForm = () => {
-        console.log("validateForm...")
+        logToConsole("validateForm...")
         const newFormErrors = {};
 
         if (giftCardAmount < 25)
@@ -208,13 +209,13 @@ export function GiftCardCalculator(props) {
     ];
 
     const proceedToCheckout = () => {
-        console.log("Waiting...")
+        logToConsole("Waiting...")
         if (checkoutUrl === undefined) 
             setTimeout(() => {
                 proceedToCheckout();
             }, 1000);
         else  {
-            console.log("done");
+            logToConsole("done");
 
             noteUpdate(message);
 

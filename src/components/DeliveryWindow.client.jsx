@@ -1,6 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import iconArrowDown from "../assets/arrow-down.png";
 import iconEdit from "../assets/icon-edit.png";
+import { logToConsole } from '../helpers/logger';
 
 export default function DeliveryWindow(props) {
 
@@ -54,7 +55,7 @@ export default function DeliveryWindow(props) {
         return retval;
     }
 
-    console.log("availableDeliveryStarts",availableDeliveryStarts);
+    logToConsole("availableDeliveryStarts",availableDeliveryStarts);
 
     return (
         <div className={`checkout-section checkout--delivery-window ${isEditing ? 'disabled' : ''}`}>

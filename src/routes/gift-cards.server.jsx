@@ -15,6 +15,7 @@ import { Layout } from '../components/Layout.server';
 import { GiftCardCalculator } from '../components/GiftCard/GiftCardCalculator.client';
 import { GET_ALL_GIFT_CARDS_WITH_VARIANTS, GET_LATEST_BLOG_POSTS, GET_ZIPCODES_QUERY } from '../helpers/queries';
 import { PRODUCT_CARD_FRAGMENT } from '../lib/fragments';
+import { logToConsole } from '../helpers/logger';
 
 export default function GiftCards() {
   const {
@@ -58,13 +59,13 @@ export default function GiftCards() {
       if (customer.defaultAddress === null) {
         defaultAddress = customer.addresses.edges[0].node;
       } else {
-        console.log("Searching for default address");
+        logToConsole("Searching for default address");
         customer.addresses.edges.map(edge => {
           if (defaultAddress === null) {
             const addr = edge.node;
             if (addr.id === customer.defaultAddress.id) {
               defaultAddress = addr;
-              console.log("default found!")
+              logToConsole("default found!")
             }
           }
         });

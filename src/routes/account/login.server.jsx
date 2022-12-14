@@ -4,6 +4,7 @@ import {useShopQuery, CacheLong, CacheNone, Seo, gql, HydrogenRequest} from '@sh
 import {AccountLoginForm} from '../../components/Account';
 import { Layout } from '../../components/Layout.client';
 import { GET_ORDER_WINDOW_DAYS_QUERY } from '../../helpers/queries';
+import { logToConsole } from '../../helpers/logger';
 // import {Layout} from '~/components/index.server';
 
 export default function Login({response}) {
@@ -49,10 +50,10 @@ export async function api(request, {session, queryShop}) {
 
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
-    console.log("Attempting login using JSON...");
+    logToConsole("Attempting login using JSON...");
     jsonBody = JSON.parse(jsonBody);
   } catch (e) {
-    console.log("received form-data.  Converting...");
+    logToConsole("received form-data.  Converting...");
     let strArr = jsonBody;
     strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 
