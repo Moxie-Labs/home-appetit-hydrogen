@@ -238,7 +238,7 @@ export default class MenuSection extends React.Component {
             { (isSectionFilled || selectedExtra.length > 0) &&
                 <div className={`suborder--summary-additional summary-container ${isAddingExtraItems ? 'active' : 'inactive'}`}>
                     <div className="summary--additional-wrapper">
-                        <h4 className="ha-h4">{extraSelected.length} Additional entrées &nbsp; { ((currentStep === step && !isAddingExtraItems) || currentStep > step) && this.props.cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
+                        <h4 className="ha-h4">{extraSelected.length} Additional {title} &nbsp; { ((currentStep === step && !isAddingExtraItems) || currentStep > step) && this.props.cardStatus !== " disabled" && <span><img onClick={() => handleIsAddingExtraItems(true)} src={iconEdit} className="icon-edit" width="65"/></span> }</h4>
                         {extraSelected.map((item, index) => {
                             return ( 
                                 <ul key={index} className="step--order-summary">

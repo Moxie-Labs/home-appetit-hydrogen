@@ -723,6 +723,10 @@ input[type="checkbox"] {
     background: #FFFCF5;
 }
 
+    .modal--change-type button.btn.ha-a.btn-modal-cancel:hover {
+        background-color: #474442;
+    }
+
 .modal--change-type .modal--flexible-inner {
     border-radius: 12px;
     padding-left: 40px;
