@@ -53,6 +53,7 @@ p.selectionCount {
 
 .dish-card-wrapper:first-child::after {
     content: none;
+    display: none;
 }
 
 .dishcard--wrapper-inactive .Polaris-Frame {

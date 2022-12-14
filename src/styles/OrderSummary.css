@@ -93,6 +93,10 @@
 
         }
 
+        .item-addon-text {
+            padding-left: 15px;
+        }
+
             .order-summary--item-value {
                 float: right;
             }
