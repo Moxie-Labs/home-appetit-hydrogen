@@ -53,8 +53,8 @@ export function OrderSection(props) {
     const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
     const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
     const [returnToPayment, setReturnToPayment] = useState(false);
-    const [readyForPayment, setReadyForPayment] = useState(false);
     const [planAlreadySelected, setIsPlanAlreadySelected] = useState(false);
+    const [furthestStep, setFurthestStep] = useState(FIRST_STEP);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -557,7 +557,8 @@ export function OrderSection(props) {
         setSelectedSmallItemsExtra([]);
         setIsAddingExtraItems(false);
         setCurrentStep(FIRST_STEP);
-        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        // window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        window.location.reload();
     }
 
     const removeItem = (item, index, collectionName) => {
@@ -708,8 +709,8 @@ export function OrderSection(props) {
 
     const setupNextSection = nextStep => {
         // setIsAddingExtraItems(false);
-        if (returnToPayment)
-            updateCurrentStep(FIRST_PAYMENT_STEP)
+        if (returnToPayment && nextStep <= READY_FOR_PAYMENT_STEP)
+            updateCurrentStep(READY_FOR_PAYMENT_STEP);
         else
             updateCurrentStep(nextStep); 
     }
@@ -780,14 +781,8 @@ export function OrderSection(props) {
     const changeActiveScheme = () => {
         const newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
         const newServingCount = newScheme === FLEXIBLE_PLAN_NAME && servingCount < 2 ? 0 : servingCount;
-        emptyCart();
-        setActiveScheme(newScheme);
-        setCurrentStep(FIRST_STEP);
         setServingCount(newServingCount);
-        setChangePlanModalShowing(false);
-        setIsAddingExtraItems(false);
-        returnToPayment(false);
-        setCardStatus("");
+        resetOrder();
     }
     
     const getSelectedPlan = () => {
@@ -829,7 +824,12 @@ export function OrderSection(props) {
 
     const resetOrder = () => {
         emptyCart();
-        setCurrentStep(1);
+        setActiveScheme(newScheme);
+        setCurrentStep(FIRST_STEP);
+        setChangePlanModalShowing(false);
+        setIsAddingExtraItems(false);
+        setReturnToPayment(false);
+        setCardStatus("");
     }
 
     const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered, latestMenu, traditionalPlanItem, flexiblePlanItem } = props;
@@ -1088,7 +1088,7 @@ export function OrderSection(props) {
         setCardStatus("");
 
         setTimeout(() => {
-            if (newStep < 7 && newStep > 1) {
+            if (newStep < 7 && newStep > FIRST_STEP) {
                 console.log("jumping to step #", newStep);
                 const stepElem = document.querySelector(`#anchor-step--${newStep}`);
                 stepElem.scrollIntoView({behavior: "smooth", block: "start"});
@@ -1377,6 +1377,7 @@ export function OrderSection(props) {
                             </div>
 
                             <section className={`menu-section__actions actions--submit-order`}>
+                                <a id={`anchor-step--${READY_FOR_PAYMENT_STEP}`}/>
                                 <button className={`btn btn-primary-small btn-app${ currentStep === READY_FOR_PAYMENT_STEP ? '' : ' btn-disabled'}`} onClick={() => setupNextSection(6)}>Place Order</button>
                             </section>
 
