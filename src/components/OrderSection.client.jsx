@@ -789,6 +789,7 @@ export function OrderSection(props) {
         const newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
         const newServingCount = newScheme === FLEXIBLE_PLAN_NAME && servingCount < 2 ? 0 : servingCount;
         setServingCount(newServingCount);
+        setActiveScheme(newScheme);
         resetOrder();
     }
     
@@ -831,7 +832,6 @@ export function OrderSection(props) {
 
     const resetOrder = () => {
         emptyCart();
-        setActiveScheme(newScheme);
         setCurrentStep(FIRST_STEP);
         setChangePlanModalShowing(false);
         setIsAddingExtraItems(false);
