@@ -16,6 +16,7 @@ import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
 import iconLoading from "../assets/loading-loading-forever.gif";
 import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD, READY_FOR_PAYMENT_STEP } from "../lib/const";
+import { logToConsole } from "../helpers/logger";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
@@ -53,8 +54,8 @@ export function OrderSection(props) {
     const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
     const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
     const [returnToPayment, setReturnToPayment] = useState(false);
-    const [readyForPayment, setReadyForPayment] = useState(false);
     const [planAlreadySelected, setIsPlanAlreadySelected] = useState(false);
+    const [furthestStep, setFurthestStep] = useState(FIRST_STEP);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -65,6 +66,12 @@ export function OrderSection(props) {
 
     const [selectedAddonItems, setSelectedAddonItems] = useState([])
     const [selectedSmallFilters, setSelectedSmallFilters] = useState([])
+
+    const [entreeSectionCollapsed, setEntreeSectionCollapsed] = useState(false)
+    const [sidesSectionCollapsed, setSidesSectionCollapsed] = useState(false)
+    const [addonsSectionCollapsed, setAddonsSectionCollapsed] = useState(false)
+
+
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
     const [selectedAddonFilters, setSelectedAddonFilters] = useState([])
 
@@ -222,8 +229,8 @@ export function OrderSection(props) {
 
         // if: item was already added in Traditional, then: update quantity and modifiers (or remove)
         if (doesCartHaveItem(choice, collection) && activeScheme === TRADITIONAL_PLAN_NAME) {
-            console.log("addItemToCart::already exists", choice);
-            console.log("collectionName: ", collectionName);
+            logToConsole("addItemToCart::already exists", choice);
+            logToConsole("collectionName: ", collectionName);
             const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
 
             collection.map((item, i) => {
@@ -253,7 +260,7 @@ export function OrderSection(props) {
                         linesUpdate(linesUpdatePayload);
 
                         if (modsAdded.length > 0) {
-                            console.log("modsAdded", modsAdded);
+                            logToConsole("modsAdded", modsAdded);
                             const linesAddPayload = [];
                                 modsAdded.map(mod => {
                                     linesAddPayload.push({ 
@@ -291,10 +298,10 @@ export function OrderSection(props) {
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
-            console.log("addItemToCart::adding new item", choice);    
+            logToConsole("addItemToCart::adding new item", choice);    
 
             choice.selectedVariantId = choice.choice.productOptions[variantType].node.id;
-            console.log("choice.selectedVariantId", choice.selectedVariantId);
+            logToConsole("choice.selectedVariantId", choice.selectedVariantId);
 
             const lineIndex = addLineIndex(choice.choice.productOptions[variantType].node.id);
             choice.lineIndex = lineIndex;
@@ -325,9 +332,9 @@ export function OrderSection(props) {
             }, TOAST_CLEAR_TIME);
 
             if (addToShopifyCart) {
-                console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
+                logToConsole("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
                 const linesAddPayload = [];
-                console.log("choice selectedMods", choice.selectedMods);
+                logToConsole("choice selectedMods", choice.selectedMods);
                 
                 choice.selectedMods.map(mod => {
                     linesAddPayload.push({ 
@@ -348,7 +355,7 @@ export function OrderSection(props) {
                     attributes: selectedModsAttr.length < 1 ? [] : [{key: "Modifier(s)", value: selectedModsAttr.join(", ")}]
                 });
 
-                console.log("linesAddPayload", linesAddPayload);
+                logToConsole("linesAddPayload", linesAddPayload);
 
                 // update Shopify Cart
                 linesAdd(linesAddPayload);
@@ -359,20 +366,20 @@ export function OrderSection(props) {
 
     // returns what instance of a line item is being added (Flex plan only)
     const addLineIndex = variantId => {
-        console.log("getLineIndex for ", variantId);
+        logToConsole("getLineIndex for ", variantId);
         let newLineIndex = lineIndexByVariantId;
         if (newLineIndex[variantId] === undefined || newLineIndex[variantId] === null) {
-            console.log("generating new cell")
+            logToConsole("generating new cell")
             newLineIndex[variantId] = 1;
         }
             
         else {
-            console.log("Adding to existing cell");
+            logToConsole("Adding to existing cell");
             newLineIndex[variantId] += 1;
         }
             
         setLineIndexByVariantId(newLineIndex);
-        console.log("newLineIndex", newLineIndex);
+        logToConsole("newLineIndex", newLineIndex);
         return newLineIndex[variantId];
     }
 
@@ -441,7 +448,7 @@ export function OrderSection(props) {
     const setDeliveryStart = (event) => {
         const value = parseInt(event.target.value);
         const endValue = value + 2;
-        console.log("Changing Delivery Start to", value)
+        logToConsole("Changing Delivery Start to", value)
         setDeliveryWindowStart(value);
         setDeliveryWindowEnd(endValue)
     }
@@ -557,12 +564,13 @@ export function OrderSection(props) {
         setSelectedSmallItemsExtra([]);
         setIsAddingExtraItems(false);
         setCurrentStep(FIRST_STEP);
-        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        // window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        window.location.reload();
     }
 
     const removeItem = (item, index, collectionName) => {
-        console.log("removing Item: ", item);
-        console.log("collectionName: ", collectionName);
+        logToConsole("removing Item: ", item);
+        logToConsole("collectionName: ", collectionName);
         let linesToModify = [];
         
         // delete from internal Cart/OrderSummary
@@ -694,12 +702,12 @@ export function OrderSection(props) {
 
     const requestCallbackRuntime = (callback, timeoutTime=0) => {
         setTimeout(() => {
-            console.log("cartStatus", cartStatus);
+            logToConsole("cartStatus", cartStatus);
             if (cartStatus !== 'idle') {
-                console.log("Still waiting");
+                logToConsole("Still waiting");
                 requestCallbackRuntime(callback, timeoutTime+500);
             } else {
-                console.log("Running callback");
+                logToConsole("Running callback");
                 callback();
             }
         }, timeoutTime)
@@ -708,8 +716,8 @@ export function OrderSection(props) {
 
     const setupNextSection = nextStep => {
         // setIsAddingExtraItems(false);
-        if (returnToPayment)
-            updateCurrentStep(FIRST_PAYMENT_STEP)
+        if (returnToPayment && nextStep <= READY_FOR_PAYMENT_STEP)
+            updateCurrentStep(READY_FOR_PAYMENT_STEP);
         else
             updateCurrentStep(nextStep); 
     }
@@ -736,7 +744,7 @@ export function OrderSection(props) {
             modCollection.products.edges.map(edge => {
                 collectionProducts.push(edge.node);
             });
-            console.log("modCollection.collectionProducts", collectionProducts);
+            logToConsole("modCollection.collectionProducts", collectionProducts);
             return collectionProducts;
         }
     }
@@ -753,7 +761,7 @@ export function OrderSection(props) {
             subCollection.products.edges.map(edge => {
                 collectionProducts.push(edge.node);
             });
-            console.log("subCollection.collectionProducts", collectionProducts);
+            logToConsole("subCollection.collectionProducts", collectionProducts);
             return collectionProducts;
         }
         
@@ -768,7 +776,7 @@ export function OrderSection(props) {
 
     
     const queryChangeActiveScheme = (newScheme=null) => {
-        console.log("queryChangeActiveScheme");
+        logToConsole("queryChangeActiveScheme");
         if (newScheme === null)
             newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
         if (cartLines.length) 
@@ -780,14 +788,8 @@ export function OrderSection(props) {
     const changeActiveScheme = () => {
         const newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
         const newServingCount = newScheme === FLEXIBLE_PLAN_NAME && servingCount < 2 ? 0 : servingCount;
-        emptyCart();
-        setActiveScheme(newScheme);
-        setCurrentStep(FIRST_STEP);
         setServingCount(newServingCount);
-        setChangePlanModalShowing(false);
-        setIsAddingExtraItems(false);
-        returnToPayment(false);
-        setCardStatus("");
+        resetOrder();
     }
     
     const getSelectedPlan = () => {
@@ -829,7 +831,12 @@ export function OrderSection(props) {
 
     const resetOrder = () => {
         emptyCart();
-        setCurrentStep(1);
+        setActiveScheme(newScheme);
+        setCurrentStep(FIRST_STEP);
+        setChangePlanModalShowing(false);
+        setIsAddingExtraItems(false);
+        setReturnToPayment(false);
+        setCardStatus("");
     }
 
     const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered, latestMenu, traditionalPlanItem, flexiblePlanItem } = props;
@@ -1088,8 +1095,8 @@ export function OrderSection(props) {
         setCardStatus("");
 
         setTimeout(() => {
-            if (newStep < 7 && newStep > 1) {
-                console.log("jumping to step #", newStep);
+            if (newStep < 7 && newStep > FIRST_STEP) {
+                logToConsole("jumping to step #", newStep);
                 const stepElem = document.querySelector(`#anchor-step--${newStep}`);
                 stepElem.scrollIntoView({behavior: "smooth", block: "start"});
             }
@@ -1269,6 +1276,7 @@ export function OrderSection(props) {
                     
                             <div className={menuSectionEntreeClasses}>
                                 <MenuSection 
+                                    key={`menu-section-2`}
                                     step={2} 
                                     currentStep={currentStep}
                                     title="Entrées" 
@@ -1301,11 +1309,14 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={entreeSectionCollapsed}
+                                    handleAccordion={() => { setEntreeSectionCollapsed(!entreeSectionCollapsed); }}
                                 />
                             </div>
                             
                             <div className={menuSectionSideClasses}>
                                 <MenuSection 
+                                    key={`menu-section-3`}
                                     step={3} 
                                     currentStep={currentStep}
                                     title="Small Plates" 
@@ -1338,11 +1349,14 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={sidesSectionCollapsed}
+                                    handleAccordion={() => { setSidesSectionCollapsed(!sidesSectionCollapsed); }}
                                 />
                             </div>
 
                             <div className={menuSectionAddonClasses}>
                                 <MenuSection 
+                                    key={`menu-section-4`}
                                     step={4} 
                                     currentStep={currentStep}
                                     title="Add Ons" 
@@ -1373,10 +1387,13 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={addonsSectionCollapsed}
+                                    handleAccordion={() => { setAddonsSectionCollapsed(!addonsSectionCollapsed); }}
                                 />
                             </div>
 
                             <section className={`menu-section__actions actions--submit-order`}>
+                                <a id={`anchor-step--${READY_FOR_PAYMENT_STEP}`}/>
                                 <button className={`btn btn-primary-small btn-app${ currentStep === READY_FOR_PAYMENT_STEP ? '' : ' btn-disabled'}`} onClick={() => setupNextSection(6)}>Place Order</button>
                             </section>
 

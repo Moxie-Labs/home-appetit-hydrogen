@@ -16,6 +16,7 @@ import { Layout } from '../../components/Layout.client';
 import { OrderSection } from '../../components/OrderSection.client';
 import { GET_BASE_COLLECTIONS_QUERY, GET_EXTRA_ICE_ITEM, GET_FLEXIBLE_PLAN_ITEM, GET_MENUS_QUERY, GET_MOD_COLLECTIONS_QUERY, GET_TRADITIONAL_PLAN_ITEM, GET_ZIPCODES_QUERY, GET_ZONE_HOURS } from '../../helpers/queries';
 import { PRODUCT_CARD_FRAGMENT } from '../../lib/fragments';
+import { logToConsole } from '../../helpers/logger';
 
 export default function Order({response}) {
 
@@ -28,7 +29,7 @@ export default function Order({response}) {
     let customerData = null;
 
     if (customerAccessToken != null && customerAccessToken != '') {
-      console.log("customerAccessToken", customerAccessToken)
+      logToConsole("customerAccessToken", customerAccessToken)
       const {data} = useShopQuery({
         query: CUSTOMER_QUERY,
         variables: {
@@ -141,7 +142,7 @@ export default function Order({response}) {
       if (customerData !== null) {
         const orders = flattenConnection(customerData.customer.orders);
         if (orders.length > 0) {
-          console.log("orders", orders);
+          logToConsole("orders", orders);
           const startDate = new Date(latestMenu.startDate?.value);
           let endDate = new Date(latestMenu.endDate?.value);
           endDate.setDate(endDate.getDate() + 1);
@@ -160,8 +161,8 @@ export default function Order({response}) {
       });
 
       modData.collections.edges.forEach(collection => {
-        console.log("pushing collection", collection.node);
-        console.log(collection.node.products.edges)
+        logToConsole("pushing collection", collection.node);
+        logToConsole(collection.node.products.edges)
         collectionsById.push(collection.node);
       });
 
@@ -194,7 +195,7 @@ export default function Order({response}) {
       //       hasBlock = true;
       //   });
       //   if (!hasBlock) {
-      //     console.log("Adding original block: ", hourBlock)
+      //     logToConsole("Adding original block: ", hourBlock)
       //     hourWindows.push(hourBlock);
       //   }
           

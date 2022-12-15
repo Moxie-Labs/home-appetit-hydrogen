@@ -3,6 +3,7 @@ import {useShopQuery, CacheLong, CacheNone, Seo, gql} from '@shopify/hydrogen';
 
 import {AccountLoginForm} from '../../components/Account';
 import { Layout } from '../../components/Layout.client';
+import { logToConsole } from '../../helpers/logger';
 
 export default function Check({response}) {
   response.cache(CacheNone());
@@ -45,10 +46,10 @@ export async function api(request, {session, queryShop}) {
   let jsonBody = await request.text();
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
-    console.log("Attempting login using JSON...");
+    logToConsole("Attempting login using JSON...");
     jsonBody = JSON.parse(jsonBody);
   } catch (e) {
-    console.log("received form-data.  Converting...");
+    logToConsole("received form-data.  Converting...");
     let strArr = jsonBody;
     strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 

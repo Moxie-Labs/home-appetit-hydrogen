@@ -33,7 +33,26 @@ p.selectionCount {
     border-bottom: 1px solid #474442;
 }
 
-.dish-card-wrapper:after {
+.dish-card-wrapper .accordion {
+    cursor: pointer;
+    position: absolute;
+    height: 48px;
+    width: 48px;
+    right: 0;
+    top: 60px;
+    /* background: #FFA877; */
+    /* border-radius: 100%; */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    /* padding-top: 2px;
+    padding-left: 2px; */
+    z-index: 999;
+}
+
+/* .dish-card-wrapper:after {
     content: "—";
     position: absolute;
     height: 48px;
@@ -49,10 +68,11 @@ p.selectionCount {
     font-size: 32px;
     padding-top: 2px;
     padding-left: 2px;
-}
+} */
 
 .dish-card-wrapper:first-child::after {
     content: none;
+    display: none;
 }
 
 .dishcard--wrapper-inactive .Polaris-Frame {

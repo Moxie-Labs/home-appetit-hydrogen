@@ -1,4 +1,5 @@
 import React, {useState, useCallback} from 'react';
+import { logToConsole } from '../helpers/logger';
 import {ButtonGroup} from './ButtonGroup.client';
 
 export default class CardFilters extends React.Component {
@@ -37,14 +38,14 @@ export default class CardFilters extends React.Component {
         let {filters} = this.props;
 
         if (filters.includes(filter)) {
-            console.log("Removing filter", filter)
+            logToConsole("Removing filter", filter)
             const index = filters.indexOf(filter);
             filters.splice(index, 1);
         } else {
             if (filter === 'ALL') {
                 filters = [];
             } else {
-                console.log("Adding filter", filter);
+                logToConsole("Adding filter", filter);
                 filters.push(filter);
             }
         }
@@ -66,7 +67,7 @@ export default class CardFilters extends React.Component {
 
         const {filterOptions, totalOptionCount, optionCounts} = this.props;
 
-        console.log("optionCounts", optionCounts);
+        logToConsole("optionCounts", optionCounts);
 
         const filterButtons = filterOptions.map((option) => {
             const isActive = this.isFilterSelected(option.value);

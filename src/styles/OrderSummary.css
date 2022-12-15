@@ -65,8 +65,8 @@
             background-image: url('/src/assets/icon-trash-blue.png');
             background-size: cover;
             cursor: pointer;
-            height: 18px;
-            width: 18px;
+            height: 22px;
+            width: 22px;
         }
 
     .order-summary--item-name.order-summary--item-product {
@@ -91,6 +91,10 @@
             list-style-type: none;
             padding-inline-start: 0;
 
+        }
+
+        .item-addon-text {
+            padding-left: 15px;
         }
 
             .order-summary--item-value {

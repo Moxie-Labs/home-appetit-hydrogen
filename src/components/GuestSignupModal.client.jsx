@@ -1,6 +1,7 @@
   import { useState, useCallback, useRef } from "react";
 import Modal from "react-modal/lib/components/Modal";
   import deliveryMap from "../assets/delivery_map.png";
+import { logToConsole } from "../helpers/logger";
 import { LayoutSection } from "./LayoutSection.client";
 import { TextField } from "./TextField.client";
 
@@ -22,13 +23,13 @@ import { TextField } from "./TextField.client";
         setActiveIntro(false);
       if (VALID_ZIPCODES.includes(parseInt(zipcode))) {
         setActiveSuccess(true);
-        console.log("Success");
+        logToConsole("Success");
       } else if (QUALIFIED_ZIPCODES.includes(parseInt(zipcode))) {
         setActiveQualified(true);
-        console.log("Qualified");
+        logToConsole("Qualified");
       } else {
         setActiveFailure(true);
-        console.log("Failure");
+        logToConsole("Failure");
       }
       
     }, []);
