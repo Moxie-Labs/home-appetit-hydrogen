@@ -112,6 +112,7 @@ button.btn.btn-default.btn-edit {
     padding: 0 !important;
     font-family: "ITC Avant Garde Gothic W03 Md" !important;
     font-weight: 600;
+    width: auto;
 }
 
 button.btn.btn-default.btn-edit img {
@@ -173,7 +174,7 @@ h1.address-title {
 }
 
 .account-information article p {
-    font-size: 24px;
+    font-size: 1.3em;
     line-height: 32px;
     font-family: 'AvenirLTProBlack';
     margin: 0;
@@ -432,6 +433,10 @@ label.check-balance-label {
     width: 50%;
 } */
 
+.account__address b {
+    font-size: 0.8em;
+}
+
 .account__address-title {
     font-size: 1.1em;
 }
@@ -511,27 +516,38 @@ article p.address-action-cta {
 .mobile-panel .account-panel-switch {
     border-bottom: none;
     padding-bottom: 1rem;
+    font-family: "ITC Avant Garde Gothic W03 Md" !important;
     display: flex;
     justify-content: space-between;
 }
 
 .mobile-panel .account-panel-body{
     border-radius: 0;
-    padding: 1rem;
+    padding: 2.5rem 1rem;
+    margin: 0 -1rem;
 }
 
-.mobile-panel section.account-panel-switches h2{
+.mobile-panel .account-panel-switch {
+    font-family: "ITC Avant Garde Gothic W03 Md" !important;
+}
+
+.mobile-panel .account-panel-body section.account-panel-switches h2{
     font-size: 20px;
-    font-family: AvenirLTProBlack !important;
     padding: 1rem;
 }
 
 .mobile-panel section.account-panel-switches .info-row h2{
+    padding: 1rem 0;
     text-transform: capitalize;
+    font-family: AvenirLTProBlack !important;
 }
 
 .mobile-panel .personal-info-wrapper .info-row{
     flex-flow: column;
+}
+
+.mobile-panel section.account-panel-switches .info-row h2.personal-info-header--email {
+    text-transform: unset;
 }
 
 .mobile-panel .btn-reset{
