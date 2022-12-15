@@ -267,6 +267,87 @@
         padding: 1rem;
     }
     /* END Gift Card page */
+
+    /* Account Page */
+    .myaccount-page .btn {
+        font-size: 0.9em;
+        padding-top: 6px;
+        width: 100%;
+    }
+
+    article.account__address {
+        margin-top: 1.875rem;
+    }
+
+    .btn.btn-default.btn-edit {
+        right: 20px !important;
+    }
+
+    .modal-address-field {
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+
+    .mobile-panel .personal-info-wrapper .info-row {
+        margin-bottom: 0;
+    }
+
+    .mobile-panel .personal-info-wrapper .info-row.row-2 {
+        margin-top: 0;
+    }
+
+    .personal-info-wrapper.edit-wrapper button {
+        width: 45%;
+        margin: 0 2%;
+    }
+
+    .personal-info-wrapper .info-row:last-child {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .modal-new-address {
+        width: 95%;
+        max-width: unset;
+    }
+
+    .new-address-wrapper .field-row, .new-address-wrapper .field-row:nth-child(2) input[name=phone] {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .new-address-wrapper .field input {
+        margin-bottom: 0;
+    }
+
+    .modal-new-address .modal-action button {
+        height: 45px;
+        padding: 10px;
+    }
+
+    .order-details-wrapper {
+        display: unset;
+    }
+
+    .prev-order-modal--exit {
+        background: url(/src/assets/icon-close-btn--small.png);
+        background-size: contain;
+        width: 25px;
+        height: 25px;
+        margin: 25px;
+    }
+
+    .order__no-history {
+        width: 100%;
+    }
+
+        .order__no-history h3 {
+            font-size: 2em !important;
+        }
+
+        .order__no-history--subtitle {
+            margin: 0.5rem 0;
+        }
 }
 
 /* Tablet */

@@ -52,7 +52,7 @@ export default function Orders(props) {
     const currentOrderList = currentOrders.map((order, i) => {
         return (<tr key={i}>
             <td><a className="orders--order-number" onClick={() => handleModal(order)}>#{order.orderNumber}</a></td>
-            <td>Ordered: {`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
+            <td><span className="desktop-only">Ordered: </span>{`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
             <td>{getOrderStatus(order.fulfillmentStatus)}</td>
             <td><b>{formatter.format(parseFloat(order.currentTotalPrice.amount))}</b></td>
         </tr>);
@@ -62,7 +62,7 @@ export default function Orders(props) {
         console.log("pastOrderList Order:", order);
         return (<tr key={i}>
             <td><a className="orders--order-number" onClick={() => handleModal(order)}>#{order.orderNumber}</a></td>
-            <td>Ordered: {`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
+            <td><span className="desktop-only">Ordered: </span>{`${convertMonth(order.processedAt)+1}/${convertDate(order.processedAt)}`}</td>
             <td>{getOrderStatus(order.fulfillmentStatus)}</td>
             <td><b>{formatter.format(order.currentTotalPrice.amount)}</b></td>
         </tr>);
@@ -136,14 +136,14 @@ export default function Orders(props) {
         <div className="order-information">
             { pastOrders.length == 0 && currentOrders.length == 0 &&
                 <div className="order__no-history">
-                    <h3 className="ha-h3 no-margin">No Order history</h3>
-                    <p className="ha-body no-margin">Check back after you’ve placed your next order!</p>
+                    <h3 className="ha-h3 no-margin">No Order History</h3>
+                    <p className="ha-body no-margin order__no-history--subtitle">Check back after you’ve placed your next order!</p>
                     <br />
                     <a href="/order" className="btn-order-cta text-uppercase">Order now</a>
                 </div>
             }
 
-            <h1 className="ha-h5">Current Orders</h1>       
+            { currentOrders.length > 0 && <h1 className="ha-h5">Current Orders</h1> }    
             { currentOrders.length > 0 && 
             <section>
                 
@@ -154,7 +154,7 @@ export default function Orders(props) {
             
             }
 
-            <div className="line-separator"></div>
+            { currentOrders.length > 0 && <div className="line-separator"></div> }
 
             { pastOrders.length > 0 && 
             <section>
