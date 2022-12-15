@@ -66,6 +66,12 @@ export function OrderSection(props) {
 
     const [selectedAddonItems, setSelectedAddonItems] = useState([])
     const [selectedSmallFilters, setSelectedSmallFilters] = useState([])
+
+    const [entreeSectionCollapsed, setEntreeSectionCollapsed] = useState(false)
+    const [sidesSectionCollapsed, setSidesSectionCollapsed] = useState(false)
+    const [addonsSectionCollapsed, setAddonsSectionCollapsed] = useState(false)
+
+
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
     const [selectedAddonFilters, setSelectedAddonFilters] = useState([])
 
@@ -1303,6 +1309,8 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={entreeSectionCollapsed}
+                                    handleAccordion={() => { setEntreeSectionCollapsed(!entreeSectionCollapsed); }}
                                 />
                             </div>
                             
@@ -1341,6 +1349,8 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={sidesSectionCollapsed}
+                                    handleAccordion={() => { setSidesSectionCollapsed(!sidesSectionCollapsed); }}
                                 />
                             </div>
 
@@ -1377,6 +1387,8 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={addonsSectionCollapsed}
+                                    handleAccordion={() => { setAddonsSectionCollapsed(!addonsSectionCollapsed); }}
                                 />
                             </div>
 
