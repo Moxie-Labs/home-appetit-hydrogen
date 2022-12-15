@@ -7,7 +7,7 @@ import iconCloseBtn from "../assets/icon-close-btn.png";
 import { LogoutButton } from './LogoutButton.client';
 
 export function Header(prop){
-    const {isOrdering} = prop;
+    const {isOrdering, scrollingUp} = prop;
     const [isActive, setIsActive] = useState(false);
     const [isDropdownActive, setIsDropdownActive] = useState(false);
     const rootUrl = import.meta.env.VITE_STORE_DOMAIN;
@@ -37,7 +37,7 @@ export function Header(prop){
     };
 
    return(
-        <div className="header">
+        <div className={`header${scrollingUp ? ' header-fixed' : ''}`}>
             <div className={`header-inner ${isOrdering ? 'header-inner-ordering' : ''}`}>
                 <div className={`mobile-menu ${isOrdering ? 'mobile-hide-menu' : ''}`}>
                     {isActive &&
