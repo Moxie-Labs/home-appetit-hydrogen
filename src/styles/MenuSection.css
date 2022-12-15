@@ -85,11 +85,11 @@ p.selectionCount {
     opacity: 0.5;
 }
 
-.dishcard--wrapper-inactive.dish-card-wrapper:after{ 
+/* .dishcard--wrapper-inactive.dish-card-wrapper:after{ 
     content: "+";
     top: 45px;
     opacity: 0.5;
-}
+} */
 
 .dish-card-wrapper:first-child section.step-section{
     padding: 0 0 120px;
