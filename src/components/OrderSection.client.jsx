@@ -119,16 +119,16 @@ export function OrderSection(props) {
     // runs necessary Storefront API calls only when needed
     useEffect(() => {
         setupCardsAndCollections();
-        history.pushState(null, null, location.pathname + location.search);
-        window.onpopstate = function() {
-            const hash = window.location.hash;
-            if (hash.includes("step")) {
-                const hashStep = hash.split("-")[1];
-                updateCurrentStep(parseInt(hashStep));
-            } else {
-                updateCurrentStep(1);
-            }       
-        }
+        // history.pushState(null, null, location.pathname + location.search);
+        // window.onpopstate = function() {
+        //     const hash = window.location.hash;
+        //     if (hash.includes("step")) {
+        //         const hashStep = hash.split("-")[1];
+        //         updateCurrentStep(parseInt(hashStep));
+        //     } else {
+        //         updateCurrentStep(1);
+        //     }       
+        // }
     }, []);
 
     useEffect(() => {
