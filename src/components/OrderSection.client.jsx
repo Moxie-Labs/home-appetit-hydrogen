@@ -564,8 +564,8 @@ export function OrderSection(props) {
         setSelectedSmallItemsExtra([]);
         setIsAddingExtraItems(false);
         setCurrentStep(FIRST_STEP);
-        // window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-        window.location.reload();
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        // window.location.reload();
     }
 
     const removeItem = (item, index, collectionName) => {
