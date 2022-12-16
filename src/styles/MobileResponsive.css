@@ -192,9 +192,9 @@
         max-width: 22.5rem;
     }
 
-    .card__quantity-wrapper p.card__code {
+    /* .card__quantity-wrapper p.card__code {
         font-size: 0.9em !important;
-    }
+    } */
 
     .dish-card-wrapper.order--properties.dishcard--wrapper-inactive:after {
         content: "";
