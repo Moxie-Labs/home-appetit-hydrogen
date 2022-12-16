@@ -95,7 +95,7 @@ hr.order-divider {
     font-size: 18px;
     font-family: 'ITCAvantGardeProDemi';
     border-radius: 24px;
-    padding: 9px 24px 4px;
+    padding: 9px 48px 4px;
 }
 
 button.btn.btn-default.btn-edit {
@@ -537,12 +537,14 @@ article p.address-action-cta {
 }
 
 .mobile-panel section.account-panel-switches .info-row h2{
-    padding: 1rem 0;
+    padding: 0 0 0.5rem 0;
+    font-size: 1.3em;
     text-transform: capitalize;
     font-family: AvenirLTProBlack !important;
 }
 
 .mobile-panel .personal-info-wrapper .info-row{
+    margin-top: 1rem;
     flex-flow: column;
 }
 

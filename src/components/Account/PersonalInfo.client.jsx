@@ -418,8 +418,6 @@ export default function PersonalInfo(props) {
             </div>
             <button className="btn btn-default new-address-cta" onClick={() => prepareNewAddress()}>Add New Address</button>
 
-            <div className="line-separator"></div>
-
                 <Modal
                     isOpen={showingAddressModal}
                     onRequestClose={() => closeAddressModal()}
@@ -502,7 +500,7 @@ export default function PersonalInfo(props) {
                 handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
             />  */}
   
-            <button className="btn btn-default new-address-cta">Update preferences</button>
+            {/* <button className="btn btn-default new-address-cta">Update preferences</button> */}
             
         </div>
     );
