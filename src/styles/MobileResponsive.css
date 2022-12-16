@@ -372,6 +372,10 @@
         .order__no-history--subtitle {
             margin: 0.5rem 0;
         }
+
+    .account__address-inner {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Tablet */
