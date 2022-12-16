@@ -70,16 +70,32 @@
     }
 
     .dish-card-wrapper {
-        padding: 1rem;
+        padding: 1rem 0;
     }
+
+        .dish-card-wrapper .ha-h3 {
+            margin: 1rem 0 0;
+        }
 
     .dish-card-wrapper .accordion {
         top: 30px;
     }
 
+    .suborder--summary-container {
+        gap: 0;
+    }
+
+    .summary--additional-wrapper h4 {
+        margin: 0;
+    }
+
     /* END General */
 
     /* Step One */  
+    section#OrderProperties {
+        padding-top: 0 !important;
+    }
+
     .illustration-empty {
         font-size: 1.2em;
         text-align: center;
