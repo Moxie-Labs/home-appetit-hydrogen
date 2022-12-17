@@ -132,18 +132,13 @@ export function OrderSection(props) {
     }, []);
 
     useEffect(() => {
-        if (cartLines.length < 1) {
-            if (props.customerAlreadyOrdered) {
-                setIsAlreadyOrderedModalShowing(true);
-            }
-        } else {
-            if (cartLines.length === 1 && isGiftCardRemoved)
-                removeGiftCard();
-            setIsAlreadyOrderedModalShowing(false);
-            if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
-                setIsRestoringCart(true);
-            }   
-        }
+        if (cartLines.length === 1 && isGiftCardRemoved)
+            removeGiftCard();
+
+        setIsAlreadyOrderedModalShowing(props.customerAlreadyOrdered);
+        if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
+            setIsRestoringCart(true);
+        }   
     },[cartLines])
 
     useEffect(() => {
@@ -1426,15 +1421,15 @@ export function OrderSection(props) {
 
                         <Modal
                             isOpen={isAlreadyOrderedModalShowing && !alreadyOrderedModalDismissed}
-                            className="modal--flexible-confirmaton"
+                            className="modal--flexible-confirmaton modal--restore-cart"
                         >
                             <div className='modal--flexible-inner'>
-                                <h2 className='ha-h4'>Continue with New Order?</h2>
-                                <p className='ha-body'>It looks like you already placed an order for this week.  You can view your existing order or continue placing a new one.</p>
-                                <p>If you have any issues with your current order, please <a href="#">contact us</a></p>
+                                <h2 className='ha-h4 text-center'>Continue with <br/> new order?</h2>
+                                <p className='ha-body'>It looks like you already placed an order for this week. You can view your existing order or contine placing a new one.</p>
+                                <p className='ha-body'>If you have any issues with your current order, please <a href="https://marketingbeta.homeappetitphilly.com/pages/contact-1">contact us.</a></p>
                                 <section className="card__actions">
-                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {window.location.href = '/account#orders'}}>View Existing Order</button>
-                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setAlreadyOrderedModalDismissed(true)}>Start New Order</button>
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {window.location.href = '/account#orders'}}>View Order History</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setAlreadyOrderedModalDismissed(true)}>Start new order</button>
                                 </section>   
                             </div>
                         </Modal>
@@ -1461,18 +1456,18 @@ export function OrderSection(props) {
                         </Modal>
 
                         <Modal
-                            isOpen={isRestoringCart && !restoreCartModalDismissed}
+                            isOpen={isRestoringCart && !restoreCartModalDismissed && (!isAlreadyOrderedModalShowing || alreadyOrderedModalDismissed)}
                             className="modal--flexible-confirmaton modal--restore-cart"
                         >
                             <div className='modal--flexible-inner'>
                                 <h2 className='ha-h4 text-center'>Continue with <br/> new order?</h2>
-                                <p className='ha-body'>It looks like you already placed an order for this week. You can view your existing order or contine placing a new one.</p>
+                                <p className='ha-body'>It looks like you already started an order for this week. You can resume your existing order or begin a new one.</p>
                                 <p className='ha-body'>If you have any issues with your current order, please <a href="https://marketingbeta.homeappetitphilly.com/pages/contact-1">contact us.</a></p>
                                 <section className="card__actions">
                                     <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {
                                         setRestoreCartModalDismissed(true);
                                         restoreCart();
-                                    }}>View existing order</button>
+                                    }}>Resume order</button>
                                     <button className="btn ha-a btn-modal-cancel" onClick={() => {
                                         setRestoreCartModalDismissed(true);
                                         resetOrder();
