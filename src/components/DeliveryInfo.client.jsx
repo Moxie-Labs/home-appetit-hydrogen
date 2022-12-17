@@ -324,13 +324,13 @@ export default function DeliveryInfo(props) {
                             label="Include extra ice"
                             price="$5.00"
                             checked={extraIce}
-                            onChange={() => handleExtraIce(!extraIce)}
+                            handleClick={() => handleExtraIce(!extraIce)}
                         />
                         <Checkbox
                             label="This order is a gift"
                             price=""
                             checked={isGift}
-                            onChange={() => handleIsGift(!isGift)}
+                            handleClick={() => handleIsGift(!isGift)}
                         />
 
                         { isGift &&
@@ -379,12 +379,12 @@ export default function DeliveryInfo(props) {
                             <Checkbox
                                 label="I agree to laoreet aliquet proin mattis quis ut nulls lac us vitae orci quis varius laspe."
                                 checked={agreeToTerms}
-                                onChange={() => handleAgreeToTerms(!agreeToTerms)}
+                                handleClick={() => handleAgreeToTerms(!agreeToTerms)}
                             />
                             <Checkbox
                                 label="Receive laoreet aliquet proin mattis quis ut nulla lac us vitae orci quis varius denutp."
                                 checked={receiveTexts}
-                                onChange={() => handleReceiveTexts(!receiveTexts)}
+                                handleClick={() => handleReceiveTexts(!receiveTexts)}
                             />
                         </div>
                     </section>
@@ -437,12 +437,12 @@ export default function DeliveryInfo(props) {
                             <Checkbox
                                 label="Include extra ice $5.00"
                                 checked={extraIce}
-                                onChange={() => handleExtraIce(!extraIce)}
+                                handleClick={() => handleExtraIce(!extraIce)}
                             />
                             <Checkbox
                                 label="This order is a gift"
                                 checked={isGift}
-                                onChange={() => handleIsGift(!isGift)}
+                                handleClick={() => handleIsGift(!isGift)}
                             />
 
                             { isGift &&
@@ -517,12 +517,12 @@ export default function DeliveryInfo(props) {
                     <Checkbox
                         label="Include extra ice $5.00"
                         checked={extraIce}
-                        onChange={() => handleExtraIce(!extraIce)}
+                        handleClick={() => handleExtraIce(!extraIce)}
                     />
                     <Checkbox
                         label="This order is a gift"
                         checked={isGift}
-                        onChange={() => handleIsGift(!isGift)}
+                        handleClick={() => handleIsGift(!isGift)}
                     />
 
                     { isGift && 

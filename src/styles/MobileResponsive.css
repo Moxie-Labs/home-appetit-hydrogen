@@ -198,6 +198,10 @@
     /* END Step One */
 
     /* Gift Card page */
+    #container--gift-card {
+        padding-top: 4rem;
+    }
+    
     #container--gift-card > .page {
         margin: 0 -1rem;
         padding-left: 1rem;
