@@ -187,21 +187,6 @@ export default function Order({response}) {
 
       const zone1Hours = JSON.parse(hoursData.page.zone1Hours.value);
       const zone2Hours = JSON.parse(hoursData.page.zone2Hours.value);
-      // const hourWindows = [];
-      // [...zone1Hours.hourWindows, ...zone2Hours.hourWindows].map(hourBlock => {
-      //   let hasBlock = false;
-      //   hourWindows.map(existingBlock => {
-      //     if (existingBlock.startHour === hourBlock.startHour && existingBlock.endHour === hourBlock.endHour)
-      //       hasBlock = true;
-      //   });
-      //   if (!hasBlock) {
-      //     logToConsole("Adding original block: ", hourBlock)
-      //     hourWindows.push(hourBlock);
-      //   }
-          
-      // });
-
-      // hourWindows.sort((a,b) => a.startHour - b.startHour);
 
     return (
         <>
@@ -222,7 +207,9 @@ export default function Order({response}) {
                   flexiblePlanItem={flexiblePlanItem}
                   extraIceItem={extraIceItem}
                   customerAlreadyOrdered={customerAlreadyOrdered}
-                  zoneHours={zone1Hours.hourWindows}
+                  zone1Hours={zone1Hours.hourWindows}
+                  zone2Hours={zone2Hours.hourWindows}
+                  validZipcodes={validZipcodes}
                 />
             </Layout>
         </Suspense>

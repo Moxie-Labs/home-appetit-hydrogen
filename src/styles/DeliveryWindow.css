@@ -54,6 +54,17 @@
     margin: 40px 0 30px;
 }
 
+    .delivery-date_container--disabled {
+        opacity: 0.6;
+        cursor: unset;
+        border: none;
+    }
+
+    .delivery-date_container--disabled .delivery-date_item:hover {
+        border: none;
+        cursor: unset;
+    }
+
 .checkout--deliveryinfo-top .delivery-window_label{
     font-family: AvenirLTProRoman;
     font-size: 14px;

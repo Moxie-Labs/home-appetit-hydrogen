@@ -236,6 +236,10 @@ span.price--extra-addon {
     width: 100%;
 }
 
+.checkout--delivery-info {
+    margin-bottom: 4rem;
+}
+
 @media screen and (max-width: 960px){
 
     .payment-wrapper .order-summary{

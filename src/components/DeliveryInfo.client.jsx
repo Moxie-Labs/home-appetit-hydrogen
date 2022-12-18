@@ -287,6 +287,7 @@ export default function DeliveryInfo(props) {
     
     return (
         <div className={`checkout-section checkout--delivery-info ${currentStep === step ? '' : 'disabled'}`}>
+            <a id={`anchor-step--${step}`}/>
             { currentStep === step && !isEditing &&
                 <div>
                     <section className="checkout--deliveryinfo-top">
@@ -470,7 +471,7 @@ export default function DeliveryInfo(props) {
                         </div>
                         : 
                         <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickContinue}>
-                            CONTINUE
+                            CONFIRM
                         </button>}
 
                         {/* <button className="btn btn-primary btn-app" onClick={handleCancel}>
@@ -536,8 +537,8 @@ export default function DeliveryInfo(props) {
             <hr></hr>
 
             <div className="place-order-container">
-                <button className= {`btn btn-primary-small btn-place-order${isEditing ? ' disabled' : ''}`} disabled={address.length === 0} onClick={handleContinue}>
-                    CONTINUE TO PAYMENT
+                <button className= {`btn btn-primary-small btn-place-order${(isEditing || addressId === null) ? ' disabled' : ''}`} disabled={address.length === 0} onClick={handleContinue}>
+                    CONTINUE
                 </button>
             </div>    
 
