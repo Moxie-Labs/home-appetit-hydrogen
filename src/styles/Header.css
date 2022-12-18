@@ -11,6 +11,9 @@
     line-height: 3.75rem;
     z-index: 1;
     padding: 3px;
+    margin-top: -7em;
+    margin-left: -50vw;
+    margin-right: -50vw;
 }
 
 .header-inner{
@@ -52,7 +55,9 @@
     font-family: 'ITC Avant Garde Gothic W03 Md';
 }
 
-
+.down {
+    top: -6rem;
+  }
 
 a.my-account-trigger.nav-main {
     font-size: 15px;
@@ -97,6 +102,10 @@ a.btn-order-cta.mobile-order-cta {
 
 .btn-order-cta{
     margin-right: -15px;
+}
+
+.show {
+    position: sticky;
 }
 
 @media screen and (max-width: 960px){
