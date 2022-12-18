@@ -1,3 +1,7 @@
+#container--gift-card {
+    padding-top: 2rem;
+}
+
 .gc-wrapper {
     display: flex;
     gap: 5.937rem;

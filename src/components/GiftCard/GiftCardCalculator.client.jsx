@@ -8,6 +8,7 @@ import gcImg from "../../assets/giftcard-img.png";
 import gcImgMobile from "../../assets/giftcard-img-mobile.png";
 import { getPlaceholderBlogImage } from '../../lib/placeholders';
 import { logToConsole } from '../../helpers/logger';
+import { Radio } from '../Radio.client';
 
 
 const PREMIUM_ZIPCODES = [];
@@ -313,14 +314,10 @@ export function GiftCardCalculator(props) {
                                 </label>
                                 <div className="gc-col gc-col-method">
                                     <div className="gc-col-item">
-                                    <label htmlFor="method">
-                                        <input type="radio" name="method" checked={!useMyEmail} onClick={() => setUseMyEmail(false)} />
-                                        Send to recipient’s email:</label>
+                                        <Radio name="method" handleClick={() => setUseMyEmail(false)} isChecked={!useMyEmail} label={"Send to recipient’s email"}/>
                                     </div>
                                     <div className="gc-col-item">
-                                    <label htmlFor="method">
-                                        <input type="radio" name="method" checked={useMyEmail} onClick={() => setUseMyEmail(true)} />
-                                       Send to your email:</label>
+                                        <Radio name="method" handleClick={() => setUseMyEmail(true)} isChecked={useMyEmail} label={"Send to your email"}/>
                                     </div>
                                 </div>
                                 <div className="gc-row gc-method-field">

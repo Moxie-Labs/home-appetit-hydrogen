@@ -5,6 +5,7 @@ import iconEdit from "../assets/icon-edit.png";
 import plusIcon from "../assets/icon-plus-alt.png";
 import { Checkbox } from './Checkbox.client';
 import { useRenderServerComponents } from '~/lib/utils';
+import { Radio } from './Radio.client';
 
 export default function DeliveryInfo(props) {
 
@@ -297,10 +298,7 @@ export default function DeliveryInfo(props) {
                             addresses.length > 1 ? 
                             addresses.map((addr, index) => {
                                     return <div key={addr.id} className="contact-info">
-                                            <label htmlFor="address">
-                                                <input type="radio" name="address" onClick={() => addressSelection(index)} />
-                                                {addr.address1}{addr.address2 !== "" && addr.address2} {addr.city}, {addr.provinceCode} {addr.zip}
-                                            </label>
+                                                <Radio name="address" handleClick={() => addressSelection(index)} isChecked={addr.id === addressId} label={`${addr.address1} ${(addr.address2 !== "" && addr.address2 !== null) ? addr.address2 : ''} ${addr.city}, ${addr.provinceCode} ${addr.zip}`}/>
                                             </div>      
                                         })
                             :
@@ -492,13 +490,10 @@ export default function DeliveryInfo(props) {
                             <p>{displayPhoneNumber(phoneNumber)}</p>
                             {
                             addresses.length > 1 ? 
-                            addresses.map(addr => {
+                            addresses.map((addr, index) => {
                                     return <div key={addr.id} className="contact-info">
-                                            <label htmlFor="address">
-                                                <input type="radio" value={addr} name="address" onChange={addressSelection} />
-                                                {addr.address1}{addr.address2 !== "" && addr.address2} {addr.city}, {addr.provinceCode} {addr.zip}
-                                            </label>
-                                            </div>      
+                                            <Radio name="address" handleClick={() => addressSelection(index)} isChecked={addr.id === addressId} label={`${addr.address1} ${(addr.address2 !== "" && addr.address2 !== null) ? addr.address2 : ''} ${addr.city}, ${addr.provinceCode} ${addr.zip}`}/>
+                                        </div>      
                                         })
                             :
                             <div>
