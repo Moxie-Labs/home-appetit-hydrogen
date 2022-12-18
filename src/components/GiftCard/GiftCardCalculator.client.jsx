@@ -262,7 +262,7 @@ export function GiftCardCalculator(props) {
     return (
         <div id="container--gift-card">
             <Page>
-                <Header />
+                <Header customerAccessToken={props.customerAccessToken} />
 
             <div className="gc-wrapper">
                 <div className="gc-item-column gc-item-column_image">
