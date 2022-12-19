@@ -159,7 +159,7 @@ form#_form_15_ #email::placeholder {
 @media screen and (max-width: 800px){
     #_form_15_ ._submit#_form_15_submit{
         width: 100px;
-    margin-top: 5px;
-    line-height: 9px;
+        margin-top: 5px;
+       line-height: 9px;
     }
 }
