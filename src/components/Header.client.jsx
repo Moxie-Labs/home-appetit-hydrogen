@@ -62,7 +62,8 @@ export function Header(prop){
    const scrollDirection = useScrollDirection();
 
    return(
-        <div className={`header${scrollingUp ? ' header-fixed' : ''}`}>
+
+        <div className={`header${scrollingUp ? ' header-fixed' : ''} ${ scrollDirection === "down" ? "hide" : "show"}`}>
             <div className={`header-inner ${isOrdering ? 'header-inner-ordering' : ''}`}>
                 <div className={`mobile-menu ${isOrdering ? 'mobile-hide-menu' : ''}`}>
                     {isActive &&
