@@ -116,10 +116,12 @@ export function OrderSection(props) {
     // used for deleting lineitems when multiple instances exist (Flex plan)
     const [lineIndexByVariantId, setLineIndexByVariantId] = useState([]);
 
+    const [scrollingUp, setScrollingUp] = useState(false);
+
     // runs necessary Storefront API calls only when needed
     useEffect(() => {
         setupCardsAndCollections();
-        history.pushState(null, null, location.pathname + location.search);
+        // history.pushState(null, null, location.pathname + location.search);
         window.onpopstate = function() {
             const hash = window.location.hash;
             if (hash.includes("step")) {
@@ -129,6 +131,20 @@ export function OrderSection(props) {
                 updateCurrentStep(1);
             }       
         }
+
+        let previousScrollPosition = 0;
+
+        window.onscroll = function(){
+            let goingUp = false;
+            let scrollPosition = window.pageYOffset;
+
+            if (scrollPosition < previousScrollPosition) {
+                goingUp = true;
+            }
+
+            previousScrollPosition = scrollPosition;
+            setScrollingUp(goingUp);
+        };
     }, []);
 
     useEffect(() => {
@@ -1223,7 +1239,8 @@ export function OrderSection(props) {
         <Page>
             <Suspense>
             <Header 
-            isOrdering = {true}/>
+                scrollingUp={scrollingUp}
+                isOrdering = {true}/>
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
                 <div key={orderSectionKey} className="order-wrapper">
