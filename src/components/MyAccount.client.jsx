@@ -231,8 +231,8 @@ export default function MyAccount(props) {
 
     return (
       <Page>
-      {/* <Header 
-      isOrdering = {false} /> */}
+      <Header 
+      isOrdering = {false} />
         <div className='myaccount-wrapper'>
         <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
         

@@ -5,7 +5,7 @@ export function Page({children}) {
 
     return (
         <div>
-        <Header />
+        {/* <Header /> */}
         <div className="page">
             <Suspense>{children}</Suspense>
         </div>

@@ -155,7 +155,7 @@ a.btn-order-cta.mobile-order-cta {
     }
 
     .desktop-order-cta{
-        display: none;
+        display: none !important;
     }
 
     .header .logo img{
