@@ -129,7 +129,7 @@
 
 #_form_15_ ._submit#_form_15_submit {
     background: #474442 !important;
-    padding: 0 15px !important;
+    padding: 9px 24px !important;
     border-radius: 24px !important;
     font-size: .8em;
     color: #fff !important;
@@ -137,8 +137,12 @@
     transition: background 0.2s;
     height: 29px;
     border: 2px solid #FFFCF5 !important;
-    margin-top: 0.6em;
-    width: 90px;
+}
+
+@media screen and (min-width: 900px){
+    #_form_15_ ._submit#_form_15_submit{
+        margin-left: -50px;
+    }
 }
 
 #_form_15_ ._submit#_form_15_submit:hover {

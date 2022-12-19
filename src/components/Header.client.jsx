@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useEffect, useState } from 'react'
 import logo from "../assets/logo.png";
 import hamburgerMenu from "../assets/hamburger-menu.png";
 import iconDropdownArrow from "../assets/icon-dropdown-arrow.png";
@@ -36,8 +36,34 @@ export function Header(prop){
         return false;
     };
 
+    function useScrollDirection() {
+        const [scrollDirection, setScrollDirection] = useState(null);
+      
+        useEffect(() => {
+          let lastScrollY = window.pageYOffset;
+      
+          const updateScrollDirection = () => {
+            const scrollY = window.pageYOffset;
+            const direction = scrollY > lastScrollY ? "down" : "up";
+            if (direction !== scrollDirection && (scrollY - lastScrollY > 10 || scrollY - lastScrollY < -10)) {
+              setScrollDirection(direction);
+            }
+            lastScrollY = scrollY > 0 ? scrollY : 0;
+          };
+          window.addEventListener("scroll", updateScrollDirection); // add event listener
+          return () => {
+            window.removeEventListener("scroll", updateScrollDirection); // clean up
+          }
+        }, [scrollDirection]);
+      
+        return scrollDirection;
+      };
+
+   const scrollDirection = useScrollDirection();
+
    return(
-        <div className={`header${scrollingUp ? ' header-fixed' : ''}`}>
+
+        <div className={`header ${ scrollDirection === "down" ? "hide" : "show"}`}>
             <div className={`header-inner ${isOrdering ? 'header-inner-ordering' : ''}`}>
                 <div className={`mobile-menu ${isOrdering ? 'mobile-hide-menu' : ''}`}>
                     {isActive &&
