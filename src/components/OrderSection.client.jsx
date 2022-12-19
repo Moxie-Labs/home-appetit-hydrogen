@@ -26,7 +26,7 @@ export function OrderSection(props) {
 
     const { id: cartId, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
     
-    const { customerData, zoneHours } = props;
+    const { customerData } = props;
     let customer = null;
     if (customerData != null) 
          customer = customerData.customer;
