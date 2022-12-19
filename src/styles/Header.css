@@ -13,6 +13,13 @@
     padding: 3px;
 }
 
+.header.header-fixed {
+    position: fixed;
+    transition: transform .25s ease-in;
+    transform: translate3d(0px, 150px, 0px);
+    top: -150px;
+}
+
 .header-inner{
     display: flex;
     justify-content: space-between;
@@ -23,15 +30,20 @@
 }
 
 .header .logo img{
-    width: 265px;
+    width: 322px;
     margin: auto;
     vertical-align: middle;
-    margin-left: -4rem;
+    margin-left: -25px !important;
+    image-rendering: auto !important;
+}
+
+.nav-wrapper.nav-main a {
+    font-size: 15px;
 }
 
 .nav-wrapper ul {
     display: flex;
-    gap: 30px;
+    gap: 35px;
     padding: 0;
     margin: 0;
 }
@@ -45,6 +57,12 @@
     color: #474442;
     text-decoration: none;
     font-family: 'ITC Avant Garde Gothic W03 Md';
+}
+
+
+
+a.my-account-trigger.nav-main {
+    font-size: 15px;
 }
 
 ul.account-dropdown {
@@ -84,7 +102,9 @@ a.btn-order-cta.mobile-order-cta {
     margin: auto;
 }
 
-
+.btn-order-cta{
+    margin-right: -15px;
+}
 
 @media screen and (max-width: 960px){
     .header{
