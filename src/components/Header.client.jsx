@@ -63,7 +63,7 @@ export function Header(prop){
 
    return(
 
-        <div className={`header ${ scrollDirection === "down" ? "hide" : "show"}`}>
+        <div className={`header${scrollingUp ? ' header-fixed' : ''}`}>
             <div className={`header-inner ${isOrdering ? 'header-inner-ordering' : ''}`}>
                 <div className={`mobile-menu ${isOrdering ? 'mobile-hide-menu' : ''}`}>
                     {isActive &&
