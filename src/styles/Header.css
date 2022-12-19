@@ -16,6 +16,13 @@
     width: 100vw;
 }
 
+.header.header-fixed {
+    position: fixed;
+    transition: transform .25s ease-in;
+    transform: translate3d(0px, 150px, 0px);
+    top: -150px;
+}
+
 .header-inner{
     display: flex;
     justify-content: space-between;

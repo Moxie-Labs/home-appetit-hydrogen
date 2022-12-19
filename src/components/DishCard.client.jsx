@@ -232,11 +232,9 @@ export default function DishCard(props) {
                     <img className='btn-close-dish-card-active' src={iconCloseBtn} width="24" onClick={() => handleCancel()}/>
                     <div className="card__quantity-inner-container">
                         <h2 className="card__quantity-title">{title}</h2>
-                        {/* start placeholder */}
                         {contains?.length > 0 && <p className='card__quantity-contains'><strong>Contains:</strong> peanut, sesame, cashew, seafood  </p>} 
                         <p className='card__quantity-serving'><strong>Serves:</strong> {servingCount} {servingCount > 1 ? 'people' : 'person'}</p>
-                        {/* end placeholder */}
-                        {attributes.length > 0 && <p className="card__code"><strong>Details: </strong>{attributesDisplay}</p>}
+                        {attributes.length > 0 && <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>}
                     </div>
 
                     <div className="card__quantity-field-wrapper">
@@ -291,7 +289,7 @@ export default function DishCard(props) {
                                     { contains?.length > 0 && <p className='card__quantity-contains'><strong>Contains:</strong> {contains}</p> }
                                     <p className='card__quantity-serving'><strong>Serves:</strong> {servingCount} {servingCount > 1 ? 'people' : 'person'}</p>
                                     {/* end placeholder */}
-                                    {attributes.length > 0 && <p className="card__code"><strong>Details: </strong>{attributesDisplay}</p>}
+                                    {attributes.length > 0 && <p className="card__code"><strong>Preferences: </strong>{attributesDisplay}</p>}
                                 </div>
 
                                 <div className="card__quantity-field-wrapper">

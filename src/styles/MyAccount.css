@@ -95,7 +95,7 @@ hr.order-divider {
     font-size: 18px;
     font-family: 'ITCAvantGardeProDemi';
     border-radius: 24px;
-    padding: 9px 24px 4px;
+    padding: 9px 48px 4px;
 }
 
 button.btn.btn-default.btn-edit {
@@ -477,7 +477,7 @@ p.address-action-cta a {
     border-bottom: 1px solid #474442;
 }
 
-article.account__address.account__address--default {
+article.account__address.account__address--default, .account__address {
     margin-top: 1.875rem;
 }
 
@@ -537,12 +537,14 @@ article p.address-action-cta {
 }
 
 .mobile-panel section.account-panel-switches .info-row h2{
-    padding: 1rem 0;
+    padding: 0 0 0.5rem 0;
+    font-size: 1.3em;
     text-transform: capitalize;
     font-family: AvenirLTProBlack !important;
 }
 
 .mobile-panel .personal-info-wrapper .info-row{
+    margin-top: 1rem;
     flex-flow: column;
 }
 
@@ -634,4 +636,9 @@ table.order-table td {
     background-repeat: no-repeat;
     border: none;
     cursor: pointer;
+}
+
+.account__address-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }

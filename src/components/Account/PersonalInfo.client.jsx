@@ -410,15 +410,13 @@ export default function PersonalInfo(props) {
                         {addr.address2 !== "" && <p>{addr.address2}</p>}
                         {addr.company !== "" && <p>{addr.company}</p>}
                         <p>{addr.city}, {addr.provinceCode} {addr.zip}</p>
-                        <p><a href="#" onClick={() => openAddressModal(addr, `Address ${addressCount}`)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
+                        <p className="address-action-cta"><a href="#" onClick={() => openAddressModal(addr, `Address ${addressCount}`)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
                     </article> 
                     }
                 })}
 
             </div>
             <button className="btn btn-default new-address-cta" onClick={() => prepareNewAddress()}>Add New Address</button>
-
-            <div className="line-separator"></div>
 
                 <Modal
                     isOpen={showingAddressModal}
@@ -502,7 +500,7 @@ export default function PersonalInfo(props) {
                 handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
             />  */}
   
-            <button className="btn btn-default new-address-cta">Update preferences</button>
+            {/* <button className="btn btn-default new-address-cta">Update preferences</button> */}
             
         </div>
     );

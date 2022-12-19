@@ -89,7 +89,7 @@ export default class MenuSection extends React.Component {
 
         const progressBarSlots = [];
         for(let i=0; i<this.props.freeQuantityLimit; i++) {
-            progressBarSlots.push(<div className={`progress-bar__order-item`}></div>);
+            progressBarSlots.push(<div key={`progress-bar--${i}`} className={`progress-bar__order-item`}></div>);
         }
 
         return (

@@ -18,6 +18,10 @@
         margin-right: 1rem;
     }
 
+    .logo {
+        margin-left: 3rem;
+    }
+
     .mobile-only {
         display: unset;;
     }
@@ -70,16 +74,32 @@
     }
 
     .dish-card-wrapper {
-        padding: 1rem;
+        padding: 1rem 0;
     }
+
+        .dish-card-wrapper .ha-h3 {
+            margin: 1rem 0 0;
+        }
 
     .dish-card-wrapper .accordion {
         top: 30px;
     }
 
+    .suborder--summary-container {
+        gap: 0;
+    }
+
+    .summary--additional-wrapper h4 {
+        margin: 0;
+    }
+
     /* END General */
 
     /* Step One */  
+    section#OrderProperties {
+        padding-top: 0 !important;
+    }
+
     .illustration-empty {
         font-size: 1.2em;
         text-align: center;
@@ -172,9 +192,9 @@
         max-width: 22.5rem;
     }
 
-    .card__quantity-wrapper p.card__code {
+    /* .card__quantity-wrapper p.card__code {
         font-size: 0.9em !important;
-    }
+    } */
 
     .dish-card-wrapper.order--properties.dishcard--wrapper-inactive:after {
         content: "";
@@ -356,6 +376,10 @@
         .order__no-history--subtitle {
             margin: 0.5rem 0;
         }
+
+    .account__address-inner {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Tablet */
