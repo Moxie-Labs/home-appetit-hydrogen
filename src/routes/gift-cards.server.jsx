@@ -102,6 +102,7 @@ export default function GiftCards() {
           customer={customer}
           defaultAddress={defaultAddress === null ? null : defaultAddress}
           blogPosts={blogPosts}
+          customerAccessToken={customerAccessToken}
         />
       </Suspense>
     </Layout>

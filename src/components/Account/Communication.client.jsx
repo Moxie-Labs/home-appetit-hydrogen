@@ -9,20 +9,20 @@ export default function Communication(props) {
             <h1 className="ha-h5">Communication Preferences</h1>
 
             <div className="field">
-                <Checkbox checked={acceptsMarketing} onChange={() => handleUpdateCommunication({acceptsMarketing: !acceptsMarketing})}/>
+                <Checkbox checked={acceptsMarketing} handleClick={() => handleUpdateCommunication({acceptsMarketing: !acceptsMarketing})}/>
                 <label> I agree to laoreet aliquet proin mattis quis ut nulla lac us vitae orci quis varius lacus.</label>
             </div>
 
             <div className="field">
                 <div style={{opacity: 0.6, pointerEvents: "none"}}>
-                    <Checkbox disabled="true" checked={receiveConsent} onChange={() => handleUpdateCommunication({receiveConsent: !receiveConsent})}/>
+                    <Checkbox disabled="true" checked={receiveConsent} handleClick={() => handleUpdateCommunication({receiveConsent: !receiveConsent})}/>
                     <label> Receive laoreet aliquet proin mattis quis ut nulla lac us vitae orci quis varius lacus.</label>
                 </div>
             </div>
 
             <div className="field">
                 <div style={{opacity: 0.6, pointerEvents: "none"}}>
-                    <Checkbox disabled="true" checked={receiveConsent} onChange={() => handleUpdateCommunication({receiveConsent: !receiveConsent})}/>
+                    <Checkbox disabled="true" checked={receiveConsent} handleClick={() => handleUpdateCommunication({receiveConsent: !receiveConsent})}/>
                     <label> Receive laoreet aliquet proin mattis quis ut nulla lac us vitae orci quis varius lacus.</label>
                 </div>
             </div>

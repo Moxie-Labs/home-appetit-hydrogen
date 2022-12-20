@@ -7,7 +7,7 @@ import iconCloseBtn from "../assets/icon-close-btn.png";
 import { LogoutButton } from './LogoutButton.client';
 
 export function Header(prop){
-    const {isOrdering, scrollingUp} = prop;
+    const {isOrdering, customerAccessToken, scrollingUp} = prop;
     const [isActive, setIsActive] = useState(false);
     const [isDropdownActive, setIsDropdownActive] = useState(false);
     const rootUrl = import.meta.env.VITE_STORE_DOMAIN;
@@ -107,22 +107,25 @@ export function Header(prop){
                 {!isOrdering &&
                 <div className="nav-wrapper">
                     <ul>
+                        {!customerAccessToken && <li style={{opacity: 0}}><a href="#" className="my-account-trigger nav-main">ACCOUNT &nbsp;<span> {isDropdownActive && <img src={iconDropdownReverse} />}{!isDropdownActive && <img src={iconDropdownArrow} />}</span></a></li> }
+
                         <li><a href="/order" className="btn-order-cta mobile-order-cta">ORDER</a></li>
                         <li><a href="/order" className="btn-order-cta desktop-order-cta">ORDER NOW</a></li>
-                        <li><a href="#" className="my-account-trigger nav-main" onClick={handleDropdownToggle}>ACCOUNT &nbsp;<span> {isDropdownActive && <img src={iconDropdownReverse} />}{!isDropdownActive && <img src={iconDropdownArrow} />}</span></a>
+                                                
+                        {customerAccessToken !== undefined && customerAccessToken && <li><a href="#" className="my-account-trigger nav-main" onClick={handleDropdownToggle}>ACCOUNT &nbsp;<span> {isDropdownActive && <img src={iconDropdownReverse} />}{!isDropdownActive && <img src={iconDropdownArrow} />}</span></a>
                             
-                        {isDropdownActive && (
-                            <div className="dropdown-wrapper">
-                            <ul className="account-dropdown">
-                                 <li><a href="/account">My Account</a></li> 
-                                 <li><a href="#" onClick={handleOrdersRedirect}>Orders</a></li>
-                                 <li><a href="javascript:void(0)">Referrals</a></li>
-                                    {/* <li><LogoutButton onMouseOut={handleMouseOut} redirectUrl={`https://${rootUrl}`}/></li> */}
-                                </ul>
-                            </div>
+                            {isDropdownActive && (
+                                <div className="dropdown-wrapper">
+                                <ul className="account-dropdown">
+                                    <li><a href="/account">My Account</a></li> 
+                                    <li><a href="#" onClick={handleOrdersRedirect}>Orders</a></li>
+                                    <li><a href="javascript:void(0)">Referrals</a></li>
+                                        {/* <li><LogoutButton onMouseOut={handleMouseOut} redirectUrl={`https://${rootUrl}`}/></li> */}
+                                    </ul>
+                                </div>
                             )}
-                           
-                        </li>
+                            
+                        </li>}
                         
                     </ul>
                 </div>

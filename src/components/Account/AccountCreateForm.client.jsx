@@ -116,7 +116,7 @@ export function AccountCreateForm() {
             <Checkbox
               label="I agree to receieve marketing material from Home Appétit"
               checked={hasConsented}
-              onChange={() => setHasConsented(!hasConsented)}
+              handleClick={() => setHasConsented(!hasConsented)}
             />
           </div>
           <div className="flex items-center justify-between">

@@ -190,12 +190,12 @@ export default function DishCard(props) {
         })
 
         const modifiersSection = modifications === null ? null : modifications.map((mod, index) => {
-            return <Checkbox key={index} label={`${prepModSubTitles(mod.title)}`} price={`${parseFloat(mod.priceRange.maxVariantPrice.amount) > 0.0 ? formatter.format(mod.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(mod.id)} onChange={() => handleOptionChoice(mod, index)}/>;
+            return <Checkbox key={index} label={`${prepModSubTitles(mod.title)}`} price={`${parseFloat(mod.priceRange.maxVariantPrice.amount) > 0.0 ? formatter.format(mod.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(mod.id)} handleClick={() => handleOptionChoice(mod, index)}/>;
         });
 
         const substitutionSection = substitutions === null ? null : substitutions.map((sub, index) => {
             logToConsole(`sub: ${sub}, sub.maxVariantPrice: ${sub.maxVariantPrice}`)
-            return <Checkbox key={index} label={prepModSubTitles(sub.title)} price={`${parseFloat(sub.priceRange.maxVariantPrice.amount) > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(sub.id)} onChange={() => handleOptionChoice(sub, index)}/>;
+            return <Checkbox key={index} label={prepModSubTitles(sub.title)} price={`${parseFloat(sub.priceRange.maxVariantPrice.amount) > 0.0 ? formatter.format(sub.priceRange.maxVariantPrice.amount) : ''}`} checked={isModSelected(sub.id)} handleClick={() => handleOptionChoice(sub, index)}/>;
         });
 
         let attributesDisplay = '';

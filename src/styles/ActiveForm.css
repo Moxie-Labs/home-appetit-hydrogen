@@ -95,7 +95,7 @@
 #_form_15_ .phone-error { color:#e40e49; }
 #_form_15_ .phone-input-error { border:1px solid #e40e49 !important; }
 
-#_form_15_ ._x11194530 input { background:transparent !important; border:none; border-bottom:2px solid #fffcf5 !important; border-radius:0 !important; }
+#_form_15_ ._x11194530 input { background:transparent !important; border:none; border-bottom: none !important; border-radius:0 !important; }
 #_form_15_ ._submit { position:absolute !important; top:0 !important; right:0 !important; margin-top:-55px; text-transform:uppercase; font-weight:bold; }
 #_form_15_ ._form_7 { padding:0 !important; }
 
