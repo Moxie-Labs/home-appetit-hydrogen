@@ -113,6 +113,7 @@ button.btn.btn-default.btn-edit {
     font-family: "ITC Avant Garde Gothic W03 Md" !important;
     font-weight: 600;
     width: auto;
+    border-radius: 0;
 }
 
 button.btn.btn-default.btn-edit img {
