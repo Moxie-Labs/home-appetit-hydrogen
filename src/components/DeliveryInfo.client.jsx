@@ -286,7 +286,8 @@ export default function DeliveryInfo(props) {
 
     
     return (
-        <div className={`checkout-section checkout--delivery-info ${currentStep === step ? '' : 'disabled'}`}>
+        <div className={`checkout-section checkout--delivery-info`}>
+            <a id={`anchor-step--${step}`}/>
             { currentStep === step && !isEditing &&
                 <div>
                     <section className="checkout--deliveryinfo-top">
@@ -470,7 +471,7 @@ export default function DeliveryInfo(props) {
                         </div>
                         : 
                         <button className="btn btn-confirm btn-primary-small btn-app" onClick={onClickContinue}>
-                            CONTINUE
+                            CONFIRM
                         </button>}
 
                         {/* <button className="btn btn-primary btn-app" onClick={handleCancel}>
@@ -484,31 +485,22 @@ export default function DeliveryInfo(props) {
             { currentStep !== step &&
                 <div>
                     <section className="checkout--deliveryinfo-top">
-                        <h3 className="subheading ha-h3">Contact & Delivery Information <span disabled={currentStep === step} onClick={() => setIsEditing(true)}> {currentStep === step && <img src={iconEdit} width={65} className="iconEdit" />}</span></h3>
+                        <h3 className="subheading ha-h3">Contact & Delivery Information <span onClick={handleCancel}> <img src={iconEdit} width={65} className="iconEdit" /></span></h3>
                         <div className="contact-info">
                             <p>{firstName} {lastName}</p>
                             <p>{displayPhoneNumber(phoneNumber)}</p>
-                            {
-                            addresses.length > 1 ? 
-                            addresses.map((addr, index) => {
-                                    return <div key={addr.id} className="contact-info">
-                                            <Radio name="address" handleClick={() => addressSelection(index)} isChecked={addr.id === addressId} label={`${addr.address1} ${(addr.address2 !== "" && addr.address2 !== null) ? addr.address2 : ''} ${addr.city}, ${addr.provinceCode} ${addr.zip}`}/>
-                                        </div>      
-                                        })
-                            :
                             <div>
                                 <p>{emailAddress}</p>
                                 <p>{address}, {deliveryState} {zipcode}</p>
                             </div>
-                            }
                         </div>
                     </section>
 
-                <section className="checkout--deliveryinfo-top">
+                <section className="checkout--deliveryinfo-top greyed-out">
                     <label className="delivery-window_label">Delivery Instructions</label>
-                    <textarea className="order_textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Enter instructions for finding or delivering to your location"} rows="6"></textarea>
+                    <textarea disabled className="order_textarea" name="instructions" value={instructions} onChange={onInstructionChange} placeholder={"Enter instructions for finding or delivering to your location"} rows="6"></textarea>
                 </section>
-                <div className="contact-option edit-state">
+                <div className="contact-option edit-state greyed-out">
                     <Checkbox
                         label="Include extra ice $5.00"
                         checked={extraIce}
@@ -535,12 +527,11 @@ export default function DeliveryInfo(props) {
 
             <hr></hr>
 
-            <div className="place-order-container">
-                <button className= {`btn btn-primary-small btn-place-order${isEditing ? ' disabled' : ''}`} disabled={address.length === 0} onClick={handleContinue}>
-                    CONTINUE TO PAYMENT
+            { currentStep === step && <div className="place-order-container">
+                <button className= {`btn btn-primary-small btn-place-order${(isEditing || addressId === null) ? ' disabled' : ''}`} disabled={address.length === 0} onClick={handleContinue}>
+                    CONTINUE
                 </button>
-            </div>    
-
+            </div> }
             
         </div>
     );

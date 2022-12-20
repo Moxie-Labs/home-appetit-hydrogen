@@ -26,7 +26,7 @@ export function OrderSection(props) {
 
     const { id: cartId, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
     
-    const { customerData, zoneHours } = props;
+    const { customerData } = props;
     let customer = null;
     if (customerData != null) 
          customer = customerData.customer;
@@ -47,7 +47,7 @@ export function OrderSection(props) {
     const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(props.isGuest);
     const [isChangePlanModalShowing, setChangePlanModalShowing] = useState(false);
     const [isAlreadyOrderedModalShowing, setIsAlreadyOrderedModalShowing] = useState(false);
     const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
@@ -92,6 +92,7 @@ export function OrderSection(props) {
     let [city, setCity] = useState(defaultAddress === null ? '' : defaultAddress.city);
     let [zipcode, setZipcode] = useState(defaultAddress === null ? '' : defaultAddress.zip);    
     let [country, setCountry] = useState("United States");
+    let [zipcodeZone, setZipcodeZone] = useState(0);
 
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
@@ -162,7 +163,21 @@ export function OrderSection(props) {
             determineCurrentStep();
     }, [cartWasRestored])
 
+    useEffect(() => {
+        determineZipcodeZone();
+    },[zipcode])
+
     /* Helpers */
+    const determineZipcodeZone = () => {
+        let zone = 0;
+        props.validZipcodes.map(zipcodeBlock => {
+            if (zipcodeBlock.zip_code === `${zipcode}`)
+                zone = parseInt(zipcodeBlock.area);
+        });
+
+        setZipcodeZone(zone);
+    }
+
     const convertTags = tags => {
         const newTags = [];
         tags.map(tag => {
@@ -726,7 +741,6 @@ export function OrderSection(props) {
 
 
     const setupNextSection = nextStep => {
-        // setIsAddingExtraItems(false);
         if (returnToPayment && nextStep <= READY_FOR_PAYMENT_STEP)
             updateCurrentStep(READY_FOR_PAYMENT_STEP);
         else
@@ -1092,6 +1106,10 @@ export function OrderSection(props) {
     const updateCurrentStep = newStep => {
         let isAddingExtra = false;
 
+        // if: user is Guest, the set Address to editing on startup
+        if (newStep === FIRST_PAYMENT_STEP)
+            setIsEditing(isGuest);
+
         // if: Customer already picked 
         if (newStep === MAIN_ITEMS_STEP && getQuantityTotal(selectedMainItems) >= getFreeQuantityLimit())
             isAddingExtra = true;
@@ -1106,7 +1124,7 @@ export function OrderSection(props) {
         setCardStatus("");
 
         setTimeout(() => {
-            if (newStep < 7 && newStep > FIRST_STEP) {
+            if (newStep > FIRST_STEP) {
                 logToConsole("jumping to step #", newStep);
                 const stepElem = document.querySelector(`#anchor-step--${newStep}`);
                 stepElem.scrollIntoView({behavior: "smooth", block: "start"});
@@ -1406,7 +1424,7 @@ export function OrderSection(props) {
 
                             <section className={`menu-section__actions actions--submit-order`}>
                                 <a id={`anchor-step--${READY_FOR_PAYMENT_STEP}`}/>
-                                <button className={`btn btn-primary-small btn-app${ currentStep === READY_FOR_PAYMENT_STEP ? '' : ' btn-disabled'}`} onClick={() => setupNextSection(6)}>Place Order</button>
+                                <button className={`btn btn-primary-small btn-app${ currentStep === READY_FOR_PAYMENT_STEP ? '' : ' btn-disabled'}`} onClick={() => { setupNextSection(6); }}>Place Order</button>
                             </section>
 
                         </LayoutSection>
@@ -1520,27 +1538,6 @@ export function OrderSection(props) {
             { getPhase(currentStep) === "payment" && 
                 <div className="payment-wrapper">
                     <Layout>
-                        <LayoutSection>
-
-                            <DeliveryWindow 
-                                availableDeliveryStarts={zoneHours} 
-                                deliveryWindowStart={deliveryWindowStart}
-                                deliveryWindowEnd={deliveryWindowEnd}
-                                deliveryWindowDay={deliveryWindowDay}
-                                deliveryWindowOne={dayOfWeek("next", "monday")}
-                                deliveryWindowTwo={dayOfWeek("next", "tuesday")}
-                                handleChangeStart={(value) => setDeliveryStart(value)}
-                                handleChangeEnd={(value) => setDeliveryEnd(value)}
-                                handleChangeDay={value => setDeliveryWindowDay(value)}
-                                handleContinue={() => {setCurrentStep(7); setIsEditing(isGuest)}}
-                                handleCancel={() => {setCurrentStep(6)}}
-                                step={6}
-                                currentStep={currentStep}
-                                isEditing={isEditing}
-                                setIsEditing={setIsEditing}
-                            />
-
-                        </LayoutSection>
 
                         <LayoutSection>
 
@@ -1576,12 +1573,9 @@ export function OrderSection(props) {
                                 handleGiftMessage={(value) => setGiftMessage(value)}
                                 handleAgreeToTerms={value => setAgreeToTerms(value)}
                                 handleReceiveTexts={value => setReceiveTexts(value)}
-                                handleContinue={() => {
-                                    requestCallbackRuntime(confirmDeliveryInfo);
-                                    requestCallbackRuntime(attemptSubmitOrder, 2000);
-                                }}
-                                handleCancel={() => {setCurrentStep(6)}}
-                                step={7}
+                                handleContinue={() => { updateCurrentStep(7); }}
+                                handleCancel={() => {updateCurrentStep(6)}}
+                                step={6}
                                 currentStep={currentStep}
                                 isGuest={isGuest}
                                 isEditing={isEditing}
@@ -1591,6 +1585,35 @@ export function OrderSection(props) {
                             />
 
                         </LayoutSection>
+
+                        <LayoutSection>
+
+                            <DeliveryWindow 
+                                availableDeliveryStarts={{zone1Hours: props.zone1Hours, zone2Hours: props.zone2Hours}} 
+                                deliveryWindowStart={deliveryWindowStart}
+                                deliveryWindowEnd={deliveryWindowEnd}
+                                deliveryWindowDay={deliveryWindowDay}
+                                deliveryWindowOne={dayOfWeek("next", "monday")}
+                                deliveryWindowTwo={dayOfWeek("next", "tuesday")}
+                                handleChangeStart={(value) => setDeliveryStart(value)}
+                                handleChangeEnd={(value) => setDeliveryEnd(value)}
+                                handleChangeDay={value => setDeliveryWindowDay(value)}
+                                handleContinue={() => {
+                                    requestCallbackRuntime(confirmDeliveryInfo);
+                                    requestCallbackRuntime(attemptSubmitOrder, 2000);
+                                }}
+                                handleCancel={() => {updateCurrentStep(7)}}
+                                step={7}
+                                currentStep={currentStep}
+                                isEditing={isEditing}
+                                isGuest={isGuest}
+                                setIsEditing={setIsEditing}
+                                zipcodeZone={zipcodeZone}
+                            />
+
+                        </LayoutSection>
+
+                        
 
                     </Layout>
 
