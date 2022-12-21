@@ -339,6 +339,7 @@ export default function PersonalInfo(props) {
                         <div className="info-row">
                             <h2><span className="info-label">First Name:</span><br /> {firstName}</h2>
                             <h2><span className="info-label">Last Name:</span><br />  {lastName}</h2>
+                            <h2 style={{opacity: 0}}><span className="info-label">Birthdate:</span><br />  12/21/1982</h2>
                         </div>
                         <div className="info-row">
                             <h2 className="personal-info-header personal-info-header--email"><span className="info-label">Email:</span><br />  {email}</h2>
@@ -363,7 +364,7 @@ export default function PersonalInfo(props) {
                               {fieldErrors.lastNameState !== undefined && <p className='form-errors'>{fieldErrors.lastNameState}</p>}
                             </label>
                             {/* placeholder */}
-                            {/* <h2><span className="info-label">Birthdate:</span><br />  12/21/1982</h2> */}
+                            {/* <h2 style={{opacity: 0}}><span className="info-label">Birthdate:</span><br />  12/21/1982</h2> */}
                             {/* end placeholder */}
                         </div>
                     <div className="info-row row-2">
