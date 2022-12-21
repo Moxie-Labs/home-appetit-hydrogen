@@ -1,5 +1,9 @@
 #container--gift-card {
-    padding-top: 2rem;
+    /* padding-top: 2rem; */
+    margin-left: -1rem;
+    margin-right: -1rem;
+    /* padding: 0 1rem; */
+    background: #F8EFE0;
 }
 
 .gc-wrapper {
@@ -42,6 +46,7 @@
 .gc-wrapper h5{
     padding: 0;
     margin: 0;
+    font-weight: 200;
 }
 
 .gc-wrapper input[type='text'], .gc-wrapper textarea, .gc-wrapper input[type='number'] {
@@ -128,6 +133,7 @@ p.gc-subtitle {
         font-size: 4em;
         margin: 0;
         text-align: center;
+        font-weight: 200;
     }
 
     .blog-post-section_posts {
