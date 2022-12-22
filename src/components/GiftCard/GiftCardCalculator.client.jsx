@@ -136,10 +136,14 @@ export function GiftCardCalculator(props) {
         
                 setHasAddedCard(true);
                 
-                linesAdd({
-                    merchandiseId: variant.id,
-                    quantity: 1
-                });
+                noteUpdate(message);
+
+                setTimeout(() => {
+                    linesAdd({
+                        merchandiseId: variant.id,
+                        quantity: 1
+                    });
+                }, 1000);
         
             }
         }
@@ -218,7 +222,7 @@ export function GiftCardCalculator(props) {
         else  {
             logToConsole("done");
 
-            noteUpdate(message);
+            
 
             setTimeout(() => {
                 const {defaultAddress} = props;
