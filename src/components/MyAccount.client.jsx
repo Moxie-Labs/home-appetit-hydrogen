@@ -224,7 +224,8 @@ export default function MyAccount(props) {
       return (
         <section className='account-panel-body'>
           <Referrals
-              customer={customer}
+            orderCount={orders.length}
+            customer={customer}
           /> 
         </section>
       );

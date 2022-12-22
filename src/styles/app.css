@@ -30,6 +30,10 @@
     float: right;
 }
 
+.link {
+    color: #474442;
+}
+
 .btn {
     border: none;
     border-radius: 20px;
