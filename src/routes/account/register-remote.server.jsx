@@ -225,6 +225,14 @@ export async function api(request, {session, queryShop}) {
                 });
                 response.headers.append("Access-Control-Allow-Origin", "*");
                 return response;
+            })
+            .catch(e => {
+              logToConsole("Contacting Referral API failed...");
+              const response = new Response(null, {
+                status: 200
+              });
+              response.headers.append("Access-Control-Allow-Origin", "*");
+              return response;
             });
           
       } else {
