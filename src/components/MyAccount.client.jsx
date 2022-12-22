@@ -12,6 +12,7 @@ import { Header } from './Header.client';
 import { Footer } from './Footer.client';
 import iconDropdownArrow from "../assets/icon-dropdown-arrow.png";
 import iconDropdownReverse from "../assets/icon-dropdown-reverse.png";
+import Referrals from './Account/Referrals.client';
 
 
 export default function MyAccount(props) {
@@ -41,11 +42,8 @@ export default function MyAccount(props) {
     useEffect(() => {
       if (window.location.hash === '#orders')
         setActiveTab('orders')
-    }, []);
-
-    useEffect(() => {
       if (window.location.hash === '#referrals')
-        setActiveTab('gift_cards')
+        setActiveTab('referrals')
     }, []);
 
     const updateCustomerInfo = async (firstName, lastName, email, phone) => {
@@ -222,6 +220,16 @@ export default function MyAccount(props) {
       )
     }
 
+    function referralsPanel(){
+      return (
+        <section className='account-panel-body'>
+          <Referrals
+              customer={customer}
+          /> 
+        </section>
+      );
+    }
+
     const toggleTab = tabName => {
       if (activeTab === tabName)
         setActiveTab("");
@@ -240,7 +248,7 @@ export default function MyAccount(props) {
             <section className='account-panel-switches'>
                 <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => toggleTab('info')}>Personal Info</h2>
                 <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => toggleTab('orders')}>Orders</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => {;}}>Referrals</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'referrals' ? ' active' : '' }`} onClick={() => toggleTab('referrals')}>Referrals</h2>
             </section>
                 { activeTab === 'info' &&
                     personalInfoPanel()
@@ -250,8 +258,8 @@ export default function MyAccount(props) {
                     ordersPanel()
                 }
 
-                { activeTab === 'gift_cards' &&
-                    giftCardsPanel()
+                { activeTab === 'referrals' &&
+                    referralsPanel()
                 }
         </div>
         <div className='myaccount-page mobile-panel'>
@@ -268,6 +276,10 @@ export default function MyAccount(props) {
                       { activeTab === 'orders' &&
                           ordersPanel()
                       }
+                  <h2 className={`account-panel-switch${ activeTab === 'referrals' ? ' active' : '' }`} onClick={() => toggleTab('referrals')}>Referrals &nbsp;<span>{activeTab === 'referrals' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'referrals' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                    { activeTab === 'orders' &&
+                        ordersPanel()
+                    }
                   {/* <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals &nbsp;<span>{activeTab === 'gift_cards' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'gift_cards' && <img src={iconDropdownArrow} alt="" />}</span></h2>
                       { activeTab === 'gift_cards' &&
                           giftCardsPanel()

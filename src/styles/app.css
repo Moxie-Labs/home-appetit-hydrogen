@@ -22,6 +22,14 @@
     opacity: 0.6;
 }
 
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
 .btn {
     border: none;
     border-radius: 20px;

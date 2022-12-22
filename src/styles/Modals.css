@@ -241,7 +241,7 @@ section.modal--customize-inner {
     display: flex;
 }
 
-.modal-new-address {
+.modal-new-address, .modal-new-referral {
     max-width: 620px;
     left: 50%;
     top: 50%;
@@ -250,6 +250,10 @@ section.modal--customize-inner {
     padding: 2.5rem;
     background: #FFFCF5;
     border-radius: 12px;
+}
+
+.modal-new-referral {
+    width: 600px;
 }
 
 .new-address-wrapper .field-row {
@@ -286,12 +290,17 @@ section.modal--customize-inner {
     width: 50%;
 }
 
-.modal-new-address .modal-action {
+.modal-new-address .modal-action, .modal-new-referral .modal-action {
     margin: 2.5rem 0;
     text-align: center;
     display: flex;
     justify-content: space-between;
     gap: 1.25rem;
+}
+
+.modal-new-referral .modal-action {
+    margin: 0;
+    justify-content: center;
 }
 
 .modal-new-address .modal-action button {
@@ -301,7 +310,13 @@ section.modal--customize-inner {
     margin: 0;
 }
 
-.modal-new-address .modal-action button.btn-address-cancel {
+.modal-new-referral .modal-action button {
+    height: 35px;
+    padding: 5px 4rem;
+    margin: 0;
+}
+
+.modal-new-address .modal-action button.btn-address-cancel, .modal-new-referral .modal-action button.btn-address-cancel {
     background: transparent;
     border: 2px solid #474442;
     color: #474442;
