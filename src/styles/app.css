@@ -13,6 +13,10 @@
     text-decoration: underline;
 }
 
+.uppercase {
+    text-transform: uppercase;
+}
+
 .bold {
     font-weight: bold;
 }
@@ -20,6 +24,10 @@
 .greyed-out {
     pointer-events: none;
     opacity: 0.6;
+}
+
+.link {
+    color: #474442;
 }
 
 .btn {

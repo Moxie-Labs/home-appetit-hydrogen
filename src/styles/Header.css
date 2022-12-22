@@ -8,7 +8,8 @@
     top: 0;
     text-align: center;
     line-height: 3.75rem;
-    z-index: 1;
+    z-index: 99999;
+    padding: 3px;
     margin-top: -7em;
     margin-left: -50vw;
     margin-right: -50vw;
