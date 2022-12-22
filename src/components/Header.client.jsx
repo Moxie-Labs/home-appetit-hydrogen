@@ -76,7 +76,7 @@ export function Header(prop){
                         <div className="mobile-nav mobile-nav-main">
                             <ul>
                                 <li><a href={`https://${rootUrl}/pages/how-it-works`}>HOW IT WORKS</a></li>
-                                <li><a href={`https://${rootUrl}/pages/why-home-appetit`}>WHY HOME APPETIT</a></li>
+                                <li><a href={`https://${rootUrl}/pages/why-home-appetit`}>WHY HOME APPÉTIT</a></li>
                                 <li><a href={`https://${rootUrl}/blogs/blog`}>BLOG</a></li>
                             </ul>
                         </div>
@@ -94,18 +94,23 @@ export function Header(prop){
                 <div className="nav-wrapper nav-main">
                     <ul>
                         <li><a href={`https://${rootUrl}/pages/how-it-works`}>HOW IT WORKS</a></li>
-                        <li><a href={`https://${rootUrl}/pages/why-home-appetit`}>WHY HOME APPETIT</a></li>
+                        <li><a href={`https://${rootUrl}/pages/why-home-appetit`}>WHY HOME APPÉTIT</a></li>
                         <li><a href={`https://${rootUrl}/blogs/blog`}>BLOG</a></li>
                     </ul>
                 </div>
                 }
                 <div className={`logo ${isOrdering ? 'mobile-logo-margin' : ''}`}>
                     <a href={`https://${rootUrl}`}>
+                    {isOrdering &&
+                     <img src={logo} style={{marginLeft: 0}}/>
+                    }
+                    {!isOrdering &&
                      <img src={logo}/>
+                    }
                      </a>
                 </div>
                 {!isOrdering &&
-                <div className="nav-wrapper">
+                <div className="nav-wrapper order-cta">
                     <ul>
                         {!customerAccessToken && <li style={{opacity: 0}}><a href="#" className="my-account-trigger nav-main">ACCOUNT &nbsp;<span> {isDropdownActive && <img src={iconDropdownReverse} />}{!isDropdownActive && <img src={iconDropdownArrow} />}</span></a></li> }
 

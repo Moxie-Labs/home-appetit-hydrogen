@@ -136,10 +136,14 @@ export function GiftCardCalculator(props) {
         
                 setHasAddedCard(true);
                 
-                linesAdd({
-                    merchandiseId: variant.id,
-                    quantity: 1
-                });
+                noteUpdate(message);
+
+                setTimeout(() => {
+                    linesAdd({
+                        merchandiseId: variant.id,
+                        quantity: 1
+                    });
+                }, 1000);
         
             }
         }
@@ -218,7 +222,7 @@ export function GiftCardCalculator(props) {
         else  {
             logToConsole("done");
 
-            noteUpdate(message);
+            
 
             setTimeout(() => {
                 const {defaultAddress} = props;
@@ -340,7 +344,7 @@ export function GiftCardCalculator(props) {
                                     <h5 className="ha-h5">What will your recipient get?</h5>
                                 </div>
                                 <div className="gc-col-item para-col">
-                                    <p className='ha-body'>A digital gift card—along with your note and instructions to purchase meals. Prefer to send the gift card yourself? Put your own address in the email field and you can forward along the card. PS: Gift cards never expire. Questions? Contact us here.</p>
+                                    <p className='ha-body'>A digital gift card—along with your note and instructions to purchase meals. Prefer to send the gift card yourself? Put your own address in the email field and you can forward along the card. PS: Gift cards never expire. Questions? <a className='uppercase underline link' href={`${marketingSite}pages/contact-1`}>Contact us here</a>.</p>
                                 </div>
                             </div>
                         </div>
@@ -355,7 +359,7 @@ export function GiftCardCalculator(props) {
                                     <h5 className="ha-h5">What gift card amount should you buy?</h5>
                                 </div>
                                 <div className="gc-col-item para-col">
-                                    <p className='ha-body'>Our deliveries start at $100 a person (only $50 for each additional person), which includes enough selections for 4-6 meals per person. Consider adding a little something extra, so the recipient can try a few of our sweets, salads and soups—and don’t forget that delivery costs $5 in Philadelphia and $15 for the suburbs. Still have questions? Use our gift card calculator above or Contact us here.</p>
+                                    <p className='ha-body'>Our deliveries start at $100 a person (only $50 for each additional person), which includes enough selections for 4-6 meals per person. Consider adding a little something extra, so the recipient can try a few of our sweets, salads and soups—and don’t forget that delivery costs $5 in Philadelphia and $15 for the suburbs. Still have questions? Use our gift card calculator above or <a className='uppercase underline link' href={`${marketingSite}pages/contact-1`}>Contact us here</a>.</p>
                                 </div>
                             </div>
                         </div>
@@ -369,7 +373,7 @@ export function GiftCardCalculator(props) {
                         {blogArea}
                     </div>
                     <div className='blog-post-section_link'>
-                        <a className='btn btn-tertiary-small' style={{paddingLeft: '4em', paddingRight: '4em'}} href={`${marketingSite}blogs/blog`}>View All</a>
+                        <a className='btn btn-tertiary-small' style={{paddingLeft: '4em', paddingRight: '4em', fontSize: 14}} href={`${marketingSite}blogs/blog`}>View All</a>
                     </div>
                 </section>
 
