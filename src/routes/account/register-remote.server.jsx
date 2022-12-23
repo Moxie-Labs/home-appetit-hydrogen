@@ -30,18 +30,15 @@ export async function api(request, {session, queryShop}) {
 
   let jsonBody = await request.text();
 
-  const response = new Response(
-    jsonBody,
-    {status: 200}
-  );
-  response.headers.append("Access-Control-Allow-Origin", "*");
-  return response; 
-
   let redirect = false;
 
   // try: logging in using JSON notation; catch: if the request is form-data
   logToConsole("received form-data.  Converting...");
   let strArr = jsonBody;
+
+  strArr = strArr.split("&pathname=");
+  strPath = strArr[1];
+  strArr = strArr[0];
 
   strArr = strArr.split("&customer%5Bpassword%5D=");
   if (strArr === null) 
@@ -92,8 +89,16 @@ export async function api(request, {session, queryShop}) {
     state: state,
     country: "United States",
     zip: zip,
-    phone: phone
+    phone: phone,
+    path: strPath
   }
+
+  const response = new Response(
+    jsonBody,
+    {status: 200}
+  );
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response; 
 
   redirect = true;
 
