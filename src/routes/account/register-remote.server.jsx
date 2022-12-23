@@ -37,7 +37,7 @@ export async function api(request, {session, queryShop}) {
   let strArr = jsonBody;
 
   strArr = strArr.split("&pathname=");
-  strPath = strArr[1];
+  let strPath = strArr[1];
   strArr = strArr[0];
 
   strArr = strArr.split("&customer%5Bpassword%5D=");
@@ -92,13 +92,6 @@ export async function api(request, {session, queryShop}) {
     phone: phone,
     path: strPath
   }
-
-  const response = new Response(
-    jsonBody,
-    {status: 200}
-  );
-  response.headers.append("Access-Control-Allow-Origin", "*");
-  return response; 
 
   redirect = true;
 
