@@ -65,6 +65,8 @@ export async function api(request, {session, queryShop}) {
       strPath = decodeURIComponent(strPath);
     }
 
+    return new Response(strPath, {status: 400});
+
     strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 
       return new Response(`Invalid input request`);
