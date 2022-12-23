@@ -9,7 +9,7 @@ export default function DeliveryWindow(props) {
         deliveryWindowStart, 
         deliveryWindowDay,
         deliveryWindowOne,
-        deliveryWindowTwo,
+        // deliveryWindowTwo,
         availableDeliveryStarts, 
         handleChangeStart, 
         handleChangeDay,
@@ -57,6 +57,31 @@ export default function DeliveryWindow(props) {
 
     const getDisplayDate = date => {
         let retval;
+
+        switch(date.getDay()) {
+            case 0:
+                retval = `Sunday `;
+                break;
+            case 1:
+                retval = `Monday `;
+                break;
+            case 2:
+                retval = `Tuesday `;
+                break;
+            case 3:
+                retval = `Wednesday `;
+                break;
+            case 4:
+                retval = `Thursday `;
+                break;
+            case 5:
+                retval = `Friday `;
+                break;
+            case 6:
+                retval = `Saturday `;
+                break;
+        }
+
         if (date.getDay() === 1) 
             retval = `Monday `
         else if (date.getDay() === 2)
@@ -84,7 +109,7 @@ export default function DeliveryWindow(props) {
                 <div>
                     <div className="delivery-date_container">
                         <h3 className={`subheading delivery-date_item${deliveryWindowDay === 1 ? ' active' : ''}`} onClick={() => handleChangeDay(1)}>{getDisplayDate(deliveryWindowOne)}</h3>
-                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 2 ? ' active' : ''}`} onClick={() => handleChangeDay(2)}>{getDisplayDate(deliveryWindowTwo)}</h3>
+                        {/* <h3 className={`subheading delivery-date_item${deliveryWindowDay === 2 ? ' active' : ''}`} onClick={() => handleChangeDay(2)}>{getDisplayDate(deliveryWindowTwo)}</h3> */}
                     </div>
 
                     <label className="delivery-window_label">Delivery Window</label>
@@ -107,7 +132,7 @@ export default function DeliveryWindow(props) {
                 <div>
                     <div className="delivery-date_container delivery-date_container--disabled">
                         <h3 className={`subheading delivery-date_item${deliveryWindowDay === 1 ? ' active' : ''}`}>{getDisplayDate(deliveryWindowOne)}</h3>
-                        <h3 className={`subheading delivery-date_item${deliveryWindowDay === 2 ? ' active' : ''}`}>{getDisplayDate(deliveryWindowTwo)}</h3> 
+                        {/* <h3 className={`subheading delivery-date_item${deliveryWindowDay === 2 ? ' active' : ''}`}>{getDisplayDate(deliveryWindowTwo)}</h3>  */}
                     </div>
 
                     <div className="checkout--delivery-window-selectors">

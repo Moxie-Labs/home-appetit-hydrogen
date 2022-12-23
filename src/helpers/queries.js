@@ -46,6 +46,9 @@ export const GET_MENUS_QUERY = gql`
                     startDate: metafield(namespace: "custom", key: "start_date") {
                     value
                     }
+                    deliveryDate: metafield(namespace: "custom", key: "order_delivery_date") {
+                      value
+                    }
                     products(first: 50) {
                     edges {
                         node {
