@@ -59,7 +59,7 @@ export async function api(request, {session, queryShop}) {
 
     if (strArr.includes("pathname=")) {
       strArr = strArr.split("&pathname=");
-      strPath = strArr[1];
+      strPath = decodeURIComponent(strArr[1]);
       strArr = strArr[0];
     }
 
