@@ -47,7 +47,7 @@ export async function api(request, {session, queryShop}) {
 
   let jsonBody = await request.text();
   let redirect = false;
-  let strPath;
+  let strPath = "/";
 
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
@@ -61,8 +61,6 @@ export async function api(request, {session, queryShop}) {
       strArr = strArr.split("&pathname=");
       strPath = strArr[1];
       strArr = strArr[0];
-    } else {
-      strPath = "/";
     }
 
     strArr = strArr.split("&customer%5Bpassword%5D=");
