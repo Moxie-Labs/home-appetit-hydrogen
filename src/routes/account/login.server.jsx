@@ -47,6 +47,7 @@ export async function api(request, {session, queryShop}) {
 
   let jsonBody = await request.text();
   let redirect = false;
+  let strPath = "/";
 
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
@@ -55,6 +56,17 @@ export async function api(request, {session, queryShop}) {
   } catch (e) {
     logToConsole("received form-data.  Converting...");
     let strArr = jsonBody;
+
+    if (strArr.includes("pathname=")) {
+      strArr = strArr.split("&pathname=");
+      strPath = strArr[1];
+      strArr = strArr[0];
+      strPath = strPath.split("&recaptcha")[0];
+      strPath = decodeURIComponent(strPath);
+    }
+
+
+
     strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 
       return new Response(`Invalid input request`);
@@ -108,7 +120,7 @@ export async function api(request, {session, queryShop}) {
       data.customerAccessTokenCreate.customerAccessToken.accessToken,
     );
 
-    let redirectDest = `https://${import.meta.env.VITE_STORE_DOMAIN}/`;
+    let redirectDest = `https://${import.meta.env.VITE_STORE_DOMAIN}${strPath}`;
     const today = new Date();
     if (redirect) {
      

@@ -21,11 +21,11 @@ export function Footer(){
             </div>
             <div className="footer-item">
                 <div className="sub-heading">
-                    Connect with us
+                    Connect With Us
                 </div>
                 <div className="social-wrapper">
-                    <a href="mailto:contact@homeappetitphilly.com"><img src={ iconEmail } className="footer-logo"/></a>
                     <a href="http://instagram.com/homeappetitphilly"><img src={ iconInsta } className="footer-logo"/></a>
+                    <a href="mailto:contact@homeappetitphilly.com"><img src={ iconEmail } className="footer-logo"/></a>
                 </div>
             </div>
             <div className="footer-item">
@@ -35,8 +35,8 @@ export function Footer(){
                 <ul className="footer-menu">
                     <li><a href={`${marketingSite}blogs/blog/heating-instructions`}>HEATING INSTRUCTIONS</a></li>
                     <li><a href={`${marketingSite}pages/faq`}>FAQS</a></li>
-                    <li><a href="/gift-cards">GIFT CARDS</a></li>
-                    <li><a href={`${marketingSite}pages/referrals`}>OUR REFERRAL PROGAM</a></li>
+                    <li><a href="/gift-cards">DIGITAL GIFT CARDS</a></li>
+                    <li><a href={`${marketingSite}pages/referrals`}>OUR REFERRAL PROGRAM</a></li>
                 </ul>
             </div>
             <div className="footer-item">

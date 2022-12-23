@@ -1171,6 +1171,10 @@ export function OrderSection(props) {
         autocomplete.addListener("place_changed", handlePlaceSelect);
     };
 
+    const getDeliveryWindowFromMenu = () => {
+        return new Date(latestMenu.deliveryDate.value);
+    }
+
     /* END Helpers */
 
     /* Static Values */
@@ -1298,7 +1302,7 @@ export function OrderSection(props) {
                                     step={1}
                                     currentStep={currentStep}
                                     servingCount={servingCount}
-                                    deliveryWindowOne={dayOfWeek("next", "monday")}
+                                    deliveryWindowOne={getDeliveryWindowFromMenu()}
                                 />
                             </div>
 
@@ -1593,8 +1597,8 @@ export function OrderSection(props) {
                                 deliveryWindowStart={deliveryWindowStart}
                                 deliveryWindowEnd={deliveryWindowEnd}
                                 deliveryWindowDay={deliveryWindowDay}
-                                deliveryWindowOne={dayOfWeek("next", "monday")}
-                                deliveryWindowTwo={dayOfWeek("next", "tuesday")}
+                                deliveryWindowOne={getDeliveryWindowFromMenu()}
+                                // deliveryWindowTwo={dayOfWeek("next", "tuesday")}
                                 handleChangeStart={(value) => setDeliveryStart(value)}
                                 handleChangeEnd={(value) => setDeliveryEnd(value)}
                                 handleChangeDay={value => setDeliveryWindowDay(value)}

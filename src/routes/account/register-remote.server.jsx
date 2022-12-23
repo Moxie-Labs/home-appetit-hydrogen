@@ -38,6 +38,10 @@ export async function api(request, {session, queryShop}) {
   logToConsole("received form-data.  Converting...");
   let strArr = jsonBody;
 
+  strArr = strArr.split("&pathname=");
+  let strPath = strArr[1];
+  strArr = strArr[0];
+
   strArr = strArr.split("&customer%5Bpassword%5D=");
   if (strArr === null) 
     return new Response(`Invalid input request`);
@@ -87,7 +91,8 @@ export async function api(request, {session, queryShop}) {
     state: state,
     country: "United States",
     zip: zip,
-    phone: phone
+    phone: phone,
+    path: strPath
   }
 
   redirect = true;
@@ -205,12 +210,14 @@ export async function api(request, {session, queryShop}) {
         );
 
         if (error) return new Response(JSON.stringify({addrError}), {status: 400});
-  
+
+        const referralUrl = import.meta.env.VITE_REFERRAL_APP_URL;
+
         logToConsole("Sending referral discount to new user...");
         const req = {
           method: "POST",
           body: JSON.stringify({
-            referredUseremail : jsonBody.email
+              referredUseremail : jsonBody.email
           }),
           headers: {
               'Content-type': 'application/json; charset=UTF-8'

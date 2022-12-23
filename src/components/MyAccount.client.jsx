@@ -241,10 +241,11 @@ export default function MyAccount(props) {
     return (
       <Page>
       <Header 
-      isOrdering = {false} />
+      isOrdering = {false}
+      customerAccessToken={props.customerAccessToken} />
         <div className='myaccount-wrapper'>
         <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
-        
+
         <div className='myaccount-page desktop-panel'>
             <section className='account-panel-switches'>
                 <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => toggleTab('info')}>Personal Info</h2>
