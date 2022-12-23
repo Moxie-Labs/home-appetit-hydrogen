@@ -61,11 +61,12 @@ export async function api(request, {session, queryShop}) {
       strArr = strArr.split("&pathname=");
       strArr = strArr[0];
       strPath = strArr[1];
+      return new Response(strPath, {status: 400});
       strPath = strPath.split("&recaptcha")[0];
       strPath = decodeURIComponent(strPath);
     }
 
-    return new Response(strPath, {status: 400});
+
 
     strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 
