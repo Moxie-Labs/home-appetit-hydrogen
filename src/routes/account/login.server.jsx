@@ -57,6 +57,8 @@ export async function api(request, {session, queryShop}) {
     logToConsole("received form-data.  Converting...");
     let strArr = jsonBody;
 
+    return new Respnose(strArr, {status: 401});
+
     if (strArr.includes("pathname=")) {
       strArr = strArr.split("&pathname=");
       strPath = decodeURIComponent(strArr[1]);
