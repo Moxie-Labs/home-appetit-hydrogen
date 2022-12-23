@@ -57,12 +57,12 @@ export async function api(request, {session, queryShop}) {
     logToConsole("received form-data.  Converting...");
     let strArr = jsonBody;
 
-    return new Response(strArr, {status: 401});
-
     if (strArr.includes("pathname=")) {
       strArr = strArr.split("&pathname=");
-      strPath = decodeURIComponent(strArr[1]);
       strArr = strArr[0];
+      strPath = strArr[1];
+      strPath = strPath.split("&recaptcha")[0];
+      strPath = decodeURIComponent(strPath);
     }
 
     strArr = strArr.split("&customer%5Bpassword%5D=");
