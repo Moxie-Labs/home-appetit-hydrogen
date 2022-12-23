@@ -30,6 +30,13 @@ export async function api(request, {session, queryShop}) {
 
   let jsonBody = await request.text();
 
+  const response = new Response(
+    jsonBody,
+    {status: 200}
+  );
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response; 
+
   let redirect = false;
 
   // try: logging in using JSON notation; catch: if the request is form-data
@@ -73,13 +80,6 @@ export async function api(request, {session, queryShop}) {
   state = state.replace(/\+/g, ' ');
   let zip = strCustomer[5].split("zip%5D=")[1];
   let phone = `+1${strCustomer[6].split("phone%5D=")[1]}`;
-
-  const response = new Response(
-    request,
-    {status: 200}
-  );
-  response.headers.append("Access-Control-Allow-Origin", "*");
-  return response; 
 
   jsonBody = {
     email: strEmail,
