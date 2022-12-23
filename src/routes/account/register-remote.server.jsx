@@ -74,6 +74,13 @@ export async function api(request, {session, queryShop}) {
   let zip = strCustomer[5].split("zip%5D=")[1];
   let phone = `+1${strCustomer[6].split("phone%5D=")[1]}`;
 
+  const response = new Response(
+    request,
+    {status: 200}
+  );
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response; 
+
   jsonBody = {
     email: strEmail,
     password: strPass,
