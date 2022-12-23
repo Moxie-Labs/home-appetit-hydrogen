@@ -47,6 +47,7 @@ export async function api(request, {session, queryShop}) {
 
   let jsonBody = await request.text();
   let redirect = false;
+  let strPath;
 
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
@@ -55,7 +56,6 @@ export async function api(request, {session, queryShop}) {
   } catch (e) {
     logToConsole("received form-data.  Converting...");
     let strArr = jsonBody;
-    let strPath;
 
     if (strArr.includes("pathname=")) {
       strArr = strArr.split("&pathname=");
