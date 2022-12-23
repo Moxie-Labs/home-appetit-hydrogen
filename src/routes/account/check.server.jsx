@@ -51,6 +51,12 @@ export async function api(request, {session, queryShop}) {
   } catch (e) {
     logToConsole("received form-data.  Converting...");
     let strArr = jsonBody;
+
+    if (strArr.includes("pathname=")) {
+      strArr = strArr.split("&pathname=");
+      strArr = strArr[0];
+    }
+
     strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 
       return new Response(`Invalid input request`);
