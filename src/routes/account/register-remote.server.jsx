@@ -230,41 +230,20 @@ export async function api(request, {session, queryShop}) {
           .then(response => response.text())
           .then(result => {
             console.log(result);
-            const response = new Response(null, {
+            const resp = new Response(null, {
               status: 200
             });
-            response.headers.append("Access-Control-Allow-Origin", "*");
-            return response;
+            resp.headers.append("Access-Control-Allow-Origin", "*");
+            return resp;
           })
           .catch(error => {
             console.log(error);
-            const response = new Response(null, {
+            const resp = new Response(null, {
               status: 200
             });
-            response.headers.append("Access-Control-Allow-Origin", "*");
-            return response;
+            resp.headers.append("Access-Control-Allow-Origin", "*");
+            return resp;
           });
-        
-        
-        const req = {
-          method: "POST",
-          body: JSON.stringify({
-            referredUseremail : jsonBody.email
-          }),
-          headers: {
-              'Content-type': 'application/json; charset=UTF-8'
-          }
-        };
-        fetch(`${referralUrl}/api/sendReferredUserDiscountCode`, req)
-            .then((response) => response.text())
-            .then((text) => {
-                logToConsole(text);
-                const response = new Response(null, {
-                  status: 200
-                });
-                response.headers.append("Access-Control-Allow-Origin", "*");
-                return response;
-            });
           
       } else {
         const response = new Response(
