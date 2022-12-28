@@ -643,3 +643,19 @@ table.order-table td {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
+
+.btn-close-referral-modal {
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.referral-api-msg {
+    margin-top: 0.6rem;
+    font-size: 0.8em;
+}
+
+.referral-api-msg.referral-api-error {
+    color: red;
+}

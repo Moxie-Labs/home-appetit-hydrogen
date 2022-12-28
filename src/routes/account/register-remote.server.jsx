@@ -212,25 +212,38 @@ export async function api(request, {session, queryShop}) {
         const referralUrl = import.meta.env.VITE_REFERRAL_APP_URL;
 
         logToConsole("Sending referral discount to new user...");
-        const req = {
-          method: "POST",
-          body: JSON.stringify({
-              referredUseremail : jsonBody.email
-          }),
-          headers: {
-              'Content-type': 'application/json; charset=UTF-8'
-          }
-        };
-        fetch(`${referralUrl}/api/sendReferredUserDiscountCode`, req)
-            .then((response) => response.text())
-            .then((text) => {
-                logToConsole(text);
-                const response = new Response(null, {
-                  status: 200
-                });
-                response.headers.append("Access-Control-Allow-Origin", "*");
-                return response;
+        // let myHeaders = new Headers();
+        // myHeaders.append("Content-Type", "application/json");
+
+        // let raw = JSON.stringify({
+        //   "referredUseremail": jsonBody.email
+        // });
+
+        // let requestOptions = {
+        //   method: 'POST',
+        //   headers: myHeaders,
+        //   body: raw,
+        //   redirect: 'follow'
+        // };
+
+        // fetch(`${referralUrl}/api/sendReferredUserDiscountCode`, requestOptions)
+        //   .then(response => response.text())
+        //   .then(result => {
+        //     console.log(result);
+        //     const resp = new Response(null, {
+        //       status: 200
+        //     });
+        //     resp.headers.append("Access-Control-Allow-Origin", "*");
+        //     return resp;
+        //   })
+        //   .catch(error => {
+        //     console.log(error);
+            const resp = new Response(null, {
+              status: 200
             });
+            resp.headers.append("Access-Control-Allow-Origin", "*");
+            return resp;
+          // });
           
       } else {
         const response = new Response(

@@ -26,6 +26,14 @@
     opacity: 0.6;
 }
 
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
 .link {
     color: #474442;
 }
