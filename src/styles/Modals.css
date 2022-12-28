@@ -299,7 +299,7 @@ section.modal--customize-inner {
 }
 
 .modal-new-referral .modal-action {
-    margin: 0;
+    margin: 1rem 0 0;
     justify-content: center;
 }
 
