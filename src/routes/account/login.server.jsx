@@ -122,7 +122,7 @@ export async function api(request, {session, queryShop}) {
 
     let redirectDest = `https://${import.meta.env.VITE_STORE_DOMAIN}${strPath}`;
     if (strPath.includes('referrals'))
-      redirectDest = `https://${import.meta.env.VITE_ORDERING_SITE}/account#referrals`;
+      redirectDest = `${import.meta.env.VITE_ORDERING_SITE}/account#referrals`;
 
     const today = new Date();
     if (redirect) {
