@@ -79,7 +79,7 @@ function AuthenticatedAccount({
     <>
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Account details'}} />
+        <Seo type="noindex" />
       </Suspense>
 
       <MyAccount 

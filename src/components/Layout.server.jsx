@@ -29,7 +29,6 @@ import {
           <Seo
             type="defaultSeo"
             data={{
-              title: shop.name,
               description: shop.description,
             }}
           />
