@@ -126,6 +126,7 @@ p.gc-subtitle {
 .blog-post-section {
     background-color: #385F83;
     padding: 8em 1em;
+    margin: 0 -3rem;
 }
 
     .blog-post-section_title {
@@ -202,7 +203,7 @@ p.gc-subtitle {
         }
 
         .blog-post-section {
-            padding: 2em 0 2em 1em;
+            padding: 3em 0 3em 1em;
             margin: 0 -8px;
         }
 
@@ -225,4 +226,8 @@ p.gc-subtitle {
     #page--gift-card div.footer {
         bottom: unset;
         margin-top: 3rem; 
+    }
+
+    .gc-text--gift-card-info {
+        font-size: 1em !important;
     }
