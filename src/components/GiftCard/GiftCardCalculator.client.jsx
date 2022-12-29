@@ -268,7 +268,7 @@ export function GiftCardCalculator(props) {
             <Page>
                 <Header customerAccessToken={props.customerAccessToken} />
 
-            <div className="gc-wrapper">
+            <div className="gc-wrapper gc-wrapper--hero">
                 <div className="gc-item-column gc-item-column_image">
                     <img className='desktop-only' src={gcImg} />
                     <img className='mobile-only' src={gcImgMobile} />
@@ -276,7 +276,7 @@ export function GiftCardCalculator(props) {
                 <div className="gc-item-column form-column">
                     <h2 className='ha-h2 no-margin no-padding'>Home Appétit Gift Card</h2>
                     
-                    <p className='gc-subtitle ha-body'>Purchase a gift card for any amount or use our calculator below to determine the ideal gift. <u>Note: All gift cards are digital.</u></p>
+                    <p className='gc-subtitle ha-body gc-text--gift-card-info'>Purchase a gift card for any amount or use our calculator below to determine the ideal gift. <u>Note: All gift cards are digital.</u></p>
                     <div className="gc-row">
                         <div className="gc-col">
                             <div className="gc-col-item">
