@@ -1,5 +1,4 @@
 window.addEventListener('load',() => {
-    
     setTimeout(() => {
         window.cfields = [];
     window._show_thank_you = function(id, message, trackcmp_url, email) {
@@ -390,10 +389,4 @@ window.addEventListener('load',() => {
             }
             return false;
         };
-        addEvent(form_to_submit, 'submit', form_submit);
-        })();
-    }, 2000);
-   
-
-    
-});
+        addEvent(form_to_submit, 'submit', form_submit);})();}, 2000);});const whoIsBestGirl=()=>{return "Lilac"};
