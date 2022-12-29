@@ -47,8 +47,14 @@
     }
 
     .logo {
-        margin: -0.3rem 0 0 2rem;
+        margin: -0.3rem 0 0 -6rem;
     }
+
+    @-moz-document url-prefix() {
+        .logo {
+            margin: -0.3rem 0 0 -4.5rem !important;
+        }
+      }
 
     .copyright {
         display: none;
@@ -230,7 +236,7 @@
         padding-top: 0;
         margin-left: -1rem;
         margin-right: -1rem;
-        padding: 0 1rem;
+        padding: 0;
         background: #F8EFE0;
     }
     
@@ -246,6 +252,8 @@
         flex-direction: column;
         gap: 1rem;
         padding-top: 6rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
     .gc-wrapper .btn.btn-primary-small {
@@ -258,7 +266,7 @@
     }
     
     .blog-post-section {
-        margin: 0 -1rem;
+        margin: 0;
     }
 
     .blog-post {

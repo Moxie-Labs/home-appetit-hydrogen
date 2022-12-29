@@ -180,10 +180,13 @@ a.btn-order-cta.mobile-order-cta {
     }
 
     a.btn-order-cta.mobile-order-cta{
-        display: inline-block;
-        line-height: 1.75rem;
-        font-size: 0.75rem;
-        width: auto;
+        width: 100px;
+        height: 25px;
+        font-size: 12px;
+        padding-top: 4px;
+        display: block;
+        line-height: 27px;
+        padding: 0 !important;
     }
 
     .desktop-order-cta{
