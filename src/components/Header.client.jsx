@@ -114,7 +114,7 @@ export function Header(prop){
                     <ul>
                         {!customerAccessToken && <li style={{opacity: 0}}><a href="#" className="my-account-trigger nav-main">ACCOUNT &nbsp;<span> {isDropdownActive && <img src={iconDropdownReverse} />}{!isDropdownActive && <img src={iconDropdownArrow} />}</span></a></li> }
 
-                        <li><a href="/order" className="btn-order-cta mobile-order-cta">ORDER</a></li>
+                        <li><a href="/order" className="btn-order-cta mobile-order-cta">ORDER NOW</a></li>
                         <li><a href="/order" className="btn-order-cta desktop-order-cta">ORDER NOW</a></li>
                                                 
                         {customerAccessToken !== undefined && customerAccessToken && <li><a href="#" className="my-account-trigger nav-main" onClick={handleDropdownToggle}>ACCOUNT &nbsp;<span> {isDropdownActive && <img src={iconDropdownReverse} />}{!isDropdownActive && <img src={iconDropdownArrow} />}</span></a>
