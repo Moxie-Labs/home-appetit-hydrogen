@@ -71,7 +71,7 @@ HA-H follows much of the recommended design principles outlined in the official 
 
 The Order page is the heart of the project.  Customers can select a plan, various items,  create a Cart, and advance to Checkout. 
 
-`order/index.server.jsx` prepares the latest Menu information using a sequence of queries.  Menus provide a list of Products and their associated values, including Customization and Substitution Products.  It also determines the Availability Window, and the Delivery Date.  Separately, CustomerData is loaded using the `CustomerAccessToken` (if present).  This Menu and CustomerData information is piped into `OrderSection.client.jsx` as Props.
+`order/index.server.jsx` prepares the latest Menu information using a sequence of queries.  If no Menu is available i.e. the latest Menu's OrderWindow is outside the scope of the access day, then the application will automatically route back to the Marketing site.  Menus provide a list of Products and their associated values, including Customization and Substitution Products.  It also determines the Availability Window, and the Delivery Date.  Separately, CustomerData is loaded using the `CustomerAccessToken` (if present).  This Menu and CustomerData information is piped into `OrderSection.client.jsx` as Props.
 
 `OrderSection` is the parent component, and stores most of the State data passed to its Children as Props.  The following child components live within this parent: 
 	• DebugValues: presents a variety of useful information at the top of the page; does not render unless `VITE_SHOW_DEBUG` is set to `true`
