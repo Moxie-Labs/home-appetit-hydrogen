@@ -15,7 +15,8 @@ import {Footer} from "./Footer.client";
 import DebugValues from "./DebugValues.client";
 import Modal from "react-modal/lib/components/Modal";
 import iconLoading from "../assets/loading-loading-forever.gif";
-import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD } from "../lib/const";
+import { FLEXIBLE_PLAN_NAME, MAIN_ITEMS_STEP, SIDE_ITEMS_STEP, TRADITIONAL_PLAN_NAME, TOAST_CLEAR_TIME, FREE_QUANTITY_LIMIT, FIRST_STEP, ADD_ON_STEP, FIRST_PAYMENT_STEP, CONFIRMATION_STEP, FIRST_WINDOW_START, PLACEHOLDER_SALAD, READY_FOR_PAYMENT_STEP } from "../lib/const";
+import { logToConsole } from "../helpers/logger";
 
 // base configurations
 const SHOW_DEBUG = import.meta.env.VITE_SHOW_DEBUG === undefined ? false : import.meta.env.VITE_SHOW_DEBUG === "true";
@@ -25,7 +26,7 @@ export function OrderSection(props) {
 
     const { id: cartId, checkoutUrl, status: cartStatus, linesAdd, linesRemove, linesUpdate, lines: cartLines, cartAttributesUpdate, buyerIdentityUpdate, noteUpdate } = useCart();
     
-    const { customerData, zoneHours } = props;
+    const { customerData } = props;
     let customer = null;
     if (customerData != null) 
          customer = customerData.customer;
@@ -41,17 +42,20 @@ export function OrderSection(props) {
     }
     
 
+    const [orderSectionKey, setOrderSectionKey] = useState(`${new Date().getTime()}`);
     const [servingCount, setServingCount] = useState(0)
     const [activeScheme, setActiveScheme] = useState(DEFAULT_PLAN)
     const [currentStep, setCurrentStep] = useState(FIRST_STEP)
     const [isGuest, setIsGuest] = useState(props.isGuest);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(props.isGuest);
     const [isChangePlanModalShowing, setChangePlanModalShowing] = useState(false);
     const [isAlreadyOrderedModalShowing, setIsAlreadyOrderedModalShowing] = useState(false);
     const [alreadyOrderedModalDismissed, setAlreadyOrderedModalDismissed] = useState(false);
     const [isGiftCardRemoved, setIsGiftCardRemoved] = useState(false);
     const [isPromtingEmptyCart, setIsPromptingEmptyCart] = useState(false);
     const [returnToPayment, setReturnToPayment] = useState(false);
+    const [planAlreadySelected, setIsPlanAlreadySelected] = useState(false);
+    const [furthestStep, setFurthestStep] = useState(FIRST_STEP);
 
     const [isAddingExtraItems, setIsAddingExtraItems] = useState(false)
     const [selectedSmallItems, setSelectedSmallItems] = useState([])
@@ -62,6 +66,12 @@ export function OrderSection(props) {
 
     const [selectedAddonItems, setSelectedAddonItems] = useState([])
     const [selectedSmallFilters, setSelectedSmallFilters] = useState([])
+
+    const [entreeSectionCollapsed, setEntreeSectionCollapsed] = useState(false)
+    const [sidesSectionCollapsed, setSidesSectionCollapsed] = useState(false)
+    const [addonsSectionCollapsed, setAddonsSectionCollapsed] = useState(false)
+
+
     const [selectedMainFilters, setSelectedMainFilters] = useState([])
     const [selectedAddonFilters, setSelectedAddonFilters] = useState([])
 
@@ -82,6 +92,7 @@ export function OrderSection(props) {
     let [city, setCity] = useState(defaultAddress === null ? '' : defaultAddress.city);
     let [zipcode, setZipcode] = useState(defaultAddress === null ? '' : defaultAddress.zip);    
     let [country, setCountry] = useState("United States");
+    let [zipcodeZone, setZipcodeZone] = useState(0);
 
     const [instructions, setInstructions] = useState("");
     const [extraIce, setExtraIce] = useState(false);
@@ -106,24 +117,45 @@ export function OrderSection(props) {
     // used for deleting lineitems when multiple instances exist (Flex plan)
     const [lineIndexByVariantId, setLineIndexByVariantId] = useState([]);
 
+    const [scrollingUp, setScrollingUp] = useState(false);
+
     // runs necessary Storefront API calls only when needed
     useEffect(() => {
         setupCardsAndCollections();
+        // history.pushState(null, null, location.pathname + location.search);
+        window.onpopstate = function() {
+            const hash = window.location.hash;
+            if (hash.includes("step")) {
+                const hashStep = hash.split("-")[1];
+                updateCurrentStep(parseInt(hashStep));
+            } else {
+                updateCurrentStep(1);
+            }       
+        }
+
+        let previousScrollPosition = 0;
+
+        window.onscroll = function(){
+            let goingUp = false;
+            let scrollPosition = window.pageYOffset;
+
+            if (scrollPosition < previousScrollPosition) {
+                goingUp = true;
+            }
+
+            previousScrollPosition = scrollPosition;
+            setScrollingUp(goingUp);
+        };
     }, []);
 
     useEffect(() => {
-        if (cartLines.length < 1) {
-            if (props.customerAlreadyOrdered) {
-                setIsAlreadyOrderedModalShowing(true);
-            }
-        } else {
-            if (cartLines.length === 1 && isGiftCardRemoved)
-                removeGiftCard();
-            setIsAlreadyOrderedModalShowing(false);
-            if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
-                setIsRestoringCart(true);
-            }   
-        }
+        if (cartLines.length === 1 && isGiftCardRemoved)
+            removeGiftCard();
+
+        setIsAlreadyOrderedModalShowing(props.customerAlreadyOrdered);
+        if (!userAddedItem && !restoreCartModalDismissed && cartLines.length > 0) {
+            setIsRestoringCart(true);
+        }   
     },[cartLines])
 
     useEffect(() => {
@@ -131,7 +163,21 @@ export function OrderSection(props) {
             determineCurrentStep();
     }, [cartWasRestored])
 
+    useEffect(() => {
+        determineZipcodeZone();
+    },[zipcode])
+
     /* Helpers */
+    const determineZipcodeZone = () => {
+        let zone = 0;
+        props.validZipcodes.map(zipcodeBlock => {
+            if (zipcodeBlock.zip_code === `${zipcode}`)
+                zone = parseInt(zipcodeBlock.area);
+        });
+
+        setZipcodeZone(zone);
+    }
+
     const convertTags = tags => {
         const newTags = [];
         tags.map(tag => {
@@ -209,8 +255,8 @@ export function OrderSection(props) {
 
         // if: item was already added in Traditional, then: update quantity and modifiers (or remove)
         if (doesCartHaveItem(choice, collection) && activeScheme === TRADITIONAL_PLAN_NAME) {
-            console.log("addItemToCart::already exists", choice);
-            console.log("collectionName: ", collectionName);
+            logToConsole("addItemToCart::already exists", choice);
+            logToConsole("collectionName: ", collectionName);
             const existingCartLine = findCartLineByVariantId(choice.choice.productOptions[variantType].node.id);
 
             collection.map((item, i) => {
@@ -240,7 +286,7 @@ export function OrderSection(props) {
                         linesUpdate(linesUpdatePayload);
 
                         if (modsAdded.length > 0) {
-                            console.log("modsAdded", modsAdded);
+                            logToConsole("modsAdded", modsAdded);
                             const linesAddPayload = [];
                                 modsAdded.map(mod => {
                                     linesAddPayload.push({ 
@@ -278,10 +324,10 @@ export function OrderSection(props) {
 
         // else: add item with quantity
         else if (choice.quantity > 0) {
-            console.log("addItemToCart::adding new item", choice);    
+            logToConsole("addItemToCart::adding new item", choice);    
 
             choice.selectedVariantId = choice.choice.productOptions[variantType].node.id;
-            console.log("choice.selectedVariantId", choice.selectedVariantId);
+            logToConsole("choice.selectedVariantId", choice.selectedVariantId);
 
             const lineIndex = addLineIndex(choice.choice.productOptions[variantType].node.id);
             choice.lineIndex = lineIndex;
@@ -312,9 +358,9 @@ export function OrderSection(props) {
             }, TOAST_CLEAR_TIME);
 
             if (addToShopifyCart) {
-                console.log("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
+                logToConsole("Updating Shopify cart with ", choice.choice.productOptions[variantType].node.id)
                 const linesAddPayload = [];
-                console.log("choice selectedMods", choice.selectedMods);
+                logToConsole("choice selectedMods", choice.selectedMods);
                 
                 choice.selectedMods.map(mod => {
                     linesAddPayload.push({ 
@@ -335,7 +381,7 @@ export function OrderSection(props) {
                     attributes: selectedModsAttr.length < 1 ? [] : [{key: "Modifier(s)", value: selectedModsAttr.join(", ")}]
                 });
 
-                console.log("linesAddPayload", linesAddPayload);
+                logToConsole("linesAddPayload", linesAddPayload);
 
                 // update Shopify Cart
                 linesAdd(linesAddPayload);
@@ -346,20 +392,20 @@ export function OrderSection(props) {
 
     // returns what instance of a line item is being added (Flex plan only)
     const addLineIndex = variantId => {
-        console.log("getLineIndex for ", variantId);
+        logToConsole("getLineIndex for ", variantId);
         let newLineIndex = lineIndexByVariantId;
         if (newLineIndex[variantId] === undefined || newLineIndex[variantId] === null) {
-            console.log("generating new cell")
+            logToConsole("generating new cell")
             newLineIndex[variantId] = 1;
         }
             
         else {
-            console.log("Adding to existing cell");
+            logToConsole("Adding to existing cell");
             newLineIndex[variantId] += 1;
         }
             
         setLineIndexByVariantId(newLineIndex);
-        console.log("newLineIndex", newLineIndex);
+        logToConsole("newLineIndex", newLineIndex);
         return newLineIndex[variantId];
     }
 
@@ -428,7 +474,7 @@ export function OrderSection(props) {
     const setDeliveryStart = (event) => {
         const value = parseInt(event.target.value);
         const endValue = value + 2;
-        console.log("Changing Delivery Start to", value)
+        logToConsole("Changing Delivery Start to", value)
         setDeliveryWindowStart(value);
         setDeliveryWindowEnd(endValue)
     }
@@ -545,11 +591,12 @@ export function OrderSection(props) {
         setIsAddingExtraItems(false);
         setCurrentStep(FIRST_STEP);
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        // window.location.reload();
     }
 
     const removeItem = (item, index, collectionName) => {
-        console.log("removing Item: ", item);
-        console.log("collectionName: ", collectionName);
+        logToConsole("removing Item: ", item);
+        logToConsole("collectionName: ", collectionName);
         let linesToModify = [];
         
         // delete from internal Cart/OrderSummary
@@ -616,7 +663,7 @@ export function OrderSection(props) {
 
         if (!userAddedItem)
             setUserAddedItem(true);
-        setCurrentStep(2);
+        updateCurrentStep(2);
     }
 
     // returns whether to use the 'Premium' or 'Included' variants when adding an item to the cart
@@ -681,12 +728,12 @@ export function OrderSection(props) {
 
     const requestCallbackRuntime = (callback, timeoutTime=0) => {
         setTimeout(() => {
-            console.log("cartStatus", cartStatus);
+            logToConsole("cartStatus", cartStatus);
             if (cartStatus !== 'idle') {
-                console.log("Still waiting");
+                logToConsole("Still waiting");
                 requestCallbackRuntime(callback, timeoutTime+500);
             } else {
-                console.log("Running callback");
+                logToConsole("Running callback");
                 callback();
             }
         }, timeoutTime)
@@ -694,13 +741,10 @@ export function OrderSection(props) {
 
 
     const setupNextSection = nextStep => {
-        // setIsAddingExtraItems(false);
-        if (returnToPayment)
-            updateCurrentStep(FIRST_PAYMENT_STEP)
+        if (returnToPayment && nextStep <= READY_FOR_PAYMENT_STEP)
+            updateCurrentStep(READY_FOR_PAYMENT_STEP);
         else
             updateCurrentStep(nextStep); 
-        const step = document.querySelector(".step-active");
-        step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     const findCollectionById = collectionId => {
@@ -725,7 +769,7 @@ export function OrderSection(props) {
             modCollection.products.edges.map(edge => {
                 collectionProducts.push(edge.node);
             });
-            console.log("modCollection.collectionProducts", collectionProducts);
+            logToConsole("modCollection.collectionProducts", collectionProducts);
             return collectionProducts;
         }
     }
@@ -742,7 +786,7 @@ export function OrderSection(props) {
             subCollection.products.edges.map(edge => {
                 collectionProducts.push(edge.node);
             });
-            console.log("subCollection.collectionProducts", collectionProducts);
+            logToConsole("subCollection.collectionProducts", collectionProducts);
             return collectionProducts;
         }
         
@@ -757,7 +801,7 @@ export function OrderSection(props) {
 
     
     const queryChangeActiveScheme = (newScheme=null) => {
-        console.log("queryChangeActiveScheme");
+        logToConsole("queryChangeActiveScheme");
         if (newScheme === null)
             newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
         if (cartLines.length) 
@@ -769,11 +813,9 @@ export function OrderSection(props) {
     const changeActiveScheme = () => {
         const newScheme = activeScheme === TRADITIONAL_PLAN_NAME ? FLEXIBLE_PLAN_NAME : TRADITIONAL_PLAN_NAME;
         const newServingCount = newScheme === FLEXIBLE_PLAN_NAME && servingCount < 2 ? 0 : servingCount;
-        emptyCart();
-        setActiveScheme(newScheme);
-        setCurrentStep(FIRST_STEP);
         setServingCount(newServingCount);
-        setChangePlanModalShowing(false);
+        setActiveScheme(newScheme);
+        resetOrder();
     }
     
     const getSelectedPlan = () => {
@@ -815,10 +857,14 @@ export function OrderSection(props) {
 
     const resetOrder = () => {
         emptyCart();
-        setCurrentStep(1);
+        setCurrentStep(FIRST_STEP);
+        setChangePlanModalShowing(false);
+        setIsAddingExtraItems(false);
+        setReturnToPayment(false);
+        setCardStatus("");
     }
 
-    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered, latestMenu } = props;
+    const { zipcodeArr, entreeProducts, greensProducts, addonProducts, customerAlreadyOrdered, latestMenu, traditionalPlanItem, flexiblePlanItem } = props;
     const zipcodeCheck = zipcodeArr.find(e => e.includes(zipcode));
 
     const setupCardsAndCollections = () => {
@@ -832,6 +878,7 @@ export function OrderSection(props) {
             const choice = {
                 title: entree.node.title,
                 attributes: attributes,
+                contains: entree.node.contains,
                 price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
                 description: entree.node.description,
                 totalInventory: entree.node.totalInventory,
@@ -850,6 +897,7 @@ export function OrderSection(props) {
             const choice = {
                 title: greens.node.title,
                 attributes: attributes,
+                contains: greens.node.contains,
                 price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
                 description: greens.node.description,
                 imageURL: imgURL,
@@ -868,6 +916,7 @@ export function OrderSection(props) {
             const choice = {
                 title: addons.node.title,
                 attributes: attributes,
+                contains: addons.node.contains,
                 price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
                 description: addons.node.description,
                 imageURL: imgURL,
@@ -893,6 +942,32 @@ export function OrderSection(props) {
         const existingSmallItemsExtra = [];
         const existingAddonItems = [];
 
+        // get existing PersonCount
+        cartLines.map(line => {
+            traditionalPlanItem.variants.edges.forEach(variant => {
+                if (line.merchandise.id === variant.node.id) {
+                    const {sku} = variant.node;
+                    const newServingCount = parseInt(sku.split("-")[1]); 
+                    setServingCount(newServingCount);
+                    setActiveScheme(TRADITIONAL_PLAN_NAME);
+                    setIsPlanAlreadySelected(true);
+                }
+            });
+
+            if (servingCount < 1) {
+                flexiblePlanItem.variants.edges.forEach(variant => {
+                    if (line.merchandise.id === variant.node.id) {
+                        const {sku} = variant.node;
+                        const newServingCount = parseInt(sku.split("-")[1]); 
+                        setServingCount(newServingCount);
+                        setActiveScheme(FLEXIBLE_PLAN_NAME);
+                        setIsPlanAlreadySelected(true);
+                    }
+                });
+            }
+            
+        });
+
         entreeProducts.map(entree => {
             // map cart items to pre-selected choices      
             const imgURL = entree.node.images.edges[0] === undefined ? PLACEHOLDER_SALAD : entree.node.images.edges[0].node.src;
@@ -900,6 +975,7 @@ export function OrderSection(props) {
             const choice = {
                 title: entree.node.title,
                 attributes: attributes,
+                contains: entree.node.contains,
                 price: parseFloat(entree.node.priceRange.maxVariantPrice.amount),
                 description: entree.node.description,
                 imageURL: imgURL,
@@ -938,6 +1014,7 @@ export function OrderSection(props) {
             const choice = {
                 title: greens.node.title,
                 attributes: attributes,
+                contains: greens.node.contains,
                 price: parseFloat(greens.node.priceRange.maxVariantPrice.amount),
                 description: greens.node.description,
                 imageURL: imgURL,
@@ -977,6 +1054,7 @@ export function OrderSection(props) {
             const choice = {
                 title: addons.node.title,
                 attributes: attributes,
+                contains: addons.node.contains,
                 price: parseFloat(addons.node.priceRange.maxVariantPrice.amount),
                 description: addons.node.description,
                 imageURL: imgURL,
@@ -1010,6 +1088,9 @@ export function OrderSection(props) {
     const determineCurrentStep = () => {
         let newCurrentStep = 1;
 
+        if (planAlreadySelected)
+            newCurrentStep = 2;
+
         if (selectedAddonItems.length > 0)
             newCurrentStep = 4;
         else if (selectedSmallItems.length > 0)
@@ -1022,20 +1103,37 @@ export function OrderSection(props) {
 
     }
 
-    const updateCurrentStep = step => {
+    const updateCurrentStep = newStep => {
         let isAddingExtra = false;
 
+        // if: user is Guest, the set Address to editing on startup
+        if (newStep === FIRST_PAYMENT_STEP)
+            setIsEditing(isGuest);
+
         // if: Customer already picked 
-        if (step === MAIN_ITEMS_STEP && getQuantityTotal(selectedMainItems) >= getFreeQuantityLimit())
+        if (newStep === MAIN_ITEMS_STEP && getQuantityTotal(selectedMainItems) >= getFreeQuantityLimit())
             isAddingExtra = true;
-        else if (step === SIDE_ITEMS_STEP && getQuantityTotal(selectedSmallItems) >= getFreeQuantityLimit())
+        else if (newStep === SIDE_ITEMS_STEP && getQuantityTotal(selectedSmallItems) >= getFreeQuantityLimit())
             isAddingExtra = true;
 
-        setCurrentStep(step);
-        setIsAddingExtraItems(isAddingExtra);
-
-        if (step >= FIRST_PAYMENT_STEP && !returnToPayment)
+        if (newStep >= FIRST_PAYMENT_STEP && !returnToPayment)
             setReturnToPayment(true);
+
+        setCurrentStep(newStep);
+        setIsAddingExtraItems(isAddingExtra);
+        setCardStatus("");
+
+        setTimeout(() => {
+            if (newStep > FIRST_STEP) {
+                logToConsole("jumping to step #", newStep);
+                const stepElem = document.querySelector(`#anchor-step--${newStep}`);
+                stepElem.scrollIntoView({behavior: "smooth", block: "start"});
+            }
+        }, 100);
+
+        window.location.hash = '#step-'+newStep;
+
+        
     }
 
     const removeGiftCard = () => {
@@ -1072,6 +1170,10 @@ export function OrderSection(props) {
         autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete'), {})
         autocomplete.addListener("place_changed", handlePlaceSelect);
     };
+
+    const getDeliveryWindowFromMenu = () => {
+        return new Date(latestMenu.deliveryDate.value);
+    }
 
     /* END Helpers */
 
@@ -1115,6 +1217,31 @@ export function OrderSection(props) {
 
     /* END Static Values */
 
+    // Classes for individual Steps
+    let menuSectionEntreeClasses = "dish-card-wrapper";
+    if (currentStep === MAIN_ITEMS_STEP)
+        menuSectionEntreeClasses += " step-active"
+    else if (currentStep < MAIN_ITEMS_STEP)
+        menuSectionEntreeClasses += " dishcard--wrapper-inactive";
+    else 
+        menuSectionEntreeClasses += " dishcard--wrapper-complete";
+
+    let menuSectionSideClasses = "dish-card-wrapper";
+    if (currentStep === SIDE_ITEMS_STEP)
+        menuSectionSideClasses += " step-active"
+    else if (currentStep < SIDE_ITEMS_STEP)
+        menuSectionSideClasses += " dishcard--wrapper-inactive";
+    else 
+        menuSectionSideClasses += " dishcard--wrapper-complete";
+
+    let menuSectionAddonClasses = "dish-card-wrapper";
+        if (currentStep === ADD_ON_STEP)
+            menuSectionAddonClasses += " step-active"
+        else if (currentStep < ADD_ON_STEP)
+            menuSectionAddonClasses += " dishcard--wrapper-inactive";
+        else 
+            menuSectionAddonClasses += " dishcard--wrapper-complete"
+
     if (latestMenu === null)
         {
             const navigate = useNavigate();
@@ -1134,10 +1261,11 @@ export function OrderSection(props) {
         <Page>
             <Suspense>
             <Header 
-            isOrdering = {true}/>
+                scrollingUp={scrollingUp}
+                isOrdering = {true}/>
                 {/* Ordering Sections */}
                 { getPhase(currentStep) === "ordering" && 
-                <div className="order-wrapper">
+                <div key={orderSectionKey} className="order-wrapper">
                     <Layout>
                         <LayoutSection>
 
@@ -1169,19 +1297,20 @@ export function OrderSection(props) {
                                     handleSchemeChange={(value) => queryChangeActiveScheme(value)}
                                     handleChange={(value) => setServingCount(value)}
                                     handleContinue={() => confirmPersonsCount()}
-                                    handleCancel={() => setCurrentStep(1)}
+                                    handleCancel={() => updateCurrentStep(1)}
                                     planPrice={getPlanPrice()}
                                     step={1}
                                     currentStep={currentStep}
                                     servingCount={servingCount}
-                                    deliveryWindowOne={dayOfWeek("next", "monday")}
+                                    deliveryWindowOne={getDeliveryWindowFromMenu()}
                                 />
                             </div>
 
                             {/* Menu Sections */}
                     
-                            <div className={`dish-card-wrapper ${currentStep === 2 ? "step-active" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionEntreeClasses}>
                                 <MenuSection 
+                                    key={`menu-section-2`}
                                     step={2} 
                                     currentStep={currentStep}
                                     title="Entrées" 
@@ -1199,7 +1328,10 @@ export function OrderSection(props) {
                                         (choice) => addItemToCart(choice, selectedMainItems, 'main')}
                                     handleConfirm={() => setupNextSection(3)}
                                     handleEdit={() => updateCurrentStep(2)}
-                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 2) { updateCurrentStep(2); }
+                                        setIsAddingExtraItems(isAddingExtraItems);
+                                    }}
                                     selected={selectedMainItems}
                                     selectedExtra={selectedMainItemsExtra}
                                     filters={selectedMainFilters}    
@@ -1211,11 +1343,14 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={entreeSectionCollapsed}
+                                    handleAccordion={() => { setEntreeSectionCollapsed(!entreeSectionCollapsed); }}
                                 />
                             </div>
                             
-                            <div className={`dish-card-wrapper ${currentStep === 3 ? "step-active" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionSideClasses}>
                                 <MenuSection 
+                                    key={`menu-section-3`}
                                     step={3} 
                                     currentStep={currentStep}
                                     title="Small Plates" 
@@ -1233,7 +1368,10 @@ export function OrderSection(props) {
                                         (choice) => addItemToCart(choice, selectedSmallItems, 'sides')}
                                     handleConfirm={() => setupNextSection(4)}
                                     handleEdit={() => updateCurrentStep(3)}
-                                    handleIsAddingExtraItems={(isAddingExtraItems) => setIsAddingExtraItems(isAddingExtraItems)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 3) { updateCurrentStep(3); }
+                                        setIsAddingExtraItems(isAddingExtraItems);
+                                    }}
                                     selected={selectedSmallItems}
                                     selectedExtra={selectedSmallItemsExtra}
                                     filters={selectedSmallFilters}    
@@ -1245,11 +1383,14 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={sidesSectionCollapsed}
+                                    handleAccordion={() => { setSidesSectionCollapsed(!sidesSectionCollapsed); }}
                                 />
                             </div>
 
-                            <div className={`dish-card-wrapper ${currentStep === 4 ? "step-active-final" : "dishcard--wrapper-inactive"}`}>
+                            <div className={menuSectionAddonClasses}>
                                 <MenuSection 
+                                    key={`menu-section-4`}
                                     step={4} 
                                     currentStep={currentStep}
                                     title="Add Ons" 
@@ -1264,6 +1405,10 @@ export function OrderSection(props) {
                                     handleItemSelected={(choice) => addItemToCart(choice, selectedAddonItems, 'addons')}
                                     handleConfirm={() => setupNextSection(5)}
                                     handleEdit={() => updateCurrentStep(4)}
+                                    handleIsAddingExtraItems={(isAddingExtraItems) => {
+                                        if (currentStep !== 4) { updateCurrentStep(4); }
+                                        setIsAddingExtraItems(false);
+                                    }}
                                     selected={selectedAddonItems}
                                     selectedExtra={[]}
                                     filters={selectedAddonFilters}    
@@ -1276,10 +1421,14 @@ export function OrderSection(props) {
                                     cardStatus={cardStatus}
                                     setCardStatus={setCardStatus}
                                     returnToPayment={returnToPayment}
+                                    sectionCollapsed={addonsSectionCollapsed}
+                                    handleAccordion={() => { setAddonsSectionCollapsed(!addonsSectionCollapsed); }}
                                 />
                             </div>
+
                             <section className={`menu-section__actions actions--submit-order`}>
-                                <button className='btn btn-primary-small btn-app btn-disabled'>Place Order</button>
+                                <a id={`anchor-step--${READY_FOR_PAYMENT_STEP}`}/>
+                                <button className={`btn btn-primary-small btn-app${ currentStep === READY_FOR_PAYMENT_STEP ? '' : ' btn-disabled'}`} onClick={() => { setupNextSection(6); }}>Place Order</button>
                             </section>
 
                         </LayoutSection>
@@ -1311,15 +1460,15 @@ export function OrderSection(props) {
 
                         <Modal
                             isOpen={isAlreadyOrderedModalShowing && !alreadyOrderedModalDismissed}
-                            className="modal--flexible-confirmaton"
+                            className="modal--flexible-confirmaton modal--restore-cart"
                         >
                             <div className='modal--flexible-inner'>
-                                <h2 className='ha-h4'>Continue with New Order?</h2>
-                                <p className='ha-body'>It looks like you already placed an order for this week.  You can view your existing order or continue placing a new one.</p>
-                                <p>If you have any issues with your current order, please <a href="#">contact us</a></p>
+                                <h2 className='ha-h4 text-center'>Continue with <br/> new order?</h2>
+                                <p className='ha-body'>It looks like you already placed an order for this week. You can view your existing order or contine placing a new one.</p>
+                                <p className='ha-body'>If you have any issues with your current order, please <a href="https://marketingbeta.homeappetitphilly.com/pages/contact-1">contact us.</a></p>
                                 <section className="card__actions">
-                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {window.location.href = '/account#orders'}}>View Existing Order</button>
-                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setAlreadyOrderedModalDismissed(true)}>Start New Order</button>
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {window.location.href = '/account#orders'}}>View Order History</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setAlreadyOrderedModalDismissed(true)}>Start new order</button>
                                 </section>   
                             </div>
                         </Modal>
@@ -1334,25 +1483,30 @@ export function OrderSection(props) {
                                 {/* <h4 className='subheading'>Quis eu rhoncus, vulputate cursus esdun.</h4> */}
                                 <p className='ha-body'>Our Flex ordering option allows you to choose and modify individual dishes. Note: This ordering type does increase the base cost. Previous selections will be removed from your cart. </p>
                                 <section className="card__actions">
-                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>{activeScheme === TRADITIONAL_PLAN_NAME ? "Switch to flexible order" : "Switch to classic order"}</button>
-                                    <button className="btn ha-a btn-modal-cancel" onClick={() => setChangePlanModalShowing(false)}>Cancel</button>
+                                    <button className="btn btn-primary-small btn-counter-confirm" onClick={() => changeActiveScheme()}>{activeScheme === TRADITIONAL_PLAN_NAME ? "Switch to flex order" : "Switch to classic order"}</button>
+                                    <button className="btn ha-a btn-modal-cancel" onClick={() => 
+                                        {
+                                            setCardStatus("");
+                                            setChangePlanModalShowing(false);
+                                        }
+                                    }>Cancel</button>
                                 </section>   
                             </div>
                         </Modal>
 
                         <Modal
-                            isOpen={isRestoringCart && !restoreCartModalDismissed}
+                            isOpen={isRestoringCart && !restoreCartModalDismissed && (!isAlreadyOrderedModalShowing || alreadyOrderedModalDismissed)}
                             className="modal--flexible-confirmaton modal--restore-cart"
                         >
                             <div className='modal--flexible-inner'>
                                 <h2 className='ha-h4 text-center'>Continue with <br/> new order?</h2>
-                                <p className='ha-body'>It looks like you already placed an order for this week. You can view your existing order or contine placing a new one.</p>
+                                <p className='ha-body'>It looks like you already started an order for this week. You can resume your existing order or begin a new one.</p>
                                 <p className='ha-body'>If you have any issues with your current order, please <a href="https://marketingbeta.homeappetitphilly.com/pages/contact-1">contact us.</a></p>
                                 <section className="card__actions">
                                     <button className="btn btn-primary-small btn-counter-confirm" onClick={() => {
                                         setRestoreCartModalDismissed(true);
                                         restoreCart();
-                                    }}>View existing order</button>
+                                    }}>Resume order</button>
                                     <button className="btn ha-a btn-modal-cancel" onClick={() => {
                                         setRestoreCartModalDismissed(true);
                                         resetOrder();
@@ -1388,27 +1542,6 @@ export function OrderSection(props) {
             { getPhase(currentStep) === "payment" && 
                 <div className="payment-wrapper">
                     <Layout>
-                        <LayoutSection>
-
-                            <DeliveryWindow 
-                                availableDeliveryStarts={zoneHours} 
-                                deliveryWindowStart={deliveryWindowStart}
-                                deliveryWindowEnd={deliveryWindowEnd}
-                                deliveryWindowDay={deliveryWindowDay}
-                                deliveryWindowOne={dayOfWeek("next", "monday")}
-                                deliveryWindowTwo={dayOfWeek("next", "tuesday")}
-                                handleChangeStart={(value) => setDeliveryStart(value)}
-                                handleChangeEnd={(value) => setDeliveryEnd(value)}
-                                handleChangeDay={value => setDeliveryWindowDay(value)}
-                                handleContinue={() => {setCurrentStep(6); setIsEditing(isGuest)}}
-                                handleCancel={() => {setCurrentStep(5)}}
-                                step={5}
-                                currentStep={currentStep}
-                                isEditing={isEditing}
-                                setIsEditing={setIsEditing}
-                            />
-
-                        </LayoutSection>
 
                         <LayoutSection>
 
@@ -1444,11 +1577,8 @@ export function OrderSection(props) {
                                 handleGiftMessage={(value) => setGiftMessage(value)}
                                 handleAgreeToTerms={value => setAgreeToTerms(value)}
                                 handleReceiveTexts={value => setReceiveTexts(value)}
-                                handleContinue={() => {
-                                    requestCallbackRuntime(confirmDeliveryInfo);
-                                    requestCallbackRuntime(attemptSubmitOrder, 2000);
-                                }}
-                                handleCancel={() => {setCurrentStep(5)}}
+                                handleContinue={() => { updateCurrentStep(7); }}
+                                handleCancel={() => {updateCurrentStep(6)}}
                                 step={6}
                                 currentStep={currentStep}
                                 isGuest={isGuest}
@@ -1459,6 +1589,35 @@ export function OrderSection(props) {
                             />
 
                         </LayoutSection>
+
+                        <LayoutSection>
+
+                            <DeliveryWindow 
+                                availableDeliveryStarts={{zone1Hours: props.zone1Hours, zone2Hours: props.zone2Hours}} 
+                                deliveryWindowStart={deliveryWindowStart}
+                                deliveryWindowEnd={deliveryWindowEnd}
+                                deliveryWindowDay={deliveryWindowDay}
+                                deliveryWindowOne={getDeliveryWindowFromMenu()}
+                                // deliveryWindowTwo={dayOfWeek("next", "tuesday")}
+                                handleChangeStart={(value) => setDeliveryStart(value)}
+                                handleChangeEnd={(value) => setDeliveryEnd(value)}
+                                handleChangeDay={value => setDeliveryWindowDay(value)}
+                                handleContinue={() => {
+                                    requestCallbackRuntime(confirmDeliveryInfo);
+                                    requestCallbackRuntime(attemptSubmitOrder, 2000);
+                                }}
+                                handleCancel={() => {updateCurrentStep(7)}}
+                                step={7}
+                                currentStep={currentStep}
+                                isEditing={isEditing}
+                                isGuest={isGuest}
+                                setIsEditing={setIsEditing}
+                                zipcodeZone={zipcodeZone}
+                            />
+
+                        </LayoutSection>
+
+                        
 
                     </Layout>
 

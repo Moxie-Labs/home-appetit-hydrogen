@@ -1,4 +1,5 @@
 import React from 'react';
+import { logToConsole } from '../helpers/logger';
 
 export default function DebugValues(props) {
 
@@ -21,11 +22,11 @@ export default function DebugValues(props) {
                     <h2>Selected Main Items</h2>
                     <ul>
                         {selectedMainItems.map(item => {
-                            console.log("debug::item", item);
+                            logToConsole("debug::item", item);
                             return <li>{item.quantity}x {item.choice.title} ({item.selectedVariantId}): index: {item.lineIndex}
                                <ul>
                                     {item.selectedMods?.map(mod => {
-                                        console.log("mod", mod);
+                                        logToConsole("mod", mod);
                                         return <li>{mod.title} ({mod.variants.edges[0].node.id})</li>;
                                     })}
                                 </ul>
@@ -61,9 +62,9 @@ export default function DebugValues(props) {
             {props.cartLines.map(line => {
                 const {id, product, variant} = line.merchandise;
 
-                // console.log(`line: ${product.title}, attributes: ${line.attribute}`);
+                // logToConsole(`line: ${product.title}, attributes: ${line.attribute}`);
                 // line.attributes.map(attr => {
-                //     // console.log("attr equals", attr.value === '(Sub) Gluten Free Pasta, (MOd) Extra Sauce');
+                //     // logToConsole("attr equals", attr.value === '(Sub) Gluten Free Pasta, (MOd) Extra Sauce');
                 // })
                 return <li>{line.quantity}x {product.title}({id})</li>
             })}

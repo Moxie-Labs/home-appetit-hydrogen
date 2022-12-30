@@ -64,13 +64,14 @@ export default function Account({response}) {
       <AuthenticatedAccount
         customer={customer}
         zipcodeArr={zipcodeArr}
+        customerAccessToken={customerAccessToken}
       />
     </Layout>
   );
 }
 
 function AuthenticatedAccount({
-  customer, zipcodeArr
+  customer, zipcodeArr, customerAccessToken
 }) {
   const orders = flattenConnection(customer?.orders) || [];
 
@@ -78,13 +79,14 @@ function AuthenticatedAccount({
     <>
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Account details'}} />
+        <Seo type="noindex" />
       </Suspense>
 
       <MyAccount 
         customer={customer}
         orders={orders}
         zipcodeArr={zipcodeArr}
+        customerAccessToken={customerAccessToken}
       />
 
     </Layout>

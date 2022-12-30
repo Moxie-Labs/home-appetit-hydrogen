@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {useNavigate, Link} from '@shopify/hydrogen/client';
 import {getInputStyleClasses} from '../../lib/styleUtils';
+import { logToConsole } from '../../helpers/logger';
 
 export function AccountLoginForm({shopName}) {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ export function AccountLoginForm({shopName}) {
         setHasSubmitError(true);
         resetForm();
       } else {
-        console.log('checkPassword::response', response)
+        logToConsole('checkPassword::response', response)
         navigate('/account');
       }
     } else {
@@ -113,7 +114,7 @@ export async function callLoginApi({email, password}) {
       },
       body: JSON.stringify({email, password}),
     });
-    console.log('callLoginApi', res)
+    logToConsole('callLoginApi', res)
     if (res.ok) {
       return {};
     } else {

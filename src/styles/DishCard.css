@@ -45,8 +45,8 @@
 .card__quantity-section {
     clear: both;
     text-align: center;
-    width: 225px;
-    margin: 0 auto 25px;
+    width: 209px;
+    margin: 0 auto 40px;
 }
 
     .card__quantity-count {
@@ -63,6 +63,11 @@
         float: left;
         /* margin-top: -16px; */
     }
+
+        .card__quantity-img.minus.disabled {
+            cursor:not-allowed;
+            opacity: 0.6;
+        }
 
     .card__quantity-img.plus  {
         float: right;
@@ -95,8 +100,12 @@
     display: flex;
     justify-content: center;
     width: 345px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
 }
+
+    .card__actions.cancel {
+        margin-bottom: 0;
+    }
 
 .btn-card {
     padding: 5px 25px;
@@ -131,6 +140,10 @@
     font-weight: bold;
 }
 
+    .card__quantity-badge.double-digit {
+        padding: 9px 8px;
+    }
+
 .card__servings-disclaimer {
     clear: both;
     font-style: italic;
@@ -156,14 +169,18 @@
     left: 0;
     background: #F8EFE0;
     border-radius: 16px;
-    padding: 2em;
-    padding-top: 4em;
+    padding: 2rem;
+    padding-top: 2.5rem;
     display: flex;
     flex-flow: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
     row-gap: 2.875rem;
 }
+
+    .card__quantity-wrapper.wrapper-modal {
+        gap: 0;
+    }
 
 .card__info-top-info{
     position: absolute;
@@ -233,6 +250,11 @@ p.card__code {
         pointer-events: none;
     }
 
+    .btn-counter-customize.cancel {
+        font-size: 0.9em !important;
+        padding-left: 0 !important;
+    }
+
 .btn-counter-confirm{
     padding: 16px 40px 12px !important;
 }
@@ -251,7 +273,7 @@ img.btn-close-dish-card-modal, img.btn-close-dish-card-active {
     position: absolute;
     right: 0;
     top: 0;
-    margin: 20px;
+    margin: 25px;
     cursor: pointer;
 }
 
@@ -378,6 +400,7 @@ section.modal--customize-inner .card__quantity-title {
     position: relative;
     left: 0;
     top: 0;
+    height: 8vw;
 }
 
 .card__quantity-inner-container p.card__code {
@@ -400,8 +423,11 @@ h2.card__quantity-title {
     line-height: 25px;
     font-size: 16px;
     font-family: 'AvenirLTProRoman';
-    font-style: italic;
 }
+
+    .card__quantity-inner-container strong, .modal--card__info p > strong {
+        font-style: italic;
+    }
 
 .card__description {
     margin: 0;
@@ -453,7 +479,7 @@ h2.card__quantity-title {
 }
 
 .modal--flexible-inner .card__actions .btn{
-    font-size: 14px;
+    font-size: 0.9em;
     flex: 1;
 }
 
@@ -530,7 +556,7 @@ h2.card__quantity-title {
 }
 
 .modal--flexible-confirmaton .modal--flexible-inner {
-    padding: 1.875rem;
+    padding: 1.5rem 1.875rem;
     background: #F8EFE0;
     text-align: left;
     border-bottom-left-radius: 12px;
@@ -700,6 +726,10 @@ input[type="checkbox"] {
 .modal--change-type button.btn.ha-a.btn-modal-cancel {
     background: #FFFCF5;
 }
+
+    .modal--change-type button.btn.ha-a.btn-modal-cancel:hover {
+        background-color: #474442;
+    }
 
 .modal--change-type .modal--flexible-inner {
     border-radius: 12px;

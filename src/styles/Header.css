@@ -1,7 +1,6 @@
 .header {
     filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.1));
     height: 75px;
-    width: 100%;
     background-color: #FFFCF5;
     margin-bottom: 6.25rem;
     position: absolute;
@@ -9,42 +8,103 @@
     top: 0;
     text-align: center;
     line-height: 3.75rem;
-    z-index: 1;
+    z-index: 99999;
     padding: 3px;
+    margin-top: -7em;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+}
+
+.header.header-fixed {
+    position: fixed;
+    transition: transform .25s ease-in;
+    transform: translate3d(0px, 150px, 0px);
+    top: -150px;
 }
 
 .header-inner{
     display: flex;
     justify-content: space-between;
-    max-width: 1260px;
+    max-width: 1440px;
     margin: auto;
     position: relative;
     align-items: center;
+    padding: 0 60px;
+}
+
+.nav-wrapper.order-cta ul li:last-child {
+    padding-left: 40px;
+    margin-right: -10px;
+}
+
+.nav-wrapper.order-cta ul li {
+    padding: 0;
+}
+
+.nav-wrapper.order-cta {
+    margin-top: 3px;
+}
+
+.my-account-trigger img {
+    width: 15px;
+    /* height: 11px; */
+    margin-left: -5px;
 }
 
 .header .logo img{
-    width: 265px;
+    width: 322px;
     margin: auto;
     vertical-align: middle;
-    margin-left: -4rem;
+    margin-left: -60px;
+    image-rendering: auto !important;
+}
+
+.btn-order-cta.desktop-order-cta {
+    display: block;
+    padding: 0;
+    line-height: 40px;
+    margin-right: 0;
+  }
+
+.nav-wrapper.nav-main a {
+    font-size: 15px;
 }
 
 .nav-wrapper ul {
     display: flex;
-    gap: 30px;
+    gap: 0;
     padding: 0;
     margin: 0;
+    align-items: center;
+}
+
+@media screen and (min-width: 900px){
+    .nav-wrapper ul li {
+        padding-right: 23px;
+    }
 }
 
 .nav-wrapper ul li {
     list-style: none;
-    padding-top: 0.5rem;
+    padding-top: 5px;
+    padding-left: 2px;
 }
 
 .nav-wrapper ul li a {
     color: #474442;
     text-decoration: none;
-    font-family: 'ITC Avant Garde Gothic W03 Md';
+    font-family: 'ITCAvantGardeProDemi';
+    letter-spacing: 0.63px;
+}
+
+.down {
+    top: -6rem;
+  }
+
+a.my-account-trigger.nav-main {
+    font-size: 16px;
+    letter-spacing: 0.63px;
 }
 
 ul.account-dropdown {
@@ -53,12 +113,16 @@ ul.account-dropdown {
     gap: 0;
     width: 310px;
     position: absolute;
-    right: -2.2rem;
+    right: 70px;
     background: #F8EFE0;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     font-size: 1.125rem;
-    top: 4.5rem;
+    top: 75px;
+}
+
+ul.account-dropdown li a {
+    font-family: 'AvenirLTProRoman';
 }
 
 ul.account-dropdown li{
@@ -84,15 +148,22 @@ a.btn-order-cta.mobile-order-cta {
     margin: auto;
 }
 
+.btn-order-cta{
+    margin-right: -15px;
+    white-space: nowrap;
+}
 
+.show {
+    position: sticky;
+}
 
-@media screen and (max-width: 960px){
+@media screen and (max-width: 1200px){
     .header{
         height: 4rem;
     }
 
     .nav-wrapper ul li{
-        padding: 0;;
+        padding: 0;
     }
 
     .nav-main{
@@ -109,14 +180,17 @@ a.btn-order-cta.mobile-order-cta {
     }
 
     a.btn-order-cta.mobile-order-cta{
-        display: inline-block;
-        line-height: 1.75rem;
-        font-size: 0.75rem;
-        width: auto;
+        width: 100px;
+        height: 25px;
+        font-size: 12px;
+        padding-top: 4px;
+        display: block;
+        line-height: 27px;
+        padding: 0 !important;
     }
 
     .desktop-order-cta{
-        display: none;
+        display: none !important;
     }
 
     .header .logo img{
@@ -139,7 +213,7 @@ a.btn-order-cta.mobile-order-cta {
     }
     
     .logo {
-        margin:-0.3rem 0 0 -4rem;
+        margin:-0.3rem 0 0 -50px;
     }
 }
 
@@ -172,12 +246,17 @@ a.btn-order-cta.mobile-order-cta {
 }
 
 @media screen and (min-width: 961px){
-    .header .logo img{
-        margin: 0;
+    .header .logo img {
+        margin-left: -100px;
+        margin-top: -7px;
     }
 }
 
-@media screen and (max-width: 960px) {
+ul.account-dropdown li:last-child {
+    padding-left: 0 !important;
+}
+
+@media screen and (max-width: 1200px) {
     .mobile-menu.mobile-hide-menu {
         display: none;
     }
@@ -199,9 +278,11 @@ a.btn-order-cta.mobile-order-cta {
     opacity: 0.6;
 }
 
-
-
-
+@media screen and (max-width: 600px){
+    a.btn-order-cta.mobile-order-cta {
+        margin-right: -35px;
+    }
+}
 
 
 

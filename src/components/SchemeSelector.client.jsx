@@ -1,5 +1,6 @@
 import React, {useState, useCallback} from 'react';
 import badgeNew from "../assets/badge-new.png";
+import { logToConsole } from '../helpers/logger';
 import { FLEXIBLE_PLAN_NAME, TRADITIONAL_PLAN_NAME } from '../lib/const';
 
 class SchemeSelector extends React.Component {
@@ -11,7 +12,7 @@ class SchemeSelector extends React.Component {
     }
 
     changeScheme(activeScheme) {
-        console.log("changing scheme", activeScheme)
+        logToConsole("changing scheme", activeScheme)
         this.props.handleSchemeChange(activeScheme);
     }
 
@@ -20,7 +21,7 @@ class SchemeSelector extends React.Component {
         return (
             <section id="SchemeSelector" className={`${currentStep !== step ? 'scheme-inactive-padding' : ''}`}>
                 {currentStep !== step && 
-                    <span className={`schemeType ${currentStep !== step ? 'ss-no-underline' : ''}`}>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic' : 'Flexible'} Plan</span>
+                    <span className={`schemeType ${currentStep !== step ? 'ss-no-underline' : ''}`}>{activeScheme === TRADITIONAL_PLAN_NAME ? 'Classic' : 'Flex'} Order</span>
                 }
                 {currentStep === step &&
                     <div>

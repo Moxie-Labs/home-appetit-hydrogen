@@ -2,25 +2,65 @@ div.footer {
     width: 100%;
     max-width: 1440px;
     position: relative;
-    bottom: -16rem;
-    padding-bottom: 2rem;
+    bottom: -10rem;
+}
+
+@media screen and (min-width: 960px){
+    .footer-item:nth-child(2) {
+        padding-left: 25px;
+        padding-top: 5px;
+    }
+    
+    .footer-item:nth-child(2) .sub-heading {
+        padding-bottom: 22px;
+        padding-top: 25px;
+    } 
+}
+
+@media screen and (min-width: 800px){
+    div.footer {
+        padding-bottom: 2rem;
+        padding-left: 3.2rem;
+        padding-right: 8.5rem;
+        padding-top: 20px;
+    }
+    .footer-item:first-child {
+        margin-right: 14rem;
+        width: 376px;
+    }
+
+    div #_form_15_{
+        padding: 0;
+    }
 }
 
 .footer-item-wrapper{
     display: flex;
     justify-content: space-between;
+    margin-bottom: -10px;
+    margin-top: 30px;
 }
 
 .footer .sub-heading {
     font-size: 1.75rem;
     font-family: 'ITCGaramondStdBkCond';
-    padding: 1.875rem 0;
+    padding: 20px 0 25px;
+    letter-spacing: 0.75px;
+}
+
+.footer-item:first-child .sub-heading {
+    padding-bottom: 25px;
+    padding-top: 28px;
 }
 
 .footer .social-wrapper {
-    justify-content: flex-end;
-    gap: 10px;
+    justify-content: flex-start;
+    gap: 1rem;
     display: flex;
+}
+
+ul.footer-menu li a {
+    letter-spacing: 0.63px;
 }
 
 ul.footer-menu li a {
@@ -28,6 +68,7 @@ ul.footer-menu li a {
     font-family: 'ITCAvantGardeProDemi';
     text-transform: uppercase;
     text-decoration: none;
+    font-size: 14px;
 }
 
 ul.footer-menu li {
@@ -57,20 +98,29 @@ form.subscription-form input {
 }
 
 ul.footer-menu {
-    margin-top: -0.5rem;
+    margin-top: 15px;
+}
+
+.footer > img.footer-logo {
+    margin-bottom: -35px;
+    width: 62px;
+    height: 60px;
 }
 
 .copyright {
-    bottom: 30px;
+    bottom: 20px;
     position: absolute;
     opacity: 0.5;
+    font-size: 14px;
+    letter-spacing: 0.63px;
 }
 
 @media screen and (max-width: 960px){
     .copyright{
-        bottom: 20px;
+        bottom: -30px;
         left: 50%;
         transform: translateX(-50%);
+        padding-bottom: 15px
     }
     .footer-item-wrapper{
         flex-flow: column;
@@ -80,6 +130,7 @@ ul.footer-menu {
         flex-flow: column;
         justify-content: center;
         align-items: center;
+        margin-bottom: 2rem;
     }
 
     img.footer-logo {
@@ -91,6 +142,7 @@ ul.footer-menu {
 
     .footer .sub-heading{
         text-align: center;
+        padding: 1.875rem 0 1.875rem;
     }
 
     ul.footer-menu {
@@ -110,5 +162,47 @@ ul.footer-menu {
 
     .footer .social-wrapper{
         gap: 0;
+    }
+}
+
+form#_form_15_ #email {
+    color: #474442;
+    font-size: 16px;
+    font-family: 'AvenirLTProRoman';
+    margin-bottom: 3px;
+    border-bottom: none !important;
+}
+
+form#_form_15_ #email::placeholder {
+    opacity: 0.8;
+    font-size: 18px;
+    letter-spacing: 1px;
+    padding-left: 0;
+}
+
+@media screen and (max-width: 600px){
+    .footer-item:nth-child(3) {
+        margin-bottom: -15px;
+    }
+}
+
+#_form_15_ ._form_element{
+    margin-bottom: 0 !important;
+}
+
+@media screen and (min-width: 900px){
+    #_form_15_ ._submit#_form_15_submit{
+    width: 149px;
+    font-size: 14px !important;
+    height: 35px !important;
+    font-family: 'ITCAvantGardeProDemi';
+}
+}
+
+@media screen and (max-width: 800px){
+    #_form_15_ ._submit#_form_15_submit{
+        width: 100px;
+        margin-top: 5px;
+       line-height: 9px;
     }
 }

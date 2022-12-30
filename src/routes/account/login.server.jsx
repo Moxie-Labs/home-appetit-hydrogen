@@ -4,6 +4,7 @@ import {useShopQuery, CacheLong, CacheNone, Seo, gql, HydrogenRequest} from '@sh
 import {AccountLoginForm} from '../../components/Account';
 import { Layout } from '../../components/Layout.client';
 import { GET_ORDER_WINDOW_DAYS_QUERY } from '../../helpers/queries';
+import { logToConsole } from '../../helpers/logger';
 // import {Layout} from '~/components/index.server';
 
 export default function Login({response}) {
@@ -46,14 +47,26 @@ export async function api(request, {session, queryShop}) {
 
   let jsonBody = await request.text();
   let redirect = false;
+  let strPath = "/";
 
   // try: logging in using JSON notation; catch: if the request is form-data
   try {
-    console.log("Attempting login using JSON...");
+    logToConsole("Attempting login using JSON...");
     jsonBody = JSON.parse(jsonBody);
   } catch (e) {
-    console.log("received form-data.  Converting...");
+    logToConsole("received form-data.  Converting...");
     let strArr = jsonBody;
+
+    if (strArr.includes("pathname=")) {
+      strArr = strArr.split("&pathname=");
+      strPath = strArr[1];
+      strArr = strArr[0];
+      strPath = strPath.split("&recaptcha")[0];
+      strPath = decodeURIComponent(strPath);
+    }
+
+
+
     strArr = strArr.split("&customer%5Bpassword%5D=");
     if (strArr === null) 
       return new Response(`Invalid input request`);
@@ -107,7 +120,10 @@ export async function api(request, {session, queryShop}) {
       data.customerAccessTokenCreate.customerAccessToken.accessToken,
     );
 
-    let redirectDest = `https://${import.meta.env.VITE_STORE_DOMAIN}/`;
+    let redirectDest = `https://${import.meta.env.VITE_STORE_DOMAIN}${strPath}`;
+    if (strPath.includes('referrals'))
+      redirectDest = `${import.meta.env.VITE_ORDERING_SITE}/account#referrals`;
+
     const today = new Date();
     if (redirect) {
      

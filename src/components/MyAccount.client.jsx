@@ -4,6 +4,7 @@ import PersonalInfo from '../components/Account/PersonalInfo.client';
 import Payment from '../components/Account/Payment.client';
 import Orders from '../components/Account/Orders.client';
 import Communication from '../components/Account/Communication.client';
+import Referrals from './Account/Referrals.client';
 import GiftCards from '../components/Account/GiftCards.client';
 import { useRenderServerComponents, removePhoneNumberFormatting } from '~/lib/utils';
 import { render } from 'react-dom';
@@ -46,6 +47,11 @@ export default function MyAccount(props) {
     useEffect(() => {
       if (window.location.hash === '#referrals')
         setActiveTab('gift_cards')
+    }, []);
+
+    useEffect(() => {
+      if (window.location.hash === '#referrals')
+        setActiveTab('referrals')
     }, []);
 
     const updateCustomerInfo = async (firstName, lastName, email, phone) => {
@@ -222,18 +228,37 @@ export default function MyAccount(props) {
       )
     }
 
+    const toggleTab = tabName => {
+      if (activeTab === tabName)
+        setActiveTab("");
+      else 
+        setActiveTab(tabName);
+    }
+
+    function referralsPanel(){
+      return (
+        <section className='account-panel-body'>
+          <Referrals
+            orderCount={orders.length}
+            customer={customer}
+          /> 
+        </section>
+      );
+    }
+
     return (
       <Page>
       <Header 
-      isOrdering = {false} />
+      isOrdering = {false}
+      customerAccessToken={props.customerAccessToken} />
         <div className='myaccount-wrapper'>
         <h1 className='myaccount-heading ha-h2 text-center'>My Account</h1>
-        
+
         <div className='myaccount-page desktop-panel'>
             <section className='account-panel-switches'>
-                <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders</h2>
-                <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => {;}}>Referrals</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => toggleTab('info')}>Personal Info</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => toggleTab('orders')}>Orders</h2>
+                <h2 className={`account-panel-switch${ activeTab === 'referrals' ? ' active' : '' }`} onClick={() => toggleTab('referrals')}>Referrals</h2>
             </section>
                 { activeTab === 'info' &&
                     personalInfoPanel()
@@ -243,28 +268,33 @@ export default function MyAccount(props) {
                     ordersPanel()
                 }
 
-                { activeTab === 'gift_cards' &&
-                    giftCardsPanel()
+                { activeTab === 'referrals' &&
+                    referralsPanel()
                 }
         </div>
         <div className='myaccount-page mobile-panel'>
               <section className='account-panel-switches'>
-                  <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => setActiveTab('info')}>Personal Info &nbsp;<span>{activeTab === 'info' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'info' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                  <h2 className={`account-panel-switch${ activeTab === 'info' ? ' active' : '' }`} onClick={() => toggleTab('info')}>Personal Info &nbsp;<span>{activeTab === 'info' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'info' && <img src={iconDropdownArrow} alt="" />}</span></h2>
                       { activeTab === 'info' &&
                           personalInfoPanel()
                       }
-                  <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment &nbsp;<span>{activeTab === 'payment' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'payment' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                  {/* <h2 className={`account-panel-switch${ activeTab === 'payment' ? ' active' : '' }`} style={{opacity: 0.6}} onClick={() => null}>Payment &nbsp;<span>{activeTab === 'payment' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'payment' && <img src={iconDropdownArrow} alt="" />}</span></h2>
                       { activeTab === 'payment' &&
                           paymentPanel()
-                      }
-                  <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => setActiveTab('orders')}>Orders &nbsp;<span>{activeTab === 'orders' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'orders' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                      } */}
+                  <h2 className={`account-panel-switch${ activeTab === 'orders' ? ' active' : '' }`} onClick={() => toggleTab('orders')}>Orders &nbsp;<span>{activeTab === 'orders' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'orders' && <img src={iconDropdownArrow} alt="" />}</span></h2>
                       { activeTab === 'orders' &&
                           ordersPanel()
                       }
-                  <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals &nbsp;<span>{activeTab === 'gift_cards' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'gift_cards' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+
+                  <h2 className={`account-panel-switch${ activeTab === 'referrals' ? ' active' : '' }`} onClick={() => toggleTab('referrals')}>Referrals &nbsp;<span>{activeTab === 'referrals' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'referrals' && <img src={iconDropdownArrow} alt="" />}</span></h2>
+                    { activeTab === 'orders' &&
+                        referralsPanel()
+                    }
+                  {/* <h2 className={`account-panel-switch${ activeTab === 'gift_cards' ? ' active' : '' }`} onClick={() => setActiveTab('gift_cards')}>Gift Cards & Referrals &nbsp;<span>{activeTab === 'gift_cards' && <img src={iconDropdownReverse} alt="" />}{activeTab != 'gift_cards' && <img src={iconDropdownArrow} alt="" />}</span></h2>
                       { activeTab === 'gift_cards' &&
                           giftCardsPanel()
-                      }
+                      } */}
               </section>
             </div>
         </div>

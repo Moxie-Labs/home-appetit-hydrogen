@@ -46,6 +46,9 @@ export const GET_MENUS_QUERY = gql`
                     startDate: metafield(namespace: "custom", key: "start_date") {
                     value
                     }
+                    deliveryDate: metafield(namespace: "custom", key: "order_delivery_date") {
+                      value
+                    }
                     products(first: 50) {
                     edges {
                         node {
@@ -92,6 +95,9 @@ export const GET_MENUS_QUERY = gql`
                         }
                         substitutions: metafield(namespace: "custom", key: "substitutions") {
                             value
+                        }
+                        contains: metafield(namespace: "custom", key: "contains") {
+                          value
                         }
                         }
                     }
@@ -304,6 +310,7 @@ export const GET_TRADITIONAL_PLAN_ITEM = gql`
         edges {
           node {
             id
+            sku
             price {
               amount
             }
@@ -321,6 +328,7 @@ export const GET_FLEXIBLE_PLAN_ITEM = gql`
         edges {
           node {
             id
+            sku
             price {
               amount
             }

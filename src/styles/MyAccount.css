@@ -95,7 +95,7 @@ hr.order-divider {
     font-size: 18px;
     font-family: 'ITCAvantGardeProDemi';
     border-radius: 24px;
-    padding: 9px 24px 4px;
+    padding: 9px 48px 4px;
 }
 
 button.btn.btn-default.btn-edit {
@@ -112,6 +112,8 @@ button.btn.btn-default.btn-edit {
     padding: 0 !important;
     font-family: "ITC Avant Garde Gothic W03 Md" !important;
     font-weight: 600;
+    width: auto;
+    border-radius: 0;
 }
 
 button.btn.btn-default.btn-edit img {
@@ -173,7 +175,7 @@ h1.address-title {
 }
 
 .account-information article p {
-    font-size: 24px;
+    font-size: 1.3em;
     line-height: 32px;
     font-family: 'AvenirLTProBlack';
     margin: 0;
@@ -432,6 +434,10 @@ label.check-balance-label {
     width: 50%;
 } */
 
+.account__address b {
+    font-size: 0.8em;
+}
+
 .account__address-title {
     font-size: 1.1em;
 }
@@ -472,7 +478,7 @@ p.address-action-cta a {
     border-bottom: 1px solid #474442;
 }
 
-article.account__address.account__address--default {
+article.account__address.account__address--default, .account__address {
     margin-top: 1.875rem;
 }
 
@@ -511,27 +517,40 @@ article p.address-action-cta {
 .mobile-panel .account-panel-switch {
     border-bottom: none;
     padding-bottom: 1rem;
+    font-family: "ITC Avant Garde Gothic W03 Md" !important;
     display: flex;
     justify-content: space-between;
 }
 
 .mobile-panel .account-panel-body{
     border-radius: 0;
-    padding: 1rem;
+    padding: 2.5rem 1rem;
+    margin: 0 -1rem;
 }
 
-.mobile-panel section.account-panel-switches h2{
+.mobile-panel .account-panel-switch {
+    font-family: "ITC Avant Garde Gothic W03 Md" !important;
+}
+
+.mobile-panel .account-panel-body section.account-panel-switches h2{
     font-size: 20px;
-    font-family: AvenirLTProBlack !important;
     padding: 1rem;
 }
 
 .mobile-panel section.account-panel-switches .info-row h2{
+    padding: 0 0 0.5rem 0;
+    font-size: 1.3em;
     text-transform: capitalize;
+    font-family: AvenirLTProBlack !important;
 }
 
 .mobile-panel .personal-info-wrapper .info-row{
+    margin-top: 1rem;
     flex-flow: column;
+}
+
+.mobile-panel section.account-panel-switches .info-row h2.personal-info-header--email {
+    text-transform: unset;
 }
 
 .mobile-panel .btn-reset{
@@ -618,4 +637,25 @@ table.order-table td {
     background-repeat: no-repeat;
     border: none;
     cursor: pointer;
+}
+
+.account__address-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.btn-close-referral-modal {
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.referral-api-msg {
+    margin-top: 0.6rem;
+    font-size: 0.8em;
+}
+
+.referral-api-msg.referral-api-error {
+    color: red;
 }

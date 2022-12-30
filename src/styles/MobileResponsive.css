@@ -2,7 +2,15 @@
     display: none;
 }
 
+.tablet-only {
+    display: none;
+}
+
 .copyright-mobile {
+    display: none;
+}
+
+.order-date-label {
     display: none;
 }
 
@@ -12,10 +20,19 @@
     body {
         margin-left: 1rem;
         margin-right: 1rem;
+        margin-bottom: 0;
+    }
+
+    .logo {
+        margin-left: 3rem;
     }
 
     .mobile-only {
         display: unset;;
+    }
+
+    .tablet-only {
+        display: none;
     }
 
     .desktop-only {
@@ -26,7 +43,18 @@
         position: unset;
         bottom: unset;
         margin-top: 4rem;
+        padding: 0;
     }
+
+    .logo {
+        margin: -0.3rem 0 0 -5rem;
+    }
+
+    @-moz-document url-prefix() {
+        .logo {
+            margin: -0.3rem 0 0 -4.5rem !important;
+        }
+      }
 
     .copyright {
         display: none;
@@ -45,7 +73,53 @@
         margin-right: 1rem;
     }
 
+    .ReactModal__Content.ReactModal__Content--after-open.modal-entree-complete {
+        padding: 2rem 1.5rem;
+    }
+
+    .ReactModal__Content.ReactModal__Content--after-open.modal-entree-complete .btn.btn-primary-small, .ReactModal__Content.ReactModal__Content--after-open.modal-entree-complete .btn.btn-secondary-small {
+        font-size: 1em;
+    }
+
+    .modal-entree-complete h1 {
+        font-size: 1.3em;
+    }
+
+    .modal-entree-complete h2 {
+        font-size: 1em;
+    }
+
+    .modal-entree-complete p {
+        font-size: 0.9em;
+    }
+
+    .dish-card-wrapper {
+        padding: 1rem 0;
+    }
+
+        .dish-card-wrapper .ha-h3 {
+            margin: 1rem 0 0;
+        }
+
+    .dish-card-wrapper .accordion {
+        top: 30px;
+    }
+
+    .suborder--summary-container {
+        gap: 0;
+    }
+
+    .summary--additional-wrapper h4 {
+        margin: 0;
+    }
+
+    /* END General */
+
     /* Step One */  
+    section#OrderProperties {
+        padding-top: 0 !important;
+    }
+
     .illustration-empty {
         font-size: 1.2em;
         text-align: center;
@@ -69,12 +143,12 @@
 
     .dish-card-item .card__info-section {
         position: relative;
-        height: 12rem;
+        height: 10rem;
         min-height: unset;
     }
 
     .dish-card-item {
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     .btn-modal-cancel {
@@ -112,26 +186,78 @@
             font-size: 1.1em;
         }
 
-    .menu-section__actions.actions--submit-order {
+    span.delivery-window-label, .delivery-window-label.disabled {
+        font-size: 1em;   
+    }
+
+    span.order-date-label {
+        display: unset;
+        font-size: 0.6em;
+        text-align: right;
+        position: absolute;
+        right: 0;
+        font-family: AvenirLTProRoman !important;
+        font-style: italic;
+    }
+    
+
+    /* .menu-section__actions.actions--submit-order {
         display: none;
+    } */
+
+    .dish-card-item .card__quantity-wrapper {
+        justify-content: space-around;
+        height: 50%;
+        padding: 3rem 2rem 1rem;
+        max-width: 22.5rem;
+    }
+
+    /* .card__quantity-wrapper p.card__code {
+        font-size: 0.9em !important;
+    } */
+
+    .dish-card-wrapper.order--properties.dishcard--wrapper-inactive:after {
+        content: "";
+        display: none;;
+    }
+
+    .card__actions.cancel {
+        display: none;
+    }
+
+    .modal--flexible-confirmaton .card__quantity-subtitle {
+        font-size: 1em;
     }
 
     /* END Step One */
 
     /* Gift Card page */
+    #container--gift-card {
+        padding-top: 0;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        padding: 0;
+        background: #F8EFE0;
+    }
+    
     #container--gift-card > .page {
         margin: 0 -1rem;
         padding-left: 1rem;
         padding-right: 1rem;
+        padding-top: 50px;
         background: #F8EFE0 !important;
     }
     
     .gc-wrapper {
         flex-direction: column;
-        gap: 2rem;
+        gap: 1rem;
+        padding-top: 6rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
     .gc-wrapper .btn.btn-primary-small {
+        height: 50px;
         width: 100%;
     }
 
@@ -140,7 +266,7 @@
     }
     
     .blog-post-section {
-        margin: 0 -1rem;
+        margin: 0;
     }
 
     .blog-post {
@@ -158,7 +284,11 @@
     }
 
     .blog-post-section_title {
-        font-size: 3.2em;
+        font-size: 2.5em;
+    }
+
+    .blog-post_text {
+        min-height: 105px;
     }
 
     .gc-item-column_image {
@@ -167,12 +297,25 @@
     }
 
     .gc-item-column.gc-item-column_image > img {
+        padding: 1rem 1rem 0;
         width: 100%;
+    }
+
+    .gc-wrapper h2, p.gc-subtitle {
+        text-align: center;
+    }
+
+    .gc-row--email {
+        margin-top: 1rem;
+    }
+
+    .form-errors-gc--empty {
+        height: 20px;
     }
 
     .container--calculator-activator {
         text-align: center;
-        padding-bottom: 1rem;
+        padding: 1rem 0 2rem;
     }
 
     .modal--gift-card {
@@ -202,10 +345,114 @@
         padding: 1rem;
     }
     /* END Gift Card page */
+
+    /* Account Page */
+    .myaccount-page .btn {
+        font-size: 0.9em;
+        padding-top: 6px;
+        width: 100%;
+    }
+
+    article.account__address {
+        margin-top: 1.875rem;
+    }
+
+    .btn.btn-default.btn-edit {
+        right: 20px !important;
+    }
+
+    .modal-address-field {
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+
+    .mobile-panel .personal-info-wrapper .info-row {
+        margin-bottom: 0;
+    }
+
+    .mobile-panel .personal-info-wrapper .info-row.row-2 {
+        margin-top: 0;
+    }
+
+    .personal-info-wrapper.edit-wrapper button {
+        width: 45%;
+        margin: 0 2%;
+    }
+
+    .personal-info-wrapper .info-row:last-child {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .modal-new-address {
+        width: 95%;
+        max-width: unset;
+    }
+
+    .new-address-wrapper .field-row, .new-address-wrapper .field-row:nth-child(2) input[name=phone] {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .new-address-wrapper .field input {
+        margin-bottom: 0;
+    }
+
+    .modal-new-address .modal-action button {
+        height: 45px;
+        padding: 10px;
+    }
+
+    .order-details-wrapper {
+        display: unset;
+    }
+
+    .prev-order-modal--exit {
+        background: url(/src/assets/icon-close-btn--small.png);
+        background-size: contain;
+        width: 25px;
+        height: 25px;
+        margin: 25px;
+    }
+
+    .order__no-history {
+        width: 100%;
+    }
+
+        .order__no-history h3 {
+            font-size: 2em !important;
+        }
+
+        .order__no-history--subtitle {
+            margin: 0.5rem 0;
+        }
+
+    .account__address-inner {
+        grid-template-columns: 1fr;
+    }
+
+    .gc-wrapper textarea {
+        height: 125px;
+    }
 }
 
 /* Tablet */
 @media screen and (max-width: 1270px) and (min-width: 416px) {
+
+    .tablet-only {
+        display: unset;
+    }
+
+    .gc-wrapper--hero {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .gc-item-column_image > img.desktop-only {
+        width: 100%;
+        padding: 0 2rem;
+    }
 
     .btn-modal-cancel {
         margin-top: 1rem;

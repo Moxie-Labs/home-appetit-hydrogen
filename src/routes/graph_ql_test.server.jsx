@@ -9,6 +9,7 @@ import {
   useShopQuery
 } from '@shopify/hydrogen';
 import { Layout } from '../components/Layout.client';
+import { logToConsole } from '../helpers/logger';
 
 // import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 // import {getHeroPlaceholder} from '~/lib/placeholders';
@@ -43,7 +44,7 @@ function TestContent() {
   });
 
     const collectionList = collections.map((collection, i) => {
-        console.log(`collection ${collection.node.handle}`, collection.node)
+        logToConsole(`collection ${collection.node.handle}`, collection.node)
         return <li key={i}>{collection.node.handle}</li>
     })
 

@@ -39,6 +39,7 @@ export default function PersonalInfo(props) {
     // values set when editing address
     const [showingAddressModal, setShowingAddressModal] = useState(false);
     const [modalAddress, setModalAddress] = useState(null);
+    const [modalAddressTitle, setModalAddressTitle] = useState(null);
     const [modalAddressDefault, setModalAddressDefault] = useState(null);
     const [modalFirstName, setModalFirstName] = useState("");
     const [modalLastName, setModalLastName] = useState("");
@@ -147,8 +148,9 @@ export default function PersonalInfo(props) {
                 </article> 
             }
     </section> : null;
-    const openAddressModal = address => {
+    const openAddressModal = (address, title) => {
         setModalAddress(address);
+        setModalAddressTitle(title);
         setModalAddressDefault(address.isDefaultAddress);
         setModalFirstName(address.firstName);
         setModalLastName(address.lastName);
@@ -337,15 +339,11 @@ export default function PersonalInfo(props) {
                         <div className="info-row">
                             <h2><span className="info-label">First Name:</span><br /> {firstName}</h2>
                             <h2><span className="info-label">Last Name:</span><br />  {lastName}</h2>
-                            {/* placeholder */}
-                            <h2>
-                                {/* <span className="info-label">Birthdate:</span><br />  12/21/1982 */}
-                            </h2>
-                            {/* end placeholder */}
+                            <h2 style={{opacity: 0}}><span className="info-label">Birthdate:</span><br />  12/21/1982</h2>
                         </div>
                         <div className="info-row">
-                            <h2><span className="info-label">Email:</span><br />  {email}</h2>
-                            <h2><span className="info-label">Phone Number:</span> <br /> {formattedPhoneNumber(phone)}</h2>
+                            <h2 className="personal-info-header personal-info-header--email"><span className="info-label">Email:</span><br />  {email}</h2>
+                            <h2><span className="info-label info-label--phone">Phone Number:</span> <br /> {formattedPhoneNumber(phone)}</h2>
                         </div>
                     </div>
                     <button className="btn btn-default btn-reset">Reset Password</button>
@@ -366,7 +364,7 @@ export default function PersonalInfo(props) {
                               {fieldErrors.lastNameState !== undefined && <p className='form-errors'>{fieldErrors.lastNameState}</p>}
                             </label>
                             {/* placeholder */}
-                            <h2><span className="info-label">Birthdate:</span><br />  12/21/1982</h2>
+                            {/* <h2 style={{opacity: 0}}><span className="info-label">Birthdate:</span><br />  12/21/1982</h2> */}
                             {/* end placeholder */}
                         </div>
                     <div className="info-row row-2">
@@ -400,20 +398,20 @@ export default function PersonalInfo(props) {
                     {defaultAddr.address2 !== "" && <p>{defaultAddr.address2}</p>}
                     {defaultAddr.company !== "" && <p>{defaultAddr.company}</p>}
                     <p className="account__address-body">{defaultAddr.city}, {defaultAddr.provinceCode} {defaultAddr.zip}</p>
-                    <p className="address-action-cta"><a href="#" onClick={() => openAddressModal(defaultAddr)}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
+                    <p className="address-action-cta"><a href="#" onClick={() => openAddressModal(defaultAddr, "Default Address")}>Edit</a> | <a href="#" onClick={() => removeAddress(defaultAddr.id)}>Remove</a></p>
                 </article> }
 
 
                 {addresses.map(addr => {
                     if (addr.id !== defaultAddr.id) {
                         return <article key={addr.id} className="account__address">
-                        <p><b>Address {++addressCount}</b></p>
+                        <p className="account__address-title">Address {++addressCount}</p>
                         <p>{addr.name}</p>
                         <p>{addr.address1}</p>
                         {addr.address2 !== "" && <p>{addr.address2}</p>}
                         {addr.company !== "" && <p>{addr.company}</p>}
                         <p>{addr.city}, {addr.provinceCode} {addr.zip}</p>
-                        <p><a href="#" onClick={() => openAddressModal(addr)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
+                        <p className="address-action-cta"><a href="#" onClick={() => openAddressModal(addr, `Address ${addressCount}`)}>Edit</a> | <a href="#" onClick={() => removeAddress(addr.id)}>Remove</a> | <a href="#" onClick={() => makeAddressDefault(addr)}>Make Default</a></p>
                     </article> 
                     }
                 })}
@@ -421,14 +419,12 @@ export default function PersonalInfo(props) {
             </div>
             <button className="btn btn-default new-address-cta" onClick={() => prepareNewAddress()}>Add New Address</button>
 
-            <div className="line-separator"></div>
-
                 <Modal
                     isOpen={showingAddressModal}
                     onRequestClose={() => closeAddressModal()}
                     className="modal-new-address"
                 >
-                    <h4 className="ha-h4 text-uppercase text-center no-margin">Default Address</h4>
+                    <h4 className="ha-h4 text-uppercase text-center no-margin">{modalAddressTitle}</h4>
 
                     <div className="new-address-wrapper">
 
@@ -499,13 +495,13 @@ export default function PersonalInfo(props) {
                 
             </section>
 
-            <Communication 
+            {/* <Communication 
                 acceptsMarketing={acceptsMarketing}
                 receiveConsent={receiveConsent}
                 handleUpdateCommunication={(value) => handleUpdateCommunication(value)}           
-            /> 
+            />  */}
   
-            <button className="btn btn-default new-address-cta">Update preferences</button>
+            {/* <button className="btn btn-default new-address-cta">Update preferences</button> */}
             
         </div>
     );

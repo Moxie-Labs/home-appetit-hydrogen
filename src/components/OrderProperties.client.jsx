@@ -43,8 +43,8 @@ export default class OrderProperties extends React.Component {
     
     handleContinue(event) {
         this.props.handleContinue();
-        const step = document.querySelector(".step-active");
-        step.scrollIntoView({behavior: "smooth", block: "start"});
+        // const step = document.querySelector(".step-active");
+        // step.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
     handleCancel(event) {
@@ -66,7 +66,9 @@ export default class OrderProperties extends React.Component {
             <section className={`step-section step-inner-flex${currentStep === step ? '' : ' default-padding'}`} id="OrderProperties">
                 <div className="step-column">
                 <LayoutSection>
-                    <h2 sectioned className="heading order_prop__heading ha-h3">Step 1: Order Type</h2>
+                    <h2 sectioned="true" className="heading order_prop__heading ha-h3">Step 1: Order Type 
+                        { currentStep === step && <span className='order-date-label'>For {this.getDisplayDate(deliveryWindowOne)} Delivery</span> }
+                    </h2>
                     <SchemeSelector
                         activeScheme={activeScheme}
                         handleSchemeChange={(activeScheme) => this.handleSchemeChange(activeScheme)}
@@ -93,10 +95,10 @@ export default class OrderProperties extends React.Component {
                     }
                     <div className="select-wrapper">
                         <select className={`order_prop__dropdown${currentStep === step ? '' : ' disabled'}`} style={{backgroundImage: `url(${iconArrowDown})`}} value={this.props.servingCount} onChange={this.handleChange} disabled={currentStep !== step}>
-                            <option selected disabled hidden value={0}>Select...</option>
+                            <option disabled hidden value={0}>Select...</option>
                             {effectiveServingOptions.map(option => {
                                 return (
-                                    <option value={option.value}>{option.label}</option>
+                                    <option key={option.value} value={option.value}>{option.label}</option>
                                 )
                             })}
                         </select>
